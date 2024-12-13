@@ -5,7 +5,7 @@ function encoding(bitwidth, sigbits) # provide encoding sequence
     v .= T(0):T(n_values-1) # the value of the last line in a function is returned
 end
 
-function Base.values(bitwidth, sigbits) # provide simple value sequence
+function valuation(bitwidth, sigbits) # provide simple value sequence
     T = bitwidth <= 8 ? Float32 : Float64
     n_values = 2^bitwidth
     n_exponent_cycles = n_fractions = 2^(sigbits - 1) # 2^fraction_bits
