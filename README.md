@@ -1,4 +1,4 @@
-# BaseFloats.jl
+# FloatsForML.jl
 ### The internal constructive model for MicroFloats.
 ##### Copyright 2024 by Jeffrey Sarnoff
 
@@ -6,13 +6,9 @@
 
 ----
 
-BaseFloats.jl provides the concrete type `BaseFloat`, with the parameters `Bitwidth` and `Precision`.
-- const MF32 = BaseFloat(3, 2) # Bitwidth = 3, Precision = 2
-- const MF108 = BaseFloat(10, 8) # Bitwidth = 10, Precision = 8
+FloatsForML.jl 
 
 #### The parameters are available
-- MF32bitwidth = bitwidth(SMF32)
-- MF32precision = precision(SMF32)
 
 A `BaseFloat` contains two fields, `encoding` and `values`.
 - `encoding` holds the sequence of value encodings for the specified Bitwidth and Precision
@@ -43,24 +39,4 @@ if the Bitwidth is <= 8
 else
     the encoding is a vector of UInt16
     the values are a vector of Float64
-end
-```
-
-### example
-```
-using BaseFloat
-
-MF32 = BaseFloat(3, 2);
-
-bitwidth(MF32)
-# 3
-
-precision(MF32)
-# 2
-
-encoding(MF32)
-# [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07]
-
-values(MF32)
-# [0.0, 0.25, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0]
 ```
