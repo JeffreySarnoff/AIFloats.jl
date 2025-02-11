@@ -1,109 +1,65 @@
 module FloatsForML
 
-export AbstractBinaryFloat, AbstractSignedFloat, AbstractUnsignedFloat,
-    AkoSignedFiniteFloat, AkoSignedInfiniteFloat, 
-    AkoUnsignedFiniteFloat, AkoUnsignedInfiniteFloat,
-    # structs with fields ordered by CodePoint
-    SignedFiniteFloat, SignedInfiniteFloat,
-    UnsignedFiniteFloat, UnsignedInfiniteFloat,
-    # structs with fields ordered by FloatValue
-    SignedFiniteFP, SignedInfiniteFP,
-    UnsignedFiniteFP, UnsignedInfiniteFP,
-    # 
-    CodePoint, FloatValue, codes, floats,
-    #
-    is_signed, is_unsigned, is_finite, is_infinite,
-    #
-    n_numeric_values, n_finite_values, n_infinite_values,
-    n_subnormal_values, subnormal_max, subnormal_min,
-    n_normal_values, normal_max, normal_min,
-    exponent_max, exponent_min, exponent_bias,
-    #
-    n_bits, n_sig_bits, n_fraction_bits, n_exponent_bits, n_sign_bits,
-    n_values, n_sig_values, n_fraction_values, n_exponent_values, 
-    n_fraction_cycles, n_exponent_cycles
+export AbstractAIFloat, MLFloats,  
+       UFiniteMLFloats, UExtendedMLFloats, SFiniteMLFloats, SExtendedMLFloats,
+       UFiniteAIValues, UExtendedAIValues, SFiniteAIValues, SExtendedAIValues,
+       UFiniteAICodes, UExtendedAICodes, SFiniteAICodes, SExtendedAICodes,
+       NTupleOrVec, CODE, FLOAT, typeforcode, typeforfloat,
+       IsSigned, IsUnsigned, IsFinite, IsExtended,
+       codes, floats,
+       nBits, nSigBits, nFracBits, nExpBits,
+       nValues, nFracValues, nExpValues, nFracCycles, nExpCycles,
+       nSubnormalValues, nSubnormalMagnitudes, nNormalValues, nNormalMagnitudes,
+       nInfs, nNaNs, nZeros,
+       exponent_min, exponent_max, exponent_bias,
+       subnormal_min, subnormal_max, normal_min, normal_max,
+       is_signed, is_unsigned, if_finite, is_extended,
+       isaligned
 
+using Static, AlignedAllocs
 
-abstract type AbstractBinaryFloat{Bits, SigBits} <: AbstractFloat end
+include("constants.jl")
 
-abstract type AbstractSignedFloat{Bits, SigBits}      <: AbstractBinaryFloat{Bits, SigBits} end
-  abstract type AkoSignedFiniteFloat{Bits, SigBits}   <: AbstractSignedFloat{Bits, SigBits} end
-  abstract type AkoSignedInfiniteFloat{Bits, SigBits} <: AbstractSignedFloat{Bits, SigBits} end
+include("type/abstract.jl")
+include("type/collective.jl")
+include("type/aspects.jl")
+include("type/extrema.jl")
+include("type/predicates.jl")
 
-abstract type AbstractUnsignedFloat{Bits, SigBits}      <: AbstractBinaryFloat{Bits, SigBits} end
-  abstract type AkoUnsignedFiniteFloat{Bits, SigBits}   <: AbstractUnsignedFloat{Bits, SigBits} end
-  abstract type AkoUnsignedInfiniteFloat{Bits, SigBits} <: AbstractUnsignedFloat{Bits, SigBits} end
-
-include("construct.jl")
-include("type.jl")
-include("predicates.jl")
-include("substructural.jl")
-include("aqua.jl")
+include("concrete/foundation.jl")
+include("concrete/unsigned.jl")
+include("concrete/signed.jl")
 
 """
-    AbstractBinaryFloat
+    MLFloats
 
-A specialization of AbstractFloat with parameters {Bits, SigBits}.
-- comports with IEEE SA P3109 
+examples
 
-See also [`AbstractFloat`](@ref).
-""" AbstractBinaryFloat
+```
+    UF42   = MLFloats( 4,  2, IsUnsigned, IsFinite)
+    UE64   = MLFloats( 6,  4, IsUnsigned, IsExtended)
+    SE84   = MLFloats( 8,  4, IsSigned,   IsExtended)
+    SE1512 = MLFloats(15, 12, IsSigned,   IsExtended)
 
+    seBinary84_encodings = codes(SE84)
+    seBinary84_valuation = floats(SE84)
+    
+````
 """
-    AbstractUnsignedFloat
-
-An unsigned binary floating-point abstraction.
-    - Provides NaN
-
-See also [`AbstractBinaryFloat`, `AbstractSignedFloat`](@ref).
-""" AbstractUnsignedFloat
-
-"""
-    AbstractSignedFloat
-
-A signed binary floating-point abstraction.
-    - Provides NaN
-
-See also [`AbstractBinaryFloat`, `AbstractUnsignedBinaryFloat`](@ref).
-""" AbstractSignedFloat
-
-"""
-    AkoSignedInfiniteFloat
-
-    An Infinite Finite projection of AbstractBinaryFloat. Has NaN, has Inf.
-    - Provides NaN
-    - Provides ±Inf
-
-See also [`AbstractBinaryFloat`, `AbstractSignedFloat`](@ref).
-""" AkoSignedInfiniteFloat
-
-"""
-    AkoUnsignedInfiniteFloat
-
-    An Infinite projection of AbstractSignedFloat.
-    - Provides NaN
-    - Provides Inf
-
-See also [`AbstractBinaryFloat`, `AbstractUnsignedFloat`](@ref).
-""" AkoUnsignedInfiniteFloat
-
-"""
-    AkoSignedFiniteFloat
-
-    An finite projection of AbstractSignedFloat
-    - Provides NaN
- 
-See also [`AbstractBinaryFloat`, `AbstractSignedFloat`](@ref).
-""" AkoSignedFiniteFloat
-
-"""
-    AkoUnsignedFiniteFloat
-
-    An infinite projection of AbstractUnsignedFloat.
-    - Provides NaN
- 
-See also [`AbstractBinaryFloat`, `AbstractUnsignedFloat`](@ref).
-""" AkoUnsignedFiniteFloat
-
-
+function MLFloats(bits::Int, sigbits::Int, signed::Bool, extended::Bool)
+    if signed
+        if extended
+            SExtendedFloats(bits, sigbits)
+        else # finite
+            SFiniteFloats(bits, sigbits)
+        end
+    else
+        if extended
+            UExtendedFloats(bits, sigbits)
+        else # finite
+            UFiniteFloats(bits, sigbits)
+        end
+    end
+end
+  
 end  # FloatsForML

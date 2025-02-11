@@ -3,12 +3,11 @@ author = "Jeffrey Sarnoff <jeffrey.sarnoff@ieee.org>"
 uuid = "d2991a12-158b-408d-b4b8-1886e7866e6f"
 version = "0.1.0"
 
+[deps]
+Static = "aedffcd0-7271-4cad-89d0-dc628f76c6d3"
+AlignedAllocs = "6ac60441-711f-43f0-8178-7f71f0888134"
+
 [compat]
-Test = "1.11"
+Static = "1.2"
+AlignedAllocs = "0.1 - 0.6"
 julia = "1.11"
-
-[extras]
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-
-[targets]
-test = ["Test"]
