@@ -4,7 +4,13 @@ nBits(Bits, SigBits) = Bits
 nSigBits(Bits, SigBits) = SigBits
 nFracBits(Bits, SigBits) = SigBits - oftype(SigBits, 1)
 nSignBits(Bits, SigBits, IsSigned) = zero(Int8) + IsSigned
-nExpBits(Bits, SigBits, IsSigned) = Bits - SigBits + !IsSigned
+function nExpBits(Bits, SigBits, IsSigned)
+    nbits = Bits - SigBits + !IsSigned
+    if nbits > Bits
+        nbits = Bits - IsSigned
+    end
+    nbits
+end
 nValues(Bits, SigBits) = 2^nBits(Bits, SigBits)
 nFracValues(Bits, SigBits) = 
     if SigBits <= 0
