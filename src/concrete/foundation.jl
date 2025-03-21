@@ -1,20 +1,20 @@
-function encodings(nbits)
-    n = 2^nbits
-    typ = typeforcode(nbits)
+function encodings(bits)
+    n = 2^bits
+    typ = typeforcode(bits)
     codes = memalign_clear(typ, n)
     codes[:] = collect(map(typ, 0:(n-1)))
     codes
 end
 
-function foundation_floats(nbits::Integer, nsigbits::Integer)
-    sigs = foundation_sigs(nbits, nsigbits)
-    exps = foundation_exps(nbits, nsigbits)
+function foundation_floats(bits::Integer, sigbits::Integer)
+    sigs = foundation_sigs(bits, sigbits)
+    exps = foundation_exps(bits, sigbits)
     seq = exps .* sigs
     seq
 end
 
-function foundation_sigs(nbits, nsigbits)
-    foundation_sigs_seq(nFracValues(nbits, nsigbits), nFracCycles(nbits, nsigbits, IsUnsigned))
+function foundation_sigs(bits, sigbits)
+    foundation_sigs_seq(nFracValues(bits, sigbits), nFracCycles(bits, sigbits, IsUnsigned))
 end
 
 function foundation_sigs_seq(n_fractions, n_fraction_cycles)
@@ -23,8 +23,8 @@ function foundation_sigs_seq(n_fractions, n_fraction_cycles)
     append!(fraction_sequence, repeat(normal_sequence, n_fraction_cycles - 1))
 end
 
-function foundation_exps(nbits, nsigbits)
-   foundation_exps_seq(nExpBits(nbits, nsigbits, false), nExpCycles(nbits, nsigbits))
+function foundation_exps(bits, sigbits)
+   foundation_exps_seq(nExpBits(bits, sigbits, false), nExpCycles(bits, sigbits))
 end
 
 @inline function foundation_exps_seq(n_expbits, n_exponent_cycles)
@@ -37,6 +37,9 @@ end
     if length(biased_exponents) > 1
         biased_exponents[1] = biased_exponents[2]
     end
+    #=#
+    println((; n_exponent_cycles, biased_exponents))
+
     biased = collect(Iterators.flatten(map(x->fill(x, n_exponent_cycles), biased_exponents)))
     map(x->2.0^x, biased)
 end

@@ -1,26 +1,26 @@
-function UFiniteFloats(nbits, nsigbits)
-    codetype  = typeforcode(nbits)
-    floattype = typeforfloat(nbits)
+function UFiniteFloats(bits, sigbits)
+    codetype  = typeforcode(bits)
+    floattype = typeforfloat(bits)
 
-    codes = encodings(nbits)
+    codes = encodings(bits)
 
-    vals = foundation_floats(nbits, nsigbits)
+    vals = foundation_floats(bits, sigbits)
     vals[end] = NaN
 
     fpvals = map(floattype, vals)
     fpmem = memalign_clear(floattype, length(fpvals))
     copyto!(fpmem, fpvals)
 
-    UFiniteFloats{nbits, nsigbits, floattype, codetype}(fpmem, codes)
+    UFiniteFloats{bits, sigbits, floattype, codetype}(fpmem, codes)
 end
 
-function UExtendedFloats(nbits, nsigbits)
-    codetype  = typeforcode(nbits)
-    floattype = typeforfloat(nbits)
+function UExtendedFloats(bits, sigbits)
+    codetype  = typeforcode(bits)
+    floattype = typeforfloat(bits)
 
-    codes = encodings(nbits)
+    codes = encodings(bits)
 
-    vals = foundation_floats(nbits, nsigbits)
+    vals = foundation_floats(bits, sigbits)
     vals[end] = NaN
     vals[end-1]= Inf
 
@@ -28,5 +28,5 @@ function UExtendedFloats(nbits, nsigbits)
     fpmem = memalign_clear(floattype, length(fpvals))
     copyto!(fpmem, fpvals)
 
-    UExtendedFloats{nbits, nsigbits, floattype, codetype}(fpmem, codes)
+    UExtendedFloats{bits, sigbits, floattype, codetype}(fpmem, codes)
 end

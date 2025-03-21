@@ -1,10 +1,10 @@
 
-function SFiniteFloats(nbits, nsigbits)
-    codetype  = typeforcode(nbits)
-    floattype = typeforfloat(nbits)
+function SFiniteFloats(bits, sigbits)
+    codetype  = typeforcode(bits)
+    floattype = typeforfloat(bits)
 
-    codes = encodings(nbits)
-    vals = foundation_floats(nbits-1, nsigbits)
+    codes = encodings(bits)
+    vals = foundation_floats(bits-1, sigbits)
     append!(vals, -1 .* vals)
     vals[1+end>>1] = oftype(vals[end], NaN)
 
@@ -12,15 +12,15 @@ function SFiniteFloats(nbits, nsigbits)
     fpmem = memalign_clear(floattype, length(fpvals))
     copyto!(fpmem, fpvals)
 
-    SFiniteFloats{nbits, nsigbits, floattype, codetype}(fpmem, codes)
+    SFiniteFloats{bits, sigbits, floattype, codetype}(fpmem, codes)
 end
 
-function SExtendedFloats(nbits, nsigbits)
-    codetype  = typeforcode(nbits)
-    floattype = typeforfloat(nbits)
+function SExtendedFloats(bits, sigbits)
+    codetype  = typeforcode(bits)
+    floattype = typeforfloat(bits)
 
-    codes = encodings(nbits)
-    vals = foundation_floats(nbits-1, nsigbits)
+    codes = encodings(bits)
+    vals = foundation_floats(bits-1, sigbits)
     vals[end] = oftype(vals[end], Inf)
     append!(vals, -vals)
     vals[1+end>>1] = oftype(vals[end], NaN)
@@ -29,5 +29,5 @@ function SExtendedFloats(nbits, nsigbits)
     fpmem = memalign_clear(floattype, length(fpvals))
     copyto!(fpmem, fpvals)
 
-    SExtendedFloats{nbits, nsigbits, floattype, codetype}(fpmem, codes)
+    SExtendedFloats{bits, sigbits, floattype, codetype}(fpmem, codes)
 end

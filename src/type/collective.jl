@@ -1,5 +1,5 @@
 ilog2(x) = trunc(Int,fld(log2(x),1))
-isaligned(xs, nbits) = trailing_zeros(UInt(pointer(xs))) >= ilog2(nbits)
+isaligned(xs, bits) = trailing_zeros(UInt(pointer(xs))) >= ilog2(bits)
 
 struct UFiniteFloats{Bits, SigBits, FType, CType} <: UnsignedFiniteAIFloat{Bits, SigBits}
     floats::Vector{FType} 
