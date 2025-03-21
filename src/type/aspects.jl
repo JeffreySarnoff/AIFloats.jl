@@ -7,7 +7,7 @@ nSignBits(Bits, SigBits, IsSigned) = zero(Int8) + IsSigned
 nExpBits(Bits, SigBits, IsSigned) = Bits - SigBits + !IsSigned
 nValues(Bits, SigBits) = 2^nBits(Bits, SigBits)
 nFracValues(Bits, SigBits) = 
-    if SigBits < 0
+    if SigBits <= 0
         1 / 2^nFracBits(Bits, SigBits)
     else
         2^nFracBits(Bits, SigBits)
