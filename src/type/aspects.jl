@@ -6,7 +6,12 @@ nFracBits(Bits, SigBits) = SigBits - oftype(SigBits, 1)
 nSignBits(Bits, SigBits, IsSigned) = zero(Int8) + IsSigned
 nExpBits(Bits, SigBits, IsSigned) = Bits - SigBits + !IsSigned
 nValues(Bits, SigBits) = 2^nBits(Bits, SigBits)
-nFracValues(Bits, SigBits) = 2^nFracBits(Bits, SigBits)
+nFracValues(Bits, SigBits) = 
+    if SigBits < 0
+        1 / 2^nFracBits(Bits, SigBits)
+    else
+        2^nFracBits(Bits, SigBits)
+    end
 nExpValues(Bits, SigBits, IsSigned) = 2^nExpBits(Bits, SigBits, IsSigned)
 nFracCycles(Bits, SigBits, IsSigned) = nExpValues(Bits, SigBits, IsSigned)
 nExpCycles(Bits, SigBits) = nFracValues(Bits, SigBits)
