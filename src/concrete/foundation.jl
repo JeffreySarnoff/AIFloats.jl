@@ -37,7 +37,7 @@ end
     if length(biased_exponents) > 1
         biased_exponents[1] = biased_exponents[2]
     end
-    #=#
+    
     println((; n_exponent_cycles, biased_exponents))
 
     biased = collect(Iterators.flatten(map(x->fill(x, n_exponent_cycles), biased_exponents)))
