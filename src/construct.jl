@@ -1,16 +1,32 @@
-encoding(cfg::FloatMLconfig) = encoding(cfg.bitwidth, cfg.precision)
-valuation(cfg::FloatMLconfig) = valuation(cfg.bitwidth, cfg.precision)
+encoding(cfg::FloatMLconfig) = encoding(cfg.bitwidth)
+valuation(cfg::FloatMLconfig) = valuation(cfg.bitwidth, cfg.precision, 
+                                          cfg.n_fraction_magnitudes, cfg.n_fraction_cycles,
+                                          cfg.n_exponent_magnitudes, cfg.n_exponent_cycles)
 
-
-function encoding(bitwidth, precision) # provide encoding sequence
-    T = bitwidth <= 8 ? UInt8 : UInt16
-    n_values = 2^bitwidth
-    v = Vector{T}(undef, n_values)
-    v .= T(0):T(n_values-1) # the value of the last line in a function is returned
+function encoding(bitwidth)
+    n = 2^bitwidth
+    typ = typeforcode(bitwidth)
+    codes = memalign_clear(typ, n)
+    codes[:] = collect(map(typ, 0:(n-1)))
+    codes
 end
 
+function valuation(bitwidth, precision; n_exponents, n_exponent_cycles)
+    n = 2^bitwidth
+    typ = typeforfloat(bitwidth)
+    vals = memalign_clear(typ, n)
+
+    n_exponent_cycles = n_fractions = 2^(precision - 1) # 2^fraction_bits
+    n_exponents = n_fraction_cycles = div(n_values, n_fractions)
+    map(T, significand_series(n_fractions, n_fraction_cycles) .* exponent_series(n_exponents, n_exponent_cycles))
+    vals[:] = collect(map(typ, 0:(n-1)))
+    vals
+end
+
+
+
 function valuation(bitwidth, precision) # provide simple value sequence
-    T = bitwidth <= 8 ? Float32 : Float64
+    T = typeforfloat(bitwidth)
     n_values = 2^bitwidth
     n_exponent_cycles = n_fractions = 2^(precision - 1) # 2^fraction_bits
     n_exponents = n_fraction_cycles = div(n_values, n_fractions)

@@ -2,7 +2,11 @@ module BaseFloats
 
 export AbstractFloatML, 
          AbstractSignedFloatML, AbstractUnsignedFloatML,
-       confg_floatml, encoding, valuation
+       confg_floatml, encoding, valuation,
+       typeforcode, typeforfloat,
+       isSigned, isUnsigned, isExtended, isFinite
+
+using AlignedAllocs: memalign_clear
 
 """
     AbstractFloatML{Bitwidth, Precision}
@@ -40,6 +44,10 @@ abstract type AbstractFloatML{Bitwidth, Precision}  <: AbstractFloat end
 abstract type AbstractSignedFloatML{Bitwidth, Precision} <: AbstractFloatML{Bitwidth, Precision} end
 # some are Unsigned, having non-negative values only (positives and 0, NaN)
 abstract type AbstractUnsignedFloatML{Bitwidth, Precision} <: AbstractFloatML{Bitwidth, Precision} end
+
+# gather the capabilities
+
+include("constants.jl")
 
 include("config.jl")
 include("construct.jl")
