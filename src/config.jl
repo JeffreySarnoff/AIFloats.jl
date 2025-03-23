@@ -12,6 +12,7 @@ Base.@kwdef struct FloatMLconfig{Bitwidth, Precision, IsSigned, IsExtended} <: F
     n_sign_bits::Int = 0 + IsSigned
 
     # n_<>_values counts the number of signed occurrences 
+    # n_<>_values counting includes zero
 
     n_values::Int = 2^n_bits
     n_extended_values::Int = n_values - n_nans                  # without NaN
@@ -21,7 +22,7 @@ Base.@kwdef struct FloatMLconfig{Bitwidth, Precision, IsSigned, IsExtended} <: F
     n_fraction_values::Int = 2^n_fraction_bits * (1 + IsSigned)
     n_exponent_values::Int = 2^n_exponent_bits
 
-    n_subnormal_values::Int = (n_significant_bits > 1) ? n_fraction_values : 0
+    n_subnormal_values::Int = (n_significant_bits > 1) ? n_fraction_values - (1 + IsSigned) : 0
     n_normal_values::Int = n_finite_values - n_subnormal_values
     
     # n_<>_magnitudes counts the number of non-negative occurrences 
@@ -46,7 +47,7 @@ const ConfigFloatMLnames = fieldnames(FloatMLconfig)
 const ConfigFloatMLtypes = Tuple{fieldtypes(FloatMLconfig)...}
 const ConfigFloatML = NamedTuple{ConfigFloatMLnames, ConfigFloatMLtypes}
 
-function config_floatml(bitwidth, precision, issigned, isextended)
-    specs = FloatMLconfig{bitwidth, precision, issigned, isextended}()
+function config_floatml(bitwidth, precision, is_signed, is_extended)
+    specs = FloatMLconfig{bitwidth, precision, is_signed, is_extended}()
     ConfigFloatML((getfield(specs, i) for i in 1:nfields(specs)))
 end
