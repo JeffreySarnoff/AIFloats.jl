@@ -2,9 +2,7 @@ module BaseFloats
 
 export AbstractFloatML, 
          AbstractSignedFloatML, AbstractUnsignedFloatML,
-       confg_floatml
-
-import Base: precision, values
+       confg_floatml, encoding, valuation
 
 """
     AbstractFloatML{Bitwidth, Precision}

@@ -1,6 +1,11 @@
 abstract type FloatMLConfig{Bitwidth, Precision, IsSigned} end
 
 Base.@kwdef struct FloatMLconfig{Bitwidth, Precision, IsSigned, IsExtended} <: FloatMLConfig{Bitwidth, Precision, IsSigned}
+    bitwidth::Int = Bitwidth
+    precision::Int = Precision
+    signed::Bool = IsSigned
+    extended::Bool = IsExtended
+    
     n_nans::Int = 1
     n_zeros::Int = 1
     n_infs::Int = IsExtended ? (IsSigned ? 2 : 1) : 0
