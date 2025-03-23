@@ -1,0 +1,46 @@
+:root {
+    /* Codemirror hints */
+    --cm-color-editor-tooltip-border: rgba(28, 36, 39, 0.2); /* from "widget.shadow" (#1c2427) + alpha */
+    --cm-color-editor-li-aria-selected-bg: #D9D4B820; /* from "list.activeSelectionBackground" */
+    --cm-color-editor-li-aria-selected: #D1DED3; /* from "foreground" or "editor.foreground" */
+    --cm-color-editor-li-notexported: #D1DED380; /* from "editor.foreground" + alpha */
+    --code-background: #273136; /* from "editor.background" */
+    --cm-color-code-differs-gutters: rgba(192,174,105,0.11); /* from "editorGutter.modifiedBackground" (#C0AE69) + alpha */
+    --cm-color-line-numbers: #D1DED350; /* from "editorLineNumber.foreground" */
+    --cm-selection-background: #A4B07E30; /* from "editor.selectionBackground" */
+    --cm-selection-background-blurred: #27313680; /* blurred variant of editor.background */
+    --cm-highlighted: #323e45; /* from "editor.lineHighlightBackground" */
+
+    /* Code highlighting */
+    --cm-color-editor-text: #D1DED3; /* from "editor.foreground" */
+    --cm-color-comment: #323E45; /* from "editorIndentGuide.background" or a dark neutral */
+    --cm-color-atom: #8A7EB0; /* from "terminal.ansiMagenta" */
+    --cm-color-number: #8A7EB0; /* same as atom */
+    --cm-color-property: #A4B07E; /* from "terminal.ansiGreen" */
+    --cm-color-keyword: #C6A685; /* from "terminal.ansiRed" */
+    --cm-color-string: #C0AE69; /* from "terminal.ansiYellow" */
+    --cm-color-var: #D1DED3; /* from "editor.foreground" */
+    --cm-color-var2: #7EB0A3; /* from "terminal.ansiCyan" */
+    --cm-color-macro: #C0AE69; /* reuse "terminal.ansiYellow" or pick a bright tone */
+    --cm-color-builtin: #7EB0A3; /* from "terminal.ansiCyan" */
+    --cm-color-function: #A4B07E; /* from "terminal.ansiGreen" */
+    --cm-color-type: #7EB0A3; /* from "terminal.ansiCyan" */
+    --cm-color-bracket: #D1DED3; /* from "editor.foreground" */
+    --cm-color-tag: #C6A685; /* from "terminal.ansiRed" */
+    --cm-color-link: #8A7EB0; /* from "terminal.ansiMagenta" */
+    --cm-color-error-bg: #C6A685; /* from "editorError.foreground" or "terminal.ansiRed" */
+    --cm-color-error: #D1DED3; /* from "editor.foreground" */
+    --cm-color-matchingBracket: #D1DED3; /* from "editor.foreground" */
+    --cm-color-matchingBracket-bg: #1c2427; /* from "widget.shadow" or "peekViewEditor.background" */
+    --cm-color-placeholder-text: rgba(209, 222, 211, 0.5); /* #D1DED3 + alpha */
+    --cm-color-clickable-underline: #7EB0A3; /* from "terminal.ansiCyan" */
+
+    /* Mixed parsers */
+    --cm-color-html: #7EB0A3; /* from "terminal.ansiCyan" */
+    --cm-color-html-accent: #A4B07E; /* from "terminal.ansiGreen" */
+    --cm-color-css: #D1DED3; /* from "editor.foreground" */
+    --cm-color-css-accent: #A4B07E; /* from "terminal.ansiGreen" */
+    --cm-css-why-doesnt-codemirror-highlight-all-the-text-aaa: #D1DED3; /* same fallback */
+    --cm-color-md: #323E45; /* a darker neutral for markdown text */
+    --cm-color-md-accent: #C6A685; /* from "terminal.ansiRed" */
+}

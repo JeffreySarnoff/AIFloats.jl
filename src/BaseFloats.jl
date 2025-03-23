@@ -8,7 +8,7 @@ export AbstractMicroFloat, AkoBaseFloat,
 import Base: precision, values
 
 abstract type AbstractMicroFloat{Bitwidth, Precision}  <: AbstractFloat end
-abstract type AkoBaseFloat{Bitwidth, Precision} <: AbstractMicroFloat{Bitwidth, Precision} end
+abstract type AkoBaseMicroFloat{Bitwidth, Precision} <: AbstractMicroFloat{Bitwidth, Precision} end
 
 include("config.jl")
 include("construct.jl")
