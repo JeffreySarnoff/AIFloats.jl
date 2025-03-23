@@ -45,9 +45,10 @@ end
 
 const ConfigFloatMLnames = fieldnames(FloatMLconfig)
 const ConfigFloatMLtypes = Tuple{fieldtypes(FloatMLconfig)...}
+const ConfigFloatMLentries = Val(length(ConfigFloatMLnames))
 const ConfigFloatML = NamedTuple{ConfigFloatMLnames, ConfigFloatMLtypes}
 
 function config_floatml(bitwidth, precision, is_signed, is_extended)
     specs = FloatMLconfig{bitwidth, precision, is_signed, is_extended}()
-    ConfigFloatML((getfield(specs, i) for i in 1:nfields(specs)))
+    ConfigFloatML(ntuple(i->getfield(specs, i), ConfigFloatMLentries))
 end
