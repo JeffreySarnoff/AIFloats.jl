@@ -1,8 +1,9 @@
 abstract type FloatMLConfig{Bitwidth, Precision, IsSigned} end
 
-Base.@kwdef struct FloatMLconfig{Bitwidth, Precision, IsSigned} <: FloatMLConfig{Bitwidth, Precision, IsSigned}
+Base.@kwdef struct FloatMLconfig{Bitwidth, Precision, IsSigned, IsExtended} <: FloatMLConfig{Bitwidth, Precision, IsSigned}
     n_nans::Int = 1
     n_zeros::Int = 1
+    n_infs::Int = IsExtended ? (IsSigned ? 2 : 1) : 0
 
     n_bits::Int = Bitwidth
     n_significant_bits::Int = Precision
@@ -11,16 +12,27 @@ Base.@kwdef struct FloatMLconfig{Bitwidth, Precision, IsSigned} <: FloatMLConfig
     n_sign_bits::Int = 0 + IsSigned
 
     n_values::Int = 2^n_bits
+    n_extended_values::Int = n_values - n_nans      # without NaN
+    n_finite_values::Int = n_extended_values - n_infs
+    n_nonzero_finite_values::Int = n_finite_values - n_zeros
+
     n_fraction_values::Int = 2^n_fraction_bits
     n_exponent_values::Int = 2^n_exponent_bits
+
+    n_subnormal_values::Int = n_fraction_values = n_fraction_values - 1
+    n_normal_values::Int = n_values - n_subnormal_values
+
+    n_magnitudes::Int = IsSigned ? n_nonzero_finite_values >> 1 : n_nonzero_finite_values
+    n_subnormal_magnitudes::Int = IsSigned ? n_subnormal_values >> 1 : n_subnormal_values
+    n_normal_magnitudes::Int = IsSigned ? n_normal_values >> 1 : n_normal_values
 
     n_fraction_cycles::Int = n_exponent_values      # structural, generative
     n_exponent_cycles::Int = n_fraction_values      # structural, generative
 
     exp_bias::Int = 2^(n_exponent_bits - 1) - 1
 
-    unbiased_exponent_min::Int = 0 - exp_bias
-    unbiased_exponent_max::Int = (n_exponent_values - 1) - exp_bias
+    unbiased_exponent_min::Int = (n_significant_bits >1) ? -exp_bias : -exp_bias + 1
+    unbiased_exponent_max::Int = exp_bias
 
     exponent_min::Float64 = 2.0^unbiased_exponent_min
     exponent_max::Float64 = 2.0^unbiased_exponent_max
@@ -30,25 +42,7 @@ const ConfigFloatMLnames = fieldnames(FloatMLconfig)
 const ConfigFloatMLtypes = Tuple{fieldtypes(FloatMLconfig)...}
 const ConfigFloatML = NamedTuple{ConfigFloatMLnames, ConfigFloatMLtypes}
 
-function config_floatml(bitwidth, precision, issigned)
-    specs = FloatMLconfig{bitwidth, precision, issigned}()
-
-    # biased_exponents = collect( (0:n_exponents-1) .- bias )
-    # exponent for subnormals equals the minimum exponent for normals
-    # biased_exponents[1] = biased_exponents[2]
+function config_floatml(bitwidth, precision, issigned, isextended)
+    specs = FloatMLconfig{bitwidth, precision, issigned, isextended}()
     ConfigFloatML((getfield(specs, i) for i in 1:nfields(specs)))
 end
-
-
-
-
-
-
-UnsignedConfig(Bits, Precision) = Config{0, Bits, Precision}()
-SignedConfig(Bits, Precision) = Config{1, Bits, Precision}()
-
-function Base.show(io::IO, ::MIME"text/plain", x::Config)
-    nt = ConfigNT((getfield(sc,i) for i in 1:nfields(x)))
-    print(io, nt)
-end
-
