@@ -4,9 +4,11 @@ uuid = "466cf478-de3d-41ed-aa97-fc1150812615"
 version = "0.1.0"
 
 [deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 AlignedAllocs = "6ac60441-711f-43f0-8178-7f71f0888134"
 
 [compat]
+Documenter = "1.9"
 AlignedAllocs = "0.1 - 0.6"
 Aqua = "0.8 - 0.22"
 Test = "1.10"
@@ -14,7 +16,6 @@ julia = "1.10"
 
 [extras]
 Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
-authors = ["Takafumi Arakaki <aka.tkf@gmail.com> and contributors"]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]

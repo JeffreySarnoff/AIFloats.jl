@@ -23,33 +23,33 @@ Base.@kwdef struct FloatMLconfig{Bitwidth, Precision, IsSigned, IsExtended} <: F
     n_extended_values::Int = n_values - n_nans                  # without NaN
     n_finite_values::Int = n_extended_values - n_infs           # without NaN and Infinity 
     n_nonzero_finite_values::Int = n_finite_values - n_zeros
-
-    n_fraction_values::Int = 2^n_fraction_bits * (1 + IsSigned)
-    n_exponent_values::Int = 2^n_exponent_bits
-
-    n_subnormal_values::Int = (n_significant_bits > 1) ? n_fraction_values - (1 + IsSigned) : 0
-    n_normal_values::Int = n_finite_values - n_subnormal_values
-    
     # n_<>_magnitudes counts the number of non-negative occurrences 
     
     n_magnitudes::Int = IsSigned ? n_nonzero_finite_values >> 1 : n_nonzero_finite_values
-    
+
     n_fraction_magnitudes::Int = 2^(n_fraction_bits) - 1    # includes zero
     n_nonzero_fraction_magnitudes::Int = n_fraction_magnitudes - 1
 
     n_fraction_values::Int = 2 * n_fraction_magnitudes - 1   # includes zero once
     n_nonzero_fraction_values::Int = 2 * n_fraction_magnitudes - 2 # removes zero once
 
+    # n_fraction_values::Int = 2^n_fraction_bits * (1 + IsSigned)
+    n_exponent_values::Int = 2^n_exponent_bits
+
+    n_subnormal_values::Int = (n_significant_bits > 1) ? n_fraction_values - (1 + IsSigned) : 0
+    n_normal_values::Int = n_finite_values - n_subnormal_values
+    
     n_subnormal_magnitudes::Int = IsSigned ? n_subnormal_values >> 1 : n_subnormal_values
     n_normal_magnitudes::Int = IsSigned ? n_normal_values >> 1 : n_normal_values
 
-    n_fraction_cycles1::Int = div(n_values, n_fraction_values)
-    n_exponent_cycles1::Int = div(n_values, n_exponent_values)
-    n_fraction_cycles2::Int = div(n_magnitudes, n_fraction_values)
-    n_exponent_cycles2::Int = div(n_magnitudes, n_exponent_values)
+    # n_fraction_cycles1::Int = div(n_values, n_fraction_values)
+    n_fraction_cycles::Int = div(n_magnitudes, n_fraction_values)
 
-    n_fraction_cycles::Int = n_exponent_values      # structural, generative
-    n_exponent_cycles::Int = n_fraction_values      # structural, generative
+    n_exponent_cycles::Int = div(n_magnitudes, n_exponent_values)
+    # n_exponent_cycles::Int = div(n_magnitudes, n_exponent_values)
+
+    # n_fraction_cycles::Int = n_exponent_values      # structural, generative
+    # n_exponent_cycles1::Int = n_fraction_values      # structural, generative
 
     exp_bias::Int = 2^(n_exponent_bits - 1) - 1
 
@@ -103,7 +103,6 @@ end
  unbiased_exponent_max::Int64
  exponent_min::Float64
  exponent_max::Float64
-
 
  perm = sortperm(string.([ConfigFloatMLnames...]));
  ConfigFloatMLnamesSorted = ConfigFloatMLnames[perm];
