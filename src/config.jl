@@ -13,7 +13,7 @@ Base.@kwdef struct FloatMLconfig{Bitwidth, Precision, IsSigned, IsExtended} <: F
     n_bits::Int = Bitwidth
     n_significant_bits::Int = Precision
     n_fraction_bits::Int = Precision - 1            # trailing (explict) significand bits
-    n_exponent_bits::Int = Bitwidth - Precision 
+    n_exponent_bits::Int = Bitwidth - Precision + !IsSigned
     n_sign_bits::Int = 0 + IsSigned
 
     # n_<>_values counts the number of signed occurrences 
@@ -37,7 +37,7 @@ Base.@kwdef struct FloatMLconfig{Bitwidth, Precision, IsSigned, IsExtended} <: F
     n_exponent_values::Int = 2^n_exponent_bits
 
     n_subnormal_values::Int = (n_significant_bits > 1) ? n_fraction_values - (1 + IsSigned) : 0
-    n_normal_values::Int = n_finite_values - n_subnormal_values
+    n_normal_values::Int = n_finite_values - n_subnormal_values # (n_values - n_nans - n_infs) - ()
     
     n_subnormal_magnitudes::Int = IsSigned ? n_subnormal_values >> 1 : n_subnormal_values
     n_normal_magnitudes::Int = IsSigned ? n_normal_values >> 1 : n_normal_values

@@ -106,5 +106,80 @@ The significands are normalized fractionals; the implicit bit is 0b1 and used.
 ```
 significands(precision) = fractionals(precision) .+ 1
 ```
-see  [prenormal](@ref) [fractionals](@ref) [subnormals](@ref) 
+see  [significand](@ref) [prenormal](@ref) [fractionals](@ref) [subnormals](@ref) 
 """ significands
+
+"""
+    exponent
+
+The exponent is the interpretation of the exponent bitfield of a BinaryKpP float.
+Where the exponent bitfield is zero, one has a subnormal value and the exponent == exponent_min (`-(2^(ebits-1)-1)`; the exponent conveys a subnormal value which is scaled as if the exponent bit field were 1.
+
+An exponent field of zero is a subnormal value; it is valued as if the implicit bit were shifted into the exponent field (and out of the significand).
+
+It is valued as `2^(resolved_ebitfield  - bias)` where the `bias = 2^(ebits - 1) - 1` and 
+`resolved_ebitfield = iszero(ebitfield) ? 1 : ebitfield`
+
+```math
+exponent_value = 2^(ebits - bias)
+```
+``exponent_value = 2^(ebits - 2^((ebits - 1) - 1))``
+""" exponent
+
+"""
+    significand
+
+The significand is the interpretation of the significand bitfield of a BinaryKpP float.
+The significand includes an implicit leading integer bit, all explicit bits of the significand are fractional bits. For normal values, the implicit leading integer bit is 0b1; for subnormal values, the implicit leading integer bit is 0b0. Special values {0, NaN, ±∞} are neither normal nor subnormal, they are interpreted directly.
+
+see [specials](@ref) [exponent](@ref) [significands](@ref)
+""" significand
+
+"""
+    specials
+
+All P3109 conformant value sets include the special values {0, NaN}. There is one 0 encoding and one NaN encoding (note this is unlike IEEE 754). All P3109 conformant value sets encode 0 with all zero bits. All P3109 conformant signed value sets encode NaN with the sign bit 0b1 and all other bits zero. Unsigned value sets encode NaN with all one bits.
+
+For signed value sets, +Infinity is encoded to as the largest positive encoding, it precedes NaN; and -Infinity is encoded setting the sign bit of the positive Infinity encoding to 0b1; it is the largest negative encoding, and the largest absolute encoding. Unsigned value sets encode +Infinity as the penultimate value, preceding NaN.
+""" specials
+
+"""
+    UnsignedFloat
+
+An Unsigned, Finite microfloat value set has the special values {Zero, NaN} and positive finite values (subnormal and normal; unless precision == 1 then all values are normal). An Unsigned BinaryKpP (1<K<16, 0<P<K) [ufBinaryKpP] has no sign bit; that available position is assigned to the the exponent, giving greater dynamic range to the format. This benefits training without causing difficulty with inference. If two unsigned modalities were supported, with one assigning the available bit to the significand, that modality would be more suitable for inference where extra precision is of import. Nonetheless, on balance, the extension of dynamic range has greater benefit.
+
+The exponent bitfield in an Unsigned BinaryKpP has K-P+1 bits.
+""" UnsignedFloat
+
+"""
+    SignedFloat
+
+""" SignedFloat
+
+"""
+    Magnitude Sequence Construction
+
+The magnitude sequence is constructed from the significand and exponent bitfields of a BinaryKpP float. The significand is interpreted the value of its implicit integral bit plus its explicit fractional bits, the exponent is interpreted as a power of two. The magnitude is the product of the significand and the exponent.
+
+There are `2^(precision - 1) - 1` subnormal magnitudes, and `2^(precision - 1)` prenormal magnitudes.
+
+This leaves `2^bits - nzeros - ninfs` normal values, and `(2^bits - nzeros - ninfs) >> 1` normal_magnitudes.
+
+There are `2^expbits` exponent values (`== 2^(bits - sigbits)`).
+How many elements are there assigned to a single exponent value?
+`div( (2^bits- 3) >> 1, 2^(bits - sigbits)))` for Signed Extended formats
+
+each binade has div(cfg.n_values >> 1, cfg.n_exponent_values) entries
+after the prenormals, 
+there are cfg.unbiased_exponent_max - cfg.unbiased_exponent_min + 1 magnitude binades
+
+
+each binade runs through n_fraction_magnitudes + 1 significands
+there are div(cfg.n_values >> 1, cfg.n_fraction_magnitudes+1) magnitudebinades
+
+""" MagnitudeSequenceConstruction
+
+"""
+    Magnitude Sequence Construction
+
+""" MagnitudeSequenceConstruction
