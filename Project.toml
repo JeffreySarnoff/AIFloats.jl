@@ -6,10 +6,12 @@ version = "0.1.0"
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 AlignedAllocs = "6ac60441-711f-43f0-8178-7f71f0888134"
+TupleTools = "9d95972d-f1c8-5527-a6e0-b4b365fa01f6"
 
 [compat]
 Documenter = "1.9"
 AlignedAllocs = "0.1 - 0.6"
+TupleTools = "1.6"
 Aqua = "0.8 - 0.22"
 Test = "1.10"
 julia = "1.10"

@@ -7,6 +7,7 @@ export AbstractFloatML,
        isSigned, isUnsigned, isExtended, isFinite
 
 using AlignedAllocs: memalign_clear
+using TupleTools: flatten
 
 """
     AbstractFloatML{Bits, Precision}
