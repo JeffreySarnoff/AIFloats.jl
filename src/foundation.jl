@@ -12,13 +12,13 @@ There are
 - `2^precision - 1`   prenormal *values* in with Signed BinaryKpP.
 
 The smallest nonzero prenormal magnitude is the smallest subnormal magnitude.
-- subnormal_min(bitwidth, precision) = 4 * 2.0^(-precision - 2.0^(bitwidth - 1 - precision))
-- subnormal_min(bitwidth, fracbits) =  2.0^(1- fracbits - (2.0^(bitwidth - fracbits - 2)))
+- subnormal_min(bits, precision) = 4 * 2.0^(-precision - 2.0^(bits - 1 - precision))
+- subnormal_min(bits, fracbits) =  2.0^(1- fracbits - (2.0^(bits - fracbits - 2)))
 
 One may compute all of the prenormal magnitudes
 ```
-prenormal_magnitudes(bitwidth, precision) =
-           [i * subnormal_min(bitwidth, precision) for i in 0:(n_prenormal_magnitudes(precision) - 1)]
+prenormal_magnitudes(bits, precision) =
+           [i * subnormal_min(bits, precision) for i in 0:(n_prenormal_magnitudes(precision) - 1)]
 ```
 see  [subnormals](@ref) [subnormal](@ref)
 """ prenormal
@@ -50,7 +50,7 @@ see [subnormal](@ref) [prenormal](@ref)
 
 `Zero` is a special value, it is neither normal nor subnormal. [^1](The other special values are `±∞` and `NaN`.)
 
-Including zero (which is neither normal nor subnormal) and the positive subnormals only, there are P-1 positive subnormals occuring in a BinaryryKpP float (of bitwidth **K** and precision **P**). 
+Including zero (which is neither normal nor subnormal) and the positive subnormals only, there are P-1 positive subnormals occuring in a BinaryryKpP float (of bits **K** and precision **P**). 
 
 A value is subnormal (as defined) where the value
 1) is coded with its exponent bitfield cleared to zero
@@ -67,20 +67,20 @@ There are
 - `2^precision - 2`       subnormal *values* in with Signed BinaryKpP.
 
 The smallest subnormal magnitude (precision > 1, fracbits > 0, otherwise no subnormals)
-- subnormal_min(bitwidth, precision) = 4 * 2.0^(-precision - 2.0^(bitwidth - 1 - precision))
-- subnormal_min(bitwidth, fracbits) =  2.0^(1- fracbits - (2.0^(bitwidth - fracbits - 2)))
+- subnormal_min(bits, precision) = 4 * 2.0^(-precision - 2.0^(bits - 1 - precision))
+- subnormal_min(bits, fracbits) =  2.0^(1- fracbits - (2.0^(bits - fracbits - 2)))
 
 The initial subnormal value (`== nextafter(zero(T))`) is assigned
 (`(1 / 2^(fraction_bits)) * exponent_min`).
 ```
-subnormal_min(bitwidth, precision) = 4 * 2.0^(-precision - 2.0^(bitwidth - 1 - precision))
-subnormal_min(bitwidth, fracbits) =  2.0^(1-fracbits - (2.0^(bitwidth - fracbits - 2)))
+subnormal_min(bits, precision) = 4 * 2.0^(-precision - 2.0^(bits - 1 - precision))
+subnormal_min(bits, fracbits) =  2.0^(1-fracbits - (2.0^(bits - fracbits - 2)))
 ```
 - successive subnormals are successive integer multiples of the initial subnormal magnitude.
 One may compute all of the positive subnormals
 ```
-subnormal_magnitudes(bitwidth, precision) = 
-    [i * subnormal_min(bitwidth, precision) for i in 1:n_subnormal_magnitudes(precision)]
+subnormal_magnitudes(bits, precision) = 
+    [i * subnormal_min(bits, precision) for i in 1:n_subnormal_magnitudes(precision)]
 ```
 see  [subnormals](@ref) [prenormal](@ref) [fractionals](@ref)
 
@@ -176,6 +176,26 @@ there are cfg.unbiased_exponent_max - cfg.unbiased_exponent_min + 1 magnitude bi
 
 each binade runs through n_fraction_magnitudes + 1 significands
 there are div(cfg.n_values >> 1, cfg.n_fraction_magnitudes+1) magnitudebinades
+
+
+2*exp_bias + 1 exponent binades (postnormals, magnitudes)
+== 2^(bits - sigbits) - 1 (exponent binades; postnormals, magnitudes)
+
+div((2^bits >> 1) - n_prenormal_magnitudes, 2^(bits - sigbits) - 1) == n_prenormal_magnitudes
+simplify( (2^(bits-1) - 2^(sigbits-1)) / (2^(bits - sigbits) - 1) ) == 2^(sigbits-1)
+
+fraction_cycle_length = 2^(sigbits - 1)
+exponent_magnitude_binades = 2^(bits - sigbits) - 1
+  >>  exponents (2^(bits - sigbits - 1) < 0
+  >>  exponents (2^(bits - sigbits - 1) > 0
+  >>  exponent of 0
+ 2^(bits-sigbits-1) exponents -,+  and 1 for exponent 0
+
+2^(sigbits - 1) * 2^(bits - sigbits - 1)
+
+magnitudes - prenormal_magnitudes = 2^(sigbits - 1) * (2*(2^(bits - sigbits - 1) - 1))
+normative_magnitudes = 2^(bits - 1) - 2^(sigbits-1) if bits - 1 == sigbits, all values subnormal
+                    = (2^bits - 2^sigbits) / 2
 
 """ MagnitudeSequenceConstruction
 

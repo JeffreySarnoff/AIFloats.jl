@@ -1,19 +1,19 @@
-encoding(cfg::FloatMLconfig) = encoding(cfg.bitwidth)
-valuation(cfg::FloatMLconfig) = valuation(cfg.bitwidth, cfg.precision, 
+encoding(cfg::FloatMLconfig) = encoding(cfg.bits)
+valuation(cfg::FloatMLconfig) = valuation(cfg.bits, cfg.precision, 
                                           cfg.n_fraction_magnitudes, cfg.n_fraction_cycles,
                                           cfg.n_exponent_magnitudes, cfg.n_exponent_cycles)
 
-function encoding(bitwidth)
-    n = 2^bitwidth
-    typ = typeforcode(bitwidth)
+function encoding(bits)
+    n = 2^bits
+    typ = typeforcode(bits)
     codes = memalign_clear(typ, n)
     codes[:] = collect(map(typ, 0:(n-1)))
     codes
 end
 
-function valuation(bitwidth, precision, n_fractions, n_fraction_cycles, n_exponents, n_exponent_cycles)
-    n = 2^bitwidth
-    typ = typeforfloat(bitwidth)
+function valuation(bits, precision, n_fractions, n_fraction_cycles, n_exponents, n_exponent_cycles)
+    n = 2^bits
+    typ = typeforfloat(bits)
     vals = memalign_clear(typ, n)
 
     n_exponents = n_fraction_cycles = div(n_values, n_fractions)
@@ -24,9 +24,9 @@ end
 
 
 
-function valuation(bitwidth, precision) # provide simple value sequence
-    T = typeforfloat(bitwidth)
-    n_values = 2^bitwidth
+function valuation(bits, precision) # provide simple value sequence
+    T = typeforfloat(bits)
+    n_values = 2^bits
     n_exponent_cycles = n_fractions = 2^(precision - 1) # 2^fraction_bits
     n_exponents = n_fraction_cycles = div(n_values, n_fractions)
     map(T, significand_series(n_fractions, n_fraction_cycles) .* exponent_series(n_exponents, n_exponent_cycles))

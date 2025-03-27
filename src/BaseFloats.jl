@@ -9,41 +9,41 @@ export AbstractFloatML,
 using AlignedAllocs: memalign_clear
 
 """
-    AbstractFloatML{Bitwidth, Precision}
+    AbstractFloatML{Bits, Precision}
 
 our extended family of floating-point types for machine learning
 
-- `Bitwidth` is the number of bits in the encoding
+- `Bits` is the number of bits in the encoding
 - `Precision` is the number of bits in the significand
    (includes the implicit bit)
 """ AbstractFloatML
 
 """
-    AbstractSignedFloatML{Bitwidth, Precision}
+    AbstractSignedFloatML{Bits, Precision}
 
 our kinds of signed floating-point types for machine learning
 
-- `Bitwidth` is the number of bits in the encoding
+- `Bits` is the number of bits in the encoding
 - `Precision` is the number of bits in the significand
    (includes the implicit bit)
 """ AbstractSignedFloatML
 
 """
-    AbstractUnsignedFloatML{Bitwidth, Precision}
+    AbstractUnsignedFloatML{Bits, Precision}
 
 our kinds of unsigned floating-point types for machine learning
 
-- `Bitwidth` is the number of bits in the encoding
+- `Bits` is the number of bits in the encoding
 - `Precision` is the number of bits in the significand
    (includes the implicit bit)
 """ AbstractUnsignedFloatML
 
 # our extended family of floating-point types for machine learning
-abstract type AbstractFloatML{Bitwidth, Precision}  <: AbstractFloat end
+abstract type AbstractFloatML{Bits, Precision}  <: AbstractFloat end
 # some are Signed, having positive and negative values (and 0, NaN)
-abstract type AbstractSignedFloatML{Bitwidth, Precision} <: AbstractFloatML{Bitwidth, Precision} end
+abstract type AbstractSignedFloatML{Bits, Precision} <: AbstractFloatML{Bits, Precision} end
 # some are Unsigned, having non-negative values only (positives and 0, NaN)
-abstract type AbstractUnsignedFloatML{Bitwidth, Precision} <: AbstractFloatML{Bitwidth, Precision} end
+abstract type AbstractUnsignedFloatML{Bits, Precision} <: AbstractFloatML{Bits, Precision} end
 
 # gather the capabilities
 

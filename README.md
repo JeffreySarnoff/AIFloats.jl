@@ -6,17 +6,17 @@
 
 ----
 
-BaseFloats.jl provides the concrete type `BaseFloat`, with the parameters `Bitwidth` and `Precision`.
-- const MF32 = BaseFloat(3, 2) # Bitwidth = 3, Precision = 2
-- const MF108 = BaseFloat(10, 8) # Bitwidth = 10, Precision = 8
+BaseFloats.jl provides the concrete type `BaseFloat`, with the parameters `Bits` and `Precision`.
+- const MF32 = BaseFloat(3, 2) # Bits = 3, Precision = 2
+- const MF108 = BaseFloat(10, 8) # Bits = 10, Precision = 8
 
 #### The parameters are available
-- MF32bitwidth = bitwidth(SMF32)
+- MF32bits = bits(SMF32)
 - MF32precision = precision(SMF32)
 
 A `BaseFloat` contains two fields, `encoding` and `values`.
-- `encoding` holds the sequence of value encodings for the specified Bitwidth and Precision
-- `values` holds the sequence floating-point values  for the specified Bitwidth and Precision
+- `encoding` holds the sequence of value encodings for the specified Bits and Precision
+- `values` holds the sequence floating-point values  for the specified Bits and Precision
 
 #### The fields are available
 - MF32encoding = encoding(MF32)
@@ -37,7 +37,7 @@ A `BaseFloat` contains two fields, `encoding` and `values`.
 
 #### Types used
 ```
-if the Bitwidth is <= 8
+if the Bits is <= 8
     the encoding is a vector of UInt8
     the values are a vector of Float32
 else
@@ -52,7 +52,7 @@ using BaseFloat
 
 MF32 = BaseFloat(3, 2);
 
-bitwidth(MF32)
+bits(MF32)
 # 3
 
 precision(MF32)

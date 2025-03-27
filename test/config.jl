@@ -1,6 +1,6 @@
 @testset "config seBinary8p4" begin
     config = config_floatml(8, 4, true, true)
-    @test config.bitwidth == 8
+    @test config.bits == 8
     @test config.precision == 4
     @test config.signed == true
     @test config.extended == false
@@ -16,7 +16,7 @@
 end
 
 #=
-(bitwidth = 8, precision = 4, signed = true, extended = true, 
+(bits = 8, precision = 4, signed = true, extended = true, 
  n_nans = 1, n_zeros = 1, n_infs = 2, 
  n_bits = 8, n_significant_bits = 4, n_fraction_bits = 3, n_exponent_bits = 4, n_sign_bits = 1, 
  n_values = 256, n_extended_values = 255, n_finite_values = 253, n_nonzero_finite_values = 252, 
@@ -31,7 +31,7 @@ end
 
 @testset "config sfBinary8p4" begin
     config = config_floatml(8, 4, true, false)
-    @test config.bitwidth == 8
+    @test config.bits == 8
     @test config.precision == 4
     @test config.signed == true
     @test config.extended == false
@@ -48,7 +48,7 @@ end
 
 @testset "config ueBinary5p3" begin
     config = config_floatml(8, 4, false, true)
-    @test config.bitwidth == 8
+    @test config.bits == 8
     @test config.precision == 4
     @test config.signed == true
     @test config.extended == false
@@ -65,7 +65,7 @@ end
 
 @testset "config ufBinary5p3" begin
     config = config_floatml(5, 3, false, false)
-    @test config.bitwidth == 8
+    @test config.bits == 8
     @test config.precision == 4
     @test config.signed == true
     @test config.extended == false

@@ -1,7 +1,7 @@
-abstract type FloatMLConfig{Bitwidth, Precision, IsSigned} end
+abstract type FloatMLConfig{Bits, Precision, IsSigned} end
 
-Base.@kwdef struct FloatMLconfig{Bitwidth, Precision, IsSigned, IsExtended} <: FloatMLConfig{Bitwidth, Precision, IsSigned}
-    bitwidth::Int = Bitwidth
+Base.@kwdef struct FloatMLconfig{Bits, Precision, IsSigned, IsExtended} <: FloatMLConfig{Bits, Precision, IsSigned}
+    bits::Int = Bits
     precision::Int = Precision
     signed::Bool = IsSigned
     extended::Bool = IsExtended
@@ -10,10 +10,10 @@ Base.@kwdef struct FloatMLconfig{Bitwidth, Precision, IsSigned, IsExtended} <: F
     n_zeros::Int = 1
     n_infs::Int = IsExtended ? (IsSigned ? 2 : 1) : 0
 
-    n_bits::Int = Bitwidth
+    n_bits::Int = Bits
     n_significant_bits::Int = Precision
     n_fraction_bits::Int = Precision - 1            # trailing (explict) significand bits
-    n_exponent_bits::Int = Bitwidth - Precision + !IsSigned
+    n_exponent_bits::Int = Bits - Precision + !IsSigned
     n_sign_bits::Int = 0 + IsSigned
 
     # n_<>_values counts the number of signed occurrences 
@@ -58,6 +58,13 @@ Base.@kwdef struct FloatMLconfig{Bitwidth, Precision, IsSigned, IsExtended} <: F
 
     exponent_min::Float64 = 2.0^unbiased_exponent_min
     exponent_max::Float64 = 2.0^unbiased_exponent_max
+    
+    subnormal_min::Float64 = exponent_min * (1//n_fraction_magnitudes)
+    subnormal_max::Float64 = exponent_min * ((n_fraction_magnitudes - 1)//n_fraction_magnitudes)
+
+    normal_min::Float64 = exponent_min * (1//1)
+    normal_finite_max::Float64 = exponent_max * ((n_fraction_magnitudes - 1)//n_fraction_magnitudes)
+    normal_extended_max::Float64 = exponent_max * ((n_fraction_magnitudes - 2)//n_fraction_magnitudes)
 end
 
 const ConfigFloatMLnames = fieldnames(FloatMLconfig)
@@ -65,15 +72,15 @@ const ConfigFloatMLtypes = Tuple{fieldtypes(FloatMLconfig)...}
 const ConfigFloatMLentries = Val(length(ConfigFloatMLnames))
 const ConfigFloatML = NamedTuple{ConfigFloatMLnames, ConfigFloatMLtypes}
 
-function config_floatml(bitwidth, precision, is_signed, is_extended)
-    specs = FloatMLconfig{bitwidth, precision, is_signed, is_extended}()
+function config_floatml(bits, precision, is_signed, is_extended)
+    specs = FloatMLconfig{bits, precision, is_signed, is_extended}()
     ConfigFloatML(ntuple(i->getfield(specs, i), ConfigFloatMLentries))
 end
 
 #=
    map(z->$(z[1])::$(z[2]), collect(zip( ConfigFloatMLnames, ConfigFloatMLtypes.parameters)))
 
- bitwidth::Int64
+ bits::Int64
  precision::Int64
  signed::Bool
  extended::Bool
@@ -109,7 +116,7 @@ end
  ConfigFloatMLtypesSorted = [ConfigFloatMLtypes.parameters...][perm]
  map(z->$(z[1])::$(z[2]), collect(zip( ConfigFloatMLnamesSorted, ConfigFloatMLtypesSorted.parameters)))
 
- bitwidth::Int64
+ bits::Int64
  exp_bias::Int64
  exponent_max::Float64
  exponent_min::Float64
