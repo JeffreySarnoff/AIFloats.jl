@@ -9,7 +9,7 @@
     @test config.n_infs == 1
     @test config.n_bits == 8
     @test config.n_significant_bits == 4
-    @test config.n_fraction_bits == 3
+    @test config.n_fracbits == 3
     @test config.n_exponent_bits == 4
     @test config.n_sign_bits == 1
     @test config.n_values == 256    
@@ -18,7 +18,7 @@ end
 #=
 (bits = 8, precision = 4, signed = true, extended = true, 
  n_nans = 1, n_zeros = 1, n_infs = 2, 
- n_bits = 8, n_significant_bits = 4, n_fraction_bits = 3, n_exponent_bits = 4, n_sign_bits = 1, 
+ n_bits = 8, n_significant_bits = 4, n_fracbits = 3, n_exponent_bits = 4, n_sign_bits = 1, 
  n_values = 256, n_extended_values = 255, n_finite_values = 253, n_nonzero_finite_values = 252, 
  n_magnitudes = 126, n_fraction_magnitudes = 7, n_nonzero_fraction_magnitudes = 6, 
  n_fraction_values = 13, n_nonzero_fraction_values = 12, n_exponent_values = 16, 
@@ -40,7 +40,7 @@ end
     @test config.n_infs == 1
     @test config.n_bits == 8
     @test config.n_significant_bits == 4
-    @test config.n_fraction_bits == 3
+    @test config.n_fracbits == 3
     @test config.n_exponent_bits == 4
     @test config.n_sign_bits == 1
     @test config.n_values == 256    
@@ -57,7 +57,7 @@ end
     @test config.n_infs == 1
     @test config.n_bits == 8
     @test config.n_significant_bits == 4
-    @test config.n_fraction_bits == 3
+    @test config.n_fracbits == 3
     @test config.n_exponent_bits == 4
     @test config.n_sign_bits == 1
     @test config.n_values == 256    
@@ -74,7 +74,7 @@ end
     @test config.n_infs == 1
     @test config.n_bits == 8
     @test config.n_significant_bits == 4
-    @test config.n_fraction_bits == 3
+    @test config.n_fracbits == 3
     @test config.n_exponent_bits == 4
     @test config.n_sign_bits == 1
     @test config.n_values == 256    

@@ -1,5 +1,7 @@
 using BaseFloats, Test
 
+include("config.jl")
+
 BF32 = BaseFloat(3, 2);
 
 @test typeof(encoding(BF32)[1]) == UInt8

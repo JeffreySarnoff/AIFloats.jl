@@ -50,7 +50,7 @@ see [subnormal](@ref) [prenormal](@ref)
 
 `Zero` is a special value, it is neither normal nor subnormal. [^1](The other special values are `±∞` and `NaN`.)
 
-Including zero (which is neither normal nor subnormal) and the positive subnormals only, there are P-1 positive subnormals occuring in a BinaryryKpP float (of bits **K** and precision **P**). 
+Including zero (which is neither normal nor subnormal) and the positive subnormals only, there are P-1 positive subnormals occurring in a BinaryKpP float (of bits **K** and precision **P**). 
 
 A value is subnormal (as defined) where the value
 1) is coded with its exponent bitfield cleared to zero
@@ -58,7 +58,7 @@ A value is subnormal (as defined) where the value
 
 The implicit bit of any subnormal value is 0b0; it does not alter the numeric value imputed.
 - all subnormals are formed of fractional bits and scaled by exponent_min, the least unbiased exponent value.
-- all subnormals are formed over the available combinations of fractional bits, scaled by exponnent_min.
+- all subnormals are formed over the available combinations of fractional bits, scaled by exponent_min.
 
 There are 
 - `2^(precision - 1) - 1` subnormal *magnitudes* in a BinaryKpP.
@@ -113,17 +113,17 @@ see  [significand](@ref) [prenormal](@ref) [fractionals](@ref) [subnormals](@ref
     exponent
 
 The exponent is the interpretation of the exponent bitfield of a BinaryKpP float.
-Where the exponent bitfield is zero, one has a subnormal value and the exponent == exponent_min (`-(2^(ebits-1)-1)`; the exponent conveys a subnormal value which is scaled as if the exponent bit field were 1.
+Where the exponent bitfield is zero, one has a subnormal value and the exponent == exponent_min (`-(2^(expbits-1)-1)`; the exponent conveys a subnormal value which is scaled as if the exponent bit field were 1.
 
 An exponent field of zero is a subnormal value; it is valued as if the implicit bit were shifted into the exponent field (and out of the significand).
 
-It is valued as `2^(resolved_ebitfield  - bias)` where the `bias = 2^(ebits - 1) - 1` and 
-`resolved_ebitfield = iszero(ebitfield) ? 1 : ebitfield`
+It is valued as `2^(resolved_expbits  - bias)` where the `bias = 2^(expbits - 1) - 1` and 
+`resolved_expbits = iszero(expbits) ? 1 : expbits`
 
 ```math
-exponent_value = 2^(ebits - bias)
+exponent_value = 2^(expbits - bias)
 ```
-``exponent_value = 2^(ebits - 2^((ebits - 1) - 1))``
+``exponent_value = 2^(expbits - 2^((expbits - 1) - 1))``
 """ exponent
 
 """
@@ -163,7 +163,7 @@ The magnitude sequence is constructed from the significand and exponent bitfield
 
 There are `2^(precision - 1) - 1` subnormal magnitudes, and `2^(precision - 1)` prenormal magnitudes.
 
-This leaves `2^bits - nzeros - ninfs` normal values, and `(2^bits - nzeros - ninfs) >> 1` normal_magnitudes.
+This leaves `2^bits - n_zeros - n_infs` normal values, and `(2^bits - n_zeros - n_infs) >> 1` normal_magnitudes.
 
 There are `2^expbits` exponent values (`== 2^(bits - sigbits)`).
 How many elements are there assigned to a single exponent value?
@@ -175,7 +175,7 @@ there are cfg.unbiased_exponent_max - cfg.unbiased_exponent_min + 1 magnitude bi
 
 
 each binade runs through n_fraction_magnitudes + 1 significands
-there are div(cfg.n_values >> 1, cfg.n_fraction_magnitudes+1) magnitudebinades
+there are div(cfg.n_values >> 1, cfg.n_fraction_magnitudes+1) magnitude_binades
 
 
 2*exp_bias + 1 exponent binades (postnormals, magnitudes)

@@ -1,19 +1,19 @@
 
 # foundation sequence
 
-function foundation_float_seq(nbits, nsigbits, isSigned)
-    half = (1 << (nbits-1))
-    sigs = foundation_sigs(nbits, nsigbits)[1:end>>isSigned]
-    exps = foundation_exps(nbits, nsigbits, isSigned)
+function foundation_float_seq(n_bits, n_sigbits, isSigned)
+    half = (1 << (n_bits-1))
+    sigs = foundation_sigs(n_bits, n_sigbits)[1:end>>isSigned]
+    exps = foundation_exps(n_bits, n_sigbits, isSigned)
     seq = exps .* sigs
-    if (nbits <= 7) || (nbits == 8 && nsigbits > 1)
+    if (n_bits <= 7) || (n_bits == 8 && n_sigbits > 1)
         seq = map(Float32, seq)
     end
     seq
 end
 
-function foundation_sigs(nbits, nsigbits)
-    foundation_sigs_seq(nFracValues(nbits, nsigbits), nFracCycles(nbits, nsigbits, false))
+function foundation_sigs(n_bits, n_sigbits)
+    foundation_sigs_seq(nFracValues(n_bits, n_sigbits), nFracCycles(n_bits, n_sigbits, false))
 end
 
 function foundation_sigs_seq(n_fractions, n_fraction_cycles)
@@ -23,8 +23,8 @@ function foundation_sigs_seq(n_fractions, n_fraction_cycles)
 end
 
 
-function foundation_exps(nbits, nsigbits, isSigned)
-   foundation_exps_seq(nExpBits(nbits, nsigbits, isSigned), nExpCycles(nbits, nsigbits))
+function foundation_exps(n_bits, n_sigbits, isSigned)
+   foundation_exps_seq(nExpBits(n_bits, n_sigbits, isSigned), nExpCycles(n_bits, n_sigbits))
 end
 
 @inline function foundation_exps_seq(n_expbits, n_exponent_cycles)
