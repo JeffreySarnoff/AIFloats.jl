@@ -12,10 +12,10 @@ const numbered_pages = [
 makedocs(;
     modules = [FloatsForML],
     authors = "Jeffrey Sarnoff <jeffrey.sarnoff@gmail.com>",
-    repo = "https://github.com/JeffreySarnoff/FloatsForML.jl/blob/{commit}{path}#{line}",
+    repo = "https://github.com/DiademSpecialProjects/FloatsForML.jl/blob/{commit}{path}#{line}",
     sitename = "FloatsForML.jl",
-    format = Documenter.HTML(; canonical = "https://JeffreySarnoff.github.io/FloatsForML.jl"),
+    format = Documenter.HTML(; canonical = "https://DiademSpecialProjects.github.io/FloatsForML.jl"),
     pages = ["index.md"; numbered_pages],
 )
 
-deploydocs(; repo = "github.com/JeffreySarnoff/FloatsForML.jl")
+deploydocs(; repo = "github.com/DiademSpecialProjects/FloatsForML.jl")

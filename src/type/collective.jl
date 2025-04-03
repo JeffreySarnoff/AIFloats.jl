@@ -1,22 +1,42 @@
-ilog2(x) = trunc(Int,fld(log2(x),1))
-isaligned(xs, bits) = trailing_zeros(UInt(pointer(xs))) >= ilog2(bits)
-
-struct UFiniteFloats{Bits, SigBits, FType, CType} <: UnsignedFiniteAIFloat{Bits, SigBits}
-    floats::Vector{FType}
-    codes::Vector{CType}
+struct UFiniteMLFloats{Bits, SigBits, Floats, Codes} <: AbsUnsignedFiniteMLFloat{Bits, SigBits}
+    floats::Floats
+    codes::Codes
 end
 
-struct UExtendedFloats{Bits, SigBits, FType, CType} <: UnsignedExtendedAIFloat{Bits, SigBits}
-    floats::Vector{FType}
-    codes::Vector{CType}
+struct UExtendedMLFloats{Bits, SigBits, Floats, Codes} <: AbsUnsignedExtendedMLFloat{Bits, SigBits}
+    floats::Floats
+    codes::Codes
 end
 
-struct SFiniteFloats{Bits, SigBits, FType, CType} <: SignedFiniteAIFloat{Bits, SigBits}
-    floats::Vector{FType}
-    codes::Vector{CType}
+struct SFiniteMLFloats{Bits, SigBits, Floats, Codes} <: AbsSignedFiniteMLFloat{Bits, SigBits}
+    floats::Floats
+    codes::Codes
 end
 
-struct SExtendedFloats{Bits, SigBits, FType, CType} <: SignedExtendedAIFloat{Bits, SigBits}
-    floats::Vector{FType}
-    codes::Vector{CType}
+struct SExtendedMLFloats{Bits, SigBits, Floats, Codes} <: AbsSignedExtendedMLFloat{Bits, SigBits}
+    floats::Floats
+    codes::Codes
 end
+
+is_signed(@nospecialize(x::SFiniteMLFloats))   = true
+is_signed(@nospecialize(x::SExtendedMLFloats)) = true
+is_signed(@nospecialize(x::UFiniteMLFloats))   = false
+is_signed(@nospecialize(x::UExtendedMLFloats)) = false
+
+is_unsigned(@nospecialize(x::SFiniteMLFloats))   = false
+is_unsigned(@nospecialize(x::SExtendedMLFloats)) = false
+is_unsigned(@nospecialize(x::UFiniteMLFloats))   = true
+is_unsigned(@nospecialize(x::UExtendedMLFloats)) = true
+
+is_finite(@nospecialize(x::SFiniteMLFloats))   = true
+is_finite(@nospecialize(x::SExtendedMLFloats)) = false
+is_finite(@nospecialize(x::UFiniteMLFloats))   = true
+is_finite(@nospecialize(x::UExtendedMLFloats)) = false
+
+is_extended(@nospecialize(x::SFiniteMLFloats))   = false
+is_extended(@nospecialize(x::SExtendedMLFloats)) = true
+is_extended(@nospecialize(x::UFiniteMLFloats))   = false
+is_extended(@nospecialize(x::UExtendedMLFloats)) = true
+
+bitwidth(x::AbstractMLFloat{Bitwidth, Precision}) where {Bitwidth, Precision} = Bitwidth
+precision(x::AbstractMLFloat{Bitwidth, Precision}) where {Bitwidth, Precision} = Precision

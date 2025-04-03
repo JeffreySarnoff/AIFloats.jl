@@ -1,20 +1,31 @@
 module FloatsForML
 
-export AbstractAIFloat, MLFloats,
-       UFiniteMLFloats, UExtendedMLFloats, SFiniteMLFloats, SExtendedMLFloats,
-       UFiniteAIValues, UExtendedAIValues, SFiniteAIValues, SExtendedAIValues,
-       UFiniteAICodes, UExtendedAICodes, SFiniteAICodes, SExtendedAICodes,
-       NTupleOrVec, CODE, FLOAT, typeforcode, typeforfloat,
-       IsSigned, IsUnsigned, IsFinite, IsExtended,
+export AbstractMLFloat,
+         AbsSignedMLFloat,
+           AbsSignedExtendedMLFloat, AbsSignedFiniteMLFloat,
+              SExtendedMLFloats,        SFiniteMLFloats,
+         AbsUnsignedMLFloat,
+           AbsUnsignedExtendedMLFloat, AbsUnsignedFiniteMLFloat,
+              UExtendedMLFloats,          UFiniteMLFloats,
+       #
        codes, floats,
-       nBits, nSigBits, nFracBits, nExpBits,
-       nValues, nFracValues, nExpValues, nFracCycles, nExpCycles,
+       is_signed, is_unsigned, is_finite, is_extended,
+       #
+       bitwidth, precision,
+       nBits, nSigBits, nFracBits, nSignBits, nExpBits,
+       nValues, nFracValues, nExpValues,
+       nNumericValues, nFiniteValues,
+       nMagnitudes, nFiniteMagnitudes, nNonzeroMagnitudes, nNonzeroFiniteMagnitudes,
+       nPosInfs, nNegInfs, nInfs, nZeros, nNaNs,
+       nPositiveValues, nNegativeValues, nPositiveFiniteValues, nNegativeFiniteValues
        nSubnormalValues, nSubnormalMagnitudes, nNormalValues, nNormalMagnitudes,
-       nInfs, nNaNs, nZeros,
+       #
        exponent_min, exponent_max, exponent_bias,
        subnormal_min, subnormal_max, normal_min, normal_max,
-       is_signed, is_unsigned, if_finite, is_extended,
-       isaligned
+       #
+       typeforcode, typeforfloat, CODE, FLOAT
+
+import Base: convert, oftype, precision
 
 using Static, AlignedAllocs
 
@@ -22,6 +33,7 @@ include("constants.jl")
 
 include("type/abstract.jl")
 include("type/collective.jl")
+
 include("type/aspects.jl")
 include("type/extrema.jl")
 include("type/predicates.jl")
@@ -49,15 +61,15 @@ examples
 function MLFloats(bits::Int, sigbits::Int, signed::Bool, extended::Bool)
     if signed
         if extended
-            SExtendedFloats(bits, sigbits)
+            SExtendedMLFloats(bits, sigbits)
         else # finite
-            SFiniteFloats(bits, sigbits)
+            SFiniteMLFloats(bits, sigbits)
         end
     else
         if extended
-            UExtendedFloats(bits, sigbits)
+            UExtendedMLFloats(bits, sigbits)
         else # finite
-            UFiniteFloats(bits, sigbits)
+            UFiniteMLFloats(bits, sigbits)
         end
     end
 end

@@ -9,3 +9,5 @@ FloatsForML = "d2991a12-158b-408d-b4b8-1886e7866e6f"
 
 [compat]
 Documenter = "1"
+LiveServer = "1.5"
+FloatsForML = "0.1 - 0.5"
