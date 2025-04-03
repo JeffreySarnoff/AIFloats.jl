@@ -1,10 +1,7 @@
-const NTupleOrVec = Union{DenseVector{T}, Tuple{Vararg{T}}} where {T}
-
 const BitsMin = 2
 const BitsMaxSmall = 8
 const BitsMinLarge = 9
 const BitsMax = 15
-
 
 # internal assurances
 const One = Int32(1)
@@ -81,6 +78,13 @@ typeforcode(Bits::Integer, SigBits::Integer) =
 
 typeforfloat(Bits::Integer) =
     ifelse(Bits <= BitsMaxSmall, Float32, Float64)
+
+typeforcode(Bits::Integer) = 
+    ifelse(Bits <= BitsMaxSmall, UInt8, UInt16)
+
+typeforfloat(Bits::Integer) =
+    ifelse(Bits <= BitsMaxSmall, Float32, Float64)
+
 
 function typeforfloat(Bits::Integer, SigBits::Integer)
     if SigBits == 1 && Bits >= 7
