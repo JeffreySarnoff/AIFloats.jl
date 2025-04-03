@@ -12,7 +12,7 @@ function nExpBits(Bits, SigBits, IsSigned)
     bits
 end
 nValues(Bits, SigBits) = 2^nBits(Bits, SigBits)
-nFracValues(Bits, SigBits) = 
+nFracValues(Bits, SigBits) =
     if SigBits <= 0
         1 / 2^abs(nFracBits(Bits, SigBits))
     else
@@ -66,7 +66,7 @@ for (NBits,F) in ((:nBits, :nValues), (:nSigBits, :nSigValues), (:nFracBits, :nF
         $F(::Type{T}) where {T<:AbstractAIFloat} = 2^$NBits(T)
         $F(x::T) where {T<:AbstractAIFloat} = $F(T)
     end
-end  
+end
 
 for (NBits,F) in ((:nSignBits, :nSignValues),
               (:nZeros, :nZeroValues), (:nNaNs, :nNaNValues), (:nInfs, :nInfValues),
@@ -146,4 +146,3 @@ nExpCycles(::Type{T}) where {T<:AbstractAIFloat} = nFracValues(T)
 for F in (:nFracCycles, :nExpCycles)
     @eval $F(x::T) where {T<:AbstractAIFloat} = $F(T)
 end
-

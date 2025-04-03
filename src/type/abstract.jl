@@ -110,7 +110,7 @@ see also [`FloatML`](@ref), [`ExtendedFloatML`](@ref)
 const FiniteFloatML{Bits, SigBits} = Union{UFiniteFloatML{Bits, SigBits}, SFiniteFloatML{Bits, SigBits}}
 
 """
-    ExtendedFloatML{Bits, SigBits}  
+    ExtendedFloatML{Bits, SigBits}
 
 The abstraction over all P3109 compliant extended floating-point types.
 - one Zero, at least one Inf, one NaN

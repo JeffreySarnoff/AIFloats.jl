@@ -23,5 +23,3 @@ for T in (:SFiniteFloats, :SExtendedFloats, :UFiniteFloats, :UExtendedFloats)
         @eval $F(x::$T) = $F($T)
     end
 end
-
-

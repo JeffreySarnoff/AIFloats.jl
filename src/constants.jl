@@ -55,7 +55,7 @@ It is an *unchecked error* to set Bits < BitsMin
 It is an *unchecked error* to set Bits < BitsMin
 """ typeforfloat
 
-typeforcode(Bits::StaticInt{N}) where {N} = 
+typeforcode(Bits::StaticInt{N}) where {N} =
     ifelse(Bits <= static(BitsMaxSmall), UInt8, UInt16)
 
 typeforfloat(Bits::StaticInt{N}) where {N} =
@@ -72,11 +72,11 @@ function typeforfloat(Bits::StaticInt{N}, SigBits::StaticInt{M}) where {N, M}
         Float64
     end
 end
-    
-typeforcode(Bits::Integer) = 
+
+typeforcode(Bits::Integer) =
     ifelse(Bits <= BitsMaxSmall, UInt8, UInt16)
 
-typeforcode(Bits::Integer, SigBits::Integer) = 
+typeforcode(Bits::Integer, SigBits::Integer) =
     ifelse(Bits <= BitsMaxSmall, UInt8, UInt16)
 
 typeforfloat(Bits::Integer) =

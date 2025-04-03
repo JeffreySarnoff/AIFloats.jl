@@ -1,6 +1,6 @@
 module FloatsForML
 
-export AbstractAIFloat, MLFloats,  
+export AbstractAIFloat, MLFloats,
        UFiniteMLFloats, UExtendedMLFloats, SFiniteMLFloats, SExtendedMLFloats,
        UFiniteAIValues, UExtendedAIValues, SFiniteAIValues, SExtendedAIValues,
        UFiniteAICodes, UExtendedAICodes, SFiniteAICodes, SExtendedAICodes,
@@ -43,7 +43,7 @@ examples
 
     seBinary84_encodings = codes(SE84)
     seBinary84_valuation = floats(SE84)
-    
+
 ````
 """
 function MLFloats(bits::Int, sigbits::Int, signed::Bool, extended::Bool)
@@ -61,5 +61,5 @@ function MLFloats(bits::Int, sigbits::Int, signed::Bool, extended::Bool)
         end
     end
 end
-  
+
 end  # FloatsForML

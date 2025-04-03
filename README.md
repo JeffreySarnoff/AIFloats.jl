@@ -13,4 +13,3 @@
 ## How to Cite
 
 If you use FloatsForML.jl in your work, please cite using the reference given in [CITATION.cff](https://github.com/JeffreySarnoff/FloatsForML.jl/blob/main/CITATION.cff).
-
