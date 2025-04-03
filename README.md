@@ -1,4 +1,4 @@
-# BaseFloats.jl
+# FloatsForML.jl
 ### The internal constructive model for MicroFloats.
 ##### Copyright 2024 by Jeffrey Sarnoff
 
