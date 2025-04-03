@@ -1,7 +1,7 @@
 name = "BaseFloats"
 author = "Jeffrey Sarnoff <jeffrey.sarnoff@ieee.org>"
 uuid = "466cf478-de3d-41ed-aa97-fc1150812615"
-version = "0.1.0"
+version = "0.1.1"
 
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
