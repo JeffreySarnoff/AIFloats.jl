@@ -1,4 +1,5 @@
-using FloatsForML, Test
+using FloatsForML
+using Test
 
 include("config.jl")
 

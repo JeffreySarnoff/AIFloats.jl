@@ -1,0 +1,12 @@
+# Changes here will be overwritten by Copier
+AnswerStrategy: minimum
+Authors: Jeffrey Sarnoff <jeffrey.sarnoff@gmail.com>
+JuliaIndentation: 4
+JuliaMinVersion: '1.11'
+License: MIT
+LicenseCopyrightHolders: Jeffrey Sarnoff
+PackageName: FloatsForML
+PackageOwner: JeffreySarnoff
+PackageUUID: d2991a12-158b-408d-b4b8-1886e7866e6f
+_commit: v0.15.0
+_src_path: https://github.com/JuliaBesties/BestieTemplate.jl

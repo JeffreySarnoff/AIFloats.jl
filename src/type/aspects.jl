@@ -1,0 +1,166 @@
+# computing over Type Abstractions
+
+nBits(@nospecialize(T::Type{<:AbstractMLFloat{B,P}})) where {B,P} = B
+nSigBits(@nospecialize(T::Type{<:AbstractMLFloat{B,P}})) where {B,P} = P
+nFracBits(@nospecialize(T::Type{<:AbstractMLFloat{B,P}})) where {B,P} = P - 1
+
+nSignBits(@nospecialize(T::Type{<:AbsUnsignedMLFloat{B,P}})) where {B,P} = 0
+nSignBits(@nospecialize(T::Type{<:AbsSignedMLFloat{B,P}})) where {B,P} = 1
+nExpBits(@nospecialize(T::Type{<:AbstractMLFloat{B,P}})) where {B,P} = (B - P) + (1 - nSignBits(T))
+
+for F in (:nBits, :nSigBits, :nFracBits, :nSignBits, :nExpBits)
+    @eval $F(x::AbstractMLFloat)  = $F(typeof(x))
+end
+
+# forms for use with AbstractMLFloat
+
+nNaNs(@nospecialize(T::Type{AbstractMLFloat})) = 1
+nZeros(@nospecialize(T::Type{AbstractMLFloat})) = 1
+
+nInfs(@nospecialize(T::Type{AbstractMLFloat})) = is_extended(T) * (is_signed(T) + is_extended(T))
+nPosInfs(@nospecialize(T::Type{AbstractMLFloat})) = zero(Int8) + is_extended(T)
+nNegInfs(@nospecialize(T::Type{AbstractMLFloat})) = zero(Int8) + (is_signed(T)  & is_extended(T))
+
+nValues(@nospecialize(T::Type{AbstractMLFloat{B,K}})) where {B,K} = 2^B # all values
+nNumericValues(@nospecialize(T::Type{AbstractMLFloat})) = nValues(T) - 1 # remove NaN
+nFiniteValues(@nospecialize(T::Type{AbstractMLFloat})) = nNumericValues(T) - nInfs(T)
+
+nMagnitudes(@nospecialize(T::Type{AbsUnsignedMLFloat})) = nNumericValues(T)
+
+function nMagnitudes(@nospecialize(T::Type{AbsSignedMLFloat}))
+    n = nNumericValues(T)
+    (n + isodd(n)) >> 1 # protect Zero
+end
+
+nNonzeroMagnitudes(@nospecialize(T::Type{AbstractMLFloat})) = nMagnitudes(T) - 1 # remove Zero
+nFiniteMagnitudes(@nospecialize(T::Type{AbstractMLFloat})) = nMagnitudes(T) - nPosInfs(T)
+nNonzeroFiniteMagnitudes(@nospecialize(T::Type{AbstractMLFloat})) = nFiniteMagnitudes(T) - 1
+
+nPositiveValues(@nospecialize(T::Type{AbsSignedMLFloat})) = nMagnitudes(T) - 1    # remove Zero
+nNegativeValues(@nospecialize(T::Type{AbsSignedMLFloat})) = nPositiveValues(T)
+
+nPositiveFiniteValues(@nospecialize(T::Type{AbsUnsignedMLFloat})) = nPositiveValues(T) - nPosInfs(T)
+nNegativeFiniteValues(@nospecialize(T::Type{AbsSignedMLFloat})) = nNegativeValues(T) - nNegInfs(T)
+
+for F in (:nBits, :nSigBits, :nFracBits, :nSignBits,
+          :nPosInfs, :nNegInfs, :nInfs, :nZeros, :nNaNs,
+          :nValues, :nNumericValues, :nFiniteValues,
+          :nMagnitudes, :nFiniteMagnitudes, :nNonzeroMagnitudes, :nNonzeroFiniteMagnitudes,
+          :nPositiveValues, :nNegativeValues, :nPositiveFiniteValues, :nNegativeFiniteValues
+    @eval $F(x::T) where {T<:AbstractMLFloat} = $F(T)
+end
+
+# forms for use with FoundationalFloats
+
+nBits(Bits, SigBits) = Bits
+nSigBits(Bits, SigBits) = SigBits
+nFracBits(Bits, SigBits) = SigBits - oftype(SigBits, 1)
+nSignBits(Bits, SigBits, IsSigned) = oftype(SigBits, 0) + IsSigned
+
+#
+
+
+
+
+
+
+
+# value counted aspects (characterizing aspects)
+
+nSpecialValues(::Type{T}) where {T<:AbstractMLFloat} = nNaNs(T) + nZeros(T) + nInfs(T)
+nSpecialNumbers(::Type{T}) where {T<:AbstractMLFloat} = nZeros(T) + nInfs(T)
+nSpecialMagnitudes(::Type{T}) where {T<:AbstractMLFloat} = nPosZeros(T) + nPosInfs(T)
+
+nOrdinaryValues(::Type{T}) where {T<:AbstractMLFloat} = nValues(T) - nSpecialValues(T)
+nOrdinaryNumbers(::Type{T}) where {T<:AbstractMLFloat} = nOrdinaryValues(T)
+nOrdinaryMagnitudes(::Type{T}) where {T<:AbstractMLFloat} = nMagnitudes(T) - nSpecialMagnitudes(T)
+
+for F in (:nSpecialValues, :nSpecialNumbers, :nSpecialMagnitudes, :nOrdinaryValues, :nOrdinaryNumbers, :nOrdinaryMagnitudes)
+    @eval $F(x::T) where {T<:AbstractMLFloat} = $F(T)
+end
+
+# nFracValues == nFracMagnitudes
+for (NBits,F) in ((:nBits, :nValues), (:nSigBits, :nSigValues), (:nFracBits, :nFracValues))
+    @eval begin
+        $F(::Type{T}) where {T<:AbstractMLFloat} = 2^$NBits(T)
+        $F(x::T) where {T<:AbstractMLFloat} = $F(T)
+    end
+end
+
+for (NBits,F) in ((:nSignBits, :nSignValues),
+              (:nZeros, :nZeroValues), (:nNaNs, :nNaNValues), (:nInfs, :nInfValues),
+              (:nPosInfs, :nPosInfValues), (:nNegInfs, :nNegInfValues))
+    @eval begin
+        $F(::Type{T}) where {T<:AbstractMLFloat} = $NBits(T)
+        $F(x::T) where {T<:AbstractMLFloat} = $F(T)
+    end
+end
+
+# value counted aspects (derived aspects)
+
+nNonNumericValues(::Type{T}) where {T<:AbstractMLFloat} = One # the unique NaN
+nNumericValues(::Type{T}) where {T<:AbstractMLFloat} = nValues(T) - nNonNumericValues(T)
+nNonZeroNumericValues(::Type{T}) where {T<:AbstractMLFloat} = nNumericValues(T) - nZeroValues(T)
+
+# finite values are numeric values by definition
+nFiniteValues(::Type{T}) where {T<:AbstractMLFloat} = nNumericValues(T) - nInfValues(T)
+nNonZeroFiniteValues(::Type{T}) where {T<:AbstractMLFloat} =  nFiniteValues(T) - nZeroValues(T)
+
+# We have one zero, it is considered neither positive nor negative in these definitions.
+# When a sign must be assigned to have a well-formed expression, positive is used.
+
+nIsUnsignedativeValues(::Type{T}) where {T<:AbstractMLFloat} = nNumericValues(T) >> is_signed(T)
+nIsUnsignedativeFiniteValues(::Type{T}) where {T<:AbstractMLFloat} = nIsUnsignedativeValues(T) - nPosInfs(T)
+nPositiveValues(::Type{T}) where {T<:AbstractMLFloat} = nIsUnsignedativeValues(T) - nZeroValues(T)
+nPositiveFiniteValues(::Type{T}) where {T<:AbstractMLFloat} = nPositiveValues(T) - nPosInfs(T)
+
+nNegativeValues(::Type{T}) where {T<:AbstractMLFloat} = is_signed(T) * nPositiveValues(T)
+nNegativeFiniteValues(::Type{T}) where {T<:AbstractMLFloat} = nPositiveFiniteValues(T)
+nNonPositiveValues(::Type{T}) where {T<:AbstractMLFloat} = nNegativeValues(T) + nZeros(T)
+nNonPositiveFiniteValues(::Type{T}) where {T<:AbstractMLFloat} = nNonPositiveValues(T) - nNegInfs(T)
+
+for (F) in (:nNumericValues, :nNonNumericValues, :nNonNumericZeroValues,
+            :nFiniteValues, :nNonZeroFiniteValues,
+            :nPositiveValues, :nPositiveFiniteValues,
+            :nNonPositiveValues, :nNonPositiveFiniteValues,
+            :nNegativeValues, :nNegativeFiniteValues)
+    @eval $F(x::T) where {T<:AbstractMLFloat} = $F(T)
+end
+
+# value counted aspects (derived magnitudes)
+# magnitudes count unique absolute [numeric] values
+
+nMagnitudes(::Type{T}) where {T<:AbstractMLFloat} = nIsUnsignedativeValues(T)
+nFiniteMagnitudes(::Type{T}) where {T<:AbstractMLFloat} = nIsUnsignedativeFiniteValues(T)
+nNonZeroMagnitudes(::Type{T}) where {T<:AbstractMLFloat} = nPositiveValues(T)
+nNonZeroFiniteMagnitudes(::Type{T}) where {T<:AbstractMLFloat} = nPositiveFiniteValues(T)
+
+for (F) in (:nMagnitudes, :nFiniteMagnitudes,
+            :nNonZeroMagnitudes, :nNonZeroFiniteMagnitudes)
+    @eval $F(x::T) where {T<:AbstractMLFloat} = $F(T)
+end
+
+# value counted aspects (subnormal and normal values)
+
+# Zero, PosInf, NegInf are neither subnormal nor normal values
+# nSubnormalMagnitudes(AbstractMLFloat{Bits, 1}) == 0
+
+nSubnormalMagnitudes(::Type{T}) where {T<:AbstractMLFloat} = nFracValues(T) - One
+nSubnormalValues(::Type{T}) where {T<:AbstractMLFloat} = nSubnormalMagnitudes(T) << is_signed(T)
+
+nNormalMagnitudes(::Type{T}) where {T<:AbstractMLFloat} = nFiniteMagnitudes(T) - nSubnormalMagnitudes(T)
+nNormalValues(::Type{T}) where {T<:AbstractMLFloat} = nNormaMagnitudes(T) << is_signed(T)
+
+for (F) in (:nSubnormalValues, :nSubnormalMagnitudes,
+            :nNormalValues, :nNormalMagnitudes)
+    @eval $F(x::T) where {T<:AbstractMLFloat} = $F(T)
+end
+
+# alternative interpretations
+
+nFracCycles(::Type{T}) where {T<:AbstractMLFloat} = nExpValues(T)
+nExpCycles(::Type{T}) where {T<:AbstractMLFloat} = nFracValues(T)
+
+for F in (:nFracCycles, :nExpCycles)
+    @eval $F(x::T) where {T<:AbstractMLFloat} = $F(T)
+end

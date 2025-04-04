@@ -1,20 +1,18 @@
-name = "BaseFloats"
+name = "FloatsForML"
 author = "Jeffrey Sarnoff <jeffrey.sarnoff@ieee.org>"
-uuid = "466cf478-de3d-41ed-aa97-fc1150812615"
+uuid = "d2991a12-158b-408d-b4b8-1886e7866e6f"
 version = "0.1.1"
 
 [deps]
-Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+Static = "aedffcd0-7271-4cad-89d0-dc628f76c6d3"
 AlignedAllocs = "6ac60441-711f-43f0-8178-7f71f0888134"
 TupleTools = "9d95972d-f1c8-5527-a6e0-b4b365fa01f6"
 
 [compat]
-Documenter = "1.9"
+Static = "1.2"
 AlignedAllocs = "0.1 - 0.6"
 TupleTools = "1.6"
-Aqua = "0.8 - 0.22"
-Test = "1.10"
-julia = "1.10"
+julia = "1.11"
 
 [extras]
 Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
