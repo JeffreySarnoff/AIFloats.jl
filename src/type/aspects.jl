@@ -8,10 +8,6 @@ nSignBits(@nospecialize(T::Type{<:AbsUnsignedMLFloat{B,P}})) where {B,P} = 0
 nSignBits(@nospecialize(T::Type{<:AbsSignedMLFloat{B,P}})) where {B,P} = 1
 nExpBits(@nospecialize(T::Type{<:AbstractMLFloat{B,P}})) where {B,P} = (B - P) + (1 - nSignBits(T))
 
-for F in (:nBits, :nSigBits, :nFracBits, :nSignBits, :nExpBits)
-    @eval $F(x::AbstractMLFloat)  = $F(typeof(x))
-end
-
 # forms for use with AbstractMLFloat
 
 nNaNs(@nospecialize(T::Type{AbstractMLFloat})) = 1
@@ -42,7 +38,7 @@ nNegativeValues(@nospecialize(T::Type{AbsSignedMLFloat})) = nPositiveValues(T)
 nPositiveFiniteValues(@nospecialize(T::Type{AbsUnsignedMLFloat})) = nPositiveValues(T) - nPosInfs(T)
 nNegativeFiniteValues(@nospecialize(T::Type{AbsSignedMLFloat})) = nNegativeValues(T) - nNegInfs(T)
 
-for F in (:nBits, :nSigBits, :nFracBits, :nSignBits,
+for F in (:nBits, :nSigBits, :nFracBits, :nSignBits, :nExpBits,
           :nPosInfs, :nNegInfs, :nInfs, :nZeros, :nNaNs,
           :nValues, :nNumericValues, :nFiniteValues,
           :nMagnitudes, :nFiniteMagnitudes, :nNonzeroMagnitudes, :nNonzeroFiniteMagnitudes,
