@@ -1,7 +1,7 @@
 name = "FloatsForML"
 author = "Jeffrey Sarnoff <jeffrey.sarnoff@ieee.org>"
 uuid = "d2991a12-158b-408d-b4b8-1886e7866e6f"
-version = "0.1.0"
+version = "0.1.1"
 
 [deps]
 Static = "aedffcd0-7271-4cad-89d0-dc628f76c6d3"
