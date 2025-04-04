@@ -21,8 +21,6 @@ nValues(@nospecialize(T::Type{AbstractMLFloat{B,K}})) where {B,K} = 2^B # all va
 nNumericValues(@nospecialize(T::Type{AbstractMLFloat})) = nValues(T) - 1 # remove NaN
 nFiniteValues(@nospecialize(T::Type{AbstractMLFloat})) = nNumericValues(T) - nInfs(T)
 
-nMagnitudes(@nospecialize(T::Type{AbsUnsignedMLFloat})) = nNumericValues(T)
-
 function nMagnitudes(@nospecialize(T::Type{AbsSignedMLFloat}))
     n = nNumericValues(T)
     (n + isodd(n)) >> 1 # protect Zero
@@ -66,14 +64,6 @@ nOrdinaryMagnitudes(::Type{T}) where {T<:AbstractMLFloat} = nMagnitudes(T) - nSp
 for F in (:nSpecialValues, :nSpecialNumbers, :nSpecialMagnitudes,
           :nOrdinaryValues, :nOrdinaryNumbers, :nOrdinaryMagnitudes)
     @eval $F(x::T) where {T<:AbstractMLFloat} = $F(T)
-end
-
-# nFracValues == nFracMagnitudes
-for (NBits,F) in ((:nBits, :nValues), (:nSigBits, :nSigValues), (:nFracBits, :nFracValues))
-    @eval begin
-        $F(::Type{T}) where {T<:AbstractMLFloat} = 2^$NBits(T)
-        $F(x::T) where {T<:AbstractMLFloat} = $F(T)
-    end
 end
 
 for (NBits,F) in ((:nSignBits, :nSignValues),
