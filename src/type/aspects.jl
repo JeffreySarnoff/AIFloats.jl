@@ -8,9 +8,11 @@ nSignBits(@nospecialize(T::Type{<:AbsUnsignedMLFloat{B,P}})) where {B,P} = 0
 nSignBits(@nospecialize(T::Type{<:AbsSignedMLFloat{B,P}})) where {B,P} = 1
 nExpBits(@nospecialize(T::Type{<:AbstractMLFloat{B,P}})) where {B,P} = (B - P) + (1 - nSignBits(T))
 
+nExpMagnitudes(@nospecialize(T::Type{<:AbstractMLFloat{B,P}})) where {B,P} = 2^nExpBits(T)
+nNonzeroExpMagnitudes(@nospecialize(T::Type{<:AbstractMLFloat{B,P}})) where {B,P} = nExpMagnitudes(T) - 1
+
 nFracMagnitudes(@nospecialize(T::Type{<:AbstractMLFloat{B,P}})) where {B,P} = 2^nFracBits(T)
 nNonzeroFracMagnitudes(@nospecialize(T::Type{<:AbstractMLFloat{B,P}})) where {B,P} = nFracMagnitudes(T) - 1
-nFracValues(@nospecialize(T::Type{<:AbstractMLFloat{B,P}})) where {B,P} = nFracMagnitudes(T)
 
 # forms for use with AbstractMLFloat
 
@@ -44,7 +46,8 @@ for F in (:nBits, :nSigBits, :nFracBits, :nSignBits, :nExpBits,
           :nPosInfs, :nNegInfs, :nInfs, :nZeros, :nNaNs,
           :nValues, :nNumericValues, :nFiniteValues,
           :nMagnitudes, :nFiniteMagnitudes, :nNonzeroMagnitudes, :nNonzeroFiniteMagnitudes,
-          :nPositiveValues, :nNegativeValues, :nPositiveFiniteValues, :nNegativeFiniteValues)
+          :nPositiveValues, :nNegativeValues, :nPositiveFiniteValues, :nNegativeFiniteValues,
+          :nFracMagnitudes, :nExpMagnitudes)
     @eval $F(x::AbstractMLFloat) = $F(typeof(x))
 end
 
@@ -54,6 +57,9 @@ nBits(Bits, SigBits) = Bits
 nSigBits(Bits, SigBits) = SigBits
 nFracBits(Bits, SigBits) = SigBits - oftype(SigBits, 1)
 nSignBits(Bits, SigBits, IsSigned) = oftype(SigBits, 0) + IsSigned
+
+nFracMagnitudes(Bits, SigBits) = 2^nFracBits(Bits, SigBits)
+nNonzeroFracMagnitudes(Bits, SigBits) = nFracMagnitudes(Bits, SigBits) - 1
 
 # value counted aspects (characterizing aspects)
 
@@ -105,8 +111,8 @@ end
 
 # alternative interpretation
 
-nFracCycles(::Type{T}) where {T<:AbstractMLFloat} = nExpValues(T)
-nExpCycles(::Type{T}) where {T<:AbstractMLFloat} = nFracValues(T)
+nFracCycles(::Type{T}) where {T<:AbstractMLFloat} = nExpMagnitudes(T)
+nExpCycles(::Type{T}) where {T<:AbstractMLFloat} = nFracMagnitudes(T)
 
 for F in (:nFracCycles, :nExpCycles)
     @eval $F(x::AbstractMLFloat) = $F(typeof(x))

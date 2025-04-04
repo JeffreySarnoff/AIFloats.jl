@@ -67,9 +67,10 @@ function MLFloats(bits::Int, sigbits::Int, signed::Bool, extended::Bool)
     end
 end
 
-export nBits, nSigBits, nFracBits, nSignBits, nExpBits,
+public nBits, nSigBits, nFracBits, nSignBits, nExpBits,
        nPosInfs, nNegInfs, nInfs, nZeros, nNaNs,
-       nValues, nFracValues, nExpValues,
+       nValues, nFracMagnitudes, nExpMagnitudes,
+       nNonzeroFracMagnitudes, nNonzeroExpMagnitudes, 
        nNumericValues, nFiniteValues,
        nPositiveValues, nNegativeValues, nPositiveFiniteValues, nNegativeFiniteValues,
        nSubnormalValues, nSubnormalMagnitudes, nNormalValues, nNormalMagnitudes,
