@@ -1,25 +1,39 @@
-is_signed(@nospecialize(T::Type{SFiniteMLFloats}))   = true
-is_signed(@nospecialize(T::Type{<:SExtendedMLFloats})) = true
-is_signed(@nospecialize(T::Type{<:UFiniteMLFloats}))   = false
-is_signed(@nospecialize(T::Type{<:UExtendedMLFloats})) = false
+# predicates for abstract types
 
-is_unsigned(@nospecialize(T::Type{<:SFiniteMLFloats}))   = false
-is_unsigned(@nospecialize(T::Type{<:SExtendedMLFloats})) = false
-is_unsigned(@nospecialize(T::Type{<:UFiniteMLFloats}))   = true
-is_unsigned(@nospecialize(T::Type{<:UExtendedMLFloats})) = true
+is_signed(@nospecialize(T::Type{<:AbsSignedMLFloat}))     = true
+is_signed(@nospecialize(T::Type{<:AbsUnsignedMLFloat}))   = false
 
-is_finite(@nospecialize(T::Type{<:SFiniteMLFloats}))   = true
-is_finite(@nospecialize(T::Type{<:SExtendedMLFloats})) = false
-is_finite(@nospecialize(T::Type{<:UFiniteMLFloats}))   = true
-is_finite(@nospecialize(T::Type{<:UExtendedMLFloats})) = false
+is_unsigned(@nospecialize(T::Type{<:AbsSignedMLFloat}))   = false
+is_unsigned(@nospecialize(T::Type{<:AbsUnsignedMLFloat})) = true
 
-is_extended(@nospecialize(T::Type{<:SFiniteMLFloats}))   = false
-is_extended(@nospecialize(T::Type{<:SExtendedMLFloats})) = true
-is_extended(@nospecialize(T::Type{<:UFiniteMLFloats}))   = false
-is_extended(@nospecialize(T::Type{<:UExtendedMLFloats})) = true
+is_finite(@nospecialize(T::Type{<:AbsSignedFiniteMLFloat}))     = true
+is_finite(@nospecialize(T::Type{<:AbsUnsignedFiniteMLFloat}))   = true
+is_finite(@nospecialize(T::Type{<:AbsSignedExtendedMLFloat}))   = false
+is_finite(@nospecialize(T::Type{<:AbsUnsignedExtendedMLFloat})) = false
 
-for T in (:SFiniteMLFloats, :SExtendedMLFloats, :UFiniteMLFloats, :UExtendedMLFloats)
-    for F in (:is_signed, :is_unsigned, :is_finite, :is_extended)
-        @eval $F(x::$T) = $F($T)
-    end
-end
+is_extended(@nospecialize(T::Type{<:AbsSignedFiniteMLFloat}))     = false
+is_extended(@nospecialize(T::Type{<:AbsUnsignedFiniteMLFloat}))   = false
+is_extended(@nospecialize(T::Type{<:AbsSignedExtendedMLFloat}))   = true
+is_extended(@nospecialize(T::Type{<:AbsUnsignedExtendedMLFloat})) = true
+
+# predicates for concrete types
+
+is_signed(@nospecialize(x::SFiniteMLFloats))   = true
+is_signed(@nospecialize(x::SExtendedMLFloats)) = true
+is_signed(@nospecialize(x::UFiniteMLFloats))   = false
+is_signed(@nospecialize(x::UExtendedMLFloats)) = false
+
+is_unsigned(@nospecialize(x::SFiniteMLFloats))   = false
+is_unsigned(@nospecialize(x::SExtendedMLFloats)) = false
+is_unsigned(@nospecialize(x::UFiniteMLFloats))   = true
+is_unsigned(@nospecialize(x::UExtendedMLFloats)) = true
+
+is_finite(@nospecialize(x::SFiniteMLFloats))   = true
+is_finite(@nospecialize(x::SExtendedMLFloats)) = false
+is_finite(@nospecialize(x::UFiniteMLFloats))   = true
+is_finite(@nospecialize(x::UExtendedMLFloats)) = false
+
+is_extended(@nospecialize(x::SFiniteMLFloats))   = false
+is_extended(@nospecialize(x::SExtendedMLFloats)) = true
+is_extended(@nospecialize(x::UFiniteMLFloats))   = false
+is_extended(@nospecialize(x::UExtendedMLFloats)) = true

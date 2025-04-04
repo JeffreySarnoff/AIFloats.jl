@@ -41,7 +41,7 @@ for F in (:nBits, :nSigBits, :nFracBits, :nSignBits, :nExpBits,
           :nValues, :nNumericValues, :nFiniteValues,
           :nMagnitudes, :nFiniteMagnitudes, :nNonzeroMagnitudes, :nNonzeroFiniteMagnitudes,
           :nPositiveValues, :nNegativeValues, :nPositiveFiniteValues, :nNegativeFiniteValues)
-    @eval $F(x::T) where {T<:AbstractMLFloat} = $F(T)
+    @eval $F(x::AbstractMLFloat) = $F(typeof(x))
 end
 
 # forms for use with FoundationalFloats
@@ -63,16 +63,7 @@ nOrdinaryMagnitudes(::Type{T}) where {T<:AbstractMLFloat} = nMagnitudes(T) - nSp
 
 for F in (:nSpecialValues, :nSpecialNumbers, :nSpecialMagnitudes,
           :nOrdinaryValues, :nOrdinaryNumbers, :nOrdinaryMagnitudes)
-    @eval $F(x::T) where {T<:AbstractMLFloat} = $F(T)
-end
-
-for (NBits,F) in ((:nSignBits, :nSignValues),
-              (:nZeros, :nZeroValues), (:nNaNs, :nNaNValues), (:nInfs, :nInfValues),
-              (:nPosInfs, :nPosInfValues), (:nNegInfs, :nNegInfValues))
-    @eval begin
-        $F(::Type{T}) where {T<:AbstractMLFloat} = $NBits(T)
-        $F(x::T) where {T<:AbstractMLFloat} = $F(T)
-    end
+    @eval $F(x::AbstractMLFloat) = $F(typeof(x))
 end
 
 # value counted aspects (derived aspects)
@@ -88,38 +79,12 @@ nNonZeroFiniteValues(::Type{T}) where {T<:AbstractMLFloat} =  nFiniteValues(T) -
 # We have one zero, it is considered neither positive nor negative in these definitions.
 # When a sign must be assigned to have a well-formed expression, positive is used.
 
-nIsUnsignedativeValues(::Type{T}) where {T<:AbstractMLFloat} = nNumericValues(T) >> is_signed(T)
-nIsUnsignedativeFiniteValues(::Type{T}) where {T<:AbstractMLFloat} = nIsUnsignedativeValues(T) - nPosInfs(T)
-nPositiveValues(::Type{T}) where {T<:AbstractMLFloat} = nIsUnsignedativeValues(T) - nZeroValues(T)
-nPositiveFiniteValues(::Type{T}) where {T<:AbstractMLFloat} = nPositiveValues(T) - nPosInfs(T)
-
-nNegativeValues(::Type{T}) where {T<:AbstractMLFloat} = is_signed(T) * nPositiveValues(T)
-nNegativeFiniteValues(::Type{T}) where {T<:AbstractMLFloat} = nPositiveFiniteValues(T)
 nNonPositiveValues(::Type{T}) where {T<:AbstractMLFloat} = nNegativeValues(T) + nZeros(T)
 nNonPositiveFiniteValues(::Type{T}) where {T<:AbstractMLFloat} = nNonPositiveValues(T) - nNegInfs(T)
 
-for (F) in (:nNumericValues, :nNonNumericValues, :nNonNumericZeroValues,
-            :nFiniteValues, :nNonZeroFiniteValues,
-            :nPositiveValues, :nPositiveFiniteValues,
-            :nNonPositiveValues, :nNonPositiveFiniteValues,
-            :nNegativeValues, :nNegativeFiniteValues)
-    @eval $F(x::T) where {T<:AbstractMLFloat} = $F(T)
+for (F) in (:nNonPositiveValues, :nNonPositiveFiniteValues)
+    @eval $F(x::AbstractMLFloat) = $F(typeof(x))
 end
-
-# value counted aspects (derived magnitudes)
-# magnitudes count unique absolute [numeric] values
-
-nMagnitudes(::Type{T}) where {T<:AbstractMLFloat} = nIsUnsignedativeValues(T)
-nFiniteMagnitudes(::Type{T}) where {T<:AbstractMLFloat} = nIsUnsignedativeFiniteValues(T)
-nNonZeroMagnitudes(::Type{T}) where {T<:AbstractMLFloat} = nPositiveValues(T)
-nNonZeroFiniteMagnitudes(::Type{T}) where {T<:AbstractMLFloat} = nPositiveFiniteValues(T)
-
-for (F) in (:nMagnitudes, :nFiniteMagnitudes,
-            :nNonZeroMagnitudes, :nNonZeroFiniteMagnitudes)
-    @eval $F(x::T) where {T<:AbstractMLFloat} = $F(T)
-end
-
-# value counted aspects (subnormal and normal values)
 
 # Zero, PosInf, NegInf are neither subnormal nor normal values
 # nSubnormalMagnitudes(AbstractMLFloat{Bits, 1}) == 0
@@ -130,16 +95,15 @@ nSubnormalValues(::Type{T}) where {T<:AbstractMLFloat} = nSubnormalMagnitudes(T)
 nNormalMagnitudes(::Type{T}) where {T<:AbstractMLFloat} = nFiniteMagnitudes(T) - nSubnormalMagnitudes(T)
 nNormalValues(::Type{T}) where {T<:AbstractMLFloat} = nNormaMagnitudes(T) << is_signed(T)
 
-for (F) in (:nSubnormalValues, :nSubnormalMagnitudes,
-            :nNormalValues, :nNormalMagnitudes)
-    @eval $F(x::T) where {T<:AbstractMLFloat} = $F(T)
+for (F) in (:nSubnormalValues, :nSubnormalMagnitudes, :nNormalValues, :nNormalMagnitudes)
+    @eval $F(x::AbstractMLFloat) = $F(typeof(x))
 end
 
-# alternative interpretations
+# alternative interpretation
 
 nFracCycles(::Type{T}) where {T<:AbstractMLFloat} = nExpValues(T)
 nExpCycles(::Type{T}) where {T<:AbstractMLFloat} = nFracValues(T)
 
 for F in (:nFracCycles, :nExpCycles)
-    @eval $F(x::T) where {T<:AbstractMLFloat} = $F(T)
+    @eval $F(x::AbstractMLFloat) = $F(typeof(x))
 end

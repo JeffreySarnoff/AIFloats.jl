@@ -7,25 +7,24 @@ export AbstractMLFloat,
          AbsUnsignedMLFloat,
            AbsUnsignedExtendedMLFloat, AbsUnsignedFiniteMLFloat,
               UExtendedMLFloats,          UFiniteMLFloats,
-       #
-       codes, floats,
-       is_signed, is_unsigned, is_finite, is_extended,
+       MLFloats,
        #
        bitwidth, precision,
-       nBits, nSigBits, nFracBits, nSignBits, nExpBits,
-       nValues, nFracValues, nExpValues,
-       nNumericValues, nFiniteValues,
-       nMagnitudes, nFiniteMagnitudes, nNonzeroMagnitudes, nNonzeroFiniteMagnitudes,
-       nPosInfs, nNegInfs, nInfs, nZeros, nNaNs,
-       nPositiveValues, nNegativeValues, nPositiveFiniteValues, nNegativeFiniteValues,
-       nSubnormalValues, nSubnormalMagnitudes, nNormalValues, nNormalMagnitudes,
+       is_signed, is_unsigned, is_finite, is_extended,
+       codes, floats, typeforcode, typeforfloat,
        #
        exponent_min, exponent_max, exponent_bias,
-       subnormal_min, subnormal_max, normal_min, normal_max,
-       #
-       typeforcode, typeforfloat, CODE, FLOAT
+       subnormal_min, subnormal_max, normal_min, normal_max
 
-import Base: convert, oftype, precision
+public nBits, nSigBits, nFracBits, nSignBits, nExpBits,
+       nPosInfs, nNegInfs, nInfs, nZeros, nNaNs,
+       nValues, nFracValues, nExpValues,
+       nNumericValues, nFiniteValues,
+       nPositiveValues, nNegativeValues, nPositiveFiniteValues, nNegativeFiniteValues,
+       nSubnormalValues, nSubnormalMagnitudes, nNormalValues, nNormalMagnitudes,
+       nMagnitudes, nFiniteMagnitudes, nNonzeroMagnitudes, nNonzeroFiniteMagnitudes
+
+import Base: convert, oftype, precision, exponent_bias
 
 using Static, AlignedAllocs
 
@@ -35,9 +34,10 @@ include("type/abstract.jl")
 include("type/collective.jl")
 
 include("type/aspects.jl")
-include("type/extrema.jl")
+include("type/exp_extrema.jl")
 include("type/predicates.jl")
 
+include("concrete/indices.jl")
 include("concrete/foundation.jl")
 include("concrete/unsigned.jl")
 include("concrete/signed.jl")
