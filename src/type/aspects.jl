@@ -8,6 +8,10 @@ nSignBits(@nospecialize(T::Type{<:AbsUnsignedMLFloat{B,P}})) where {B,P} = 0
 nSignBits(@nospecialize(T::Type{<:AbsSignedMLFloat{B,P}})) where {B,P} = 1
 nExpBits(@nospecialize(T::Type{<:AbstractMLFloat{B,P}})) where {B,P} = (B - P) + (1 - nSignBits(T))
 
+nFracMagnitudes(@nospecialize(T::Type{<:AbstractMLFloat{B,P}})) where {B,P} = 2^nFracBits(T)
+nNonzeroFracMagnitudes(@nospecialize(T::Type{<:AbstractMLFloat{B,P}})) where {B,P} = nFracMagnitudes(T) - 1
+nFracValues(@nospecialize(T::Type{<:AbstractMLFloat{B,P}})) where {B,P} = nFracMagnitudes(T)
+
 # forms for use with AbstractMLFloat
 
 nNaNs(@nospecialize(T::Type{AbstractMLFloat})) = 1

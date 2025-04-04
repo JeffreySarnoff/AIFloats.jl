@@ -14,7 +14,7 @@ function foundation_floats(bits::Integer, sigbits::Integer)
 end
 
 function foundation_sigs(bits, sigbits)
-    foundation_sigs_seq(nFracValues(bits, sigbits), nFracCycles(bits, sigbits, IsUnsigned))
+    foundation_sigs_seq(nFracMagnitudes(bits, sigbits), nFracCycles(bits, sigbits, IsUnsigned))
 end
 
 function foundation_sigs_seq(n_fractions, n_fraction_cycles)
