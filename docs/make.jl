@@ -9,12 +9,12 @@ const numbered_pages = [
     file != "index.md" && splitext(file)[2] == ".md"
 ]
 
-makedocs(;
+makedocs(
     modules = [FloatsForML],
     authors = "Jeffrey Sarnoff <jeffrey.sarnoff@gmail.com>",
     repo = "https://github.com/DiademSpecialProjects/FloatsForML.jl/blob/{commit}{path}#{line}",
     sitename = "FloatsForML.jl",
-    format = Documenter.HTML(; 
+    format = Documenter.HTML( 
                  repolink="https://github.com/DiademSpecialProjects/FloatsForML.jl/",
                  prettyurls=get(ENV, "CI", "false") == "true",
                  canonical = "https://DiademSpecialProjects.github.io/FloatsForML.jl",
@@ -28,7 +28,7 @@ makedocs(;
             ],
    )
  
-deploydocs(; repo = "github.com/DiademSpecialProjects/FloatsForML.jl",
+deploydocs(  repo = "github.com/DiademSpecialProjects/FloatsForML.jl",
              target = "FloatsForML.jl",
              push_preview = true,
              devbranch = "main",

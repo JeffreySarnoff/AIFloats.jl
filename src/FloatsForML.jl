@@ -30,9 +30,9 @@ include("type/exp_extrema.jl")
 include("type/predicates.jl")
 
 include("concrete/indices.jl")
-#include("concrete/foundation.jl")
-#include("concrete/unsigned.jl")
-#include("concrete/signed.jl")
+include("concrete/foundation.jl")
+include("concrete/unsigned.jl")
+include("concrete/signed.jl")
 
 """
     MLFloats
@@ -69,9 +69,11 @@ end
 public nBits, nSigBits, nFracBits, nSignBits, nExpBits,
        nPosInfs, nNegInfs, nInfs, nZeros, nNaNs,
        nValues, nFracValues, nExpValues,
-       nNumericValues, nFiniteValues,
+       nNumericValues, nFiniteValues
+       
+#=,
        nPositiveValues, nNegativeValues, nPositiveFiniteValues, nNegativeFiniteValues,
        nSubnormalValues, nSubnormalMagnitudes, nNormalValues, nNormalMagnitudes,
        nMagnitudes, nFiniteMagnitudes, nNonzeroMagnitudes, nNonzeroFiniteMagnitudes
-
+=#
 end  # FloatsForML
