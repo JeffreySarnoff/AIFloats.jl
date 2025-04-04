@@ -58,3 +58,9 @@ It is an *unchecked error* to set bitwidth outside BitsMin..BitsMax
 typeforfloat(Bits) = FLOAT_TYPES[1 + (Bits <= BitsSmallMax)]
 typeforfloat(Bits::StaticInt{N}) where {N} =
     ifelse(Bits <= static(BitsSmallMax), FLOAT_TYPES[1], FLOAT_TYPES[2])
+
+# use with MLFloats()
+const IsUnsigned = false
+const IsSigned   = true
+const IsFinite   = false
+const IsExtended = true

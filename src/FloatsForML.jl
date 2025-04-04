@@ -7,7 +7,8 @@ export AbstractMLFloat,
          AbsUnsignedMLFloat,
            AbsUnsignedExtendedMLFloat, AbsUnsignedFiniteMLFloat,
               UExtendedMLFloats,          UFiniteMLFloats,
-       MLFloats,
+       #
+       MLFloats, IsSigned, IsUnsigned, IsExtended, IsFinite, 
        #
        bitwidth, precision,
        is_signed, is_unsigned, is_finite, is_extended,
@@ -66,14 +67,12 @@ function MLFloats(bits::Int, sigbits::Int, signed::Bool, extended::Bool)
     end
 end
 
-public nBits, nSigBits, nFracBits, nSignBits, nExpBits,
+export nBits, nSigBits, nFracBits, nSignBits, nExpBits,
        nPosInfs, nNegInfs, nInfs, nZeros, nNaNs,
        nValues, nFracValues, nExpValues,
-       nNumericValues, nFiniteValues
-       
-#=,
+       nNumericValues, nFiniteValues,
        nPositiveValues, nNegativeValues, nPositiveFiniteValues, nNegativeFiniteValues,
        nSubnormalValues, nSubnormalMagnitudes, nNormalValues, nNormalMagnitudes,
        nMagnitudes, nFiniteMagnitudes, nNonzeroMagnitudes, nNonzeroFiniteMagnitudes
-=#
+
 end  # FloatsForML
