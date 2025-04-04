@@ -46,7 +46,7 @@ for F in (:nBits, :nSigBits, :nFracBits, :nSignBits,
           :nPosInfs, :nNegInfs, :nInfs, :nZeros, :nNaNs,
           :nValues, :nNumericValues, :nFiniteValues,
           :nMagnitudes, :nFiniteMagnitudes, :nNonzeroMagnitudes, :nNonzeroFiniteMagnitudes,
-          :nPositiveValues, :nNegativeValues, :nPositiveFiniteValues, :nNegativeFiniteValues
+          :nPositiveValues, :nNegativeValues, :nPositiveFiniteValues, :nNegativeFiniteValues)
     @eval $F(x::T) where {T<:AbstractMLFloat} = $F(T)
 end
 
@@ -56,14 +56,6 @@ nBits(Bits, SigBits) = Bits
 nSigBits(Bits, SigBits) = SigBits
 nFracBits(Bits, SigBits) = SigBits - oftype(SigBits, 1)
 nSignBits(Bits, SigBits, IsSigned) = oftype(SigBits, 0) + IsSigned
-
-#
-
-
-
-
-
-
 
 # value counted aspects (characterizing aspects)
 
@@ -75,7 +67,8 @@ nOrdinaryValues(::Type{T}) where {T<:AbstractMLFloat} = nValues(T) - nSpecialVal
 nOrdinaryNumbers(::Type{T}) where {T<:AbstractMLFloat} = nOrdinaryValues(T)
 nOrdinaryMagnitudes(::Type{T}) where {T<:AbstractMLFloat} = nMagnitudes(T) - nSpecialMagnitudes(T)
 
-for F in (:nSpecialValues, :nSpecialNumbers, :nSpecialMagnitudes, :nOrdinaryValues, :nOrdinaryNumbers, :nOrdinaryMagnitudes)
+for F in (:nSpecialValues, :nSpecialNumbers, :nSpecialMagnitudes,
+          :nOrdinaryValues, :nOrdinaryNumbers, :nOrdinaryMagnitudes)
     @eval $F(x::T) where {T<:AbstractMLFloat} = $F(T)
 end
 
