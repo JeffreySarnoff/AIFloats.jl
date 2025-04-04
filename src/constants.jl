@@ -1,14 +1,7 @@
-<<<<<<< HEAD
 # 7 small bitwidths (UInt8 encoded)
 const BitsSmallMin, BitsSmallMax =  2, 8
 # 7 large bitwidths (UInt16 encoded)
 const BitsLargeMin, BitsLargeMax =  9, 15
-=======
-const BitsMin = 2
-const BitsMaxSmall = 8
-const BitsMinLarge = 9
-const BitsMax = 15
->>>>>>> origin/apply-bestie
 
 # internal assurances
 setprecision(BigFloat, 1024)
@@ -18,15 +11,6 @@ const Two = Int32(2)
 const fpTwo = Float32(2)
 const bfTwo = BigFloat(2)
 
-<<<<<<< HEAD
-=======
-const IsUnsigned = false
-const IsSigned   = true
-
-const IsFinite   = false
-const IsExtended = true
-
->>>>>>> origin/apply-bestie
 """
     CODE
 
@@ -75,10 +59,7 @@ It is an *unchecked error* to set bitwidth outside BitsMin..BitsMax
 
 typeforfloat(Bits) = FLOAT_TYPES[1 + (Bits <= BitsSmallMax)]
 typeforfloat(Bits::StaticInt{N}) where {N} =
-<<<<<<< HEAD
     ifelse(Bits <= static(BitsSmallMax), FLOAT_TYPES[1], FLOAT_TYPES[2]))
-=======
-    ifelse(Bits <= static(BitsMaxSmall), Float32, Float64)
 
 function typeforfloat(Bits::StaticInt{N}, SigBits::StaticInt{M}) where {N, M}
     if SigBits == static(1) && Bits >= static(7)
