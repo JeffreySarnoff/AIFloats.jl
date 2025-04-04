@@ -4,4 +4,4 @@ CurrentModule = FloatsForML
 
 # FloatsForML
 
-Documentation for [FloatsForML](https://github.com/JeffreySarnoff/FloatsForML.jl).
+Documentation for [FloatsForML](https://github.com/DiademSpecialProjects/FloatsForML.jl).
