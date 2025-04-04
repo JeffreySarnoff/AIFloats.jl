@@ -2,6 +2,7 @@
 
 [![Stable Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](https://DiademSpecialProjects.github.io/FloatsForML.jl/stable)
 [![In development documentation](https://img.shields.io/badge/docs-dev-blue.svg)](https://DiademSpecialProjects.github.io/FloatsForML.jl/dev)
+<!--
 [![Build Status](https://github.com/DiademSpecialProjects/FloatsForML.jl/workflows/Test/badge.svg)](https://github.com/DiademSpecialProjects/FloatsForML.jl/actions)
 [![Test workflow status](https://github.com/DiademSpecialProjects/FloatsForML.jl/actions/workflows/Test.yml/badge.svg?branch=main)](https://github.com/DiademSpecialProjects/FloatsForML.jl/actions/workflows/Test.yml?query=branch%3Amain)
 [![Lint workflow Status](https://github.com/DiademSpecialProjects/FloatsForML.jl/actions/workflows/Lint.yml/badge.svg?branch=main)](https://github.com/DiademSpecialProjects/FloatsForML.jl/actions/workflows/Lint.yml?query=branch%3Amain)
@@ -9,6 +10,7 @@
 [![Coverage](https://codecov.io/gh/DiademSpecialProjects/FloatsForML.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/DiademSpecialProjects/FloatsForML.jl)
 [![DOI](https://zenodo.org/badge/DOI/FIXME)](https://doi.org/FIXME)
 [![BestieTemplate](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/JuliaBesties/BestieTemplate.jl/main/docs/src/assets/badge.json)](https://github.com/JuliaBesties/BestieTemplate.jl)
+-->
 
 ## How to Cite
 
