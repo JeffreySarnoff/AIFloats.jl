@@ -1,6 +1,3 @@
-using FloatsForML
-using Test
-
-include("config.jl")
+using FloatsForML, Test
 
 @test 1 == 1
