@@ -111,6 +111,12 @@ end
 
 # alternative interpretation
 
+
+nFracValues(bits, sigbits) = 2^(sigbits - 1)
+nFracCycles(bits, sigbits, isUnsigned) = 2^(bits - sigbits + isUnsigned)
+nExpBits(bits, sigbits, isSigned) = bits - sigbits + isSigned
+nExpCycles(bits, sigbits) = 2^(bits - sigbits)
+
 nFracCycles(::Type{T}) where {T<:AbstractMLFloat} = nExpMagnitudes(T)
 nExpCycles(::Type{T}) where {T<:AbstractMLFloat} = nFracMagnitudes(T)
 
