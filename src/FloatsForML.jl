@@ -17,7 +17,7 @@ export AbstractMLFloat,
        nNumericValues, nFiniteValues,
        nMagnitudes, nFiniteMagnitudes, nNonzeroMagnitudes, nNonzeroFiniteMagnitudes,
        nPosInfs, nNegInfs, nInfs, nZeros, nNaNs,
-       nPositiveValues, nNegativeValues, nPositiveFiniteValues, nNegativeFiniteValues
+       nPositiveValues, nNegativeValues, nPositiveFiniteValues, nNegativeFiniteValues,
        nSubnormalValues, nSubnormalMagnitudes, nNormalValues, nNormalMagnitudes,
        #
        exponent_min, exponent_max, exponent_bias,

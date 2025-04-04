@@ -145,7 +145,7 @@ end
 # Zero, PosInf, NegInf are neither subnormal nor normal values
 # nSubnormalMagnitudes(AbstractMLFloat{Bits, 1}) == 0
 
-nSubnormalMagnitudes(::Type{T}) where {T<:AbstractMLFloat} = nFracValues(T) - One
+nSubnormalMagnitudes(::Type{T}) where {T<:AbstractMLFloat} = nFracValues(T) - 1
 nSubnormalValues(::Type{T}) where {T<:AbstractMLFloat} = nSubnormalMagnitudes(T) << is_signed(T)
 
 nNormalMagnitudes(::Type{T}) where {T<:AbstractMLFloat} = nFiniteMagnitudes(T) - nSubnormalMagnitudes(T)
