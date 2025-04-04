@@ -8,8 +8,6 @@ setprecision(BigFloat, 1024)
 
 const One = Int32(1)
 const Two = Int32(2)
-const fpTwo = Float32(2)
-const bfTwo = BigFloat(2)
 
 """
     CODE
@@ -59,8 +57,4 @@ It is an *unchecked error* to set bitwidth outside BitsMin..BitsMax
 
 typeforfloat(Bits) = FLOAT_TYPES[1 + (Bits <= BitsSmallMax)]
 typeforfloat(Bits::StaticInt{N}) where {N} =
-    ifelse(Bits <= static(BitsSmallMax), FLOAT_TYPES[1], FLOAT_TYPES[2]))
-
-typeforcode(Bits) = CODE_TYPES[1 + (Bits <= BitsSmallMax)]
-typeforcode(Bits::StaticInt{N}) where {N} =
-    ifelse(Bits <= static(BitsSmallMax), CODE_TYPES[1], CODE_TYPES[2]))
+    ifelse(Bits <= static(BitsSmallMax), FLOAT_TYPES[1], FLOAT_TYPES[2])
