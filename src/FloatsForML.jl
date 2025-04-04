@@ -16,14 +16,6 @@ export AbstractMLFloat,
        exponent_min, exponent_max, exponent_bias,
        subnormal_min, subnormal_max, normal_min, normal_max
 
-public nBits, nSigBits, nFracBits, nSignBits, nExpBits,
-       nPosInfs, nNegInfs, nInfs, nZeros, nNaNs,
-       nValues, nFracValues, nExpValues,
-       nNumericValues, nFiniteValues,
-       nPositiveValues, nNegativeValues, nPositiveFiniteValues, nNegativeFiniteValues,
-       nSubnormalValues, nSubnormalMagnitudes, nNormalValues, nNormalMagnitudes,
-       nMagnitudes, nFiniteMagnitudes, nNonzeroMagnitudes, nNonzeroFiniteMagnitudes
-
 import Base: convert, oftype, precision, exponent_bias
 
 using Static, AlignedAllocs
@@ -38,9 +30,9 @@ include("type/exp_extrema.jl")
 include("type/predicates.jl")
 
 include("concrete/indices.jl")
-include("concrete/foundation.jl")
-include("concrete/unsigned.jl")
-include("concrete/signed.jl")
+#include("concrete/foundation.jl")
+#include("concrete/unsigned.jl")
+#include("concrete/signed.jl")
 
 """
     MLFloats
@@ -73,5 +65,13 @@ function MLFloats(bits::Int, sigbits::Int, signed::Bool, extended::Bool)
         end
     end
 end
+
+public nBits, nSigBits, nFracBits, nSignBits, nExpBits,
+       nPosInfs, nNegInfs, nInfs, nZeros, nNaNs,
+       nValues, nFracValues, nExpValues,
+       nNumericValues, nFiniteValues,
+       nPositiveValues, nNegativeValues, nPositiveFiniteValues, nNegativeFiniteValues,
+       nSubnormalValues, nSubnormalMagnitudes, nNormalValues, nNormalMagnitudes,
+       nMagnitudes, nFiniteMagnitudes, nNonzeroMagnitudes, nNonzeroFiniteMagnitudes
 
 end  # FloatsForML

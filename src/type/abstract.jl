@@ -11,4 +11,4 @@ abstract type AbsUnsignedFiniteMLFloat{Bits, SigBits}   <: AbsUnsignedMLFloat{Bi
 abstract type AbsUnsignedExtendedMLFloat{Bits, SigBits} <: AbsUnsignedMLFloat{Bits, SigBits} end
 
 bitwidth(T::Type{<:AbstractMLFloat{Bits, SigBits}}) where {Bits, SigBits} = Bits
-precision(T::Type{<:AbstractMLFloat{Bits, SigBits}}) where {Bits, SigBits} = SigBits
+Base.precision(T::Type{<:AbstractMLFloat{Bits, SigBits}}) where {Bits, SigBits} = SigBits

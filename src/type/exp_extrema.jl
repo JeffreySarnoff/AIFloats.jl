@@ -1,4 +1,4 @@
-exponent_bias(::Type{T}) where {T<:AbstractMLFloat}       = 2^(nExpBits(T) - 1) - 1
+Base.exponent_bias(::Type{T}) where {T<:AbstractMLFloat}       = 2^(nExpBits(T) - 1) - 1
 biased_exponent_max(::Type{T}) where {T<:AbstractMLFloat} =  exponent_bias(T)
 biased_exponent_min(::Type{T}) where {T<:AbstractMLFloat} = -biased_exponent_max(T)
 

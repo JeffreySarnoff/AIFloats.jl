@@ -23,7 +23,7 @@ makedocs(;
             ),
     pages = [
                  "Home" => "index.md",
-                 "Overview" => "overview.md";
+                 "Overview" => "overview.md",
                  numbered_pages
             ],
    )
