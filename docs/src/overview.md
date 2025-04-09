@@ -23,7 +23,6 @@ For each member of this family of floating-point formats, this package provides 
 | Unsigned | Finite   | yes | yes | N/A   | UFinite     | u𝚏Binary\<bitwidth\>p\<precision\>      |
 | Unsigned | Extended | yes | yes | +Inf  | UExtended   | ueBinary\<bitwidth\>p\<precision\>      |
 
-Each family The bitwidths of the members of each family may be as low as 2 and as large as 15. The admissible precisions range from 1 through bitwidth-1.  All value sequences have subnormals *except for precisions of 1*.
+The bitwidths of the members of each family may be as low as 2 and as large as 15. The admissible precisions range from 1 through bitwidth-1.  
 
-
- consistent with the  is the first one of three that work together to provide a careful reference implementation for other's use and further the work of standard content validation.
+All value sequences have subnormals *except for precisions of 1*.

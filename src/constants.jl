@@ -43,7 +43,7 @@ The bitstype to be used for encoding values of `bitwidth`
 It is an *unchecked error* to set bitwidth outside BitsMin..BitsMax
 """ typeforcode
 
-typeforcode(Bits) = CODE_TYPES[1 + (Bits <= BitsSmallMax)]
+typeforcode(Bits) = CODE_TYPES[1 + (Bits > BitsSmallMax)]
 typeforcode(Bits::StaticInt{N}) where {N} =
     ifelse(Bits <= static(BitsSmallMax), CODE_TYPES[1], CODE_TYPES[2])
 
@@ -55,7 +55,7 @@ The bitstype to be used for storing values of `bitwidth`
 It is an *unchecked error* to set bitwidth outside BitsMin..BitsMax
 """ typeforfloat
 
-typeforfloat(Bits) = FLOAT_TYPES[1 + (Bits <= BitsSmallMax)]
+typeforfloat(Bits) = FLOAT_TYPES[1 + (Bits > BitsSmallMax)]
 typeforfloat(Bits::StaticInt{N}) where {N} =
     ifelse(Bits <= static(BitsSmallMax), FLOAT_TYPES[1], FLOAT_TYPES[2])
 
