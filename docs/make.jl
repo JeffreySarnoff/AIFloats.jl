@@ -1,5 +1,5 @@
 using FloatsForML
-using Documenter
+using Documenter, DocumenterMermaid
 
 push!(LOAD_PATH,"../src/")
 
@@ -20,6 +20,13 @@ makedocs(;
     pages = Any[
                 "Home" => "index.md",
                 "Overview" => "overview.md",
+                "Float Families" => "families.md",
+                "Type Specification" => "specification.md",
+                "Type Predicates" => "predicates.md",
+                "Computing over Type abstractions" => "abstractions.md",
+                "Operations" => "operations.md",
+                "Mathematical Functions" => "mathfunctions.md",
+                "Acknowledgements" => "acknowledgements.md",
                ])
 
 deploydocs(; 
