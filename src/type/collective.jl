@@ -14,8 +14,8 @@ struct SFiniteMLFloats{Bits, SigBits, Floats, Codes} <: AbsSignedFiniteMLFloat{B
 end
 
 struct SExtendedMLFloats{Bits, SigBits, Floats, Codes} <: AbsSignedExtendedMLFloat{Bits, SigBits}
-    floats::Floats
-    codes::Codes
+    floats::DenseVector{Floats}
+    codes::DenseVector{Codes}
 end
 
 codes(@nospecialize(x::AbstractMLFloat)) = x.codes
