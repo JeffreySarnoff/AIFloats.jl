@@ -1,16 +1,16 @@
 struct UFiniteMLFloats{Bits, SigBits, Floats, Codes} <: AbsUnsignedFiniteMLFloat{Bits, SigBits}
-    floats::Floats
-    codes::Codes
+    floats::DenseVector{Floats}
+    codes::DenseVector{Codes}
 end
 
 struct UExtendedMLFloats{Bits, SigBits, Floats, Codes} <: AbsUnsignedExtendedMLFloat{Bits, SigBits}
-    floats::Floats
-    codes::Codes
+    floats::DenseVector{Floats}
+    codes::DenseVector{Codes}
 end
 
 struct SFiniteMLFloats{Bits, SigBits, Floats, Codes} <: AbsSignedFiniteMLFloat{Bits, SigBits}
-    floats::Floats
-    codes::Codes
+    floats::DenseVector{Floats}
+    codes::DenseVector{Codes}
 end
 
 struct SExtendedMLFloats{Bits, SigBits, Floats, Codes} <: AbsSignedExtendedMLFloat{Bits, SigBits}
