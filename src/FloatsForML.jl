@@ -7,15 +7,17 @@ export AbstractMLFloat,
          AbsUnsignedMLFloat,
            AbsUnsignedExtendedMLFloat, AbsUnsignedFiniteMLFloat,
               UExtendedMLFloats,          UFiniteMLFloats,
-       #
        MLFloats, IsSigned, IsUnsigned, IsExtended, IsFinite, 
-       #
        bitwidth, precision,
        is_signed, is_unsigned, is_finite, is_extended,
        codes, floats, typeforcode, typeforfloat,
-       #
        exponent_min, exponent_max, exponent_bias,
-       subnormal_min, subnormal_max, normal_min, normal_max
+       subnormal_min, subnormal_max, normal_min, normal_max,
+       nBits, nSigBits, nFracBits, nSignBits, nExpBits,
+       nPosInfs, nNegInfs, nInfs, nZeros, nNaNs,
+       nValues,
+       nMagnitudes, nFiniteMagnitudes, nNumericValues, nFiniteValues,
+       nSubnormalMagnitudes, nNormalMagnitudes, nSubnormalValues, nNormalValues
 
 import Base: convert, oftype, precision, exponent_bias
 
@@ -66,14 +68,5 @@ function MLFloats(bits::Int, sigbits::Int, signed::Bool, extended::Bool)
         end
     end
 end
-
-public nBits, nSigBits, nFracBits, nSignBits, nExpBits,
-       nPosInfs, nNegInfs, nInfs, nZeros, nNaNs,
-       nValues, nFracMagnitudes, nExpMagnitudes,
-       nNonzeroFracMagnitudes, nNonzeroExpMagnitudes, 
-       nNumericValues, nFiniteValues,
-       nPositiveValues, nNegativeValues, nPositiveFiniteValues, nNegativeFiniteValues,
-       nSubnormalValues, nSubnormalMagnitudes, nNormalValues, nNormalMagnitudes,
-       nMagnitudes, nFiniteMagnitudes, nNonzeroMagnitudes, nNonzeroFiniteMagnitudes
 
 end  # FloatsForML
