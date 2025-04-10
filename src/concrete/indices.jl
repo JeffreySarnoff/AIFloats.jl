@@ -27,4 +27,4 @@ convert the Julia index `x` into a P3109 encoding value as a UInt16
     code
 end
 
-@inline index_to_offset(bits::Integer, x)::CODE = index_to_offset(static(bits), x)
+@inline index_to_offset(bits::Integer, x)::CODE = (x % UInt16) - one(UInt16)

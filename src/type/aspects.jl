@@ -16,31 +16,31 @@ nNonzeroFracMagnitudes(@nospecialize(T::Type{<:AbstractFloatML{B,P}})) where {B,
 
 # forms for use with AbstractFloatML
 
-nNaNs(@nospecialize(T::Type{AbstractFloatML})) = 1
-nZeros(@nospecialize(T::Type{AbstractFloatML})) = 1
+nNaNs(@nospecialize(T::Type{<:AbstractFloatML})) = 1
+nZeros(@nospecialize(T::Type{<:AbstractFloatML})) = 1
 
-nInfs(@nospecialize(T::Type{AbstractFloatML})) = is_extended(T) * (is_signed(T) + is_extended(T))
-nPosInfs(@nospecialize(T::Type{AbstractFloatML})) = zero(Int8) + is_extended(T)
-nNegInfs(@nospecialize(T::Type{AbstractFloatML})) = zero(Int8) + (is_signed(T)  & is_extended(T))
+nInfs(@nospecialize(T::Type{<:AbstractFloatML})) = is_extended(T) * (is_signed(T) + is_extended(T))
+nPosInfs(@nospecialize(T::Type{<:AbstractFloatML})) = zero(Int8) + is_extended(T)
+nNegInfs(@nospecialize(T::Type{<:AbstractFloatML})) = zero(Int8) + (is_signed(T)  & is_extended(T))
 
-nValues(@nospecialize(T::Type{AbstractFloatML{B,K}})) where {B,K} = 2^B # all values
-nNumericValues(@nospecialize(T::Type{AbstractFloatML})) = nValues(T) - 1 # remove NaN
-nFiniteValues(@nospecialize(T::Type{AbstractFloatML})) = nNumericValues(T) - nInfs(T)
+nValues(T::Type{<:AbstractFloatML{B,K}}) where {B,K} = 2^B # all values
+nNumericValues(@nospecialize(T::Type{<:AbstractFloatML})) = nValues(T) - 1 # remove NaN
+nFiniteValues(@nospecialize(T::Type{<:AbstractFloatML})) = nNumericValues(T) - nInfs(T)
 
-function nMagnitudes(@nospecialize(T::Type{AbsSFloatML}))
+function nMagnitudes(@nospecialize(T::Type{<:AbsSFloatML}))
     n = nNumericValues(T)
     (n + isodd(n)) >> 1 # protect Zero
 end
 
-nNonzeroMagnitudes(@nospecialize(T::Type{AbstractFloatML})) = nMagnitudes(T) - 1 # remove Zero
-nFiniteMagnitudes(@nospecialize(T::Type{AbstractFloatML})) = nMagnitudes(T) - nPosInfs(T)
-nNonzeroFiniteMagnitudes(@nospecialize(T::Type{AbstractFloatML})) = nFiniteMagnitudes(T) - 1
+nNonzeroMagnitudes(@nospecialize(T::Type{<:AbstractFloatML})) = nMagnitudes(T) - 1 # remove Zero
+nFiniteMagnitudes(@nospecialize(T::Type{<:AbstractFloatML})) = nMagnitudes(T) - nPosInfs(T)
+nNonzeroFiniteMagnitudes(@nospecialize(T::Type{<:AbstractFloatML})) = nFiniteMagnitudes(T) - 1
 
-nPositiveValues(@nospecialize(T::Type{AbsSFloatML})) = nMagnitudes(T) - 1    # remove Zero
-nNegativeValues(@nospecialize(T::Type{AbsSFloatML})) = nPositiveValues(T)
+nPositiveValues(@nospecialize(T::Type{<:AbsSFloatML})) = nMagnitudes(T) - 1    # remove Zero
+nNegativeValues(@nospecialize(T::Type{<:AbsSFloatML})) = nPositiveValues(T)
 
-nPositiveFiniteValues(@nospecialize(T::Type{AbsUFloatML})) = nPositiveValues(T) - nPosInfs(T)
-nNegativeFiniteValues(@nospecialize(T::Type{AbsSFloatML})) = nNegativeValues(T) - nNegInfs(T)
+nPositiveFiniteValues(@nospecialize(T::Type{<:AbsUFloatML})) = nPositiveValues(T) - nPosInfs(T)
+nNegativeFiniteValues(@nospecialize(T::Type{<:AbsSFloatML})) = nNegativeValues(T) - nNegInfs(T)
 
 for F in (:nBits, :nSigBits, :nFracBits, :nSignBits, :nExpBits,
           :nPosInfs, :nNegInfs, :nInfs, :nZeros, :nNaNs,
@@ -65,7 +65,7 @@ nNonzeroFracMagnitudes(Bits, SigBits) = nFracMagnitudes(Bits, SigBits) - 1
 
 nSpecialValues(::Type{T}) where {T<:AbstractFloatML} = nNaNs(T) + nZeros(T) + nInfs(T)
 nSpecialNumbers(::Type{T}) where {T<:AbstractFloatML} = nZeros(T) + nInfs(T)
-nSpecialMagnitudes(::Type{T}) where {T<:AbstractFloatML} = nPosZeros(T) + nPosInfs(T)
+nSpecialMagnitudes(::Type{T}) where {T<:AbstractFloatML} = nZeros(T) + nPosInfs(T)
 
 nOrdinaryValues(::Type{T}) where {T<:AbstractFloatML} = nValues(T) - nSpecialValues(T)
 nOrdinaryNumbers(::Type{T}) where {T<:AbstractFloatML} = nOrdinaryValues(T)
@@ -79,12 +79,10 @@ end
 # value counted aspects (derived aspects)
 
 nNonNumericValues(::Type{T}) where {T<:AbstractFloatML} = One # the unique NaN
-nNumericValues(::Type{T}) where {T<:AbstractFloatML} = nValues(T) - nNonNumericValues(T)
-nNonZeroNumericValues(::Type{T}) where {T<:AbstractFloatML} = nNumericValues(T) - nZeroValues(T)
+nNonZeroNumericValues(::Type{T}) where {T<:AbstractFloatML} = nNumericValues(T) - nZeros(T)
 
 # finite values are numeric values by definition
-nFiniteValues(::Type{T}) where {T<:AbstractFloatML} = nNumericValues(T) - nInfValues(T)
-nNonZeroFiniteValues(::Type{T}) where {T<:AbstractFloatML} =  nFiniteValues(T) - nZeroValues(T)
+nNonZeroFiniteValues(::Type{T}) where {T<:AbstractFloatML} =  nFiniteValues(T) - nZeros(T)
 
 # We have one zero, it is considered neither positive nor negative in these definitions.
 # When a sign must be assigned to have a well-formed expression, positive is used.
@@ -99,7 +97,7 @@ end
 # Zero, PosInf, NegInf are neither subnormal nor normal values
 # nSubnormalMagnitudes(AbstractFloatML{Bits, 1}) == 0
 
-nSubnormalMagnitudes(::Type{T}) where {T<:AbstractFloatML} = nFracValues(T) - 1
+nSubnormalMagnitudes(::Type{T}) where {T<:AbstractFloatML} = nFracMagnitudes(T) - 1
 nSubnormalValues(::Type{T}) where {T<:AbstractFloatML} = nSubnormalMagnitudes(T) << is_signed(T)
 
 nNormalMagnitudes(::Type{T}) where {T<:AbstractFloatML} = nFiniteMagnitudes(T) - nSubnormalMagnitudes(T)
@@ -111,7 +109,7 @@ end
 
 # alternative interpretation
 
-nFracValues(bits, sigbits) = 2^(sigbits - 1)
+nFracMagnitudes(bits, sigbits) = 2^(sigbits - 1)
 nFracCycles(bits, sigbits, isUnsigned) = 2^(bits - sigbits + isUnsigned)
 nExpBits(bits, sigbits, isSigned) = bits - sigbits + isSigned
 nExpCycles(bits, sigbits) = nFracMagnitudes(bits, sigbits)
