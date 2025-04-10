@@ -7,7 +7,8 @@ export AbstractFloatML,
          AbsUnsignedFloatML,
            AbsUnsignedExtendedFloatML, AbsUnsignedFiniteFloatML,
               UExtendedFloatsML,          UFiniteFloatsML,
-       MLFLOATS, IsSigned, IsUnsigned, IsExtended, IsFinite, 
+       MLFloats,
+       IsSigned, IsUnsigned, IsExtended, IsFinite, 
        bitwidth, precision,
        is_signed, is_unsigned, is_finite, is_extended,
        codes, floats, typeforcode, typeforfloat,
@@ -38,22 +39,22 @@ include("concrete/unsigned.jl")
 include("concrete/signed.jl")
 
 """
-    MLFLOATS
+    MLFloats
 
 examples
 
 ```
-    UF42   = MLFLOATS( 4,  2, IsUnsigned, IsFinite)
-    UE64   = MLFLOATS( 6,  4, IsUnsigned, IsExtended)
-    SE84   = MLFLOATS( 8,  4, IsSigned,   IsExtended)
-    SE1512 = MLFLOATS(15, 12, IsSigned,   IsExtended)
+    UF42   = MLFloats( 4,  2, IsUnsigned, IsFinite)
+    UE64   = MLFloats( 6,  4, IsUnsigned, IsExtended)
+    SE84   = MLFloats( 8,  4, IsSigned,   IsExtended)
+    SE1512 = MLFloats(15, 12, IsSigned,   IsExtended)
 
     seBinary84_encodings = codes(SE84)
     seBinary84_valuation = floats(SE84)
 
 ````
 """
-function MLFLOATS(bits::Int, sigbits::Int, signed::Bool, extended::Bool)
+function MLFloats(bits::Int, sigbits::Int, signed::Bool, extended::Bool)
     if signed
         if extended
             SExtendedFloatsML(bits, sigbits)
