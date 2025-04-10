@@ -1,6 +1,6 @@
-# FloatsForML
+## >> under construction -- let it be here quietly until ready happens -- thank you << 
 
-# FloatsForML.jl
+## FloatsForML.jl
 ### The internal constructive model for MicroFloats.
 ##### Copyright 2024-2025 by Jeffrey Sarnoff
 
