@@ -1,47 +1,56 @@
 # computing over Type Abstractions
 
-nBits(@nospecialize(T::Type{<:AbstractFloatML{B,P}})) where {B,P} = B
-nSigBits(@nospecialize(T::Type{<:AbstractFloatML{B,P}})) where {B,P} = P
-nFracBits(@nospecialize(T::Type{<:AbstractFloatML{B,P}})) where {B,P} = P - 1
+nBits(::Type{<:AbstractFloatML{Bits, SigBits}}) where {Bits, SigBits} = Bits
+nSigBits(::Type{<:AbstractFloatML{Bits, SigBits}}) where {Bits, SigBits} = SigBits
+nFracBits(::Type{<:AbstractFloatML{Bits, SigBits}}) where {Bits, SigBits} = SigBits - 1
 
-nSignBits(@nospecialize(T::Type{<:AbsUFloatML{B,P}})) where {B,P} = 0
-nSignBits(@nospecialize(T::Type{<:AbsSFloatML{B,P}})) where {B,P} = 1
-nExpBits(@nospecialize(T::Type{<:AbstractFloatML{B,P}})) where {B,P} = (B - P) + (1 - nSignBits(T))
+nSignBits(::Type{<:AbsSFloatML{Bits, SigBits}}) where {Bits, SigBits} = 1
+nSignBits(::Type{<:AbsUFloatML{Bits, SigBits}}) where {Bits, SigBits} = 0
 
-nExpMagnitudes(@nospecialize(T::Type{<:AbstractFloatML{B,P}})) where {B,P} = 2^nExpBits(T)
-nNonzeroExpMagnitudes(@nospecialize(T::Type{<:AbstractFloatML{B,P}})) where {B,P} = nExpMagnitudes(T) - 1
+nExpBits(::Type{<:AbsSFloatML{Bits, SigBits}}) where {Bits, SigBits} = 
+    (Bits - SigBits)
+nExpBits(::Type{<:AbsUFloatML{Bits, SigBits}}) where {Bits, SigBits} = 
+    (Bits - SigBits) + 1
 
-nFracMagnitudes(@nospecialize(T::Type{<:AbstractFloatML{B,P}})) where {B,P} = 2^nFracBits(T)
-nNonzeroFracMagnitudes(@nospecialize(T::Type{<:AbstractFloatML{B,P}})) where {B,P} = nFracMagnitudes(T) - 1
+nExpMagnitudes(::Type{T}) where {T<:AbstractFloatML} = 2^nExpBits(T)
 
+nNonzeroExpMagnitudes(::Type{T}) where {T<:AbstractFloatML} =
+    nExpMagnitudes(T) - 1
+
+nFracMagnitudes(::Type{T}) where {T<:AbstractFloatML} =
+    2^nFracBits(T)
+
+nNonzeroFracMagnitudes(::Type{T}) where {T<:AbstractFloatML} =
+    nFracMagnitudes(T) - 1
+    
 # forms for use with AbstractFloatML
 
-nNaNs(@nospecialize(T::Type{<:AbstractFloatML})) = 1
-nZeros(@nospecialize(T::Type{<:AbstractFloatML})) = 1
+nNaNs(::Type{T}) where {T<:AbstractFloatML} = 1
+nZeros(::Type{T}) where {T<:AbstractFloatML} = 1
 
-nInfs(@nospecialize(T::Type{<:AbstractFloatML})) = is_extended(T) * (is_signed(T) + is_extended(T))
-nPosInfs(@nospecialize(T::Type{<:AbstractFloatML})) = zero(Int8) + is_extended(T)
-nNegInfs(@nospecialize(T::Type{<:AbstractFloatML})) = zero(Int8) + (is_signed(T)  & is_extended(T))
+nInfs(::Type{T}) where {T<:AbstractFloatML} = is_extended(T) * (is_signed(T) + is_extended(T))
+nPosInfs(::Type{T}) where {T<:AbstractFloatML} = zero(Int8) + is_extended(T)
+nNegInfs(::Type{T}) where {T<:AbstractFloatML} = zero(Int8) + (is_signed(T)  & is_extended(T))
 
-nValues(T::Type{<:AbstractFloatML}) = 2^nBits(T)
+nValues(::Type{T}) where {T<:AbstractFloatML} = 2^nBits(T)
 
-nNumericValues(@nospecialize(T::Type{<:AbstractFloatML})) = nValues(T) - 1 # remove NaN
-nFiniteValues(@nospecialize(T::Type{<:AbstractFloatML})) = nNumericValues(T) - nInfs(T)
+nNumericValues(::Type{T}) where {T<:AbstractFloatML} = nValues(T) - 1 # remove NaN
+nFiniteValues(::Type{T}) where {T<:AbstractFloatML} = nNumericValues(T) - nInfs(T)
 
-function nMagnitudes(@nospecialize(T::Type{<:AbsSFloatML}))
+function nMagnitudes(::Type{T}) where {T<:AbsSFloatML}
     n = nNumericValues(T)
     (n + isodd(n)) >> 1 # protect Zero
 end
 
-nNonzeroMagnitudes(@nospecialize(T::Type{<:AbstractFloatML})) = nMagnitudes(T) - 1 # remove Zero
-nFiniteMagnitudes(@nospecialize(T::Type{<:AbstractFloatML})) = nMagnitudes(T) - nPosInfs(T)
-nNonzeroFiniteMagnitudes(@nospecialize(T::Type{<:AbstractFloatML})) = nFiniteMagnitudes(T) - 1
+nNonzeroMagnitudes(::Type{T}) where {T<:AbstractFloatML} = nMagnitudes(T) - 1 # remove Zero
+nFiniteMagnitudes(::Type{T}) where {T<:AbstractFloatML} = nMagnitudes(T) - nPosInfs(T)
+nNonzeroFiniteMagnitudes(::Type{T}) where {T<:AbstractFloatML} = nFiniteMagnitudes(T) - 1
 
-nPositiveValues(@nospecialize(T::Type{<:AbsSFloatML})) = nMagnitudes(T) - 1    # remove Zero
-nNegativeValues(@nospecialize(T::Type{<:AbsSFloatML})) = nPositiveValues(T)
+nPositiveValues(::Type{T}) where {T<:AbsSFloatML} = nMagnitudes(T) - 1    # remove Zero
+nNegativeValues(::Type{T}) where {T<:AbsSFloatML} = nPositiveValues(T)
 
-nPositiveFiniteValues(@nospecialize(T::Type{<:AbsUFloatML})) = nPositiveValues(T) - nPosInfs(T)
-nNegativeFiniteValues(@nospecialize(T::Type{<:AbsSFloatML})) = nNegativeValues(T) - nNegInfs(T)
+nPositiveFiniteValues(::Type{T}) where {T<:AbsUFloatML} = nPositiveValues(T) - nPosInfs(T)
+nNegativeFiniteValues(::Type{T}) where {T<:AbsSFloatML} = nNegativeValues(T) - nNegInfs(T)
 
 for F in (:nBits, :nSigBits, :nFracBits, :nSignBits, :nExpBits,
           :nPosInfs, :nNegInfs, :nInfs, :nZeros, :nNaNs,
