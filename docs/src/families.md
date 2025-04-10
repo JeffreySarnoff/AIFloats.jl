@@ -10,10 +10,10 @@ For each member of this family of floating-point formats, this package provides 
   
 | Sort | Kind | 1 NaN | 1 Zero | Infinity | Family      | Generalized Name |
 |------|------|-------|--------|----------|-------------|:----------------:|
-| Signed   | Finite   | yes | yes | N/A   | SFinite     | s𝚏Binary\\<bitwidth\\>p\\<precision\\>      |
-| Signed   | Extended | yes | yes | ±Inf  | SExtended   | seBinary<bitwidth>p<precision>      |
-| Unsigned | Finite   | yes | yes | N/A   | UFinite     | u𝚏Binary<bitwidth>p<precision>      |
-| Unsigned | Extended | yes | yes | +Inf  | UExtended   | ueBinary<bitwidth>p<precision>      |
+| Signed   | Finite   | yes | yes | N/A   | SFinite     | s𝚏Binary _bitwidth_ p _precision_      |
+| Signed   | Extended | yes | yes | ±Inf  | SExtended   | seBinary _bitwidth_ p _precision_   |
+| Unsigned | Finite   | yes | yes | N/A   | UFinite     | u𝚏Binary _bitwidth_ p _precision_    |
+| Unsigned | Extended | yes | yes | +Inf  | UExtended   | ueBinary _bitwidth_ p _precision_   |
 
 The bitwidths of the members of each family may be as low as 2 and as large as 15. The admissible precisions range from 1 through bitwidth-1.  
 
