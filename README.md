@@ -1,8 +1,15 @@
-## >> under construction -- let it be here quietly until ready happens -- thank you << 
+### *under construction* -- *thank you for waiting* 
+-----
+|        |        |   this pkg is visable to facillate intertwined work    |        |        |
+|--------|--------|--------------------------------------------------------|--------|--------|
 
-## FloatsForML.jl
+****
+
+
+
+### FloatsForML.jl
 ### The internal constructive model for MicroFloats.
-##### Copyright 2024-2025 by Jeffrey Sarnoff
+#### Copyright 2024-2025 by Jeffrey Sarnoff
 
 ----
 [![Stable Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](https://DiademSpecialProjects.github.io/FloatsForML.jl/stable)
