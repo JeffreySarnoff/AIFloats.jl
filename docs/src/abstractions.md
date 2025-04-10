@@ -33,11 +33,18 @@ Every predicate, count, and extremal value available in [Type Specifics] is defi
 
 ```julia
 
-nValues(T::Type{AbstractFloatML{Bits,Precision}}) where {Bits,Precision} = 2^Bits
-nNumericValues(T::Type{AbstractFloatML}) = nValues(T) - 1 # remove NaN
-nFiniteValues(T::Type{AbstractFloatML}) = nNumericValues(T) - nInfs(T) # remove Infs
+bitwidth(::Type{<:AbstractFloatML{Bits, SigBits}}) where {Bits, SigBits} = Bits
+Base.sizeof(::Type{<:AbstractFloatML{Bits, SigBits}}) where {Bits, SigBits} = max(1, Bits >> 3)
+Base.precision(::Type{<:AbstractFloatML{Bits, SigBits}}) where {Bits, SigBits} = SigBits
 
-nInfs(T::Type{AbstractFloatML}) = is_extended(T) * (is_signed(T) + is_extended(T))
+nExpBits(T::Type{<:AbstractFloatML{Bits, SigBits}}) where {Bits, SigBits} = 
+    Bits - SigBits + is_unsigned(T)
+
+nValues(T::Type{<:AbstractFloatML}) = 2^nBits(T)
+nNumericValues(T::Type{<:AbstractFloatML}) = nValues(T) - 1 # remove NaN
+nFiniteValues(T::Type{<:AbstractFloatML}) = nNumericValues(T) - nInfs(T) # remove Infs
+
+nInfs(T::Type{<:AbstractFloatML}) = is_extended(T) * (is_signed(T) + is_extended(T))
 ```
 and then
 ```
