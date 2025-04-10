@@ -108,8 +108,6 @@ for (F) in (:nSubnormalValues, :nSubnormalMagnitudes, :nNormalValues, :nNormalMa
 end
 
 # alternative interpretation
-
-nFracMagnitudes(bits, sigbits) = 2^(sigbits - 1)
 nFracCycles(bits, sigbits, isUnsigned) = 2^(bits - sigbits + isUnsigned)
 nExpBits(bits, sigbits, isSigned) = bits - sigbits + isSigned
 nExpCycles(bits, sigbits) = nFracMagnitudes(bits, sigbits)
