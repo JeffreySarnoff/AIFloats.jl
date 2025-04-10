@@ -7,22 +7,22 @@
     S--&gt; SE[AbsSExtendedFloatML]
     U--&gt; UF[AbsUFiniteFloatML]
     U--&gt; UE[AbsUExtendedFloatML]</div><hr/><div class="mermaid">graph LR
-    A[AbstracFloatML] 
+    A[AbstractFloatML] 
     A--&gt; S[Signed]
     A--&gt; U[Unsigned]
     S--&gt; SF[Finite ⊕ NaN]
     S--&gt; SE[Finite ⊕ Inf ⊕ NaN]
     U--&gt; UF[Finite ⊕ NaN]
     U--&gt; UE[Finite ⊕ Inf ⊕ NaN]</div><hr/><h3 id="Computing-over-these-abstractions"><a class="docs-heading-anchor" href="#Computing-over-these-abstractions">Computing over these abstractions</a><a id="Computing-over-these-abstractions-1"></a><a class="docs-heading-anchor-permalink" href="#Computing-over-these-abstractions" title="Permalink"></a></h3><p>Every predicate, count, and extremal value available in [Type Specifics] is defined over these abstract types. We do not require instantiations to know characterizations.  The way that we stage our abstract parameterizations allows the freedom to use declarations like this:</p><pre><code class="language-julia hljs">
-nValues(T::Type{AbstractMLFloat{Bits,Precision}}) where {Bits,Precision} = 2^Bits
-nNumericValues(T::Type{AbstractMLFloat}) = nValues(T) - 1 # remove NaN
-nFiniteValues(T::Type{AbstractMLFloat}) = nNumericValues(T) - nInfs(T) # remove Infs
+nValues(T::Type{AbstractFloatML{Bits,Precision}}) where {Bits,Precision} = 2^Bits
+nNumericValues(T::Type{AbstractFloatML}) = nValues(T) - 1 # remove NaN
+nFiniteValues(T::Type{AbstractFloatML}) = nNumericValues(T) - nInfs(T) # remove Infs
 
-nInfs(T::Type{AbstractMLFloat}) = is_extended(T) * (is_signed(T) + is_extended(T))</code></pre><p>and then</p><pre><code class="nohighlight hljs">for F in (:nValues, :nNumericValues, :nFiniteValues, :nInfs)
-    @eval $(F)(x::AbstractMLFloat) = $(F)(typeof(x))
+nInfs(T::Type{AbstractFloatML}) = is_extended(T) * (is_signed(T) + is_extended(T))</code></pre><p>and then</p><pre><code class="nohighlight hljs">for F in (:nValues, :nNumericValues, :nFiniteValues, :nInfs)
+    @eval $(F)(x::AbstractFloatML) = $(F)(typeof(x))
 end</code></pre><script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
 mermaid.initialize({
     startOnLoad: true,
     theme: "neutral"
 });
-</script></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../specifics/">« Type Specifics</a><a class="docs-footer-nextpage" href="../operations/">Operations »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.10.1 on <span class="colophon-date" title="Thursday 10 April 2025 00:56">Thursday 10 April 2025</span>. Using Julia version 1.11.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+</script></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../specifics/">« Type Specifics</a><a class="docs-footer-nextpage" href="../operations/">Operations »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.10.1 on <span class="colophon-date" title="Thursday 10 April 2025 02:43">Thursday 10 April 2025</span>. Using Julia version 1.11.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
