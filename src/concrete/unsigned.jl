@@ -1,4 +1,4 @@
-function UFiniteFloatsML(bits, sigbits)
+function UFiniteFloatsML(bits::I, sigbits::I) where {I<:Integer}
     codetype  = typeforcode(bits)
     floattype = typeforfloat(bits)
 
@@ -14,7 +14,7 @@ function UFiniteFloatsML(bits, sigbits)
     UFiniteFloatsML{bits, sigbits, floattype, codetype}(fpmem, encoding)
 end
 
-function UExtendedFloatsML(bits, sigbits)
+function UExtendedFloatsML(bits::I, sigbits::I) where {I<:Integer}
     codetype  = typeforcode(bits)
     floattype = typeforfloat(bits)
 

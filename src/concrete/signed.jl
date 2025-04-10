@@ -1,5 +1,4 @@
-
-function SFiniteFloatsML(bits, sigbits)
+function SFiniteFloatsML(bits::I, sigbits::I) where {I<:Integer}
     codetype  = typeforcode(bits)
     floattype = typeforfloat(bits)
 
@@ -15,7 +14,7 @@ function SFiniteFloatsML(bits, sigbits)
     SFiniteFloatsML{bits, sigbits, floattype, codetype}(fpmem, encoding)
 end
 
-function SExtendedFloatsML(bits, sigbits)
+function SExtendedFloatsML(bits::I, sigbits::I) where {I<:Integer}
     codetype  = typeforcode(bits)
     floattype = typeforfloat(bits)
 
