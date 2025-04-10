@@ -16,7 +16,7 @@ graph TD
 
 ```mermaid
 graph LR
-    A[AbstracFloatML] 
+    A[AbstractFloatML] 
     A--> S[Signed]
     A--> U[Unsigned]
     S--> SF[Finite ⊕ NaN]
@@ -33,15 +33,15 @@ Every predicate, count, and extremal value available in [Type Specifics] is defi
 
 ```julia
 
-nValues(T::Type{AbstractMLFloat{Bits,Precision}}) where {Bits,Precision} = 2^Bits
-nNumericValues(T::Type{AbstractMLFloat}) = nValues(T) - 1 # remove NaN
-nFiniteValues(T::Type{AbstractMLFloat}) = nNumericValues(T) - nInfs(T) # remove Infs
+nValues(T::Type{AbstractFloatML{Bits,Precision}}) where {Bits,Precision} = 2^Bits
+nNumericValues(T::Type{AbstractFloatML}) = nValues(T) - 1 # remove NaN
+nFiniteValues(T::Type{AbstractFloatML}) = nNumericValues(T) - nInfs(T) # remove Infs
 
-nInfs(T::Type{AbstractMLFloat}) = is_extended(T) * (is_signed(T) + is_extended(T))
+nInfs(T::Type{AbstractFloatML}) = is_extended(T) * (is_signed(T) + is_extended(T))
 ```
 and then
 ```
 for F in (:nValues, :nNumericValues, :nFiniteValues, :nInfs)
-    @eval $(F)(x::AbstractMLFloat) = $(F)(typeof(x))
+    @eval $(F)(x::AbstractFloatML) = $(F)(typeof(x))
 end
 ```

@@ -59,7 +59,7 @@ typeforfloat(Bits) = FLOAT_TYPES[1 + (Bits > BitsSmallMax)]
 typeforfloat(Bits::StaticInt{N}) where {N} =
     ifelse(Bits <= static(BitsSmallMax), FLOAT_TYPES[1], FLOAT_TYPES[2])
 
-# use with MLFloats()
+# use with MLFLOATS()
 const IsUnsigned = false
 const IsSigned   = true
 const IsFinite   = false

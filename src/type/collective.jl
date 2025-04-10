@@ -1,22 +1,22 @@
-struct UFiniteMLFloats{Bits, SigBits, Floats, Codes} <: AbsUnsignedFiniteMLFloat{Bits, SigBits}
+struct UFiniteFloatsML{Bits, SigBits, Floats, Codes} <: AbsUnsignedFiniteFloatML{Bits, SigBits}
     floats::DenseVector{Floats}
     codes::DenseVector{Codes}
 end
 
-struct UExtendedMLFloats{Bits, SigBits, Floats, Codes} <: AbsUnsignedExtendedMLFloat{Bits, SigBits}
+struct UExtendedFloatsML{Bits, SigBits, Floats, Codes} <: AbsUnsignedExtendedFloatML{Bits, SigBits}
     floats::DenseVector{Floats}
     codes::DenseVector{Codes}
 end
 
-struct SFiniteMLFloats{Bits, SigBits, Floats, Codes} <: AbsSignedFiniteMLFloat{Bits, SigBits}
+struct SFiniteFloatsML{Bits, SigBits, Floats, Codes} <: AbsSignedFiniteFloatML{Bits, SigBits}
     floats::DenseVector{Floats}
     codes::DenseVector{Codes}
 end
 
-struct SExtendedMLFloats{Bits, SigBits, Floats, Codes} <: AbsSignedExtendedMLFloat{Bits, SigBits}
+struct SExtendedFloatsML{Bits, SigBits, Floats, Codes} <: AbsSignedExtendedFloatML{Bits, SigBits}
     floats::DenseVector{Floats}
     codes::DenseVector{Codes}
 end
 
-codes(@nospecialize(x::AbstractMLFloat)) = x.codes
-floats(@nospecialize(x::AbstractMLFloat))= x.floats
+codes(@nospecialize(x::AbstractFloatML)) = x.codes
+floats(@nospecialize(x::AbstractFloatML))= x.floats

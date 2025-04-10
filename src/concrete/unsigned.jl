@@ -1,4 +1,4 @@
-function UFiniteMLFloats(bits, sigbits)
+function UFiniteFloatsML(bits, sigbits)
     codetype  = typeforcode(bits)
     floattype = typeforfloat(bits)
 
@@ -11,10 +11,10 @@ function UFiniteMLFloats(bits, sigbits)
     fpmem = memalign_clear(floattype, length(fpvals))
     copyto!(fpmem, fpvals)
 
-    UFiniteMLFloats{bits, sigbits, floattype, codetype}(fpmem, encoding)
+    UFiniteFloatsML{bits, sigbits, floattype, codetype}(fpmem, encoding)
 end
 
-function UExtendedMLFloats(bits, sigbits)
+function UExtendedFloatsML(bits, sigbits)
     codetype  = typeforcode(bits)
     floattype = typeforfloat(bits)
 
@@ -28,5 +28,5 @@ function UExtendedMLFloats(bits, sigbits)
     fpmem = memalign_clear(floattype, length(fpvals))
     copyto!(fpmem, fpvals)
 
-    UExtendedMLFloats{bits, sigbits, floattype, codetype}(fpmem, encoding)
+    UExtendedFloatsML{bits, sigbits, floattype, codetype}(fpmem, encoding)
 end

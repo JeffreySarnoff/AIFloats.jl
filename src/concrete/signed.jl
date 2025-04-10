@@ -1,5 +1,5 @@
 
-function SFiniteMLFloats(bits, sigbits)
+function SFiniteFloatsML(bits, sigbits)
     codetype  = typeforcode(bits)
     floattype = typeforfloat(bits)
 
@@ -12,10 +12,10 @@ function SFiniteMLFloats(bits, sigbits)
     fpmem = memalign_clear(floattype, length(fpvals))
     copyto!(fpmem, fpvals)
 
-    SFiniteMLFloats{bits, sigbits, floattype, codetype}(fpmem, encoding)
+    SFiniteFloatsML{bits, sigbits, floattype, codetype}(fpmem, encoding)
 end
 
-function SExtendedMLFloats(bits, sigbits)
+function SExtendedFloatsML(bits, sigbits)
     codetype  = typeforcode(bits)
     floattype = typeforfloat(bits)
 
@@ -29,5 +29,5 @@ function SExtendedMLFloats(bits, sigbits)
     fpmem = memalign_clear(floattype, length(fpvals))
     copyto!(fpmem, fpvals)
 
-    SExtendedMLFloats{bits, sigbits, floattype, codetype}(fpmem, encoding)
+    SExtendedFloatsML{bits, sigbits, floattype, codetype}(fpmem, encoding)
 end

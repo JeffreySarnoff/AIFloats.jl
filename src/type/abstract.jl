@@ -1,14 +1,14 @@
 
-abstract type AbstractMLFloat{Bits, SigBits} <: AbstractFloat end
+abstract type AbstractFloatML{Bits, SigBits} <: AbstractFloat end
 
-abstract type AbsSignedMLFloat{Bits, SigBits}   <: AbstractMLFloat{Bits, SigBits} end
-abstract type AbsUnsignedMLFloat{Bits, SigBits} <: AbstractMLFloat{Bits, SigBits} end
+abstract type AbsSignedFloatML{Bits, SigBits}   <: AbstractFloatML{Bits, SigBits} end
+abstract type AbsUnsignedFloatML{Bits, SigBits} <: AbstractFloatML{Bits, SigBits} end
 
-abstract type AbsSignedFiniteMLFloat{Bits, SigBits}   <: AbsSignedMLFloat{Bits, SigBits} end
-abstract type AbsSignedExtendedMLFloat{Bits, SigBits} <: AbsSignedMLFloat{Bits, SigBits} end
+abstract type AbsSignedFiniteFloatML{Bits, SigBits}   <: AbsSignedFloatML{Bits, SigBits} end
+abstract type AbsSignedExtendedFloatML{Bits, SigBits} <: AbsSignedFloatML{Bits, SigBits} end
 
-abstract type AbsUnsignedFiniteMLFloat{Bits, SigBits}   <: AbsUnsignedMLFloat{Bits, SigBits} end
-abstract type AbsUnsignedExtendedMLFloat{Bits, SigBits} <: AbsUnsignedMLFloat{Bits, SigBits} end
+abstract type AbsUnsignedFiniteFloatML{Bits, SigBits}   <: AbsUnsignedFloatML{Bits, SigBits} end
+abstract type AbsUnsignedExtendedFloatML{Bits, SigBits} <: AbsUnsignedFloatML{Bits, SigBits} end
 
-bitwidth(T::Type{<:AbstractMLFloat{Bits, SigBits}}) where {Bits, SigBits} = Bits
-Base.precision(T::Type{<:AbstractMLFloat{Bits, SigBits}}) where {Bits, SigBits} = SigBits
+bitwidth(T::Type{<:AbstractFloatML{Bits, SigBits}}) where {Bits, SigBits} = Bits
+Base.precision(T::Type{<:AbstractFloatML{Bits, SigBits}}) where {Bits, SigBits} = SigBits
