@@ -1,19 +1,19 @@
-struct UFiniteFloatsML{Bits, SigBits, Floats, Codes} <: AbsUnsignedFiniteFloatML{Bits, SigBits}
+struct UFiniteFloatsML{Bits, SigBits, Floats, Codes} <: AbsUFiniteFloatML{Bits, SigBits}
     floats::DenseVector{Floats}
     codes::DenseVector{Codes}
 end
 
-struct UExtendedFloatsML{Bits, SigBits, Floats, Codes} <: AbsUnsignedExtendedFloatML{Bits, SigBits}
+struct UExtendedFloatsML{Bits, SigBits, Floats, Codes} <: AbsUExtendedFloatML{Bits, SigBits}
     floats::DenseVector{Floats}
     codes::DenseVector{Codes}
 end
 
-struct SFiniteFloatsML{Bits, SigBits, Floats, Codes} <: AbsSignedFiniteFloatML{Bits, SigBits}
+struct SFiniteFloatsML{Bits, SigBits, Floats, Codes} <: AbsSFiniteFloatML{Bits, SigBits}
     floats::DenseVector{Floats}
     codes::DenseVector{Codes}
 end
 
-struct SExtendedFloatsML{Bits, SigBits, Floats, Codes} <: AbsSignedExtendedFloatML{Bits, SigBits}
+struct SExtendedFloatsML{Bits, SigBits, Floats, Codes} <: AbsSExtendedFloatML{Bits, SigBits}
     floats::DenseVector{Floats}
     codes::DenseVector{Codes}
 end

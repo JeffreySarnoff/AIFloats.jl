@@ -4,8 +4,8 @@ nBits(@nospecialize(T::Type{<:AbstractFloatML{B,P}})) where {B,P} = B
 nSigBits(@nospecialize(T::Type{<:AbstractFloatML{B,P}})) where {B,P} = P
 nFracBits(@nospecialize(T::Type{<:AbstractFloatML{B,P}})) where {B,P} = P - 1
 
-nSignBits(@nospecialize(T::Type{<:AbsUnsignedFloatML{B,P}})) where {B,P} = 0
-nSignBits(@nospecialize(T::Type{<:AbsSignedFloatML{B,P}})) where {B,P} = 1
+nSignBits(@nospecialize(T::Type{<:AbsUFloatML{B,P}})) where {B,P} = 0
+nSignBits(@nospecialize(T::Type{<:AbsSFloatML{B,P}})) where {B,P} = 1
 nExpBits(@nospecialize(T::Type{<:AbstractFloatML{B,P}})) where {B,P} = (B - P) + (1 - nSignBits(T))
 
 nExpMagnitudes(@nospecialize(T::Type{<:AbstractFloatML{B,P}})) where {B,P} = 2^nExpBits(T)
@@ -27,7 +27,7 @@ nValues(@nospecialize(T::Type{AbstractFloatML{B,K}})) where {B,K} = 2^B # all va
 nNumericValues(@nospecialize(T::Type{AbstractFloatML})) = nValues(T) - 1 # remove NaN
 nFiniteValues(@nospecialize(T::Type{AbstractFloatML})) = nNumericValues(T) - nInfs(T)
 
-function nMagnitudes(@nospecialize(T::Type{AbsSignedFloatML}))
+function nMagnitudes(@nospecialize(T::Type{AbsSFloatML}))
     n = nNumericValues(T)
     (n + isodd(n)) >> 1 # protect Zero
 end
@@ -36,11 +36,11 @@ nNonzeroMagnitudes(@nospecialize(T::Type{AbstractFloatML})) = nMagnitudes(T) - 1
 nFiniteMagnitudes(@nospecialize(T::Type{AbstractFloatML})) = nMagnitudes(T) - nPosInfs(T)
 nNonzeroFiniteMagnitudes(@nospecialize(T::Type{AbstractFloatML})) = nFiniteMagnitudes(T) - 1
 
-nPositiveValues(@nospecialize(T::Type{AbsSignedFloatML})) = nMagnitudes(T) - 1    # remove Zero
-nNegativeValues(@nospecialize(T::Type{AbsSignedFloatML})) = nPositiveValues(T)
+nPositiveValues(@nospecialize(T::Type{AbsSFloatML})) = nMagnitudes(T) - 1    # remove Zero
+nNegativeValues(@nospecialize(T::Type{AbsSFloatML})) = nPositiveValues(T)
 
-nPositiveFiniteValues(@nospecialize(T::Type{AbsUnsignedFloatML})) = nPositiveValues(T) - nPosInfs(T)
-nNegativeFiniteValues(@nospecialize(T::Type{AbsSignedFloatML})) = nNegativeValues(T) - nNegInfs(T)
+nPositiveFiniteValues(@nospecialize(T::Type{AbsUFloatML})) = nPositiveValues(T) - nPosInfs(T)
+nNegativeFiniteValues(@nospecialize(T::Type{AbsSFloatML})) = nNegativeValues(T) - nNegInfs(T)
 
 for F in (:nBits, :nSigBits, :nFracBits, :nSignBits, :nExpBits,
           :nPosInfs, :nNegInfs, :nInfs, :nZeros, :nNaNs,

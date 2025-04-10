@@ -4,8 +4,8 @@
 ```mermaid
 graph TD
     A[AbstracFloatML] 
-    A--> S[AbsSignedFloatML]
-    A--> U[AbsUnsignedFloatML]
+    A--> S[AbsSFloatML]
+    A--> U[AbsUFloatML]
     S--> SF[AbsSFiniteFloatML]
     S--> SE[AbsSExtendedFloatML]
     U--> UF[AbsUFiniteFloatML]

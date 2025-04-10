@@ -1,20 +1,20 @@
 # predicates for abstract types
 
-is_signed(@nospecialize(T::Type{<:AbsSignedFloatML}))     = true
-is_signed(@nospecialize(T::Type{<:AbsUnsignedFloatML}))   = false
+is_signed(@nospecialize(T::Type{<:AbsSFloatML}))     = true
+is_signed(@nospecialize(T::Type{<:AbsUFloatML}))   = false
 
-is_unsigned(@nospecialize(T::Type{<:AbsSignedFloatML}))   = false
-is_unsigned(@nospecialize(T::Type{<:AbsUnsignedFloatML})) = true
+is_unsigned(@nospecialize(T::Type{<:AbsSFloatML}))   = false
+is_unsigned(@nospecialize(T::Type{<:AbsUFloatML})) = true
 
-is_finite(@nospecialize(T::Type{<:AbsSignedFiniteFloatML}))     = true
-is_finite(@nospecialize(T::Type{<:AbsUnsignedFiniteFloatML}))   = true
-is_finite(@nospecialize(T::Type{<:AbsSignedExtendedFloatML}))   = false
-is_finite(@nospecialize(T::Type{<:AbsUnsignedExtendedFloatML})) = false
+is_finite(@nospecialize(T::Type{<:AbsSFiniteFloatML}))     = true
+is_finite(@nospecialize(T::Type{<:AbsUFiniteFloatML}))   = true
+is_finite(@nospecialize(T::Type{<:AbsSExtendedFloatML}))   = false
+is_finite(@nospecialize(T::Type{<:AbsUExtendedFloatML})) = false
 
-is_extended(@nospecialize(T::Type{<:AbsSignedFiniteFloatML}))     = false
-is_extended(@nospecialize(T::Type{<:AbsUnsignedFiniteFloatML}))   = false
-is_extended(@nospecialize(T::Type{<:AbsSignedExtendedFloatML}))   = true
-is_extended(@nospecialize(T::Type{<:AbsUnsignedExtendedFloatML})) = true
+is_extended(@nospecialize(T::Type{<:AbsSFiniteFloatML}))     = false
+is_extended(@nospecialize(T::Type{<:AbsUFiniteFloatML}))   = false
+is_extended(@nospecialize(T::Type{<:AbsSExtendedFloatML}))   = true
+is_extended(@nospecialize(T::Type{<:AbsUExtendedFloatML})) = true
 
 # predicates for concrete types
 
