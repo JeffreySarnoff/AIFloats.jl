@@ -1,7 +1,17 @@
 # FloatsForML
 
+# FloatsForML.jl
+### The internal constructive model for MicroFloats.
+##### Copyright 2024-2025 by Jeffrey Sarnoff
+
+----
 [![Stable Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](https://DiademSpecialProjects.github.io/FloatsForML.jl/stable)
 [![In development documentation](https://img.shields.io/badge/docs-dev-blue.svg)](https://DiademSpecialProjects.github.io/FloatsForML.jl/dev)
+
+---
+[![Aqua QA](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)  [![JET](https://img.shields.io/badge/%F0%9F%9B%A9%EF%B8%8F_tested_with-JET.jl-233f9a)](https://github.com/aviatesk/JET.jl)
+
+
 <!--
 [![Build Status](https://github.com/DiademSpecialProjects/FloatsForML.jl/workflows/Test/badge.svg)](https://github.com/DiademSpecialProjects/FloatsForML.jl/actions)
 [![Test workflow status](https://github.com/DiademSpecialProjects/FloatsForML.jl/actions/workflows/Test.yml/badge.svg?branch=main)](https://github.com/DiademSpecialProjects/FloatsForML.jl/actions/workflows/Test.yml?query=branch%3Amain)
@@ -15,13 +25,5 @@
 ## How to Cite
 
 If you use FloatsForML.jl in your work, please cite using the reference given in [CITATION.cff](https://github.com/DiademSpecialProjects/FloatsForML.jl/blob/main/CITATION.cff).
-
-----
-
-# FloatsForML.jl
-### The internal constructive model for MicroFloats.
-##### Copyright 2024-2025 by Jeffrey Sarnoff
-
-[![Aqua QA](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)  [![JET](https://img.shields.io/badge/%F0%9F%9B%A9%EF%B8%8F_tested_with-JET.jl-233f9a)](https://github.com/aviatesk/JET.jl)
 
 ----
