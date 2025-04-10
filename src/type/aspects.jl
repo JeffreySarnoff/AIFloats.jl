@@ -23,7 +23,8 @@ nInfs(@nospecialize(T::Type{<:AbstractFloatML})) = is_extended(T) * (is_signed(T
 nPosInfs(@nospecialize(T::Type{<:AbstractFloatML})) = zero(Int8) + is_extended(T)
 nNegInfs(@nospecialize(T::Type{<:AbstractFloatML})) = zero(Int8) + (is_signed(T)  & is_extended(T))
 
-nValues(T::Type{<:AbstractFloatML{B,K}}) where {B,K} = 2^B # all values
+nValues(T::Type{<:AbstractFloatML}) = 2^nBits(T)
+
 nNumericValues(@nospecialize(T::Type{<:AbstractFloatML})) = nValues(T) - 1 # remove NaN
 nFiniteValues(@nospecialize(T::Type{<:AbstractFloatML})) = nNumericValues(T) - nInfs(T)
 
@@ -101,15 +102,13 @@ nSubnormalMagnitudes(::Type{T}) where {T<:AbstractFloatML} = nFracMagnitudes(T) 
 nSubnormalValues(::Type{T}) where {T<:AbstractFloatML} = nSubnormalMagnitudes(T) << is_signed(T)
 
 nNormalMagnitudes(::Type{T}) where {T<:AbstractFloatML} = nFiniteMagnitudes(T) - nSubnormalMagnitudes(T)
-nNormalValues(::Type{T}) where {T<:AbstractFloatML} = nNormaMagnitudes(T) << is_signed(T)
+nNormalValues(::Type{T}) where {T<:AbstractFloatML} = nNormalMagnitudes(T) << is_signed(T)
 
 for (F) in (:nSubnormalValues, :nSubnormalMagnitudes, :nNormalValues, :nNormalMagnitudes)
     @eval $F(x::AbstractFloatML) = $F(typeof(x))
 end
 
 # alternative interpretation
-
-nFracMagnitudes(bits, sigbits) = 2^(sigbits - 1)
 nFracCycles(bits, sigbits, isUnsigned) = 2^(bits - sigbits + isUnsigned)
 nExpBits(bits, sigbits, isSigned) = bits - sigbits + isSigned
 nExpCycles(bits, sigbits) = nFracMagnitudes(bits, sigbits)
