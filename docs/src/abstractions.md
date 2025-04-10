@@ -32,13 +32,18 @@ graph LR
 Every predicate, count, and extremal value available in [Type Specifics] is defined over these abstract types. We do not require instantiations to know characterizations.  The way that we stage our abstract parameterizations allows the freedom to use declarations like this:
 
 ```julia
+abstract type AbstractFloatML{Bits, Precision} <: AbstractFloat end
+#                        B is Bits, P is Precision == SigBits
+bitsize(::Type{<:AbstractFloatML{B,P}}) where {B,P} = B
+sigbits(::Type{<:AbstractFloatML{B,P}}) where {B,P} = P
+# the fractional bits (or trailing significand bits) are explicitly stored
+fracbits(::Type{<:AbstractFloatML{B,P}}) where {B,P} = P - 1
 
-bitwidth(::Type{<:AbstractFloatML{Bits, SigBits}}) where {Bits, SigBits} = Bits
-Base.sizeof(::Type{<:AbstractFloatML{Bits, SigBits}}) where {Bits, SigBits} = max(1, Bits >> 3)
-Base.precision(::Type{<:AbstractFloatML{Bits, SigBits}}) where {Bits, SigBits} = SigBits
+signbits(T::Type{<:AbstractFloatML{Bits,Precision}}) where {Bits,Precision} =
+     0 + is_signed(T)
 
-nExpBits(T::Type{<:AbstractFloatML{Bits, SigBits}}) where {Bits, SigBits} = 
-    Bits - SigBits + is_unsigned(T)
+expbits(T::Type{<:AbstractFloatML{Bits,Precision}}) where {Bits,Precision} =
+   Bits - Precision + is_unsigned(T)
 
 nValues(T::Type{<:AbstractFloatML}) = 2^nBits(T)
 nNumericValues(T::Type{<:AbstractFloatML}) = nValues(T) - 1 # remove NaN
@@ -48,7 +53,8 @@ nInfs(T::Type{<:AbstractFloatML}) = is_extended(T) * (is_signed(T) + is_extended
 ```
 and then
 ```
-for F in (:nValues, :nNumericValues, :nFiniteValues, :nInfs)
+for F in (:bitsize, :sigbits, :fracbits, :expbits, :signbits,
+          :nValues, :nNumericValues, :nFiniteValues, :nInfs)
     @eval $(F)(x::AbstractFloatML) = $(F)(typeof(x))
 end
 ```
