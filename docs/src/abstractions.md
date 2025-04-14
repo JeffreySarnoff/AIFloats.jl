@@ -1,5 +1,6 @@
 # Abstractions
 
+----
 
 ```mermaid
 graph TD
@@ -58,3 +59,7 @@ for F in (:bitsize, :sigbits, :fracbits, :expbits, :signbits,
     @eval $(F)(x::AbstractFloatML) = $(F)(typeof(x))
 end
 ```
+
+====
+
+In essence, this code provides a framework for creating custom floating-point numeric types in Julia by defining essential properties and methods that describe their bit structure. It allows the user to query information about bits, significance, and the count of representable values including handling special cases like NaN and infinity. This abstraction enables more straightforward implementation and manipulation of different floating-point representations in a systematic way.
