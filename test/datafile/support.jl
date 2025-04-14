@@ -1,4 +1,6 @@
-using Printf, Arrow, CSV, Tables, Dictionaries
+using Pkg
+cd(s"C:\JuliaCon\floatenv"); using Pkg; Pkg.activate(pwd()); Pkg.add(path="C:\\github\\FloatsForML.jl")
+using Printf, Arrow, CSV, Tables, Dictionaries, FloatsForML
 
 const PathSep = Sys.iswindows() ? "\\" : "/"
 
@@ -142,3 +144,10 @@ end
 function scistr(x::Float32)
     @sprintf("%e", x)
 end
+
+function prints(x::AbstractFloat)
+    str = @sprintf("%64.64e",x)
+    a,e = split(str, "e")
+    b = rstrip(a,'0')
+    string(b, "e", e)
+  end
