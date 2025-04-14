@@ -32,8 +32,11 @@ The built-in floating-point types available for valuations.
 see also [`CODE`](@ref)
 """ FLOAT, FLOAT_TYPES
 
-const FLOAT_TYPES = (Float32, Float64)
-const FLOAT = Union{FLOAT_TYPES...}
+# const FLOAT_TYPES = (Float32, Float64)
+# const FLOAT = Union{FLOAT_TYPES...}
+
+const FLOAT_TYPES = (Float64, Float64)
+const FLOAT = Float64
 
 """
     typeforcode(bitwidth)
