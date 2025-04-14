@@ -7,6 +7,25 @@ function encodings(bits)
 end
 
 function foundation_floats(bits::Integer, sigbits::Integer)
+    if sigbits == 1
+        foundation_floats_precision_eq1(bits, sigbits)
+    else 
+        foundation_floats_precision_gt1(bits, sigbits)
+    end
+end
+
+function foundation_floats_precision_eq1(bits::Integer, sigbits::Integer)
+    delta = 2^(bits-2)
+    bits += 1
+    sigs = foundation_sigs(bits, sigbits)
+    exps = foundation_exps(bits, sigbits)
+    seq = exps .* sigs
+    seq = seq[delta+2:3*delta+1]
+    seq[1] = zero(eltype(seq))
+    seq
+end
+
+function foundation_floats_precision_gt1(bits::Integer, sigbits::Integer)
     sigs = foundation_sigs(bits, sigbits)
     exps = foundation_exps(bits, sigbits)
     seq = exps .* sigs

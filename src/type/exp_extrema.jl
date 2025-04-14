@@ -1,6 +1,6 @@
 Base.exponent_bias(::Type{T}) where {T<:AbstractFloatML}  = 2^(nExpBits(T) - 1) - 1
 biased_exponent_max(::Type{T}) where {T<:AbstractFloatML} =  exponent_bias(T)
-biased_exponent_min(::Type{T}) where {T<:AbstractFloatML} = -biased_exponent_max(T)
+biased_exponent_min(::Type{T}) where {T<:AbstractFloatML} = -biased_exponent_max(T) + isone(nSigBits(T))
 
 exponent_max(::Type{T}) where {T<:AbstractFloatML} = 2.0^(biased_exponent_max(T))
 exponent_min(::Type{T}) where {T<:AbstractFloatML} = 2.0^(biased_exponent_min(T))

@@ -1,6 +1,6 @@
 using Pkg
 cd(s"C:\JuliaCon\floatenv"); using Pkg; Pkg.activate(pwd()); Pkg.add(path="C:\\github\\FloatsForML.jl")
-using Printf, Arrow, CSV, Tables, Dictionaries, FloatsForML
+using Printf, Arrow, CSV, Tables, Dictionaries, FloatsForML, PrettyTables
 
 const PathSep = Sys.iswindows() ? "\\" : "/"
 
@@ -111,7 +111,7 @@ savetocsv(fpath, coltable)
 ilog2(i::T) where {T<:Integer} = i > 0 ? 8*sizeof(T) - leading_zeros(i) - 1 : throw(DomainError("$i must be > 0"))
 ilog2p1(i::T) where {T<:Integer} = iszero(i) ? 0 : ilog2(i) + 1
 
-function hexstr(x::UInt8)
+function hexstr(x::Integer)
     nbits = ilog2p1(x)
     if nbits == 0
         return "0x00"
@@ -151,3 +151,62 @@ function prints(x::AbstractFloat)
     b = rstrip(a,'0')
     string(b, "e", e)
   end
+
+function stablesort(sgnd)
+    push!(filter(!isnan,sgnd), eltype(sgnd)(NaN))
+end
+
+function Q(x::Rational{I}) where {I}                                                                                 
+    isnan(x) && return Q(zero(I), zero(I))                                                                           
+    string(numerator(x), "/", denominator(x))                                                                              
+end
+
+function Q(x::AbstractFloat)
+    isnan(x) && return x
+    q = rationalize(Int128, x)                                                                           
+    Q(q)                                                                              
+end
+
+Q(x::String) = x
+
+
+formatters = ft_printf("0x0%x",[1])
+
+header_4p1 = (["Codes","Unsigned","Unsigned","Signed","Signed"],["UInt8","Finite","Extended","Finite","Extended"],   
+["code","binary4p1(uf)", "binary4p1(ue)", "binary4p1(sf)", "binary4p1(se)"]);
+
+header_4p2 = (["Codes","Unsigned","Unsigned","Signed","Signed"],["UInt8","Finite","Extended","Finite","Extended"],   
+                 ["code","binary4p2(uf)", "binary4p2(ue)", "binary4p2(sf)", "binary4p2(se)"]);
+
+header_4p3 = (["Codes","Unsigned","Unsigned","Signed","Signed"],["UInt8","Finite","Extended","Finite","Extended"],   
+                 ["code","binary4p3(uf)", "binary4p3(ue)", "binary4p3(sf)", "binary4p3(se)"]);
+
+uf41, uf42, uf43 = UFiniteFloatsML.(4, (1,2,3)); 
+ue41, ue42, ue43 = UExtendedFloatsML.(4, (1,2,3)); 
+sf41, sf42, sf43 = SFiniteFloatsML.(4, (1,2,3)); 
+se41, se42, se43 = SExtendedFloatsML.(4, (1,2,3)); 
+
+
+nt41=(;Codes=hexstr.(0:15),UnsdFixed41=map(Q,floats(uf41)),UnsdExtnd41=map(Q,floats(ue41)),SgndFixed41=map(Q,floats(sf41)),SgndExtnd41=map(Q,sort(floats(se41))));
+nt42=(;Codes=hexstr.(0:15),UnsdFixed42=map(Q,floats(uf42)),UnsdExtnd42=map(Q,floats(ue42)),SgndFixed42=map(Q,floats(sf42)),SgndExtnd42=map(Q,sort(floats(se42))));
+nt43=(;Codes=hexstr.(0:15),UnsdFixed43=map(Q,floats(uf43)),UnsdExtnd43=map(Q,floats(ue43)),SgndFixed43=map(Q,floats(sf43)),SgndExtnd43=map(Q,sort(floats(se43))));
+
+table41 = columntable(nt41)
+table42 = columntable(nt42)
+table43 = columntable(nt43)
+
+pretty_table(table41; alignment=:c, header=header_4p1, formatters)
+pretty_table(table42; alignment=:c, header=header_4p2, formatters)
+pretty_table(table43; alignment=:c, header=header_4p3, formatters)
+
+snt41=(;Codes=hexstr.(0:15),UnsdFixed41=map(Q,floats(uf41)),UnsdExtnd41=map(Q,floats(ue41)),SgndFixed41=map(Q,stablesort(floats(sf41))),SgndExtnd41=map(Q,stablesort(floats(se41))));
+snt42=(;Codes=hexstr.(0:15),UnsdFixed42=map(Q,floats(uf42)),UnsdExtnd42=map(Q,floats(ue42)),SgndFixed42=map(Q,stablesort(floats(sf42))),SgndExtnd42=map(Q,stablesort(floats(se42))));
+snt43=(;Codes=hexstr.(0:15),UnsdFixed43=map(Q,floats(uf43)),UnsdExtnd43=map(Q,floats(ue43)),SgndFixed43=map(Q,stablesort(floats(sf43))),SgndExtnd43=map(Q,stablesort(floats(se43))));
+
+stable41 = columntable(snt41)
+stable42 = columntable(snt42)
+stable43 = columntable(snt43)
+
+pretty_table(stable41; alignment=:c, header=header_4p1, formatters)
+pretty_table(stable42; alignment=:c, header=header_4p2, formatters)
+pretty_table(stable43; alignment=:c, header=header_4p3, formatters)
