@@ -1,4 +1,4 @@
-using Arrow, CSV, Tables, Dictionaries
+using Printf, Arrow, CSV, Tables, Dictionaries
 
 const PathSep = Sys.iswindows() ? "\\" : "/"
 
@@ -33,7 +33,7 @@ t = [(k .=> collect(p for p in 1:k-1)) for k in 2:10]
 m = map.(x -> (first(x), last(x)), t)
 
 exts = ["csv", "arrow"]
-ext = exts[2]
+ext = exts[1]
 results = []
 
 for pfx in values(prefixes)
