@@ -14,7 +14,17 @@ each finite value in the [nonnegative portion of a] value sequence is a arithmet
 
 each finite value in the [nonnegative portion of a] value sequence is determined with:
     `value = (2^unbiased_exponent) * (implicit_bit + (trailing_significand_bits / 2^P))`
+-   `value = (2^unbiased_exponent) * (implicit_bit) + (2^unbiased_exponent) * (trailing_significand / 2^P))`
+-  `value = (2^unbiased_exponent) * (implicit_bit) + ((2^unbiased_exponent)/2^P) * (trailing_significand / 1))`
+-  `value = (2^unbiased_exponent) * (implicit_bit) + (2^(unbiased_exponent-P) * trailing_significand)`
 
+-  `subnormal value = (2^unbiased_exponent) * (0b0) + (2^(unbiased_exponent-P) * trailing_significand)`
+-  `subnormal value = (2^(unbiased_exponent-P) * trailing_significand)`
+-  
+-  `normal value = (2^unbiased_exponent) * (0b1) + (2^(unbiased_exponent-P) * trailing_significand)`
+-  `normal value = (2^unbiased_exponent) + (2^(unbiased_exponent-P) * trailing_significand)`
+-  
+- `normal_value = (2^unbiased_exponent) + subnormal_value`
  
 
 
