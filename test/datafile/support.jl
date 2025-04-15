@@ -156,6 +156,10 @@ function stablesort(sgnd)
     push!(filter(!isnan,sgnd), eltype(sgnd)(NaN))
 end
 
+function stablesortlo(sgnd)
+    pushfirst!(filter(!isnan,sgnd), eltype(sgnd)(NaN))
+end
+
 function Q(x::Rational{I}) where {I}                                                                                 
     isnan(x) && return Q(zero(I), zero(I))                                                                           
     string(numerator(x), "/", denominator(x))                                                                              
@@ -209,3 +213,15 @@ stable43 = columntable(snt43)
 pretty_table(stable41; alignment=:c, header=header_4p1, formatters)
 pretty_table(stable42; alignment=:c, header=header_4p2, formatters)
 pretty_table(stable43; alignment=:c, header=header_4p3, formatters)
+
+rnt41=(;Codes=hexstr.(0:15),UnsdFixed41=map(Q,floats(uf41)),UnsdExtnd41=map(Q,floats(ue41)),SgndFixed41=map(Q,stablesortlo(floats(sf41))),SgndExtnd41=map(Q,stablesortlo(floats(se41))));
+rnt42=(;Codes=hexstr.(0:15),UnsdFixed42=map(Q,floats(uf42)),UnsdExtnd42=map(Q,floats(ue42)),SgndFixed42=map(Q,stablesortlo(floats(sf42))),SgndExtnd42=map(Q,stablesortlo(floats(se42))));
+rnt43=(;Codes=hexstr.(0:15),UnsdFixed43=map(Q,floats(uf43)),UnsdExtnd43=map(Q,floats(ue43)),SgndFixed43=map(Q,stablesortlo(floats(sf43))),SgndExtnd43=map(Q,stablesortlo(floats(se43))));
+
+rtable41 = columntable(rnt41)
+rtable42 = columntable(rnt42)
+rtable43 = columntable(rnt43)
+
+pretty_table(rtable41; alignment=:c, header=header_4p1, formatters)
+pretty_table(rtable42; alignment=:c, header=header_4p2, formatters)
+pretty_table(rtable43; alignment=:c, header=header_4p3, formatters)
