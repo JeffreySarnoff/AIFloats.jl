@@ -186,7 +186,6 @@ ue41, ue42, ue43 = UExtendedFloatsML.(4, (1,2,3));
 sf41, sf42, sf43 = SFiniteFloatsML.(4, (1,2,3)); 
 se41, se42, se43 = SExtendedFloatsML.(4, (1,2,3)); 
 
-
 nt41=(;Codes=hexstr.(0:15),UnsdFixed41=map(Q,floats(uf41)),UnsdExtnd41=map(Q,floats(ue41)),SgndFixed41=map(Q,floats(sf41)),SgndExtnd41=map(Q,sort(floats(se41))));
 nt42=(;Codes=hexstr.(0:15),UnsdFixed42=map(Q,floats(uf42)),UnsdExtnd42=map(Q,floats(ue42)),SgndFixed42=map(Q,floats(sf42)),SgndExtnd42=map(Q,sort(floats(se42))));
 nt43=(;Codes=hexstr.(0:15),UnsdFixed43=map(Q,floats(uf43)),UnsdExtnd43=map(Q,floats(ue43)),SgndFixed43=map(Q,floats(sf43)),SgndExtnd43=map(Q,sort(floats(se43))));

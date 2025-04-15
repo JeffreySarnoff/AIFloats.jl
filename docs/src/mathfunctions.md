@@ -1,1 +1,13 @@
-The comparisons `<, <=, ==, !=, >=. >`, which resolve as Boolean values. The basic unary arithmetic functions `+x. -x. abs, negate, reciprocal` and the basic binary arithmetic functions `+, -, *, /` are available. Essential numerical selector functions include `minimum, maximum, minmumMagnitude, maximumMagnitude` and their Number-only variants that ignore NaNs, `minimumNumber, maximumNumber, minimumMagnitudeNumber, maximumMagnitudeNumber` are provided.
+The comparisons `<, <=, ==, !=, >=. >`, which resolve as Boolean values. 
+
+- The basic unary arithmetic functions 
+    - `+x. -x. abs, negate, reciprocal`
+- The basic binary arithmetic functions
+    -  `+, -, *, /`
+
+- Essential numerical selector functions
+    -  `minimum, maximum`
+    -  `minmumMagnitude, maximumMagnitude`
+- Their Number-only variants that ignore NaNs,
+     -  `minimumNumber, maximumNumber`
+     -   `minimumMagnitudeNumber, maximumMagnitudeNumber`

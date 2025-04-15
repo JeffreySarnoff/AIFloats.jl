@@ -23,6 +23,7 @@ makedocs(;
                 "Float Families" => "families.md",
                 "Type Specifics" => "specifics.md",
                 "Computing over Type abstractions" => "abstractions.md",
+                "The foundational sequence" => "sequence.md",
                 "Operations" => "operations.md",
                 "Mathematical Functions" => "mathfunctions.md",
                 "Acknowledgements" => "acknowledgements.md",
