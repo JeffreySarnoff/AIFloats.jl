@@ -1,5 +1,5 @@
 alignment(xs::AbstractArray) = 2^trailing_zeros(UInt(pointer(xs)))
-function UFiniteFloatsML(bits::I, sigbits::I) where {I<:Integer}
+function UFiniteFloats(bits::I, sigbits::I) where {I<:Integer}
     codetype  = typeforcode(bits)
     floattype = typeforfloat(bits)
 
@@ -12,7 +12,7 @@ function UFiniteFloatsML(bits::I, sigbits::I) where {I<:Integer}
     fpmem = memalign_clear(floattype, length(fpvals))
     copyto!(fpmem, fpvals)
 
-    UFiniteFloatsML{bits, sigbits, floattype, codetype}(fpmem, encoding)
+    UFiniteFloats{bits, sigbits, floattype, codetype}(fpmem, encoding)
 end
 
 function UFiniteFloats(bits::I, sigbits::I) where {I<:Integer}
@@ -51,7 +51,7 @@ nonneg_floats(x::AbsUnsignedFloatML{Bits, SigBits}) where {Bits, SigBits} =
     UFiniteFloats{bits, sigbits, floattype, codetype}(fpmem, encoding, nonneg_floats, nonneg_codes)
 end
 
-function UExtendedFloatsML(bits::I, sigbits::I) where {I<:Integer}
+function UExtendedFloats(bits::I, sigbits::I) where {I<:Integer}
     codetype  = typeforcode(bits)
     floattype = typeforfloat(bits)
 
@@ -65,5 +65,5 @@ function UExtendedFloatsML(bits::I, sigbits::I) where {I<:Integer}
     fpmem = memalign_clear(floattype, length(fpvals))
     copyto!(fpmem, fpvals)
 
-    UExtendedFloatsML{bits, sigbits, floattype, codetype}(fpmem, encoding)
+    UExtendedFloats{bits, sigbits, floattype, codetype}(fpmem, encoding)
 end

@@ -3,10 +3,10 @@ module FloatsForML
 export AbstractFloatML,
          AbsSignedFloatML,
            AbsSExtendedFloatML, AbsSFiniteFloatML,
-              SExtendedFloatsML,        SFiniteFloatsML,
+              SExtendedFloats,        SFiniteFloats,
          AbsUnsignedFloatML,
            AbsUExtendedFloatML, AbsUFiniteFloatML,
-              UExtendedFloatsML,          UFiniteFloatsML,
+              UExtendedFloats,          UFiniteFloats,
        MLFloats,
        CODE, FLOAT,
        IsSigned, IsUnsigned, IsExtended, IsFinite,
@@ -80,15 +80,15 @@ end
 function MLFloats(bits::Int, sigbits::Int, signed::Bool, extended::Bool)
     if signed
         if extended
-            SExtendedFloatsML(bits, sigbits)
+            SExtendedFloats(bits, sigbits)
         else # finite
-            SFiniteFloatsML(bits, sigbits)
+            SFiniteFloats(bits, sigbits)
         end
     else
         if extended
-            UExtendedFloatsML(bits, sigbits)
+            UExtendedFloats(bits, sigbits)
         else # finite
-            UFiniteFloatsML(bits, sigbits)
+            UFiniteFloats(bits, sigbits)
         end
     end
 end

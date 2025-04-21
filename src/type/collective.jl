@@ -33,22 +33,22 @@ nonneg_codes(@nospecialize(x::AbstractFloatML))  = x.nonneg_codes
 nonneg_floats(@nospecialize(x::AbstractFloatML)) = x.nonneg_floats
 
 #=
-struct UFiniteFloatsML{Bits, SigBits, Float, Code} <: AbsUFiniteFloatML{Bits, SigBits}
+struct UFiniteFloats{Bits, SigBits, Float, Code} <: AbsUFiniteFloatML{Bits, SigBits}
     floats::DenseVector{Float}
     codes::DenseVector{Code}
 end
 
-struct UExtendedFloatsML{Bits, SigBits, Float, Code} <: AbsUExtendedFloatML{Bits, SigBits}
+struct UExtendedFloats{Bits, SigBits, Float, Code} <: AbsUExtendedFloatML{Bits, SigBits}
     floats::DenseVector{Float}
     codes::DenseVector{Code}
 end
 
-struct SFiniteFloatsML{Bits, SigBits, Float, Code} <: AbsSFiniteFloatML{Bits, SigBits}
+struct SFiniteFloats{Bits, SigBits, Float, Code} <: AbsSFiniteFloatML{Bits, SigBits}
     floats::DenseVector{Float}
     codes::DenseVector{Code}
 end
 
-struct SExtendedFloatsML{Bits, SigBits, Float, Code} <: AbsSExtendedFloatML{Bits, SigBits}
+struct SExtendedFloats{Bits, SigBits, Float, Code} <: AbsSExtendedFloatML{Bits, SigBits}
     floats::DenseVector{Float}
     codes::DenseVector{Code}
 end
