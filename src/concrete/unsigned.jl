@@ -12,7 +12,7 @@ function UFiniteFloats(bits::I, sigbits::I) where {I<:Integer}
     fpmem = memalign_clear(floattype, length(fpvals))
     copyto!(fpmem, fpvals)
 
-    nonneg_n = (1<<bits)
+    nonneg_n = (1<<bits) - 1 # drop NaN
     nonneg_codes = memalign_clear(codetype, nonneg_n)
     nonneg_floats = memalign_clear(floattype, nonneg_n)
 
@@ -36,7 +36,7 @@ function UExtendedFloats(bits::I, sigbits::I) where {I<:Integer}
     fpmem = memalign_clear(floattype, length(fpvals))
     copyto!(fpmem, fpvals)
 
-    nonneg_n = (1<<bits)
+    nonneg_n = (1<<bits) - 1 # drop NaN
     nonneg_codes = memalign_clear(codetype, nonneg_n)
     nonneg_floats = memalign_clear(floattype, nonneg_n)
 
