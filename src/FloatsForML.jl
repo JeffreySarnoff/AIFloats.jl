@@ -25,7 +25,8 @@ export AbstractFloatML,
 
 import Base: convert, oftype, precision, exponent_bias
 
-using Static, AlignedAllocs
+using Static
+using AlignedAllocs: memalign_clear, alignment
 
 include("constants.jl")
 
