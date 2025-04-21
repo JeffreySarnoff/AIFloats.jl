@@ -53,16 +53,16 @@ struct SExtendedFloatsML{Bits, SigBits, Float, Code} <: AbsSExtendedFloatML{Bits
     codes::DenseVector{Code}
 end
 
-nonneg_codes(x::AbsSFloatML{Bits, SigBits}) where {Bits, SigBits} =
+nonneg_codes(x::AbsSignedFloatML{Bits, SigBits}) where {Bits, SigBits} =
     x.codes[1:(1<<(Bits-1)-1)]
 
-nonneg_floats(x::AbsSFloatML{Bits, SigBits}) where {Bits, SigBits} =
+nonneg_floats(x::AbsSignedFloatML{Bits, SigBits}) where {Bits, SigBits} =
     x.floats[1:(1<<(Bits-1)-1)]
 
-nonneg_codes(x::AbsUFloatML{Bits, SigBits}) where {Bits, SigBits} =
+nonneg_codes(x::AbsUnsignedFloatML{Bits, SigBits}) where {Bits, SigBits} =
     x.floats[1:(1<<(Bits)-1)]
 
-nonneg_floats(x::AbsUFloatML{Bits, SigBits}) where {Bits, SigBits} =
+nonneg_floats(x::AbsUnsignedFloatML{Bits, SigBits}) where {Bits, SigBits} =
     x.floats[1:(1<<Bits)-1]
 
 =#

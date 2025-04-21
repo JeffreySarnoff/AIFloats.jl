@@ -4,12 +4,12 @@ nBits(::Type{<:AbstractFloatML{Bits, SigBits}}) where {Bits, SigBits} = Bits
 nSigBits(::Type{<:AbstractFloatML{Bits, SigBits}}) where {Bits, SigBits} = SigBits
 nFracBits(::Type{<:AbstractFloatML{Bits, SigBits}}) where {Bits, SigBits} = SigBits - 1
 
-nSignBits(::Type{<:AbsSFloatML{Bits, SigBits}}) where {Bits, SigBits} = 1
-nSignBits(::Type{<:AbsUFloatML{Bits, SigBits}}) where {Bits, SigBits} = 0
+nSignBits(::Type{<:AbsSignedFloatML{Bits, SigBits}}) where {Bits, SigBits} = 1
+nSignBits(::Type{<:AbsUnsignedFloatML{Bits, SigBits}}) where {Bits, SigBits} = 0
 
-nExpBits(::Type{<:AbsSFloatML{Bits, SigBits}}) where {Bits, SigBits} = 
+nExpBits(::Type{<:AbsSignedFloatML{Bits, SigBits}}) where {Bits, SigBits} = 
     (Bits - SigBits)
-nExpBits(::Type{<:AbsUFloatML{Bits, SigBits}}) where {Bits, SigBits} = 
+nExpBits(::Type{<:AbsUnsignedFloatML{Bits, SigBits}}) where {Bits, SigBits} = 
     (Bits - SigBits) + 1
 
 nExpMagnitudes(::Type{T}) where {T<:AbstractFloatML} = 2^nExpBits(T)
@@ -37,7 +37,7 @@ nValues(::Type{T}) where {T<:AbstractFloatML} = 2^nBits(T)
 nNumericValues(::Type{T}) where {T<:AbstractFloatML} = nValues(T) - 1 # remove NaN
 nFiniteValues(::Type{T}) where {T<:AbstractFloatML} = nNumericValues(T) - nInfs(T)
 
-function nMagnitudes(::Type{T}) where {T<:AbsSFloatML}
+function nMagnitudes(::Type{T}) where {T<:AbsSignedFloatML}
     n = nNumericValues(T)
     (n + isodd(n)) >> 1 # protect Zero
 end
@@ -46,11 +46,11 @@ nNonzeroMagnitudes(::Type{T}) where {T<:AbstractFloatML} = nMagnitudes(T) - 1 # 
 nFiniteMagnitudes(::Type{T}) where {T<:AbstractFloatML} = nMagnitudes(T) - nPosInfs(T)
 nNonzeroFiniteMagnitudes(::Type{T}) where {T<:AbstractFloatML} = nFiniteMagnitudes(T) - 1
 
-nPositiveValues(::Type{T}) where {T<:AbsSFloatML} = nMagnitudes(T) - 1    # remove Zero
-nNegativeValues(::Type{T}) where {T<:AbsSFloatML} = nPositiveValues(T)
+nPositiveValues(::Type{T}) where {T<:AbsSignedFloatML} = nMagnitudes(T) - 1    # remove Zero
+nNegativeValues(::Type{T}) where {T<:AbsSignedFloatML} = nPositiveValues(T)
 
-nPositiveFiniteValues(::Type{T}) where {T<:AbsUFloatML} = nPositiveValues(T) - nPosInfs(T)
-nNegativeFiniteValues(::Type{T}) where {T<:AbsSFloatML} = nNegativeValues(T) - nNegInfs(T)
+nPositiveFiniteValues(::Type{T}) where {T<:AbsUnsignedFloatML} = nPositiveValues(T) - nPosInfs(T)
+nNegativeFiniteValues(::Type{T}) where {T<:AbsSignedFloatML} = nNegativeValues(T) - nNegInfs(T)
 
 for F in (:nBits, :nSigBits, :nFracBits, :nSignBits, :nExpBits,
           :nPosInfs, :nNegInfs, :nInfs, :nZeros, :nNaNs,

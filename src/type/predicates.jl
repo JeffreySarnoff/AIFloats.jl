@@ -1,10 +1,10 @@
 # predicates for abstract types
 
-is_signed(@nospecialize(T::Type{<:AbsSFloatML}))     = true
-is_signed(@nospecialize(T::Type{<:AbsUFloatML}))   = false
+is_signed(@nospecialize(T::Type{<:AbsSignedFloatML}))     = true
+is_signed(@nospecialize(T::Type{<:AbsUnsignedFloatML}))   = false
 
-is_unsigned(@nospecialize(T::Type{<:AbsSFloatML}))   = false
-is_unsigned(@nospecialize(T::Type{<:AbsUFloatML})) = true
+is_unsigned(@nospecialize(T::Type{<:AbsSignedFloatML}))   = false
+is_unsigned(@nospecialize(T::Type{<:AbsUnsignedFloatML})) = true
 
 is_finite(@nospecialize(T::Type{<:AbsSFiniteFloatML}))     = true
 is_finite(@nospecialize(T::Type{<:AbsUFiniteFloatML}))   = true
