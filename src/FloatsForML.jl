@@ -8,17 +8,20 @@ export AbstractFloatML,
            AbsUExtendedFloatML, AbsUFiniteFloatML,
               UExtendedFloatsML,          UFiniteFloatsML,
        MLFloats,
-       IsSigned, IsUnsigned, IsExtended, IsFinite, 
-       bitwidth, precision,
+       CODE, FLOAT,
+       IsSigned, IsUnsigned, IsExtended, IsFinite,
        is_signed, is_unsigned, is_finite, is_extended,
-       codes, floats, typeforcode, typeforfloat,
+       codes, floats, nonneg_codes, nonneg_floats,
+       typeforcode, typeforfloat,
+       bitwidth, precision,
        exponent_min, exponent_max, exponent_bias,
        subnormal_min, subnormal_max, normal_min, normal_max,
        nBits, nSigBits, nFracBits, nSignBits, nExpBits,
        nPosInfs, nNegInfs, nInfs, nZeros, nNaNs,
        nValues,
        nMagnitudes, nFiniteMagnitudes, nNumericValues, nFiniteValues,
-       nSubnormalMagnitudes, nNormalMagnitudes, nSubnormalValues, nNormalValues
+       nSubnormalMagnitudes, nNormalMagnitudes, nSubnormalValues, nNormalValues,
+       index_to_code, index_to_offset, offset_to_index
 
 import Base: convert, oftype, precision, exponent_bias
 
@@ -53,7 +56,27 @@ examples
     seBinary84_valuation = floats(SE84)
 
 ````
-"""
+""" MLFloats
+
+
+
+function MLFloats(bits::Int, sigbits::Int, signed::Bool, extended::Bool)
+    if signed
+        if extended
+            SExtendedFloats(bits, sigbits)
+        else # finite
+            SFiniteFloats(bits, sigbits)
+        end
+    else
+        if extended
+            UExtendedFloats(bits, sigbits)
+        else # finite
+            UFiniteFloats(bits, sigbits)
+        end
+    end
+end
+
+#=
 function MLFloats(bits::Int, sigbits::Int, signed::Bool, extended::Bool)
     if signed
         if extended
@@ -69,5 +92,6 @@ function MLFloats(bits::Int, sigbits::Int, signed::Bool, extended::Bool)
         end
     end
 end
+=#
 
 end  # FloatsForML
