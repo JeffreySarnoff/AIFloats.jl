@@ -12,7 +12,7 @@ function SFiniteFloats(bits::I, sigbits::I) where {I<:Integer}
     copyto!(fpmem, fpvals)
 
     
-    nonneg_n = (1<<bits) - 1 
+    nonneg_n = (1<<(bits-1)) - 1 
     nonneg_codes = memalign_clear(codetype, nonneg_n)
     nonneg_floats = memalign_clear(floattype, nonneg_n)
 
@@ -37,7 +37,7 @@ function SExtendedFloats(bits::I, sigbits::I) where {I<:Integer}
     copyto!(fpmem, fpvals)
 
     
-    nonneg_n = (1<<bits) - 1 
+    nonneg_n = (1<<(bits-1)) - 1 
     nonneg_codes = memalign_clear(codetype, nonneg_n)
     nonneg_floats = memalign_clear(floattype, nonneg_n)
 
