@@ -19,7 +19,8 @@ function SFiniteFloats(bits::I, sigbits::I) where {I<:Integer}
     copyto!(nonneg_codes, encoding[1:nonneg_n])
     copyto!(nonneg_floats, fpmem[1:nonneg_n])
 
-    SFiniteFloats{bits, sigbits, floattype, codetype}(fpmem, encoding, nonneg_floats, nonneg_codes)
+    symbol = Symbol(string("SFFloats", bits, "p",sigbits))
+    SFiniteFloats{bits, sigbits, floattype, codetype}(fpmem, encoding, nonneg_floats, nonneg_codes, symbol)
 end
 
 function SExtendedFloats(bits::I, sigbits::I) where {I<:Integer}
@@ -43,5 +44,6 @@ function SExtendedFloats(bits::I, sigbits::I) where {I<:Integer}
     copyto!(nonneg_codes, encoding[1:nonneg_n])
     copyto!(nonneg_floats, fpmem[1:nonneg_n])
 
-    SExtendedFloats{bits, sigbits, floattype, codetype}(fpmem, encoding, nonneg_floats, nonneg_codes)
+    symbol = Symbol(string("SEFloats", bits, "p",sigbits))
+    SExtendedFloats{bits, sigbits, floattype, codetype}(fpmem, encoding, nonneg_floats, nonneg_codes, symbol)
 end

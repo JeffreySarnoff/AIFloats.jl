@@ -19,7 +19,9 @@ function UFiniteFloats(bits::I, sigbits::I) where {I<:Integer}
     copyto!(nonneg_codes, encoding[1:nonneg_n])
     copyto!(nonneg_floats, fpmem[1:nonneg_n])
     
-    UFiniteFloats{bits, sigbits, floattype, codetype}(fpmem, encoding, nonneg_floats, nonneg_codes)
+    symbol = Symbol(string("UFFloats", bits, "p",sigbits))
+
+    UFiniteFloats{bits, sigbits, floattype, codetype}(fpmem, encoding, nonneg_floats, nonneg_codes, symbol)
 end
 
 function UExtendedFloats(bits::I, sigbits::I) where {I<:Integer}
@@ -43,5 +45,7 @@ function UExtendedFloats(bits::I, sigbits::I) where {I<:Integer}
     copyto!(nonneg_codes, encoding[1:nonneg_n])
     copyto!(nonneg_floats, fpmem[1:nonneg_n])
     
-    UExtendedFloats{bits, sigbits, floattype, codetype}(fpmem, encoding, nonneg_floats, nonneg_codes)
+    symbol = Symbol(string("UEFloats", bits, "p",sigbits))
+
+    UExtendedFloats{bits, sigbits, floattype, codetype}(fpmem, encoding, nonneg_floats, nonneg_codes, symbol)
 end

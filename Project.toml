@@ -6,11 +6,13 @@ version = "0.1.0"
 [deps]
 Static = "aedffcd0-7271-4cad-89d0-dc628f76c6d3"
 AlignedAllocs = "6ac60441-711f-43f0-8178-7f71f0888134"
+Dictionaries = "85a47980-9c8c-11e8-2b9f-f7ca1fa99fb4"
 TupleTools = "9d95972d-f1c8-5527-a6e0-b4b365fa01f6"
 
 [compat]
 Static = "1.2"
-AlignedAllocs = "0.1 - 0.6"
+AlignedAllocs = "0.1.7 - 0.1.20, 0.2 - 0.6"
+Dictionaries = "0.4.5 - 0.4.20, 0.5 - 0.9"
 TupleTools = "1.6"
 julia = "1.10"
 

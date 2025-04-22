@@ -11,7 +11,7 @@ export AbstractFloatML,
        CODE, FLOAT,
        IsSigned, IsUnsigned, IsExtended, IsFinite,
        is_signed, is_unsigned, is_finite, is_extended,
-       codes, floats, nonneg_codes, nonneg_floats,
+       codes, floats, nonneg_codes, nonneg_floats, symbol,
        typeforcode, typeforfloat,
        bitwidth, precision,
        exponent_min, exponent_max, exponent_bias,
@@ -21,17 +21,23 @@ export AbstractFloatML,
        nValues,
        nMagnitudes, nFiniteMagnitudes, nNumericValues, nFiniteValues,
        nSubnormalMagnitudes, nNormalMagnitudes, nSubnormalValues, nNormalValues,
-       index_to_code, index_to_offset, offset_to_index
+       index_to_code, index_to_offset, offset_to_index,
+       compacttype,
+       SignedDict, UnsignedDict,
+       UFdict, UEdict, SFdict, SEdict 
 
 import Base: convert, oftype, precision, exponent_bias
 
 using Static
 using AlignedAllocs: memalign_clear, alignment
+using Dictionaries
+
 
 include("constants.jl")
 
 include("type/abstract.jl")
 include("type/collective.jl")
+include("type/compact.jl")
 
 include("type/aspects.jl")
 include("type/exp_extrema.jl")
@@ -41,6 +47,14 @@ include("concrete/indices.jl")
 include("concrete/foundation.jl")
 include("concrete/unsigned.jl")
 include("concrete/signed.jl")
+
+UnsignedDict = Dictionary{Symbol, AbstractFloatML}()
+SignedDict = Dictionary{Symbol, AbstractFloatML}()
+
+UFdict = Dictionary{Symbol, AbstractFloatML}()
+UEdict = Dictionary{Symbol, AbstractFloatML}()
+SFdict = Dictionary{Symbol, AbstractFloatML}()
+SEdict = Dictionary{Symbol, AbstractFloatML}()
 
 """
     MLFloats
@@ -59,20 +73,24 @@ examples
 ````
 """ MLFloats
 
-
-
 function MLFloats(bits::Int, sigbits::Int, signed::Bool, extended::Bool)
     if signed
         if extended
-            SExtendedFloats(bits, sigbits)
+            valueseq = SExtendedFloats(bits, sigbits)
+            insert!(SEdict, symbol(valueseq), valueseq)
         else # finite
-            SFiniteFloats(bits, sigbits)
+            valueseq = SFiniteFloats(bits, sigbits)
+            insert!(SFdict, symbol(valueseq), valueseq)
         end
     else
         if extended
-            UExtendedFloats(bits, sigbits)
+            valueseq = UExtendedFloats(bits, sigbits)
+            insert!(UEdict, symbol(valueseq), valueseq)
+            insert!(Udict, symbol(valueseq), valueseq)
         else # finite
-            UFiniteFloats(bits, sigbits)
+            valueseq = UFiniteFloats(bits, sigbits)
+            insert!(UFdict, symbol(valueseq), valueseq)
+            insert!(Udict, symbol(valueseq), valueseq)
         end
     end
 end

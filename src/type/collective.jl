@@ -3,6 +3,7 @@ struct UFiniteFloats{Bits, SigBits, Float, Code} <: AbsUFiniteFloatML{Bits, SigB
     codes::DenseVector{Code}
     nonneg_floats::DenseVector{Float}
     nonneg_codes::DenseVector{Code}
+    symbol::Symbol
 end
 
 struct UExtendedFloats{Bits, SigBits, Float, Code} <: AbsUExtendedFloatML{Bits, SigBits}
@@ -10,6 +11,7 @@ struct UExtendedFloats{Bits, SigBits, Float, Code} <: AbsUExtendedFloatML{Bits, 
     codes::DenseVector{Code}
     nonneg_floats::DenseVector{Float}
     nonneg_codes::DenseVector{Code}
+    symbol::Symbol
 end
 
 struct SFiniteFloats{Bits, SigBits, Float, Code} <: AbsSFiniteFloatML{Bits, SigBits}
@@ -17,6 +19,7 @@ struct SFiniteFloats{Bits, SigBits, Float, Code} <: AbsSFiniteFloatML{Bits, SigB
     codes::DenseVector{Code}
     nonneg_floats::DenseVector{Float}
     nonneg_codes::DenseVector{Code}
+    symbol::Symbol
 end
 
 struct SExtendedFloats{Bits, SigBits, Float, Code} <: AbsSExtendedFloatML{Bits, SigBits}
@@ -24,45 +27,12 @@ struct SExtendedFloats{Bits, SigBits, Float, Code} <: AbsSExtendedFloatML{Bits, 
     codes::DenseVector{Code}
     nonneg_floats::DenseVector{Float}
     nonneg_codes::DenseVector{Code}
+    symbol::Symbol
 end
 
 codes(@nospecialize(x::AbstractFloatML))  = x.codes
 floats(@nospecialize(x::AbstractFloatML)) = x.floats
+symbol(@nospecialize(x::AbstractFloatML)) = x.symbol
 
 nonneg_codes(@nospecialize(x::AbstractFloatML))  = x.nonneg_codes
 nonneg_floats(@nospecialize(x::AbstractFloatML)) = x.nonneg_floats
-
-#=
-struct UFiniteFloats{Bits, SigBits, Float, Code} <: AbsUFiniteFloatML{Bits, SigBits}
-    floats::DenseVector{Float}
-    codes::DenseVector{Code}
-end
-
-struct UExtendedFloats{Bits, SigBits, Float, Code} <: AbsUExtendedFloatML{Bits, SigBits}
-    floats::DenseVector{Float}
-    codes::DenseVector{Code}
-end
-
-struct SFiniteFloats{Bits, SigBits, Float, Code} <: AbsSFiniteFloatML{Bits, SigBits}
-    floats::DenseVector{Float}
-    codes::DenseVector{Code}
-end
-
-struct SExtendedFloats{Bits, SigBits, Float, Code} <: AbsSExtendedFloatML{Bits, SigBits}
-    floats::DenseVector{Float}
-    codes::DenseVector{Code}
-end
-
-nonneg_codes(x::AbsSignedFloatML{Bits, SigBits}) where {Bits, SigBits} =
-    x.codes[1:(1<<(Bits-1)-1)]
-
-nonneg_floats(x::AbsSignedFloatML{Bits, SigBits}) where {Bits, SigBits} =
-    x.floats[1:(1<<(Bits-1)-1)]
-
-nonneg_codes(x::AbsUnsignedFloatML{Bits, SigBits}) where {Bits, SigBits} =
-    x.floats[1:(1<<(Bits)-1)]
-
-nonneg_floats(x::AbsUnsignedFloatML{Bits, SigBits}) where {Bits, SigBits} =
-    x.floats[1:(1<<Bits)-1]
-
-=#
