@@ -23,8 +23,8 @@ export AbstractFloatML,
        nSubnormalMagnitudes, nNormalMagnitudes, nSubnormalValues, nNormalValues,
        index_to_code, index_to_offset, offset_to_index,
        compacttype,
-       SignedDict, UnsignedDict,
-       UFdict, UEdict, SFdict, SEdict 
+       Signed_dict, Unsigned_dict,
+       UF_dict, UE_dict, SF_dict, SE_dict 
 
 import Base: convert, oftype, precision, exponent_bias
 
@@ -48,13 +48,13 @@ include("concrete/foundation.jl")
 include("concrete/unsigned.jl")
 include("concrete/signed.jl")
 
-UnsignedDict = Dictionary{Symbol, AbstractFloatML}()
-SignedDict = Dictionary{Symbol, AbstractFloatML}()
+Unsigned_dict = Dictionary{Symbol, AbstractFloatML}()
+Signed_dict = Dictionary{Symbol, AbstractFloatML}()
 
-UFdict = Dictionary{Symbol, AbstractFloatML}()
-UEdict = Dictionary{Symbol, AbstractFloatML}()
-SFdict = Dictionary{Symbol, AbstractFloatML}()
-SEdict = Dictionary{Symbol, AbstractFloatML}()
+UF_dict = Dictionary{Symbol, AbstractFloatML}()
+UE_dict = Dictionary{Symbol, AbstractFloatML}()
+SF_dict = Dictionary{Symbol, AbstractFloatML}()
+SE_dict = Dictionary{Symbol, AbstractFloatML}()
 
 """
     MLFloats
@@ -77,22 +77,41 @@ function MLFloats(bits::Int, sigbits::Int, signed::Bool, extended::Bool)
     if signed
         if extended
             valueseq = SExtendedFloats(bits, sigbits)
-            insert!(SEdict, symbol(valueseq), valueseq)
+            if !haskey(SE_dict, symbol(valueseq))
+                insert!(SE_dict, symbol(valueseq), valueseq)
+            end
+            if !haskey(Signed_dict, symbol(valueseq))
+                insert!(Signed_dict, symbol(valueseq), valueseq)
+            end
         else # finite
             valueseq = SFiniteFloats(bits, sigbits)
-            insert!(SFdict, symbol(valueseq), valueseq)
+            if !haskey(SF_dict, symbol(valueseq))
+                insert!(SF_dict, symbol(valueseq), valueseq)
+            end
+            if !haskey(Signed_dict, symbol(valueseq))
+                insert!(Signed_dict, symbol(valueseq), valueseq)
+            end
         end
     else
         if extended
             valueseq = UExtendedFloats(bits, sigbits)
-            insert!(UEdict, symbol(valueseq), valueseq)
-            insert!(Udict, symbol(valueseq), valueseq)
+            if !haskey(UE_dict, symbol(valueseq))
+                insert!(UE_dict, symbol(valueseq), valueseq)
+            end
+            if !haskey(Unsigned_dict, symbol(valueseq))
+                insert!(Unsigned_dict, symbol(valueseq), valueseq)
+            end
         else # finite
             valueseq = UFiniteFloats(bits, sigbits)
-            insert!(UFdict, symbol(valueseq), valueseq)
-            insert!(Udict, symbol(valueseq), valueseq)
+            if !haskey(UF_dict, symbol(valueseq))
+                insert!(UF_dict, symbol(valueseq), valueseq)
+            end
+            if !haskey(Unsigned_dict, symbol(valueseq))
+                insert!(Unsigned_dict, symbol(valueseq), valueseq)
+            end
         end
     end
+    valueseq
 end
 
 #=
