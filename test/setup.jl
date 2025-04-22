@@ -35,10 +35,12 @@ for K in Ks
     push!(SEKs, SEKPs)
 end
 
+TupleIdxs = map(k->map(KP, k), UFKs)
 
-UFks = map(k->map(KP, k), UFKs)
-UEks = map(k->map(KP, k), UEKs)
-SFks = map(k->map(KP, k), SFKs)
-SEks = map(k->map(KP, k), SEKs)
-
-        
+for K in 2:10
+    for S in (true, false)
+        for F in (true, false)
+            map(i->MLFloats(K,i,S,F),  1:K-1)
+        end
+    end
+end
