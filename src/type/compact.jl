@@ -9,3 +9,5 @@ basetypename(x::T) where {T} = basetypename(T)
 
 compacttype(T::Type) = basetypename(T){nBits(T), nSigBits(T)}
 compacttype(x::T) where {T} = compacttype(T)
+
+expandedtype(T::Type) = basetypename(T){nBits(T), nSigBits(T), typeforfloat(nBits(T)), typeforcode(nBits(T))}
