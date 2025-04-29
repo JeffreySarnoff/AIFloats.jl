@@ -17,8 +17,11 @@ end
 
 """
     offset_to_code(bits, x)
+
 """
-    index_to_offset(x)
+
+"""
+   index_to_offset(x)
 
 convert the Julia index `x` into a P3109 offset as a UInt16
 - (0x040) ↦ 0x0039
