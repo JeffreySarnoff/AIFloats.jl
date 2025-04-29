@@ -11,8 +11,12 @@ convert the P3109 encoding `x` into a Julia index as an UInt16
     x % UInt16 + one(UInt16)
 end
 
-offset_to_index(x::T) where {T<:Integer} = (x % UInt16) + one(UInt16)
+@inline offset_to_index(x::T) where {T<:Integer} = (x % UInt16) + one(UInt16)
 
+@inline offset_to_index(::Type{Target}, x::T) where {Target<:Integer, T<:Integer} = (x + one(T)) % Target
+
+"""
+    offset_to_code(bits, x)
 """
     index_to_offset(x)
 
@@ -26,6 +30,8 @@ convert the Julia index `x` into a P3109 offset as a UInt16
 end
 
 @inline index_to_offset(x::T) where {T<:Integer} = (x % UInt16) - one(UInt16)
+
+@inline index_to_offset(::Type{Target}, x::T) where {Target<:Integer, T<:Integer} = (x - one(T)) % Target
 
 """
     index_to_code(bits, index)
