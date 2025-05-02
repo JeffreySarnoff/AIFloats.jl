@@ -16,8 +16,7 @@ end
 
 function foundation_floats_precision_eq1(bits::Integer, sigbits::Integer)
     delta = 2^(bits-2)
-    bits += 1
-    sigs = foundation_sigs(bits, sigbits)
+    sigs = foundation_sigs(bits+1, sigbits)
     exps = foundation_exps(bits, sigbits)
     seq = exps .* sigs
     seq = seq[delta+2:3*delta+1]
@@ -26,7 +25,7 @@ function foundation_floats_precision_eq1(bits::Integer, sigbits::Integer)
 end
 
 function foundation_floats_precision_gt1(bits::Integer, sigbits::Integer)
-    sigs = foundation_sigs(bits, sigbits)
+    sigs = foundation_sigs(bits+1, sigbits)
     exps = foundation_exps(bits, sigbits)
     seq = exps .* sigs
     seq

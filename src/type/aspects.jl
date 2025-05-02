@@ -1,3 +1,17 @@
+# computing over Type Parameters
+
+nBits(Bits::I, SigBits::I) where {I<:Integer} = Bits
+nSigBits(Bits::I, SigBits::I) where {I<:Integer} = SigBits
+nFracBits(Bits::I, SigBits::I) where {I<:Integer} = SigBits - one(I)
+nSignBits(Bits::I, SigBits::I, isSigned::Bool) where {I<:Integer} = zero(I) + isSigned
+nExpBits(Bits::I, SigBits::I, isSigned::Bool) where {I<:Integer} = (Bits - SigBits) + !isSigned
+
+nValues(Bits::I, SigBits::I) where {I<:Integer} = 2^Bits
+nSigMagnitudes(Bits::I, SigBits::I) where {I<:Integer} = 2^nSigBits(Bits, SigBits)
+nFracMagnitudes(Bits::I, SigBits::I) where {I<:Integer} = 2^nFracBits(Bits, SigBits)
+nSignMagnitudes(Bits::I, SigBits::I, isSigned::Bool) where {I<:Integer} = (zero(I) + isSigned) << one(I)
+nExpMagnitudes(Bits::I, SigBits::I, isSigned::Bool) where {I<:Integer} = 2^nExpBits(Bits, SigBits, isSigned)
+
 # computing over Type Abstractions
 
 nBits(::Type{<:AbstractFloatML{Bits, SigBits}}) where {Bits, SigBits} = Bits
