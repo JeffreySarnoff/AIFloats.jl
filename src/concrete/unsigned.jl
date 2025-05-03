@@ -16,8 +16,9 @@ for (T, S) in ((:UFiniteFloats, "UFFloats"), (:UExtendedFloats, "UEFloats"))
         fpmem = memalign_clear(floattype, length(fpvals))
         copyto!(fpmem, fpvals)
     
-        nonneg_n = (1<<bits) - 1 # drop NaN
-        nonneg_codes = memalign_clear(codetype, nonneg_n)
+          _n = (1<<bits) - 1 # drop NaN
+        
+          _codes = memalign_clear(codetype, nonneg_n)
         nonneg_floats = memalign_clear(floattype, nonneg_n)
     
         copyto!(nonneg_codes, encoding[1:nonneg_n])

@@ -11,7 +11,7 @@ nSigMagnitudes(Bits::I, SigBits::I) where {I<:Integer} = 2^nSigBits(Bits, SigBit
 nFracMagnitudes(Bits::I, SigBits::I) where {I<:Integer} = 2^nFracBits(Bits, SigBits)
 nSignMagnitudes(Bits::I, SigBits::I, isSigned::Bool) where {I<:Integer} = (zero(I) + isSigned) << one(I)
 nExpMagnitudes(Bits::I, SigBits::I, isSigned::Bool) where {I<:Integer} = 2^nExpBits(Bits, SigBits, isSigned)
-
+  
 # computing over Type Abstractions
 
 nBits(::Type{<:AbstractFloatML{Bits, SigBits}}) where {Bits, SigBits} = Bits
