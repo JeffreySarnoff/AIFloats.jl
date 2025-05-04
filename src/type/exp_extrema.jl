@@ -1,6 +1,6 @@
-Base.exponent_bias(::Type{<:AbsSignedFloatML{Bits, SigBits}}) where {Bits, SigBits} =
+Base.exponent_bias(::Type{<:AbsSignedAIFloat{Bits, SigBits}}) where {Bits, SigBits} =
    floor(2^(nExpBits(T) - 1) - 1)
-Base.exponent_bias(::Type{<:AbsUnsignedFloatML{Bits, SigBits}}) where {Bits, SigBits} =
+Base.exponent_bias(::Type{<:AbsUnsignedAIFloat{Bits, SigBits}}) where {Bits, SigBits} =
    floor(2^(nExpBits(T)))
 
 biased_exponent_max(::Type{T}) where {T<:AbstractAIFloat} =  exponent_bias(T)

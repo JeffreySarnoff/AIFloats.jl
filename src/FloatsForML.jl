@@ -1,10 +1,10 @@
 module FloatsForML
 
 export AbstractAIFloat,
-         AbsSignedFloatML,
+         AbsSignedAIFloat,
            AbsSignedExtendedAIFloat, AbsSignedFiniteAIFloat,
               SExtendedFloats,        SFiniteFloats,
-         AbsUnsignedFloatML,
+         AbsUnsignedAIFloat,
            AbsUnsignedExtendedAIFloat, AbsUnsignedFiniteAIFloat,
               UExtendedFloats,          UFiniteFloats,
        MLFloats,
