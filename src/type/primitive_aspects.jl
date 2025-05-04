@@ -19,7 +19,7 @@ nNonzeroExpValues(Bits, SigBits, isSigned) = nExpValues(Bits, SigBits, isSigned)
 nPositiveValues(Bits, SigBits, isSigned) = nNonzeroNumericValues(Bits, SigBits) >> (0 + isSigned)
 nNegativeValues(Bits, SigBits, isSigned) = isSigned * nPositiveValues(Bits, SigBits, isSigned, isExtended)
 
-nMagnitudes(Bits, SigBits, isSigned) = nNumericValues(Bits, SigBits) >>0 + isSigned)
+nMagnitudes(Bits, SigBits, isSigned) = nNumericValues(Bits, SigBits) >> (0 + isSigned)
 nNonzeroMagnitudes(Bits, SigBits, isSigned) = nMagnitudes(Bits, SigBits, isSigned) - 1
 nFracMagnitudes(Bits, SigBits) = 2^nFracBits(Bits, SigBits)
 nNonzeroFracMagnitudes(Bits, SigBits) = nFracMagnitudes(Bits, SigBits) - 1
