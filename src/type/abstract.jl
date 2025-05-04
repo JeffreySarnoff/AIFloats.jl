@@ -10,6 +10,37 @@ abstract type AbsSignedExtendedAIFloat{Bits, SigBits} <: AbsSignedAIFloat{Bits, 
 abstract type AbsUnsignedFiniteAIFloat{Bits, SigBits} <: AbsUnsignedAIFloat{Bits, SigBits} end
 abstract type AbsUnsignedExtendedAIFloat{Bits, SigBits} <: AbsUnsignedAIFloat{Bits, SigBits} end
 
+# predicates for abstract types
+
+is_signed(@nospecialize(T::Type{<:AbsSignedAIFloat}))     = true
+is_signed(@nospecialize(T::Type{<:AbsUnsignedAIFloat}))   = false
+
+is_unsigned(@nospecialize(T::Type{<:AbsSignedAIFloat}))   = false
+is_unsigned(@nospecialize(T::Type{<:AbsUnsignedAIFloat})) = true
+
+is_finite(@nospecialize(T::Type{<:AbsSignedFiniteAIFloat}))     = true
+is_finite(@nospecialize(T::Type{<:AbsUnsignedFiniteAIFloat}))   = true
+is_finite(@nospecialize(T::Type{<:AbsSignedExtendedAIFloat}))   = false
+is_finite(@nospecialize(T::Type{<:AbsUnsignedExtendedAIFloat})) = false
+
+is_extended(@nospecialize(T::Type{<:AbsSignedFiniteAIFloat}))     = false
+is_extended(@nospecialize(T::Type{<:AbsUnsignedFiniteAIFloat}))   = false
+is_extended(@nospecialize(T::Type{<:AbsSignedExtendedAIFloat}))   = true
+is_extended(@nospecialize(T::Type{<:AbsUnsignedExtendedAIFloat})) = true
+
+# predicated counts for abstract types
+
+nNaNs(@nospecialize(T::Type{<:AbstractAIFloat})) = 1
+nZeros(@nospecialize(T::Type{<:AbstractAIFloat})) = 1
+
+nInfs(@nospecialize(T::Type{<:AbsSignedFiniteAIFloat}))     = 0
+nInfs(@nospecialize(T::Type{<:AbsUnsignedFiniteAIFloat}))   = 0
+nInfs(@nospecialize(T::Type{<:AbsSignedExtendedAIFloat}))   = 2
+nInfs(@nospecialize(T::Type{<:AbsUnsignedExtendedAIFloat})) = 1
+
+nPosInfs(@nospecialize(T::Type{<:AbstractAIFloat})) = 0 + is_extended(T)
+nNegInfs(@nospecialize(T::Type{<:AbstractAIFloat})) = 0 + is_extended(T) * is_signed(T)
+
 # Julia Base primitive aspects
 
 Base.precision(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = SigBits

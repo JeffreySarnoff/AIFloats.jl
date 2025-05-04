@@ -1,20 +1,3 @@
-# predicates for abstract types
-
-is_signed(@nospecialize(T::Type{<:AbsSignedAIFloat}))     = true
-is_signed(@nospecialize(T::Type{<:AbsUnsignedAIFloat}))   = false
-
-is_unsigned(@nospecialize(T::Type{<:AbsSignedAIFloat}))   = false
-is_unsigned(@nospecialize(T::Type{<:AbsUnsignedAIFloat})) = true
-
-is_finite(@nospecialize(T::Type{<:AbsSignedFiniteAIFloat}))     = true
-is_finite(@nospecialize(T::Type{<:AbsUnsignedFiniteAIFloat}))   = true
-is_finite(@nospecialize(T::Type{<:AbsSignedExtendedAIFloat}))   = false
-is_finite(@nospecialize(T::Type{<:AbsUnsignedExtendedAIFloat})) = false
-
-is_extended(@nospecialize(T::Type{<:AbsSignedFiniteAIFloat}))     = false
-is_extended(@nospecialize(T::Type{<:AbsUnsignedFiniteAIFloat}))   = false
-is_extended(@nospecialize(T::Type{<:AbsSignedExtendedAIFloat}))   = true
-is_extended(@nospecialize(T::Type{<:AbsUnsignedExtendedAIFloat})) = true
 
 # predicates for concrete types
 
