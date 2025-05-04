@@ -74,8 +74,6 @@ for F in (:nInfs, :nPosInfs, :nNegInfs,
 end
 
 # primitive aspects
-nFiniteValues, nFiniteMagnitudes, nNonzeroFiniteMagnitudes,
-nPositiveValues, nNegativeValues, nPositiveFiniteValues, nNegativeFiniteValues,
 
 nZeros(Bits, SigBits) = 1
 nNaNs(Bits, SigBits) = 1
@@ -122,5 +120,3 @@ nNegInfs(isSigned::Val{IsUnsigned}, isExtended::Val{IsFinite}) = 0
 nNegInfs(isSigned::Val{IsSigned}, isExtended::Val{IsFinite}) = 0
 nNegInfs(isSigned::Val{IsUnsigned}, isExtended::Val{IsExtended}) = 1
 nNegInfs(isSigned::Val{IsSigned}, isExtended::Val{IsExtended}) = 1
-
-:nFiniteValues,:nPositiveFiniteValues, :nNegativeFiniteValues)

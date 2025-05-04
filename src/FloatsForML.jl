@@ -40,7 +40,8 @@ include("type/abstract.jl")
 include("type/collective.jl")
 include("type/compact.jl")
 
-include("type/aspects.jl")
+#include("type/aspects.jl")
+include("type/primitive_aspects.jl")
 include("type/exp_extrema.jl")
 include("type/predicates.jl")
 
