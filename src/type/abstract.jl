@@ -29,8 +29,8 @@ end
 for F in (:nSignBits, :nExpBits,:nMagnitudes, :nNonzeroMagnitudes,
           :nPositiveValues, :nNegativeValues, :nExpValues, :nNonzeroExpValues)
     @eval begin
-       $F(::Type{T}) where {Bits, SigBits, T<:AbsUnsignedAIFloat{Bits, SigBits}} = $F(Bits, SigBits, IsSigned)
-       $F(::Type{T}) where {Bits, SigBits, T<:AbsSignedAIFloat{Bits, SigBits}} = $F(Bits, SigBits, IsUnsigned)
+       $F(::Type{T}) where {Bits, SigBits, T<:AbsUnsignedAIFloat{Bits, SigBits}} = $F(Bits, SigBits, IsUnsigned)
+       $F(::Type{T}) where {Bits, SigBits, T<:AbsSignedAIFloat{Bits, SigBits}} = $F(Bits, SigBits, IsSigned)
     end
 end
 
