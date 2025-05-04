@@ -3,7 +3,7 @@ using FloatsForML: BitsSmallMin, BitsSmallMax, IsUnsigned, IsSigned, IsFinite, I
 
 Ks = BitsSmallMin:(BitsSmallMax+2)
 
-function KP(x::T) where {K,P, T<:AbstractFloatML{K,P}}
+function KP(x::T) where {K,P, T<:AbstractAIFloat{K,P}}
     (K, P)
 end
 
@@ -18,7 +18,7 @@ for K in 2:10
     UEKPs = []
     SFKPs = []
     SEKPs = []
-    
+
     for P in 1:K-1
         UF = MLFloats(K, P, IsUnsigned, IsFinite)
         push!(UFKPs, UF)

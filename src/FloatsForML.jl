@@ -1,11 +1,11 @@
 module FloatsForML
 
-export AbstractFloatML,
+export AbstractAIFloat,
          AbsSignedFloatML,
-           AbsSExtendedFloatML, AbsSFiniteFloatML,
+           AbsSignedExtendedAIFloat, AbsSignedFiniteAIFloat,
               SExtendedFloats,        SFiniteFloats,
          AbsUnsignedFloatML,
-           AbsUExtendedFloatML, AbsUFiniteFloatML,
+           AbsUnsignedExtendedAIFloat, AbsUnsignedFiniteAIFloat,
               UExtendedFloats,          UFiniteFloats,
        MLFloats,
        CODE, FLOAT,
@@ -24,7 +24,7 @@ export AbstractFloatML,
        index_to_code, index_to_offset, offset_to_index,
        compacttype,
        Signed_dict, Unsigned_dict,
-       UF_dict, UE_dict, SF_dict, SE_dict 
+       UF_dict, UE_dict, SF_dict, SE_dict
 
 import Base: convert, oftype, precision, exponent_bias
 
@@ -48,13 +48,13 @@ include("concrete/foundation.jl")
 include("concrete/unsigned.jl")
 include("concrete/signed.jl")
 
-Unsigned_dict = Dictionary{Symbol, AbstractFloatML}()
-Signed_dict = Dictionary{Symbol, AbstractFloatML}()
+Unsigned_dict = Dictionary{Symbol, AbstractAIFloat}()
+Signed_dict = Dictionary{Symbol, AbstractAIFloat}()
 
-UF_dict = Dictionary{Symbol, AbstractFloatML}()
-UE_dict = Dictionary{Symbol, AbstractFloatML}()
-SF_dict = Dictionary{Symbol, AbstractFloatML}()
-SE_dict = Dictionary{Symbol, AbstractFloatML}()
+UF_dict = Dictionary{Symbol, AbstractAIFloat}()
+UE_dict = Dictionary{Symbol, AbstractAIFloat}()
+SF_dict = Dictionary{Symbol, AbstractAIFloat}()
+SE_dict = Dictionary{Symbol, AbstractAIFloat}()
 
 """
     MLFloats

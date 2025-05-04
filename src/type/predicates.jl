@@ -6,15 +6,15 @@ is_signed(@nospecialize(T::Type{<:AbsUnsignedFloatML}))   = false
 is_unsigned(@nospecialize(T::Type{<:AbsSignedFloatML}))   = false
 is_unsigned(@nospecialize(T::Type{<:AbsUnsignedFloatML})) = true
 
-is_finite(@nospecialize(T::Type{<:AbsSFiniteFloatML}))     = true
-is_finite(@nospecialize(T::Type{<:AbsUFiniteFloatML}))   = true
-is_finite(@nospecialize(T::Type{<:AbsSExtendedFloatML}))   = false
-is_finite(@nospecialize(T::Type{<:AbsUExtendedFloatML})) = false
+is_finite(@nospecialize(T::Type{<:AbsSignedFiniteAIFloat}))     = true
+is_finite(@nospecialize(T::Type{<:AbsUnsignedFiniteAIFloat}))   = true
+is_finite(@nospecialize(T::Type{<:AbsSignedExtendedAIFloat}))   = false
+is_finite(@nospecialize(T::Type{<:AbsUnsignedExtendedAIFloat})) = false
 
-is_extended(@nospecialize(T::Type{<:AbsSFiniteFloatML}))     = false
-is_extended(@nospecialize(T::Type{<:AbsUFiniteFloatML}))   = false
-is_extended(@nospecialize(T::Type{<:AbsSExtendedFloatML}))   = true
-is_extended(@nospecialize(T::Type{<:AbsUExtendedFloatML})) = true
+is_extended(@nospecialize(T::Type{<:AbsSignedFiniteAIFloat}))     = false
+is_extended(@nospecialize(T::Type{<:AbsUnsignedFiniteAIFloat}))   = false
+is_extended(@nospecialize(T::Type{<:AbsSignedExtendedAIFloat}))   = true
+is_extended(@nospecialize(T::Type{<:AbsUnsignedExtendedAIFloat})) = true
 
 # predicates for concrete types
 
