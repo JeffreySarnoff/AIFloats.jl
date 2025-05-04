@@ -13,10 +13,12 @@ nSignBits(Bits, SigBits, isSigned) = oftype(SigBits, 0) + isSigned
 nValues(Bits, SigBits) = 2^Bits
 nNumericValues(Bits, SigBits) = nValues(Bits, SigBits) - 1 # remove NaN
 nNonzeroNumericValues(Bits, SigBits) = nNumericValues(Bits, SigBits) - 1 # remove Zero
-nPositiveValues(Bits, SigBits, isSigned) = nNonzeroNumericValues(Bits, SigBits) >> (0 + isSigned)
+
+nNonnegNumericValues(Bits, SigBits, isSigned) = nNumericValues(Bits, SigBits) >> (0 + isSigned) + 1 # + isodd(nNumericValues)
+nPositiveValues(Bits, SigBits, isSigned) = nNonnegNumericValues(Bits, SigBits, isSigned) - 1 # remove Zero
 nNegativeValues(Bits, SigBits, isSigned) = isSigned * nPositiveValues(Bits, SigBits, isSigned)
 
-nMagnitudes(Bits, SigBits, isSigned) = nNumericValues(Bits, SigBits) >> (0 + isSigned)
+nMagnitudes(Bits, SigBits, isSigned) = nNonnegNumericValues(Bits, SigBits, isSigned)
 nNonzeroMagnitudes(Bits, SigBits, isSigned) = nMagnitudes(Bits, SigBits, isSigned) - 1
 nFracMagnitudes(Bits, SigBits) = 2^nFracBits(Bits, SigBits)
 nNonzeroFracMagnitudes(Bits, SigBits) = nFracMagnitudes(Bits, SigBits) - 1
