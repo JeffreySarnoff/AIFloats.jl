@@ -17,31 +17,60 @@ Base.precision(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 
 
 # primitive aspects computed over Type Abstractions
 
-for F in (:nBits, :nSigBits, :nFracBits, :nValues, :nNumericValues)
+for F in (:nZeros, :nNaNs)
+    @eval $F(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 1
+end
+
+for F in (:nBits, :nSigBits, :nFracBits, :nValues, :nNumericValues, :nFracMagnitudes, :nNonzeroFracMagnitudes)
     @eval $F(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = $F(Bits, SigBits)
 end
 
-for F in (:nSignBits, :nExpBits,:nMagnitudes)
+for F in (:nSignBits, :nExpBits,:nMagnitudes, :nExpValues, :nNonzeroExpValues)
     @eval begin
        $F(::Type{T}) where {Bits, SigBits, T<:AbsUnsignedAIFloat{Bits, SigBits}} = $F(Bits, SigBits, IsSigned)
        $F(::Type{T}) where {Bits, SigBits, T<:AbsSignedAIFloat{Bits, SigBits}} = $F(Bits, SigBits, IsUnsigned)
     end
 end
 
+for F in (:nInfs, :nPosInfs, :nNegInfs)
+    @eval begin
+       $F(::Type{T}) where {Bits, SigBits, T<:AbsUnsignedFiniteAIFloat{Bits, SigBits}} = $F(Bits, SigBits, IsUnsigned, IsFinite)
+       $F(::Type{T}) where {Bits, SigBits, T<:AbsUnsignedExtendedAIFloat{Bits, SigBits}} = $F(Bits, SigBits, IsUnsigned, IsExtended)
+       $F(::Type{T}) where {Bits, SigBits, T<:AbsSignedFiniteAIFloat{Bits, SigBits}} = $F(Bits, SigBits, IsSigned, IsFinite)
+       $F(::Type{T}) where {Bits, SigBits, T<:AbsSignedExtendedAIFloat{Bits, SigBits}} = $F(Bits, SigBits, IsSigned, IsExtended)
+    end
+end
+
 # primitive aspects computed over Types
 
-for F in (:nBits, :nSigBits, :nFracBits, :nValues, :nNumericValues)
+for F in (:nZeros, :nNaNs)
     @eval $F(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = $F(T)
 end
 
-for F in (:nSignBits, :nExpBits,:nMagnitudes)
+for F in (:nBits, :nSigBits, :nFracBits, :nValues, :nNumericValues, :nFracMagnitudes, :nNonzeroFracMagnitudes)
+    @eval $F(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = $F(T)
+end
+
+for F in (:nSignBits, :nExpBits,:nMagnitudes, :nExpValues, :nNonzeroExpValues)
     @eval begin
        $F(x::T) where {Bits, SigBits, T<:AbsUnsignedAIFloat{Bits, SigBits}} = $F(T)
        $F(x::T) where {Bits, SigBits, T<:AbsSignedAIFloat{Bits, SigBits}} = $F(T)
     end
 end
 
+for F in (:nInfs, :nPosInfs, :nNegInfs)
+    @eval begin
+       $F(x::T) where {Bits, SigBits, T<:AbsUnsignedFiniteAIFloat{Bits, SigBits}} = $F(T)
+       $F(x::T) where {Bits, SigBits, T<:AbsUnsignedExtendedAIFloat{Bits, SigBits}} = $F(T)
+       $F(x::T) where {Bits, SigBits, T<:AbsSignedFiniteAIFloat{Bits, SigBits}} = $F(T)
+       $F(x::T) where {Bits, SigBits, T<:AbsSignedExtendedAIFloat{Bits, SigBits}} = $F(T)
+    end
+end
+
 # primitive aspects
+
+nZeros(Bits, SigBits) = 1
+nNaNs(Bits, SigBits) = 1
 
 nBits(Bits, SigBits)= Bits
 nSigBits(Bits, SigBits) = SigBits
@@ -51,10 +80,29 @@ nSignBits(Bits, SigBits, isSigned) = oftype(SigBits, 0) + isSigned
 
 nValues(Bits, SigBits) = 2^Bits
 nNumericValues(Bits, SigBits) = nValues(Bits, SigBits) - 1 # remove NaN
-nMagnitudes(Bits::I, SigBits::I, isSigned::Bool) = nNumericValues(Bits, SigBits) >> (oftype(SigBits, 0) + isSigned)
+nExpValues(Bits, SigBits, isSigned) = 2^nExpBits(Bits, SigBits, isSigned)
+nNonzeroExpValues(Bits, SigBits, isSigned) = nExpValues(Bits, SigBits, isSigned) - 1
 
-
+nMagnitudes(Bits, SigBits, isSigned) = nNumericValues(Bits, SigBits) >>0 + isSigned)
 nFracMagnitudes(Bits, SigBits) = 2^nFracBits(Bits, SigBits)
 nNonzeroFracMagnitudes(Bits, SigBits) = nFracMagnitudes(Bits, SigBits) - 1
 
+nInfs(Bits, SigBits, isSigned, isExtended) = nInfs(Val(isSigned), Val(isExtended))
+nPosInfs(Bits, SigBits, isSigned, isExtended) = nPosInfs(Val(isSigned), Val(isExtended))
+nNegInfs(Bits, SigBits, isSigned, isExtended) = nNegInfs(Val(isSigned), Val(isExtended))
+
+nInfs(isSigned::Val{IsUnsigned}, isExtended::Val{IsFinite}) = 0
+nInfs(isSigned::Val{IsSigned}, isExtended::Val{IsFinite}) = 0
+nInfs(isSigned::Val{IsUnsigned}, isExtended::Val{IsExtended}) = 1
+nInfs(isSigned::Val{IsSigned}, isExtended::Val{IsExtended}) = 2
+
+nPosInfs(isSigned::Val{IsUnsigned}, isExtended::Val{IsFinite}) = 0
+nPosInfs(isSigned::Val{IsSigned}, isExtended::Val{IsFinite}) = 0
+nPosInfs(isSigned::Val{IsUnsigned}, isExtended::Val{IsExtended}) = 1
+nPosInfs(isSigned::Val{IsSigned}, isExtended::Val{IsExtended}) = 1
+
+nNegInfs(isSigned::Val{IsUnsigned}, isExtended::Val{IsFinite}) = 0
+nNegInfs(isSigned::Val{IsSigned}, isExtended::Val{IsFinite}) = 0
+nNegInfs(isSigned::Val{IsUnsigned}, isExtended::Val{IsExtended}) = 1
+nNegInfs(isSigned::Val{IsSigned}, isExtended::Val{IsExtended}) = 1
 
