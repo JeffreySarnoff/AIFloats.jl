@@ -90,17 +90,17 @@ end
 
  @testset "Abs[Unsigned|Signed]AIFloat{4,_}" begin
     for T in vcat(auai4s, asai4s)
-        println("T = $T")
+        bits = T.parameters[1]
         sigbits = T.parameters[2]
         isSigned = is_signed(T)
         isUnsigned = is_unsigned(T)
 
         @test nSignBits(T) == ifelse(isSigned, 1, 0)
-        @test nExpBits(T) == ifelse(isUnsigned, 0, 1)
+        @test nExpBits(T) == ifelse(isUnsigned, (bits-sigbits+1), (bits-sigbits))
         @test nMagnitudes(T) == ifelse(isUnsigned, nNumericValues(T), nValues(T) >> 1)
         @test nNonzeroMagnitudes(T) == nMagnitudes(T) - 1
         @test nPositiveValues(T) == nNonzeroMagnitudes(T)
-        @test nNegativeValues(T) == ifelse(isUnsigned, 0 nPositiveValues(T))
+        @test nNegativeValues(T) == ifelse(isUnsigned, 0, nPositiveValues(T))
         @test nExpValues(T) == 2^nExpBits(T)
         @test nNonzeroExpValues(T) == nExpValues(T) - 1
     end

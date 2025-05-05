@@ -14,7 +14,7 @@ nValues(Bits, SigBits) = 2^Bits
 nNumericValues(Bits, SigBits) = nValues(Bits, SigBits) - 1 # remove NaN
 nNonzeroNumericValues(Bits, SigBits) = nNumericValues(Bits, SigBits) - 1 # remove Zero
 
-nNonnegNumericValues(Bits, SigBits, isSigned) = nNumericValues(Bits, SigBits) >> (0 + isSigned) + 1 # + isodd(nNumericValues)
+nNonnegNumericValues(Bits, SigBits, isSigned) = nNumericValues(Bits, SigBits) >> (0 + isSigned) # + isodd(nNumericValues)
 nPositiveValues(Bits, SigBits, isSigned) = nNonnegNumericValues(Bits, SigBits, isSigned) - 1 # remove Zero
 nNegativeValues(Bits, SigBits, isSigned) = isSigned * nPositiveValues(Bits, SigBits, isSigned)
 
