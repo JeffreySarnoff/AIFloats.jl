@@ -97,7 +97,7 @@ end
 
         @test nSignBits(T) == ifelse(isSigned, 1, 0)
         @test nExpBits(T) == ifelse(isUnsigned, (bits-sigbits+1), (bits-sigbits))
-        @test nMagnitudes(T) == ifelse(isUnsigned, nNumericValues(T), nValues(T) >> 1)
+        @test nMagnitudes(T) == ifelse(isUnsigned, nNumericValues(T), nNumericValues(T) >> 1)
         @test nNonzeroMagnitudes(T) == nMagnitudes(T) - 1
         @test nPositiveValues(T) == nNonzeroMagnitudes(T)
         @test nNegativeValues(T) == ifelse(isUnsigned, 0, nPositiveValues(T))
