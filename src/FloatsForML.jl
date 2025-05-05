@@ -23,6 +23,7 @@ export AbstractAIFloat,
        nInfs, nPosInfs, nNegInfs,
        nFiniteValues, nNonzeroFiniteValues,
        nPositiveFiniteValues, nNegativeFiniteValues,
+       nFracMagnitudes, nNonzeroFracMagnitudes,
        index_to_code, index_to_offset, offset_to_index,
        compacttype,
        Signed_dict, Unsigned_dict,
@@ -39,8 +40,7 @@ include("constants.jl")
 
 include("type/primitive_aspects.jl")
 
-include("type/abstract.jl")eroExpValues,
-       nFracMagnitudes, nNonzeroFracMagnitudes,
+include("type/abstract.jl")
 include("type/collective.jl")
 include("type/compact.jl")
 
