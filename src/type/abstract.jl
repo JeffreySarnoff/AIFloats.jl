@@ -48,10 +48,6 @@ Base.precision(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 
 
 # primitive aspects computed over Type Abstractions
 
-for F in (:nZeros, :nNaNs)
-    @eval $F(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 1
-end
-
 for F in (:nBits, :nSigBits, :nFracBits, :nValues, :nNumericValues, :nNonzeroNumericValues,
           :nFracMagnitudes, :nNonzeroFracMagnitudes)
     @eval $F(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = $F(Bits, SigBits)
