@@ -18,11 +18,11 @@ export AbstractAIFloat,
        subnormal_min, subnormal_max, normal_min, normal_max,
        nZeros, nNaNs, nBits, nSigBits, nFracBits, nSignBits, nExpBits,
        nValues, nNumericValues, nNonzeroNumericValues,
-       nPositiveValues, nNegativeValues, nExpValues, nNonzeroExpValues,
-       nFracMagnitudes, nNonzeroFracMagnitudes,
+       nPositiveValues, nNegativeValues,
        nMagnitudes, nNonzeroMagnitudes, nExpValues, nNonzeroExpValues,
        nInfs, nPosInfs, nNegInfs,
-       nFiniteValues, nPositiveFiniteValues, nNegativeFiniteValues,
+       nFiniteValues, nNonzeroFiniteValues,
+       nPositiveFiniteValues, nNegativeFiniteValues,
        index_to_code, index_to_offset, offset_to_index,
        compacttype,
        Signed_dict, Unsigned_dict,
@@ -39,7 +39,8 @@ include("constants.jl")
 
 include("type/primitive_aspects.jl")
 
-include("type/abstract.jl")
+include("type/abstract.jl")eroExpValues,
+       nFracMagnitudes, nNonzeroFracMagnitudes,
 include("type/collective.jl")
 include("type/compact.jl")
 
