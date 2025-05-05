@@ -176,7 +176,6 @@ end
     end
 end
 
-
 @testset "AbsUnsignedFiniteAIFloat{4,_}" begin
     for T ∈ aufai4s
         bits = T.parameters[1]
@@ -195,10 +194,35 @@ end
         @test nFiniteValues(T) - 1 ==
               ifelse(isUnsigned, (nFiniteValues(T) - 1), (nFiniteValues(T) >> 1))
         @test nPositiveFiniteValues(T) ==
-              ifelse(is_unsigned, (nFiniteValues(T) - 1), (nFiniteValues(T) >> 1))
+              ifelse(isUnsigned, (nFiniteValues(T) - 1), (nFiniteValues(T) >> 1))
         @test nNegativeFiniteValues(T) == ifelse(isUnsigned, 0, nPositiveFiniteValues(T))
     end
 end
+
+@testset "AbsUnsignedFiniteAIFloat{5,_}" begin
+    for T ∈ aufai4s
+        bits = T.parameters[1]
+        sigbits = T.parameters[2]
+        isSigned = is_signed(T)
+        isUnsigned = is_unsigned(T)
+        isFinite = is_finite(T)
+        isExtended = is_extended(T)
+
+        @test nInfs(T) == ifelse(isExtended, (isSigned ? 2 : 1), 0)
+        @test nPosInfs(T) == ifelse(isExtended, 1, 0)
+        @test nNegInfs(T) == ifelse(isExtended, (isSigned ? 1 : 0), 0)
+        @test nFiniteValues(T) == nNumericValues(T) - nInfs(T)
+        @test nNonzeroFiniteValues(T) == nFiniteValues(T) - 1
+        @test nNonzeroFiniteValues(T) == nNumericValues(T) - nInfs(T) - nZeros(T)
+        @test nFiniteValues(T) - 1 ==
+              ifelse(isUnsigned, (nFiniteValues(T) - 1), (nFiniteValues(T) >> 1))
+        @test nPositiveFiniteValues(T) ==
+              ifelse(isUnsigned, (nFiniteValues(T) - 1), (nFiniteValues(T) >> 1))
+        @test nNegativeFiniteValues(T) == ifelse(isUnsigned, 0, nPositiveFiniteValues(T))
+    end
+end
+
+# ==========
 
 @testset "AbsUnsignedExtendedAIFloat{4,_}" begin
     for T ∈ aueai4s
@@ -209,18 +233,41 @@ end
         isFinite = is_finite(T)
         isExtended = is_extended(T)
 
-        @test nInfs(T) == isExtended ? isSigned ? 2 : 1 : 0
-        @test nPosInfs(T) == isExtended ? 1 : 0
-        @test nNegInfs(T) == isExtended ? isSigned ? 1 : 0 : 0
+        @test nInfs(T) == ifelse(isExtended, (isSigned ? 2 : 1), 0)
+        @test nPosInfs(T) == ifelse(isExtended, 1, 0)
+        @test nNegInfs(T) == ifelse(isSigned, nPosInfs(T), 0)
         @test nFiniteValues(T) == nNumericValues(T) - nInfs(T)
-        @test nPositiveFiniteValues(T) == isUnsigned ? nFiniteValues(T) - 1 :
-              nFiniteValues(T) >> 1
-        @test nNegativeFiniteValues(T) == isUnsigned ? 0 : nPositiveFiniteValues(T)
+        @test nNonzeroFiniteValues(T) == nFiniteValues(T) - 1
+        @test nNonzeroFiniteValues(T) == nNumericValues(T) - nInfs(T) - nZeros(T)
+        @test nFiniteValues(T) - 1 ==
+              ifelse(isUnsigned, (nFiniteValues(T) - 1), (nFiniteValues(T) >> 1))
+        @test nPositiveFiniteValues(T) ==
+              ifelse(isUnsigned, (nFiniteValues(T) - 1), (nFiniteValues(T) >> 1))
+        @test nNegativeFiniteValues(T) == ifelse(isUnsigned, 0, nPositiveFiniteValues(T))
+    end
+end
+
+
+@testset "AbsUnsignedExtendedAIFloat{4,_}" begin
+    for T ∈ aueai4s
+        bits = T.parameters[1]
+        sigbits = T.parameters[2]
+        isSigned = is_signed(T)
+        isUnsigned = is_unsigned(T)
+        isFinite = is_finite(T)
+        isExtended = is_extended(T)
+
+        @test nInfs(T) == ifelse(isExtended, (isSigned ? 2 : 1), 0)
+        @test nPosInfs(T) == ifelse(isExtended, 1, 0)
+        @test nNegInfs(T) == ifelse(isExtended, (isSigned ? 1 : 0), 0)
+        @test nFiniteValues(T) == nNumericValues(T) - nInfs(T)
+        @test nPositiveFiniteValues(T) == ifelse(isUnsigned, (nFiniteValues(T) - 1), nFiniteValues(T) >> 1)
+        @test nNegativeFiniteValues(T) == ifelse(isUnsigned, 0, nPositiveFiniteValues(T))
     end
 end
 
 @testset "Abs[Unsigned|Signed]AIFloat{5,_}" begin
-    for T ∈ vcat(auai5s, asai5s)
+    for T ∈ vcat(auai5s, asai5s); println(T);println();
         bits = T.parameters[1]
         sigbits = T.parameters[2]
         isSigned = is_signed(T)
