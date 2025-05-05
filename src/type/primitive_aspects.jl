@@ -23,13 +23,14 @@ nNonzeroMagnitudes(Bits, SigBits, isSigned) = nMagnitudes(Bits, SigBits, isSigne
 nFracMagnitudes(Bits, SigBits) = 2^nFracBits(Bits, SigBits)
 nNonzeroFracMagnitudes(Bits, SigBits) = nFracMagnitudes(Bits, SigBits) - 1
 
+nFiniteValues(Bits, SigBits, isSigned, isExtended) = nNumericValues(Bits, SigBits) - nInfs(Bits, SigBits, isSigned, isExtended)
+nPositiveFiniteValues(Bits, SigBits, isSigned, isExtended) = nFiniteValues(Bits, SigBits, isSigned, isExtended) >> (0 + isSigned)
+nNegativeFiniteValues(Bits, SigBits, isSigned, isExtended) = isSigned * nPositiveFiniteValues(Bits, SigBits, isSigned, isExtended)
+
+
 nInfs(Bits, SigBits, isSigned, isExtended) = nInfs(Val(isSigned), Val(isExtended))
 nPosInfs(Bits, SigBits, isSigned, isExtended) = nPosInfs(Val(isSigned), Val(isExtended))
 nNegInfs(Bits, SigBits, isSigned, isExtended) = nNegInfs(Val(isSigned), Val(isExtended))
-
-nFiniteValues(Bits, SigBits, isSigned, isExtended) = nValues(Bits, SigBits) - nInfs(Bits, SigBits, isSigned, isExtended)
-nPositiveFiniteValues(Bits, SigBits, isSigned, isExtended) = nFiniteValues(Bits, SigBits, isSigned, isExtended) >> (0 + isSigned)
-nNegativeFiniteValues(Bits, SigBits, isSigned, isExtended) = isSigned * nPositiveFiniteValues(Bits, SigBits, isSigned, isExtended)
 
 nInfs(isSigned::Val{IsUnsigned}, isExtended::Val{IsFinite}) = 0
 nInfs(isSigned::Val{IsSigned}, isExtended::Val{IsFinite}) = 0
