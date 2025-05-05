@@ -86,6 +86,7 @@ end
         @test nFracMagnitudes(T) == 2^nFracBits(T)
         @test nNonzeroFracMagnitudes(T) == nFracMagnitudes(T) - 1
     end
+end
 
  @testset "Abs[Unsigned|Signed]AIFloat{4,_}" begin
     for T in vcat(auai4s, asai4s)
