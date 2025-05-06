@@ -2,7 +2,7 @@ module TestAbstractAI
 
 using FloatsForML, Test
 
-include(s"C:\github\FloatsForML.jl\test\test_inits.jl")
+include(s"C:\github\FloatsForML.jl\test\test_abstypes\test_inits.jl")
 
 using .TestInits
 

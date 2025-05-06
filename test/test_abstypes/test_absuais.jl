@@ -1,13 +1,13 @@
-module TestAbsSignedAIFloat
+module TestAbsUnsignedAIFloat
 
 using FloatsForML, Test
 
-include(s"C:\github\FloatsForML.jl\test\test_inits.jl")
+include(s"C:\github\FloatsForML.jl\test\test_abstypes\test_inits.jl")
 
 using .TestInits
 
-@testset "AbsSignedAIFloat{4|5,_}" begin
-    for T ∈ vcat(asai4s, asai5s)
+@testset "AbsUnsignedAIFloat{4|5,_}" begin
+    for T ∈ vcat(auai4s, auai5s)
         bits = T.parameters[1]
         sigbits = T.parameters[2]
         isSigned = is_signed(T)
@@ -25,5 +25,4 @@ using .TestInits
     end
 end
 
-end # module TestAbsSignedAIFloat
-
+end # module TestAbsUnsignedAIFloat
