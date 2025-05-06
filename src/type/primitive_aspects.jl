@@ -29,7 +29,7 @@ nNonzeroFracMagnitudes(Bits, SigBits) = nFracMagnitudes(Bits, SigBits) - 1
 nFiniteValues(Bits, SigBits, isSigned, isExtended) = nNumericValues(Bits, SigBits) - nInfs(Bits, SigBits, isSigned, isExtended)
 nNonzeroFiniteValues(Bits, SigBits, isSigned, isExtended) = nFiniteValues(Bits, SigBits, isSigned, isExtended) - 1
 
-nPositiveFiniteValues(Bits, SigBits, isSigned, isExtended) = ifelse(isSigned, nNonzeroFiniteValues(Bits, SigBits, isSigned, isExtended),  (nFiniteValues(Bits, SigBits, isSigned, isExtended) >> 1))
+nPositiveFiniteValues(Bits, SigBits, isSigned, isExtended) = nFiniteValues(Bits, SigBits, isSigned, isExtended) >> (0 + isSigned)
 nNegativeFiniteValues(Bits, SigBits, isSigned, isExtended) = isSigned * nPositiveFiniteValues(Bits, SigBits, isSigned, isExtended)
 
 nInfs(Bits, SigBits, isSigned, isExtended) = nInfs(Val(isSigned), Val(isExtended))
