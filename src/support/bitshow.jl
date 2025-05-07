@@ -1,10 +1,6 @@
-function prettybits(bitwidth, val)
-    n = bitwidth
-    s = ""
-    while n > 0
-        s = string(val & 1, s)
-        val >>= 1
-        n -= 1
-    end
-    s
+function prettybits(nbits, bitwidth, nonneg)
+    nonneg >= 0 && nbits <= bitwidth || throw(DomainError(string(;nbits, bitwidth, nonneg)));
+    bitstr = string(nonneg, base=2)
+    bstr = fill('0', bitwidth - length(bitstr)) * bitstr
+    string("0b", bstr)
 end
