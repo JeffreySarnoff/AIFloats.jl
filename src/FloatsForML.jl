@@ -33,7 +33,7 @@ import Base: convert, oftype, precision, exponent_bias
 
 using Static
 using AlignedAllocs: memalign_clear, alignment
-using Dictionaries
+using SmallCollections, Dictionaries
 
 
 include("constants.jl")

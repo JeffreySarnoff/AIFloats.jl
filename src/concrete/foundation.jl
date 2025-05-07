@@ -10,14 +10,6 @@ function encoding(bitwidth)
     collect(map(typeforcode(bitwidth), 0:(2^bitwidth-1)))
 end
 
-function typeforcode(bitwidth)
-    (2 <= bitwidth <= 8)  && return UInt8
-    (9 <= bitwidth < 16) && return UInt16
-    throw(DomainError(bitwidth, "require: 2 <= bitwidth < 16"))
-end
-
-
-
 function foundation_floats(bits::Integer, sigbits::Integer)
     if sigbits == 1
         foundation_floats_precision_eq1(bits, sigbits)
