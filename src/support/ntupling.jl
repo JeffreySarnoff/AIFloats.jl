@@ -1,21 +1,39 @@
-ftuples(f::F, i) where F
-    [((),)
-    (f(1),)
-    (f(1), f(2),)
-    (f(1), f(2), f(3),)
-    (f(1), f(2), f(3), f(4),)
-    (f(1), f(2), f(3), f(4), f(5),)
-    (f(1), f(2), f(3), f(4), f(5), f(6),)
-    (f(1), f(2), f(3), f(4), f(5), f(6), f(7),)
-    (f(1), f(2), f(3), f(4), f(5), f(6), f(7), f(8),)][i]
+
+# `nTuple`, for constructing tuples of a given length
+
+"""
+    nTuple(f, n::Integer)
+
+Create a tuple of length `n`, computing each element as `f(i)`,ntu
+where `i` is the index of the element.
+
+# Examples
+```jldoctest
+julia> nTuple(i -> 2*i, 4)
+(2, 4, 6, 8)
+```
+"""
+@inline function nTuple(f::F, n::Int) where F
+    # marked inline since this benefits from constant propagation of `n`
+    n < 17 && return ntuple(f, n)
+    # This is a specialized version of ntupling for the case where
+    # the function is not a closure. It is used to generate tuples
+    # of constant size at compile time.
+    t = n === 0 ? () :
+        n === 1 ? (f(1),) :
+        n === 2 ? (f(1), f(2)) :
+        n === 3 ? (f(1), f(2), f(3)) :
+        n === 4 ? (f(1), f(2), f(3), f(4)) :
+        n === 5 ? (f(1), f(2), f(3), f(4), f(5)) :
+        n === 6 ? (f(1), f(2), f(3), f(4), f(5), f(6)) :
+        n === 7 ? (f(1), f(2), f(3), f(4), f(5), f(6), f(7)) :
+        n === 8 ? (f(1), f(2), f(3), f(4), f(5), f(6), f(7), f(8)) :
+        n === 9 ? (f(1), f(2), f(3), f(4), f(5), f(6), f(7), f(8), f(9)) :
+        n === 10 ? (f(1), f(2), f(3), f(4), f(5), f(6), f(7), f(8), f(9), f(10)) :
+        n === 11 ? (f(1), f(2), f(3), f(4), f(5), f(6), f(7), f(8), f(9), f(10),
+                    (f(n+1) for n in 11:32)...)
+    return t
 end
-
-    5, 6, 7, 8),
-    (9, 10, 11, 12, 13, 14, 15, 16),
-    (17, 18, 19, 20, 21, 22, 23, 24),
-    (25, 26, 27, 28, 29, 30, 31)
-]
-
 
 
 function ntupled(f::F, n::Int) where F
@@ -208,17 +226,4 @@ function reverse(t::NTuple{N}) where N
     end
 end
 
-
-
-function ftuples(f::F, i) where F
-    [((),)
-    (f(1),)
-    (f(1), f(2),)
-    (f(1), f(2), f(3),)
-    (f(1), f(2), f(3), f(4),)
-    (f(1), f(2), f(3), f(4), f(5),)
-    (f(1), f(2), f(3), f(4), f(5), f(6),)
-    (f(1), f(2), f(3), f(4), f(5), f(6), f(7),)
-    (f(1), f(2), f(3), f(4), f(5), f(6), f(7), f(8),)][i]
-end
 

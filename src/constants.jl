@@ -50,7 +50,7 @@ typeforcode(Bits) = CODE_TYPES[1 + (Bits > BitsSmallMax)]
 typeforcode(Bits::StaticInt{N}) where {N} =
     ifelse(Bits <= static(BitsSmallMax), CODE_TYPES[1], CODE_TYPES[2])
 
-function type4code(bitwidth)
+function type4code(bitwidth::Integer)
     (2 <= bitwidth <= 8)  && return UInt8
     (9 <= bitwidth < 16)  && return UInt16
     throw(DomainError(bitwidth, "require: 2 <= bitwidth ($bitwidth) < 16"))

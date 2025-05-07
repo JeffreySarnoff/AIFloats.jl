@@ -10,7 +10,11 @@ using .TestInits
 
     for T ∈ aeai4s
         bits = T.parameters[1]
-        sigbits = T.parameters[2]
+        sigbits = T.parameters[2
+        isSigned = is_signed(T)
+        isUnsigned = is_unsigned(T)
+]
+
 
         @test nBits(T) == bits
         @test nSigBits(T) == sigbits
