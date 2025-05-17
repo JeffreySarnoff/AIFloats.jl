@@ -26,4 +26,3 @@ using .TestInits
 end
 
 end # module TestAbsSignedAIFloat
-
