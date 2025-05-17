@@ -1,22 +1,32 @@
-struct UFiniteFloatsML{Bits, SigBits, Float, Code} <: AbsUFiniteFloatML{Bits, SigBits}
-    floats::DenseVector{Float}
-    codes::DenseVector{Code}
+for (T,A) in ((:SFiniteFloats, :AbsSignedFiniteAIFloat),
+              (:SExtendedFloats, :AbsSignedExtendedAIFloat) )
+  @eval begin
+    struct $T{Bits, SigBits, Float, Code} <: $A{Bits, SigBits}
+        floats::DenseVector{Float}
+        codes::DenseVector{Code}
+        nonneg_floats::DenseVector{Float}
+        nonneg_codes::DenseVector{Code}
+        symbol::Symbol
+    end
+  end
 end
 
-struct UExtendedFloatsML{Bits, SigBits, Float, Code} <: AbsUExtendedFloatML{Bits, SigBits}
-    floats::DenseVector{Float}
-    codes::DenseVector{Code}
-end
+codes(@nospecialize(x::AbstractAIFloat))  = x.codes
+floats(@nospecialize(x::AbstractAIFloat)) = x.floats
+symbol(@nospecialize(x::AbstractAIFloat)) = x.symbol
 
-struct SFiniteFloatsML{Bits, SigBits, Float, Code} <: AbsSFiniteFloatML{Bits, SigBits}
-    floats::DenseVector{Float}
-    codes::DenseVector{Code}
-end
+nonneg_codes(@nospecialize(x::AbstractAIFloat))  = x.nonneg_codes
+nonneg_floats(@nospecialize(x::AbstractAIFloat)) = x.nonneg_floats
 
-struct SExtendedFloatsML{Bits, SigBits, Float, Code} <: AbsSExtendedFloatML{Bits, SigBits}
-    floats::DenseVector{Float}
-    codes::DenseVector{Code}
+for (T,A) in ((:UFiniteFloats, :AbsUnsignedFiniteAIFloat),
+              (:UExtendedFloats, :AbsUnsignedExtendedAIFloat))
+  @eval begin
+    struct $T{Bits, SigBits, Float, Code} <: $A{Bits, SigBits}
+        floats::DenseVector{Float}
+        codes::DenseVector{Code}
+        nonneg_floats::DenseVector{Float}
+        nonneg_codes::DenseVector{Code}
+        symbol::Symbol
+  end
+  end
 end
-
-codes(@nospecialize(x::AbstractFloatML)) = x.codes
-floats(@nospecialize(x::AbstractFloatML))= x.floats
