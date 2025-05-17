@@ -1,4 +1,4 @@
-using FloatsForML, Test
+using AlignedAllocs, FloatsForML, Test
 # AbstractAIFloat{K,P}
 include(s"C:\github\FloatsForML.jl\test\test_abstypes\test_inits.jl")
 include(s"C:\github\FloatsForML.jl\test\test_abstypes\test_abstract.jl")
