@@ -1,5 +1,5 @@
 <!--
-Thanks for making a pull request to FloatsForML.jl.
+Thanks for making a pull request to AIFloats.jl.
 We have added this PR template to help you help us.
 See the comments below, fill the required fields, and check the items.
 -->

@@ -1,31 +1,55 @@
-for (T, S) in ((:SFiniteFloats, "SFFloats"), (:SExtendedFloats, "SEFloats"))
-  @eval begin
-    function $T(bits::I, sigbits::I) where {I<:Integer}  
-        codetype  = typeforcode(bits)
-        floattype = typeforfloat(bits)
-    
-        encoding = encodings(bits)
-        vals = foundation_floats(bits, sigbits)
-        append!(vals, -1 .* vals)
-        vals[1+end>>1] = convert(floattype, NaN)
-        if $S === "SEFloats"
-            vals[end>>1] = convert(floattype, Inf)
-            vals[end] = convert(floattype, -Inf)
-        end
-        
-        fpvals = map(floattype, vals)
-        fpmem = memalign_clear(floattype, length(fpvals))
-        copyto!(fpmem, fpvals)
-    
-        nonneg_n = (1<<(bits-1)) # keep floatmax 
-        nonneg_codes = memalign_clear(codetype, nonneg_n)
-        nonneg_floats = memalign_clear(floattype, nonneg_n)
-    
-        copyto!(nonneg_codes, encoding[1:nonneg_n])
-        copyto!(nonneg_floats, fpmem[1:nonneg_n])
-    
-        symbol = Symbol(string($S, bits, "p",sigbits))
-        $T{bits, sigbits, floattype, codetype}(fpmem, encoding, nonneg_floats, nonneg_codes, symbol)
-    end    
-  end
+struct SignedFiniteFloats{bits, sigbits, T, S} <: AbsSignedFiniteFloat{bits, sigbits}
+    floats::Vector{T} # memory for the floats
+    codes::Vector{S} # memory for the codes
 end
+
+floats(x::SignedFiniteFloats) = x.floats
+codes(x::SignedFiniteFloats) = x.codes
+
+struct SignedExtendedFloats{bits, sigbits, T, S} <: AbsSignedExtendedFloat{bits, sigbits}
+    floats::Vector{T} # memory for the floats
+    codes::Vector{S} # memory for the codes
+end
+
+floats(x::SignedExtendedFloats) = x.floats
+codes(x::SignedExtendedFloats) = x.codes
+
+function SignedFiniteFloats(T::Type{<:AbsSignedFloat})
+    bits = nBits(T)
+    sigbits = nSigBits(T)
+    SignedFiniteFloats(bits, sigbits)
+end
+
+function SignedFiniteFloats(bits, sigbits)
+    T = typeforfloat(bits)
+    S = typeforcode(bits)
+    codes = encoding_sequence(S, bits)
+    magnitudes = foundation_magnitudes(AbsSignedFiniteFloat{bits, sigbits})
+    negmagnitudes = -1 .* magnitudes
+    negmagnitudes[1] = convert(T, NaN)
+    append!(magnitudes, negmagnitudes)
+    floats = memalign_clear(T, length(magnitudes))
+    floats[:] = magnitudes
+    SignedFiniteFloats{bits, sigbits, T, S}(floats, codes)
+end
+
+function SignedExtendedFloats(T::Type{<:AbsSignedFloat})
+    bits = nBits(T)
+    sigbits = nSigBits(T)
+    SignedExtendedFloats(bits, sigbits)
+end
+
+function SignedExtendedFloats(bits, sigbits)
+    T = typeforfloat(bits)
+    S = typeforcode(bits)
+    codes = encoding_sequence(S, bits)
+    magnitudes = foundation_magnitudes(AbsSignedFiniteFloat{bits, sigbits})
+    magnitudes[end] = convert(T, Inf) # replace last value with NaN
+    negmagnitudes = -1 .* magnitudes
+    negmagnitudes[1] = convert(T, NaN)
+    append!(magnitudes, negmagnitudes)
+    floats = memalign_clear(T, length(magnitudes))
+    floats[:] = magnitudes
+    SignedExtendedFloats{bits, sigbits, T, S}(floats, codes)
+end
+

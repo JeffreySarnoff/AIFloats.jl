@@ -1,9 +1,9 @@
-using FloatsForML
+using AIFloats
 using Documenter, DocumenterMermaid
 
 push!(LOAD_PATH,"../src/")
 
-DocMeta.setdocmeta!(FloatsForML, :DocTestSetup, :(using FloatsForML); recursive = true)
+DocMeta.setdocmeta!(AIFloats, :DocTestSetup, :(using AIFloats); recursive = true)
 
 #const page_rename = Dict("developer.md" => "Developer docs") # Without the numbers
 #const numbered_pages = [
@@ -12,11 +12,11 @@ DocMeta.setdocmeta!(FloatsForML, :DocTestSetup, :(using FloatsForML); recursive 
 # ]
 
 makedocs(;
-    modules = [FloatsForML],
-    sitename = "FloatsForML",
+    modules = [AIFloats],
+    sitename = "AIFloats",
     authors = "Jeffrey Sarnoff <jeffrey.sarnoff@gmail.com>",
     format = Documenter.HTML(),
-    repo = "https://github.com/DiademSpecialProjects/FloatsForML.jl/blob/{commit}{path}#{line}",
+    repo = "https://github.com/JeffreySarnoff/AIFloats.jl/blob/{commit}{path}#{line}",
     pages = Any[
                 "Home" => "index.md",
                 "Overview" => "overview.md",
@@ -30,5 +30,5 @@ makedocs(;
                ])
 
 deploydocs(; 
-    repo = "github.com/DiademSpecialProjects/FloatsForML.jl",
+    repo = "github.com/JeffreySarnoff/AIFloats.jl",
     target = "build")

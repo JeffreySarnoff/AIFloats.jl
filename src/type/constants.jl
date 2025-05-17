@@ -2,6 +2,7 @@
 const BitsSmallMin, BitsSmallMax =  2, 8
 # 7 large bitwidths (UInt16 encoded)
 const BitsLargeMin, BitsLargeMax =  9, 15
+const BitsTop = 16
 
 # internal assurances
 setprecision(BigFloat, 1024)
@@ -35,8 +36,8 @@ see also [`CODE`](@ref)
 # const FLOAT_TYPES = (Float32, Float64)
 # const FLOAT = Union{FLOAT_TYPES...}
 
-const FLOAT_TYPES = (Float64, Float64)
-const FLOAT = Float64
+const FLOAT_TYPES = (Float32, Float64)
+const FLOAT = Union{FLOAT_TYPES...}
 
 """
     typeforcode(bitwidth)
@@ -73,3 +74,18 @@ const IsUnsigned = false
 const IsSigned   = true
 const IsFinite   = false
 const IsExtended = true
+
+# convention all caps for Bools, Ints are Static consts
+
+const TRUE = static(true)
+const FALSE = static(false)
+
+# use for Bits, SigBits to obtain minimal (fastest) aspect value determinations
+for (N, I)  in [(:ZERO, 0), (:ONE, 1), (:TWO, 2), (:THREE, 3), (:FOUR, 4), (:FIVE, 5), (:SIX, 6), (:SEVEN, 7),
+                (:EIGHT, 8), (:NINE, 9), (:TEN, 10), (:ELEVEN, 11), (:TWELVE, 12), (:THIRTEEN, 13),
+                (:FOURTEEN, 14), (:FIFTEEN, 15), (:SIXTEEN, 16)]
+    @eval begin
+        const $N = static($I)
+    end
+end
+

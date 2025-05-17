@@ -1,5 +1,5 @@
-using FloatsForML, Test
-using FloatsForML: BitsSmallMin, BitsSmallMax, IsUnsigned, IsSigned, IsFinite, IsExtended
+using AIFloats, Test
+using AIFloats: BitsSmallMin, BitsSmallMax, IsUnsigned, IsSigned, IsFinite, IsExtended
 
 Ks = BitsSmallMin:(BitsSmallMax+2)
 

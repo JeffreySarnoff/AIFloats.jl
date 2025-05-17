@@ -1,6 +1,6 @@
 module TestAbsExp
 
-using FloatsForML, Test
+using AIFloats, Test
 
 include("test_inits.jl")
 using .TestInits

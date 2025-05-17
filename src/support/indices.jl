@@ -48,3 +48,15 @@ convert the Julia index `x` into a P3109 encoding value as a UInt8|16
     T = bits <= 8 ? UInt8 : UInt16
     index_to_offset(index) % T
 end
+
+@inline function index1(x::T) where {T<:AbsUnsignedFloat}                                                             
+   nValues(T) >> 0x01 + 0x01                                                                            
+end
+
+@inline function index1(x::T) where {T<:AbsSignedFloat}
+   nValues(T) >> 0x02 + 0x01
+end
+
+@inline function indexneg1(x::T) where {T<:AbsSignedFloat}
+   index1(x) + nValues(T) >> 1
+end

@@ -1,6 +1,6 @@
 using Pkg
-cd(s"C:\JuliaCon\floatenv"); using Pkg; Pkg.activate(pwd()); Pkg.add(path="C:\\github\\FloatsForML.jl")
-using Printf, Arrow, CSV, Tables, Dictionaries, FloatsForML, PrettyTables
+cd(s"C:\JuliaCon\floatenv"); using Pkg; Pkg.activate(pwd()); Pkg.add(path="C:\\github\\AIFloats.jl")
+using Printf, Arrow, CSV, Tables, Dictionaries, AIFloats, PrettyTables
 
 const PathSep = Sys.iswindows() ? "\\" : "/"
 
@@ -101,7 +101,7 @@ end
 filepath = "C:\\data\\P3109_KPdata\\share\\Binary2-10\\Binary2-10_UnsdSgnd_FiniteExtd\\unsigned\\finite\\Binary5\\ufBinaryK5P2.arrow"
 
 coltable = arrowcolumntable(filepath)
-fdir = abspath(joinpath("C:/","data","FloatsForML"))
+fdir = abspath(joinpath("C:/","data","AIFloats"))
 fpath = joinpath(fdir, "table.csv")
 savetocsv(fpath, coltable)
 
@@ -184,10 +184,10 @@ header_4p2 = (["Codes","Unsigned","Unsigned","Signed","Signed"],["UInt8","Finite
 header_4p3 = (["Codes","Unsigned","Unsigned","Signed","Signed"],["UInt8","Finite","Extended","Finite","Extended"],   
                  ["code","binary4p3(uf)", "binary4p3(ue)", "binary4p3(sf)", "binary4p3(se)"]);
 
-uf41, uf42, uf43 = UFiniteFloats.(4, (1,2,3)); 
-ue41, ue42, ue43 = UExtendedFloats.(4, (1,2,3)); 
-sf41, sf42, sf43 = SFiniteFloats.(4, (1,2,3)); 
-se41, se42, se43 = SExtendedFloats.(4, (1,2,3)); 
+uf41, uf42, uf43 = UnsignedFiniteFloat.(4, (1,2,3)); 
+ue41, ue42, ue43 = UnsignedExtendedFloat.(4, (1,2,3)); 
+sf41, sf42, sf43 = SignedFiniteFloat.(4, (1,2,3)); 
+se41, se42, se43 = SignedExtendedFloat.(4, (1,2,3)); 
 
 nt41=(;Codes=hexstr.(0:15),UnsdFixed41=map(Q,floats(uf41)),UnsdExtnd41=map(Q,floats(ue41)),SgndFixed41=map(Q,floats(sf41)),SgndExtnd41=map(Q,sort(floats(se41))));
 nt42=(;Codes=hexstr.(0:15),UnsdFixed42=map(Q,floats(uf42)),UnsdExtnd42=map(Q,floats(ue42)),SgndFixed42=map(Q,floats(sf42)),SgndExtnd42=map(Q,sort(floats(se42))));

@@ -1,11 +1,11 @@
-module TestAbsUnsignedAIFloat
+module TestAbsUnsignedFloat
 
-using FloatsForML, Test
+using AIFloats, Test
 
 include("test_inits.jl")
 using .TestInits
 
-@testset "AbsUnsignedAIFloat{4|5,_}" begin
+@testset "AbsUnsignedFloat{4|5,_}" begin
     for T ∈ vcat(auai4s, auai5s)
         bits = T.parameters[1]
         sigbits = T.parameters[2]
@@ -24,4 +24,4 @@ using .TestInits
     end
 end
 
-end # module TestAbsUnsignedAIFloat
+end # module TestAbsUnsignedFloat

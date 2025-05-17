@@ -45,9 +45,9 @@ jobs:
         run: |
           julia --project=docs -e '
             using Documenter: DocMeta, doctest
-            using FloatsForML
-            DocMeta.setdocmeta!(FloatsForML, :DocTestSetup, :(using FloatsForML); recursive=true)
-            doctest(FloatsForML)'
+            using AIFloats
+            DocMeta.setdocmeta!(AIFloats, :DocTestSetup, :(using AIFloats); recursive=true)
+            doctest(AIFloats)'
       - name: Generate and deploy documentation
         run: julia --project=docs docs/make.jl
         env:

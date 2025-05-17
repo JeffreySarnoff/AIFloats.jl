@@ -1,102 +1,173 @@
+#=
 
-abstract type AbstractAIFloat{Bits, SigBits} <: AbstractFloat end
+export  AbstractAIFloat, AbsSignedFloat, AbsUnsignedFloat,
+        AbsSignedFiniteFloat, AbsSignedExtendedFloat,
+        AbsUnsignedFiniteFloat, AbsUnsignedExtendedFloat,
+        nBits, nSigBits, nFracBits, nValues, nNumericValues, nNonzeroNumericValues,
+        nSigMagnitudes, nNonzeroSigMagnitudes, nFracMagnitudes, nNonzeroFracMagnitudes,
+        nExpBits, nExpValues, nNonzeroExpValues, nMagnitudes, nNonzeroMagnitudes,
+        nFiniteValues, nNonzeroFiniteValues, nFiniteMagnitudes, nNonzeroFiniteMagnitudes,
+        nNonnegValues, nPositiveValues, nNegativeValues,
+        nFiniteNonnegValues, nFinitePositiveValues, nFiniteNegativeValues,
+        nPrenormalMagnitudes, nSubnormalMagnitudes, nPrenormalValues, nSubnormalValues,
+        nNormalMagnitudes, nNormalValues, nExtendedNormalMagnitudes, nExtendedNormalValues,
+        expUnbiasedMax, expUnbiasedMin, expUnbiasedValues, expBias,
+        is_extended, is_finite, is_signed, is_unsigned,
+        nNaNs, nZeros, nInfs, nPosInfs, nNegInfs,
+        normal_magnitude_steps, prenormal_magnitude_steps,
+        normal_exp_stride, foundation_extremal_exps, foundation_exps,
+        exp_unbiased_magnitude_strides, pow2_foundation_exps,
+        prenormal_magnitude_steps, normal_magnitude_steps, normal_exp_stride,
+        foundation_extremal_exps, foundation_exps, exp_unbiased_magnitude_strides, pow2_foundation_exps,
+        foundation_magnitudes, foundation_values, value_sequence)
 
-abstract type AbsSignedAIFloat{Bits, SigBits} <: AbstractAIFloat{Bits, SigBits} end
-abstract type AbsUnsignedAIFloat{Bits, SigBits} <: AbstractAIFloat{Bits, SigBits} end
+=#
 
-abstract type AbsSignedFiniteAIFloat{Bits, SigBits} <: AbsSignedAIFloat{Bits, SigBits} end
-abstract type AbsSignedExtendedAIFloat{Bits, SigBits} <: AbsSignedAIFloat{Bits, SigBits} end
+abstract type AbstractAIFloat{Bits, SigBits, IsSigned} <: AbstractFloat end
 
-abstract type AbsUnsignedFiniteAIFloat{Bits, SigBits} <: AbsUnsignedAIFloat{Bits, SigBits} end
-abstract type AbsUnsignedExtendedAIFloat{Bits, SigBits} <: AbsUnsignedAIFloat{Bits, SigBits} end
+abstract type AbsSignedFloat{Bits, SigBits} <: AbstractAIFloat{Bits, SigBits, true} end
+abstract type AbsUnsignedFloat{Bits, SigBits} <: AbstractAIFloat{Bits, SigBits, false} end
+
+abstract type AbsSignedFiniteFloat{Bits, SigBits} <: AbsSignedFloat{Bits, SigBits} end
+abstract type AbsSignedExtendedFloat{Bits, SigBits} <: AbsSignedFloat{Bits, SigBits} end
+
+abstract type AbsUnsignedFiniteFloat{Bits, SigBits} <: AbsUnsignedFloat{Bits, SigBits} end
+abstract type AbsUnsignedExtendedFloat{Bits, SigBits} <: AbsUnsignedFloat{Bits, SigBits} end
 
 # predicates for abstract types
 
-is_signed(@nospecialize(T::Type{<:AbsSignedAIFloat}))     = true
-is_signed(@nospecialize(T::Type{<:AbsUnsignedAIFloat}))   = false
+is_aifloat(@nospecialize(T::Type{<:AbstractFloat})) = false
+is_aifloat(@nospecialize(T::Type{<:AbstractAIFloat})) = true
 
-is_unsigned(@nospecialize(T::Type{<:AbsSignedAIFloat}))   = false
-is_unsigned(@nospecialize(T::Type{<:AbsUnsignedAIFloat})) = true
+is_signed(@nospecialize(T::Type{<:AbsSignedFloat}))     = true
+is_signed(@nospecialize(T::Type{<:AbsUnsignedFloat}))   = false
 
-is_finite(@nospecialize(T::Type{<:AbsSignedFiniteAIFloat}))     = true
-is_finite(@nospecialize(T::Type{<:AbsUnsignedFiniteAIFloat}))   = true
-is_finite(@nospecialize(T::Type{<:AbsSignedExtendedAIFloat}))   = false
-is_finite(@nospecialize(T::Type{<:AbsUnsignedExtendedAIFloat})) = false
+is_unsigned(@nospecialize(T::Type{<:AbsSignedFloat}))   = false
+is_unsigned(@nospecialize(T::Type{<:AbsUnsignedFloat})) = true
 
-is_extended(@nospecialize(T::Type{<:AbsSignedFiniteAIFloat}))     = false
-is_extended(@nospecialize(T::Type{<:AbsUnsignedFiniteAIFloat}))   = false
-is_extended(@nospecialize(T::Type{<:AbsSignedExtendedAIFloat}))   = true
-is_extended(@nospecialize(T::Type{<:AbsUnsignedExtendedAIFloat})) = true
+is_finite(@nospecialize(T::Type{<:AbsSignedFiniteFloat}))     = true
+is_finite(@nospecialize(T::Type{<:AbsUnsignedFiniteFloat}))   = true
+is_finite(@nospecialize(T::Type{<:AbsSignedExtendedFloat}))   = false
+is_finite(@nospecialize(T::Type{<:AbsUnsignedExtendedFloat})) = false
 
-# predicated counts for abstract types
+is_extended(@nospecialize(T::Type{<:AbsSignedFiniteFloat}))     = false
+is_extended(@nospecialize(T::Type{<:AbsUnsignedFiniteFloat}))   = false
+is_extended(@nospecialize(T::Type{<:AbsSignedExtendedFloat}))   = true
+is_extended(@nospecialize(T::Type{<:AbsUnsignedExtendedFloat})) = true
+
+# cover instantiations
+is_aifloat(@nospecialize(x::T)) where {T<:AbstractFloat} = false
+is_aifloat(@nospecialize(x::T)) where {T<:AbstractAIFloat} = true
+
+for F in (:is_extended, :is_finite, :is_signed, :is_unsigned) 
+    @eval $F(x::T) where {T<:AbstractAIFloat} = $F(T)
+end
+
+# counts predicated on abstract [sub]type
 
 nNaNs(@nospecialize(T::Type{<:AbstractAIFloat})) = 1
 nZeros(@nospecialize(T::Type{<:AbstractAIFloat})) = 1
 
-nInfs(@nospecialize(T::Type{<:AbsSignedFiniteAIFloat}))     = 0
-nInfs(@nospecialize(T::Type{<:AbsUnsignedFiniteAIFloat}))   = 0
-nInfs(@nospecialize(T::Type{<:AbsSignedExtendedAIFloat}))   = 2
-nInfs(@nospecialize(T::Type{<:AbsUnsignedExtendedAIFloat})) = 1
+nInfs(@nospecialize(T::Type{<:AbsSignedFiniteFloat}))     = 0
+nInfs(@nospecialize(T::Type{<:AbsUnsignedFiniteFloat}))   = 0
+nInfs(@nospecialize(T::Type{<:AbsSignedExtendedFloat}))   = 2
+nInfs(@nospecialize(T::Type{<:AbsUnsignedExtendedFloat})) = 1
 
 nPosInfs(@nospecialize(T::Type{<:AbstractAIFloat})) = (nInfs(T) + 1) >> 1
-nNegInfs(@nospecialize(T::Type{<:AbsSignedAIFloat})) = (nInfs(T) + 1) >> 1
-nNegInfs(@nospecialize(T::Type{<:AbsUnsignedAIFloat})) = 0
+nNegInfs(@nospecialize(T::Type{<:AbsSignedFloat})) = (nInfs(T) + 1) >> 1
+nNegInfs(@nospecialize(T::Type{<:AbsUnsignedFloat})) = 0
 
-# Julia Base primitive aspects
+# counts predicated on type defining parameters and type specifying qualities
+# parameters: (bits, sigbits, exponent bias)
+# qualities: (signedness [signed / unsigned], finiteness [finite / extended (has Inf[s])])
 
-Base.precision(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = SigBits
-Base.precision(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = SigBits
+nBits(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = Bits
+nSigBits(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = SigBits
+nFracBits(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nSigBits(T) - 1
 
-# primitive aspects computed over Type Abstractions
+nValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 1 << nBits(T)
+nNumericValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nValues(T) - 1
+nNonzeroNumericValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nNumericValues(T) - 1
 
-for F in (:nBits, :nSigBits, :nFracBits, :nValues, :nNumericValues, :nNonzeroNumericValues,
-          :nFracMagnitudes, :nNonzeroFracMagnitudes)
-    @eval $F(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = $F(Bits, SigBits)
-end
+nSigMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 1 << nSigBits(T)
+nNonzeroSigMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nSigMagnitudes(T) - 1
 
-for F in (:nSignBits, :nExpBits,:nMagnitudes, :nNonzeroMagnitudes,
-          :nPositiveValues, :nNegativeValues, :nExpValues, :nNonzeroExpValues)
-    @eval begin
-       $F(::Type{T}) where {Bits, SigBits, T<:AbsUnsignedAIFloat{Bits, SigBits}} = $F(Bits, SigBits, IsUnsigned)
-       $F(::Type{T}) where {Bits, SigBits, T<:AbsSignedAIFloat{Bits, SigBits}} = $F(Bits, SigBits, IsSigned)
-    end
-end
+nFracMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 1 << nFracBits(T)
+nNonzeroFracMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nFracMagnitudes(T) - 1
 
-for F in (:nInfs, :nPosInfs, :nNegInfs,
-          :nFiniteValues, :nNonzeroFiniteValues, :nPositiveFiniteValues, :nNegativeFiniteValues)
-    @eval begin
-       $F(::Type{T}) where {Bits, SigBits, T<:AbsUnsignedFiniteAIFloat{Bits, SigBits}} = $F(Bits, SigBits, IsUnsigned, IsFinite)
-       $F(::Type{T}) where {Bits, SigBits, T<:AbsUnsignedExtendedAIFloat{Bits, SigBits}} = $F(Bits, SigBits, IsUnsigned, IsExtended)
-       $F(::Type{T}) where {Bits, SigBits, T<:AbsSignedFiniteAIFloat{Bits, SigBits}} = $F(Bits, SigBits, IsSigned, IsFinite)
-       $F(::Type{T}) where {Bits, SigBits, T<:AbsSignedExtendedAIFloat{Bits, SigBits}} = $F(Bits, SigBits, IsSigned, IsExtended)
-    end
-end
+nExpBits(::Type{T}) where {Bits, SigBits, T<:AbsSignedFloat{Bits, SigBits}} = nBits(T) - nSigBits(T)
+nExpBits(::Type{T}) where {Bits, SigBits, T<:AbsUnsignedFloat{Bits, SigBits}} = nBits(T) - nSigBits(T) + 1
 
-# primitive aspects computed over Types
+nExpValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 1 << nExpBits(T)
+nNonzeroExpValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nExpValues(T) - 1
 
-for F in (:nZeros, :nNaNs)
+
+nMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbsSignedFloat{Bits, SigBits}} = nValues(T) >> 1
+nMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbsUnsignedFloat{Bits, SigBits}} = nNumericValues(T)
+
+nNonzeroMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nMagnitudes(T) - 1
+
+nFiniteValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nNumericValues(T) - nInfs(T)
+nNonzeroFiniteValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nFiniteValues(T) - 1
+
+nFiniteMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbsSignedFloat{Bits, SigBits}} = nMagnitudes(T) - nPosInfs(T)
+nNonzeroFiniteMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbsSignedFloat{Bits, SigBits}} = nFiniteMagnitudes(T) - 1
+
+nNonnegValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nMagnitudes(T)
+nPositiveValues(::Type{T}) where {Bits, SigBits, T<:AbsSignedFloat{Bits, SigBits}} = nNonnegValues(T) - 1
+nNegativeValues(::Type{T}) where {Bits, SigBits, T<:AbsSignedFloat{Bits, SigBits}} = nNumericValues(T) - nNonnegValues(T)
+
+nFiniteNonnegValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nNonnegValues(T) - nPosInfs(T)
+nFinitePositiveValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nPositiveValues(T) - nPosInfs(T)
+nFiniteNegativeValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nNegativeValues(T) - nNegInfs(T)
+
+nPrenormalMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 1 << (SigBits - 1)
+nSubnormalMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nPrenormalMagnitudes(T) - 1
+
+nPrenormalValues(::Type{T}) where {Bits, SigBits, T<:AbsSignedFloat{Bits, SigBits}} = 2 * nPrenormalMagnitudes(T) - 1
+nPrenormalValues(::Type{T}) where {Bits, SigBits, T<:AbsUnsignedFloat{Bits, SigBits}} = nPrenormalMagnitudes(T)
+
+nSubnormalValues(::Type{T}) where {Bits, SigBits, T<:AbsSignedFloat{Bits, SigBits}} = nPrenormalValues(T) - 1
+
+nNormalMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nFiniteMagnitudes(T) - nPrenormalMagnitudes(T)
+nNormalValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nFiniteValues(T) - nPrenormalValues(T)
+
+nExtendedNormalMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} =
+    nNormalMagnitudes(T) + nPosInfs(T)
+
+nExtendedNormalValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} =
+    nNormalMagnitudes(T) + nInfs(T)
+
+# support for instantiations
+for F in (:nBits, :nSigBits, :nFracBits,
+          :nNaNs, :nZeros, :nInfs, :nPosInfs, :nNegInfs,
+          :nValues, :nNumericValues, :nNonzeroNumericValues,
+          :nSigMagnitudes, :nNonzeroSigMagnitudes, :nFracMagnitudes, :nNonzeroFracMagnitudes,
+          :nMagnitudes, :nNonzeroMagnitudes,
+          :nFiniteValues, :nNonzeroFiniteValues, :nFiniteMagnitudes, :nNonzeroFiniteMagnitudes,
+          :nNonnegValues, :nPositiveValues, :nNegativeValues,
+          :nFiniteNonnegValues, :nFinitePositiveValues, :nFiniteNegativeValues,
+          :nPrenormalMagnitudes, :nSubnormalMagnitudes, :nPrenormalValues, :nSubnormalValues,
+          :nNormalMagnitudes, :nNormalValues, :nExtendedNormalMagnitudes, :nExtendedNormalValues) 
     @eval $F(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = $F(T)
 end
 
-for F in (:nBits, :nSigBits, :nFracBits, :nValues, :nNumericValues, :nNonzeroNumericValues,
-          :nFracMagnitudes, :nNonzeroFracMagnitudes)
+# exponent field characterizations
+
+expUnbiasedMax(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} =  nNonzeroExpValues(T) >> 1 
+expUnbiasedMin(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = -expUnbiasedMax(T)
+expUnbiasedValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = collect(expUnbiasedMin(T):expUnbiasedMax(T))
+
+expMaxValue(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 2.0^(expUnbiasedMax(T))
+expMinValue(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 2.0^(expUnbiasedMin(T))
+
+expBias(::Type{T}) where {Bits, SigBits, T<:AbsSignedFloat{Bits, SigBits}} = 1 << (Bits - SigBits - 1)
+expBias(::Type{T}) where {Bits, SigBits, T<:AbsUnsignedFloat{Bits, SigBits}} = 1 << (Bits - SigBits)
+
+# cover instantiations
+
+for F in (:expBias, :expMaxValue, :expMinValue,
+          :expUnbiasedMax, :expUnbiasedMin, :expUnbiasedValues)
     @eval $F(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = $F(T)
 end
 
-for F in (:nSignBits, :nExpBits, :nMagnitudes, :nNonzeroMagnitudes,
-          :nPositiveValues, :nNegativeValues, :nExpValues, :nNonzeroExpValues)
-    @eval begin
-       $F(x::T) where {Bits, SigBits, T<:AbsUnsignedAIFloat{Bits, SigBits}} = $F(T)
-       $F(x::T) where {Bits, SigBits, T<:AbsSignedAIFloat{Bits, SigBits}} = $F(T)
-    end
-end
-
-for F in (:nInfs, :nPosInfs, :nNegInfs,
-          :nFiniteValues, :nPositiveFiniteValues, :nNegativeFiniteValues)
-    @eval begin
-       $F(x::T) where {Bits, SigBits, T<:AbsUnsignedFiniteAIFloat{Bits, SigBits}} = $F(T)
-       $F(x::T) where {Bits, SigBits, T<:AbsUnsignedExtendedAIFloat{Bits, SigBits}} = $F(T)
-       $F(x::T) where {Bits, SigBits, T<:AbsSignedFiniteAIFloat{Bits, SigBits}} = $F(T)
-       $F(x::T) where {Bits, SigBits, T<:AbsSignedExtendedAIFloat{Bits, SigBits}} = $F(T)
-    end
-end

@@ -1,131 +1,62 @@
-function encodings(bits)
-    n = 2^bits
-    typ = typeforcode(bits)
-    codes = memalign_clear(typ, n)
-    codes[:] = collect(map(typ, 0:(n-1)))
-    codes
+
+# support for foundation magnitude sequence generation
+
+function foundation_magnitudes(T::Type{<:AbstractAIFloat})
+    significands = collect(prenormal_magnitude_steps(T))
+    nmagnitudes = nMagnitudes(T) - (is_signed(T) * nPrenormalMagnitudes(T))
+    normal_cycles = fld(nmagnitudes, nPrenormalMagnitudes(T))
+    normals = Iterators.flatten(fill(normal_magnitude_steps(T), normal_cycles))
+    append!(significands, normals)
+
+    exp_values = map(two_pow, exp_unbiased_magnitude_strides(T))
+
+    significands .*= exp_values
+
+    typ = typeforfloat(nBits(T))
+    magnitudes = memalign_clear(typ, length(significands))
+    magnitudes[:] = significands
+    magnitudes
 end
 
-function encoding(bitwidth)
-    collect(map(typeforcode(bitwidth), 0:(2^bitwidth-1)))
+@inline function prenormal_magnitude_steps(T::Type{<:AbstractAIFloat})
+    return (0:nPrenormalMagnitudes(T)-1) ./ nPrenormalMagnitudes(T)
 end
 
-function foundation_floats(bits::Integer, sigbits::Integer)
-    if sigbits == 1
-        foundation_floats_precision_eq1(bits, sigbits)
-    else
-        foundation_floats_precision_gt1(bits, sigbits)
-    end
+function normal_magnitude_steps(T::Type{<:AbstractAIFloat})
+    nprenormals = nPrenormalMagnitudes(T)
+    (nprenormals:(2*nprenormals-1)) ./ nprenormals 
+ 
 end
 
-function foundation_floats_precision_eq1(bits::Integer, sigbits::Integer)
-    delta = 2^(bits-2)
-    bits += 1
-    sigs = foundation_sigs(bits, sigbits)
-    exps = foundation_exps(bits, sigbits)
-    seq = exps .* sigs
-    seq = seq[delta+2:3*delta+1]
-    seq[1] = zero(eltype(seq))
-    seq
+function normal_exp_stride(T::Type{<:AbstractAIFloat})
+    cld(nMagnitudes(T), nExpValues(T))
 end
 
-function foundation_floats_precision_gt1(bits::Integer, sigbits::Integer)
-    sigs = foundation_sigs(bits, sigbits)
-    exps = foundation_exps(bits, sigbits)
-    seq = exps .* sigs
-    seq
+@inline function foundation_extremal_exps(T::Type{<:AbstractAIFloat})
+    exp_max = fld(nNonzeroMagnitudes(T), nPrenormalMagnitudes(T))
+    exp_min = -exp_max
+    exp_min, exp_max
 end
 
-function foundation_sigs(bits, sigbits)
-    foundation_sigs_seq(nFracMagnitudes(bits, sigbits), nFracCycles(bits, sigbits, IsUnsigned))
+function foundation_exps(T::Type{<:AbstractAIFloat})
+    exp_min, exp_max = foundation_extremal_exps(T)
+    return exp_min:exp_max
 end
 
-function foundation_sigs_seq(n_fractions, n_fraction_cycles)
-    fraction_sequence = (0:n_fractions-1) .// n_fractions
-    normal_sequence = 1 .+ fraction_sequence
-    append!(fraction_sequence, repeat(normal_sequence, n_fraction_cycles - 1))
+@inline two_pow(x::Integer) = ldexp(1.0f0, x)
+
+function pow2_foundation_exps(T,res::Vector{Float32})
+    expres =  (foundation_exps(T))
+    map(two_pow, expres)
 end
 
-function foundation_exps(bits, sigbits)
-   foundation_exps_seq(nExpBits(bits, sigbits, false), nExpCycles(bits, sigbits))
+function exp_unbiased_magnitude_strides(T::Type{<:AbstractAIFloat})
+    append!(fill(expUnbiasedMin(T), normal_exp_stride(T)), collect(Iterators.flatten((fill.(expUnbiasedValues(T), normal_exp_stride(T)))[:,1])))
 end
 
-@inline function foundation_exps_seq(n_expbits, n_exponent_cycles)
-    twopow = n_expbits - 1
-    bias = twopow >= 0 ? 2^twopow : 1/2^abs(twopow)
-    n_exponents = 2^n_expbits
-
-    biased_exponents = collect( (0:n_exponents-1) .- bias )
-    # exponent for subnormals equals the minimum exponent for normals
-    if length(biased_exponents) > 1
-        biased_exponents[1] = biased_exponents[2]
-    end
-
-    biased = collect(Iterators.flatten(map(x->fill(x, n_exponent_cycles), biased_exponents)))
-    map(x->2.0^x, biased)
+# cover instantiations for value sequence generation
+for F in (:prenormal_magnitude_steps, :normal_magnitude_steps, :normal_exp_stride,
+          :foundation_extremal_exps, :foundation_exps, :exp_unbiased_magnitude_strides, :pow2_foundation_exps,
+          :foundation_magnitudes, :foundation_values, :value_sequence)
+    @eval $F(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = $F(T)
 end
-
-#=
-function encodings(bits)
-    n = 2^bits
-    typ = typeforcode(bits)
-    codes = memalign_clear(typ, n)
-    codes[:] = collect(map(typ, 0:(n-1)))
-    codes
-end
-
-function foundation_floats(bits::Integer, sigbits::Integer)
-    if sigbits == 1
-        foundation_floats_precision_eq1(bits, sigbits)
-    else
-        foundation_floats_precision_gt1(bits, sigbits)
-    end
-end
-
-function foundation_floats_precision_eq1(bits::Integer, sigbits::Integer)
-    delta = 2^(bits-2)
-    sigs = foundation_sigs(bits+1, sigbits)
-    exps = foundation_exps(bits, sigbits)
-    seq = exps .* sigs
-    seq = seq[delta+2:3*delta+1]
-    seq[1] = zero(eltype(seq))
-    seq
-end
-
-function foundation_floats_precision_gt1(bits::Integer, sigbits::Integer)
-    sigs = foundation_sigs(bits+1, sigbits)
-    exps = foundation_exps(bits, sigbits)
-    seq = exps .* sigs
-    seq
-end
-
-function foundation_sigs(bits, sigbits)
-    foundation_sigs_seq(nFracMagnitudes(bits, sigbits), nFracCycles(bits, sigbits, IsUnsigned))
-end
-
-function foundation_sigs_seq(n_fractions, n_fraction_cycles)
-    fraction_sequence = (0:n_fractions-1) .// n_fractions
-    normal_sequence = 1 .+ fraction_sequence
-    append!(fraction_sequence, repeat(normal_sequence, n_fraction_cycles - 1))
-end
-
-function foundation_exps(bits, sigbits)
-   foundation_exps_seq(nExpBits(bits, sigbits, false), nExpCycles(bits, sigbits))
-end
-
-@inline function foundation_exps_seq(n_expbits, n_exponent_cycles)
-    twopow = n_expbits - 1
-    bias = twopow >= 0 ? 2^twopow : 1/2^abs(twopow)
-    n_exponents = 2^n_expbits
-
-    biased_exponents = collect( (0:n_exponents-1) .- bias )
-    # exponent for subnormals equals the minimum exponent for normals
-    if length(biased_exponents) > 1
-        biased_exponents[1] = biased_exponents[2]
-    end
-
-    biased = collect(Iterators.flatten(map(x->fill(x, n_exponent_cycles), biased_exponents)))
-    map(x->2.0^x, biased)
-end
-
-=#
