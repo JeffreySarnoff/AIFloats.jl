@@ -39,8 +39,8 @@ nInfs(@nospecialize(T::Type{<:AbsSignedExtendedAIFloat}))   = 2
 nInfs(@nospecialize(T::Type{<:AbsUnsignedExtendedAIFloat})) = 1
 
 nPosInfs(@nospecialize(T::Type{<:AbstractAIFloat})) = (nInfs(T) + 1) >> 1
-nNegInfs(@nospecialize(T::Type{<:AbstractSignedAIFloat})) = (nInfs(T) + 1) >> 1
-nNegInfs(@nospecialize(T::Type{<:AbstractUnsignedAIFloat})) = 0
+nNegInfs(@nospecialize(T::Type{<:AbsSignedAIFloat})) = (nInfs(T) + 1) >> 1
+nNegInfs(@nospecialize(T::Type{<:AbsUnsignedAIFloat})) = 0
 
 # Julia Base primitive aspects
 
