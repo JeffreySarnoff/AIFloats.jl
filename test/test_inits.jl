@@ -5,7 +5,7 @@ export aai4s, aai5s,
        aufai4s, aufai5s, asfai4s, asfai5s,
        aueai4s, aueai5s, aseai4s, aseai5s
 
-using FloatsForML
+using FloatsForML, AlignedAllocs
 
 aai41, aai42, aai43, aai44 =
     AbstractAIFloat{4, 1},

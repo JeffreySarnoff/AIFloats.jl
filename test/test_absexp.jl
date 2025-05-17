@@ -2,8 +2,7 @@ module TestAbsExp
 
 using FloatsForML, Test
 
-include(s"C:\github\FloatsForML.jl\test\test_abstypes\test_inits.jl")
-
+include("test_inits.jl")
 using .TestInits
 
 @testset "AbsExpAIFloat{4,_}" begin

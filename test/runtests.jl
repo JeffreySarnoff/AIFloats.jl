@@ -1,6 +1,8 @@
 using AlignedAllocs, FloatsForML, Test
 # AbstractAIFloat{K,P}
 include("test_inits.jl")
+using .TestInits
+
 include("test_abstract.jl")
 
 include("test_absuais.jl")

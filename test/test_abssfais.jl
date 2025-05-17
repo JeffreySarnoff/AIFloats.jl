@@ -2,8 +2,7 @@ module TestAbsSignedFiniteAIFloat
 
 using FloatsForML, Test
 
-include(s"C:\github\FloatsForML.jl\test\test_abstypes\test_inits.jl")
-
+include("test_inits.jl")
 using .TestInits
 
 @testset "AbsSignedFiniteAIFloat{4|5,_}" begin
