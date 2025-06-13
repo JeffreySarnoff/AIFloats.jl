@@ -9,23 +9,27 @@ function foundation_magnitudes(T::Type{<:AbstractAIFloat})
     append!(significands, normals)
 
     exp_values = map(two_pow, exp_unbiased_magnitude_strides(T))
-
+    if iszero(exp_values[1])  
+        exp_values = map(x->Float128(2)^x, map(Float128,exp_unbiased_magnitude_strides(T)))
+        if iszero(exp_values[1])
+            exp_values = map(x->BigFloat(2)^x, map(BigFloat,exp_unbiased_magnitude_strides(T)))
+        end
+    end
     significands .*= exp_values
 
     typ = typeforfloat(nBits(T))
     magnitudes = memalign_clear(typ, length(significands))
-    magnitudes[:] = significands
+    magnitudes[:] = map(typ, significands)
     magnitudes
 end
 
 @inline function prenormal_magnitude_steps(T::Type{<:AbstractAIFloat})
-    return (0:nPrenormalMagnitudes(T)-1) ./ nPrenormalMagnitudes(T)
+    return (0:nPrenormalMagnitudes(T)-1) ./ Float128(nPrenormalMagnitudes(T))
 end
 
 function normal_magnitude_steps(T::Type{<:AbstractAIFloat})
     nprenormals = nPrenormalMagnitudes(T)
-    (nprenormals:(2*nprenormals-1)) ./ nprenormals 
- 
+    (nprenormals:(2*nprenormals-1)) ./ Float128(nprenormals)
 end
 
 function normal_exp_stride(T::Type{<:AbstractAIFloat})

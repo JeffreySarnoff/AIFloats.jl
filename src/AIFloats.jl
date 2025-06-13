@@ -24,14 +24,19 @@ export AbstractAIFloat,
         nMagnitudes, nNonzeroMagnitudes,
         nExpValues, nNonzeroExpValues,
         nFiniteValues, nNonzeroFiniteValues,
+        # exponent
+        expBias, expUnbiasedValues, expMinValue, expMaxValue, expValues,
         # julia support
-        index1, indexneg1, floatleast
+        index1, indexneg1, valuetoindex, indextovalue, floatleast,
+        ulp_distance
         # counts predicated on type defining parameters and type specifying qualities
         # parameters: (bits, sigbits, exponent bias)
         # qualities: (signedness [signed / unsigned], finiteness [finite / extended (has Inf[s])])
 
 using AlignedAllocs: memalign_clear, alignment
+using Quadmath: Float128
 using Static: static, StaticInt, StaticBool, False, True
+
 
 include("type/constants.jl")
 include("type/abstract.jl")

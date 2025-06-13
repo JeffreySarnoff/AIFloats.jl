@@ -20,6 +20,7 @@ makedocs(;
     pages = Any[
                 "Home" => "index.md",
                 "Overview" => "overview.md",
+                "Description" => "information.md",
                 "Float Families" => "families.md",
                 "Type Specifics" => "specifics.md",
                 "Computing over Type abstractions" => "abstractions.md",

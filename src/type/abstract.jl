@@ -85,6 +85,9 @@ nBits(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = Bits
 nSigBits(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = SigBits
 nFracBits(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nSigBits(T) - 1
 
+nSignBits(::Type{T}) where {Bits, SigBits, T<:AbsSignedFloat{Bits, SigBits}} = 1
+nSignBits(::Type{T}) where {Bits, SigBits, T<:AbsUnsignedFloat{Bits, SigBits}} = 0
+
 nValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 1 << nBits(T)
 nNumericValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nValues(T) - 1
 nNonzeroNumericValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nNumericValues(T) - 1
@@ -161,12 +164,15 @@ expUnbiasedValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigB
 expMaxValue(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 2.0^(expUnbiasedMax(T))
 expMinValue(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 2.0^(expUnbiasedMin(T))
 
+expValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 
+    map(two_pow, expUnbiasedValues(T))
+
 expBias(::Type{T}) where {Bits, SigBits, T<:AbsSignedFloat{Bits, SigBits}} = 1 << (Bits - SigBits - 1)
 expBias(::Type{T}) where {Bits, SigBits, T<:AbsUnsignedFloat{Bits, SigBits}} = 1 << (Bits - SigBits)
 
 # cover instantiations
 
-for F in (:expBias, :expMaxValue, :expMinValue,
+for F in (:expBias, :expMaxValue, :expMinValue, :expValues,
           :expUnbiasedMax, :expUnbiasedMin, :expUnbiasedValues)
     @eval $F(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = $F(T)
 end

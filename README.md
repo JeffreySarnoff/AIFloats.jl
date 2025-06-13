@@ -1,14 +1,5 @@
-### *under construction* -- *thank you for waiting* 
------
-|        |        |   this pkg is visible to facilitate intertwined work    |        |        |
-|--------|--------|--------------------------------------------------------|--------|--------|
-
-****
-
-
-
 ### AIFloats.jl
-### The internal constructive model for MicroFloats.
+### The internal constructive model for P3109 Floating-Point formats.
 #### Copyright 2024-2025 by Jeffrey Sarnoff
 
 ----

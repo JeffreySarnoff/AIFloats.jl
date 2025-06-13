@@ -24,13 +24,21 @@ function SignedFiniteFloats(bits, sigbits)
     T = typeforfloat(bits)
     S = typeforcode(bits)
     codes = encoding_sequence(S, bits)
+    floats = value_sequence(AbsSignedFiniteFloat{bits, sigbits})
+    SignedFiniteFloats{bits, sigbits, T, S}(floats, codes)
+end
+
+function value_sequence(T::Type{<:AbsSignedFiniteFloat})
+    bits = nBits(T)
+    sigbits = nSigBits(T)
+    F = typeforfloat(bits)
     magnitudes = foundation_magnitudes(AbsSignedFiniteFloat{bits, sigbits})
     negmagnitudes = -1 .* magnitudes
-    negmagnitudes[1] = convert(T, NaN)
+    negmagnitudes[1] = convert(F, NaN)
     append!(magnitudes, negmagnitudes)
-    floats = memalign_clear(T, length(magnitudes))
+    floats = memalign_clear(F, length(magnitudes))
     floats[:] = magnitudes
-    SignedFiniteFloats{bits, sigbits, T, S}(floats, codes)
+    floats
 end
 
 function SignedExtendedFloats(T::Type{<:AbsSignedFloat})
@@ -43,13 +51,19 @@ function SignedExtendedFloats(bits, sigbits)
     T = typeforfloat(bits)
     S = typeforcode(bits)
     codes = encoding_sequence(S, bits)
-    magnitudes = foundation_magnitudes(AbsSignedFiniteFloat{bits, sigbits})
-    magnitudes[end] = convert(T, Inf) # replace last value with NaN
-    negmagnitudes = -1 .* magnitudes
-    negmagnitudes[1] = convert(T, NaN)
-    append!(magnitudes, negmagnitudes)
-    floats = memalign_clear(T, length(magnitudes))
-    floats[:] = magnitudes
+    floats = value_sequence(AbsSignedExtendedFloat{bits, sigbits})
     SignedExtendedFloats{bits, sigbits, T, S}(floats, codes)
 end
-
+function value_sequence(T::Type{<:AbsSignedExtendedFloat})
+    bits = nBits(T)
+    sigbits = nSigBits(T)
+    F = typeforfloat(bits)
+    magnitudes = foundation_magnitudes(AbsSignedFiniteFloat{bits, sigbits})
+    magnitudes[end] = convert(F, Inf) # replace last value with NaN
+    negmagnitudes = -1 .* magnitudes
+    negmagnitudes[1] = convert(F, NaN)
+    append!(magnitudes, negmagnitudes)
+    floats = memalign_clear(F, length(magnitudes))
+    floats[:] = magnitudes
+    floats
+end
