@@ -1,5 +1,7 @@
 using AlignedAllocs, AIFloats, Test
 
+include("test_inits.jl")
+
 @test 1 == 1
 
 #=

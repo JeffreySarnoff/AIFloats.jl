@@ -1,7 +1,7 @@
 # 7 small bitwidths (UInt8 encoded)
 const BitsSmallMin, BitsSmallMax =  2, 8
 # 7 large bitwidths (UInt16 encoded)
-const BitsLargeMin, BitsLargeMax =  9, 15
+const BitsLargeMin, BitsLargeMax =  12, 15
 const BitsTop = 16
 
 # internal assurances
@@ -36,7 +36,7 @@ see also [`CODE`](@ref)
 # const FLOAT_TYPES = (Float32, Float64)
 # const FLOAT = Union{FLOAT_TYPES...}
 
-const FLOAT_TYPES = (Float32, Float64)
+const FLOAT_TYPES = (Float32, Float64, Float128)
 const FLOAT = Union{FLOAT_TYPES...}
 
 """
@@ -65,9 +65,9 @@ The bitstype to be used for storing values of `bitwidth`
 It is an *unchecked error* to set bitwidth outside BitsMin..BitsMax
 """ typeforfloat
 
-typeforfloat(Bits) = FLOAT_TYPES[1 + (Bits > BitsSmallMax)]
+typeforfloat(Bits) = FLOAT_TYPES[1 + (Bits > BitsSmallMax) + (Bits >= BitsLargeMin)]
 typeforfloat(Bits::StaticInt{N}) where {N} =
-    ifelse(Bits <= static(BitsSmallMax), FLOAT_TYPES[1], FLOAT_TYPES[2])
+    ifelse(Bits <= static(BitsSmallMax), FLOAT_TYPES[1], ifelse(Bits < BitsLargeMin, FLOAT_TYPES[2], FLOAT_TYPES[3]))
 
 # use with MLFLOATS()
 const IsUnsigned = false

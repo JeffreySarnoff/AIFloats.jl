@@ -167,8 +167,8 @@ expMinValue(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} 
 expValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 
     map(two_pow, expUnbiasedValues(T))
 
-expBias(::Type{T}) where {Bits, SigBits, T<:AbsSignedFloat{Bits, SigBits}} = 1 << (Bits - SigBits - 1)
-expBias(::Type{T}) where {Bits, SigBits, T<:AbsUnsignedFloat{Bits, SigBits}} = 1 << (Bits - SigBits)
+expBias(::Type{T}) where {Bits, SigBits, T<:AbsSignedFloat{Bits, SigBits}} = 1 << (Bits - SigBits - 1) # floor(2^(Bits - SigBits - 1))
+expBias(::Type{T}) where {Bits, SigBits, T<:AbsUnsignedFloat{Bits, SigBits}} = 1 << (Bits - SigBits)   # floor(2^(Bits - SigBits))
 
 # cover instantiations
 
