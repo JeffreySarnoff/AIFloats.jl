@@ -32,10 +32,10 @@ function value_sequence(T::Type{<:AbsSignedFiniteFloat})
     bits = nBits(T)
     sigbits = nSigBits(T)
     F = typeforfloat(bits)
-    magnitudes = foundation_magnitudes(AbsSignedFiniteFloat{bits, sigbits})
-    negmagnitudes = -1 .* magnitudes
+    nonnegmagnitudes = foundation_magnitudes(AbsSignedFiniteFloat{bits, sigbits})
+    negmagnitudes = -1 .* nonnegmagnitudes
     negmagnitudes[1] = convert(F, NaN)
-    append!(magnitudes, negmagnitudes)
+    magnitudes = vcat(nonnegmagnitudes, negmagnitudes)
     floats = memalign_clear(F, length(magnitudes))
     floats[:] = magnitudes
     floats
