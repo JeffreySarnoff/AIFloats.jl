@@ -22,7 +22,7 @@ SmallCollections = "0.4 - 0.9"
 TupleTools = "1.6"
 TestItems = "1"
 TestItemRunner = "1.1"
-julia = "1.10"
+julia = "1.11"
 
 [extras]
 Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
