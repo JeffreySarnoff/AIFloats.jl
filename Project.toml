@@ -15,7 +15,7 @@ TestItemRunner = "f8b46487-2199-4994-9208-9a1283c18c0a"
 
 [compat]
 Static = "1.2"
-AlignedAllocs = "0.1.9 - 0.1.49, 0.2 - 0.5"
+AlignedAllocs = "0.1.12 - 0.1.40"
 Quadmath = "0.5 - 0.9"
 Dictionaries = "0.4.5 - 0.4.20, 0.5 - 0.9"
 SmallCollections = "0.4 - 0.9"

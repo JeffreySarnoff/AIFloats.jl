@@ -3,5 +3,5 @@ AlignedAllocs = "6ac60441-711f-43f0-8178-7f71f0888134"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
-AlignedAllocs = "0.1.0 - 0.1.9, 0.2 - 0.5"
+AlignedAllocs = "0.1.12 - 0.1.40"
 Test = "1.10"

@@ -30,8 +30,8 @@ ueC1, ueC2, ueC3, ueC4, ueC5, ueC6, ueC7, ueC8, ueC9, ueCA, ueCB, ueCC  = collec
 ueD1, ueD2, ueD3, ueD4, ueD5, ueD6, ueD7, ueD8, ueD9, ueDA, ueDB, ueDC, ueDD  = collect(UnsignedExtendedFloats(13,i) for i=1:13);
 ueE1, ueE2, ueE3, ueE4, ueE5, ueE6, ueE7, ueE8, ueE9, ueEA, ueEB, ueEC, ueED, ueEE  = collect(UnsignedExtendedFloats(14,i) for i=1:14);
 ueF1, ueF2, ueF3, ueF4, ueF5, ueF6, ueF7, ueF8, ueF9, ueFA, ueFB, ueFC, ueFD, ueFE, ueFF  = collect(UnsignedExtendedFloats(15,i) for i=1:15);
-# ueG1, ueG2, ueG3, ueG4, ueG5, ueG6, ueG7, ueG8, ueG9, ueGA, ueGB, ueGC, ueGD, ueGE, ueGF, ueGG  = collect(UnsignedExtendedFloats(16,i) for i=1:16);
 ueG2, ueG3, ueG4, ueG5, ueG6, ueG7, ueG8, ueG9, ueGA, ueGB, ueGC, ueGD, ueGE, ueGF, ueGG  = collect(UnsignedExtendedFloats(16,i) for i=2:16);
+
 
 sf21  = collect(SignedFiniteFloats(2,i) for i=1:1);
 sf31, sf32  = collect(SignedFiniteFloats(3,i) for i=1:2);
