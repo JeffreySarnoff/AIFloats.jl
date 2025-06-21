@@ -58,11 +58,12 @@ function value_sequence(T::Type{<:AbsSignedExtendedFloat})
     bits = nBits(T)
     sigbits = nSigBits(T)
     F = typeforfloat(bits)
-    magnitudes = foundation_magnitudes(AbsSignedFiniteFloat{bits, sigbits})
-    magnitudes[end] = convert(F, Inf) # replace last value with NaN
-    negmagnitudes = -1 .* magnitudes
+    
+    nonnegmagnitudes = foundation_magnitudes(AbsSignedExtendedFloat{bits, sigbits})
+    negmagnitudes = -1 .* nonnegmagnitudes
     negmagnitudes[1] = convert(F, NaN)
-    append!(magnitudes, negmagnitudes)
+    magnitudes = vcat(nonnegmagnitudes, negmagnitudes)
+
     floats = memalign_clear(F, length(magnitudes))
     floats[:] = magnitudes
     floats
