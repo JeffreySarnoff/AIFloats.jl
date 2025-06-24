@@ -36,7 +36,7 @@ see also [`CODE`](@ref)
 # const FLOAT_TYPES = (Float32, Float64)
 # const FLOAT = Union{FLOAT_TYPES...}
 
-const FLOAT_TYPES = (Float32, Float64, Float128)
+const FLOAT_TYPES = (Float64, Float64, Float128)
 const FLOAT = Union{FLOAT_TYPES...}
 
 """
