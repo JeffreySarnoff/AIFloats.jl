@@ -39,16 +39,39 @@ using Quadmath: Float128
 
 
 include("type/constants.jl")
-include("type/abstract.jl")
 
-include("support/indices.jl")
+include("type/abstract.jl")
+include("type/counts.jl")
+include("type/exponents.jl")
+
+include("projection/rounding.jl")
+# include("projection/saturation.jl")
+# include("projection/stochastic.jl")
 
 include("concrete/encodings.jl")
 include("concrete/foundation.jl")
 include("concrete/unsigned.jl")
 include("concrete/signed.jl")
 
-include("support/julialang.jl")
+include("support/indices.jl")
+# include("support/julialang.jl")
+include("support/maybe_bool.jl")
+
+"""
+      MaybeBool
+
+A type that can be `Bool`, `Nothing`, or `Union{Nothing, Bool}`.
+
+used to type keyword arguments: 
+-  contributing to clean, clear, generalized construction 
+
+specializes on signedness and finiteness:
+- with either of the two signedness symbols
+    -  `SignedFloat`, `UnsignedFloat`
+- with either of the two finiteness symbols
+    - `FiniteFloat`, `ExtendedFloat`
+
+""" MaybeBool, UnsignedFloat, SignedFloat, FiniteFloat, ExtendedFloat
 
 const MaybeBool = Union{Nothing, Bool}
 
@@ -107,14 +130,5 @@ function ConstructAIFloat(bitwidth::Int, sigbits::Int;
         end
     end
 end
-
-differ(x::Bool, y::Bool)       = xor(x, y)
-
-differ(x::Bool, y::Nothing)    = true
-differ(x::Nothing, y::Bool)    = true
-differ(x::Nothing, y::Nothing) = true               # this relation is necessary
-
-Base.convert(::Type{Bool}, x::Nothing) = false      # this conversion is necessary
-
 
 end  # AIFloats
