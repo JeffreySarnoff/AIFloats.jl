@@ -52,43 +52,52 @@ include("support/julialang.jl")
 
 const MaybeBool = Union{Nothing, Bool}
 
-function AIFloat(bitwidth::Int, precision::Int;
-                 signed::MaybeBool=nothing, unsigned::MaybeBool=nothing,
-                 finite::MaybeBool=nothing, extended::MaybeBool=nothing)
+function AIFloat(bitwidth::Int, sigbits::Int;
+                 is_signed::MaybeBool=nothing, is_unsigned::MaybeBool=nothing,
+                 is_finite::MaybeBool=nothing, is_extended::MaybeBool=nothing)
     
     # are the keyword arguments consistent?
-    if !differ(signed, unsigned)
-        error("AIFloats: keyword args `signed` and `unsigned` must differ (one true, one false).")
-    elseif !differ(finite, extended)
-        error("AIFloats: keyword args `finite` and `extended` must differ (one true, one false).")
+    if !differ(is_signed, is_unsigned)
+        error("AIFloats: keyword args `is_signed` and `is_unsigned` must differ (one true, one false).")
+    elseif !differ(is_finite, is_extended)
+        error("AIFloats: keyword args `is_finite` and `is_extended` must differ (one true, one false).")
     end
+
+    # complete the keyword initializing
+
+    is_signed = isnothing(is_signed) ? ~is_unsigned : is_signed
+    is_unsigned = isnothing(is_signed) ? ~is_signed : is_unsigned
+    
+    is_extended = isnothing(is_extended) ? ~is_finite : is_extended
+    is_finite = isnothing(is_finite) ? ~is_extended : is_finite
 
     # are these arguments conformant?
-    #                                signed                 unsigned
-    params_ok = (precision >= 1) && ifelse(signed, bitwidth > precision, bitwidth >= precision)
+    params_ok = (sigbits >= 1) && 
+                (is_signed ? bitwidth > sigbits : bitwidth >= sigbits)
+    
     if !params_ok
-        ifelse(unsigned, 
+        ifelse(is_unsigned, 
             error("AIFloats: Unsigned formats require `(1 <= precision <= bitwidth <= 15).`\n
-                   AIFloat was called using (bitwidth = $bitwidth, precision = $precision)."),
+                   AIFloat was called using (bitwidth = $bitwidth, precision = $sigbits)."),
             error("AIFloats: Signed formats require `(1 <= precision < bitwidth <= 15).\n
-                   AIFloat was called using (bitwidth = $bitwidth, precision = $precision)."))
+                   AIFloat was called using (bitwidth = $bitwidth, precision = $sigbits)."))
     end
 
-    ConstructAIFloat(bitwidth, precision; signed, extended)
+    ConstructAIFloat(bitwidth, sigbits; is_signed, is_extended)
 end
 
-function ConstructAIFloat(bitwidth::Int, precision::Int; signed::Bool, extended::Bool)
-    if signed
-        if extended
-            SignedExtendedFloats(bitwidth, precision)
+function ConstructAIFloat(bitwidth::Int, sigbits::Int; is_signed::Bool, is_extended::Bool)
+    if is_signed
+        if is_extended
+            SignedExtendedFloats(bitwidth, sigbits)
         else # finite
-            SignedFiniteFloats(bitwidth, precision)
+            SignedFiniteFloats(bitwidth, sigbits)
         end
     else # unsigned
-        if extended
-            UnsignedExtendedFloats(bitwidth, precision)
+        if is_extended
+            UnsignedExtendedFloats(bitwidth, sigbits)
         else # finite
-            UnsignedFiniteFloats(bitwidth, precision)
+            UnsignedFiniteFloats(bitwidth, sigbits)
         end
     end
 end
@@ -97,6 +106,8 @@ differ(x::Bool, y::Bool)       = xor(x, y)
 
 differ(x::Bool, y::Nothing)    = true
 differ(x::Nothing, y::Bool)    = true
-differ(x::Nothing, y::Nothing) = true  # intentional (this relation is necessary)
+differ(x::Nothing, y::Nothing) = true               # this relation is necessary
+
+Base.convert(::Type{Bool}, x::Nothing) = false      # this conversion is necessary
 
 end  # AIFloats
