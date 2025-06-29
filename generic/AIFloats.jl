@@ -9,9 +9,6 @@ export AbstractAIFloat,
         floats, codes,
         # generalized constructor
         AIFloat, 
-        UnsignedFloat, SignedFloat,
-        FiniteFloat, ExtendedFloat,
-        # concrete constructors        
         UnsignedFiniteFloats, UnsignedExtendedFloats,
         SignedFiniteFloats, SignedExtendedFloats,
         # typed predicates
@@ -60,6 +57,20 @@ include("support/indices.jl")
 # include("support/julialang.jl")
 include("support/maybe_bool.jl")
 
+
+differ(x::Bool, y::Bool)       = xor(x, y)
+
+differ(x::Bool, y::Nothing)    = true
+differ(x::Nothing, y::Bool)    = true
+differ(x::Nothing, y::Nothing) = true               # this relation is necessary
+
+Base.convert(::Type{Bool}, x::Nothing) = false      # the conversion logic promulgates consistency
+Base.convert(::Type{Nothing}, x::Bool) = nothing    # 
+
+differ(x::Bool, y::Missing)    = true
+differ(x::Missing, y::Bool)    = true
+differ(x::Missing) = true               # this relation is necessary
+
 """
       MaybeBool
 
@@ -84,9 +95,9 @@ const FiniteFloat   = true
 const ExtendedFloat = true
 
 function AIFloat(bitwidth::Int, sigbits::Int;
-                 SignedFloat::MaybeBool=missing, UnsignedFloat::MaybeBool=missing,
-                 FiniteFloat::MaybeBool=missing, ExtendedFloat::MaybeBool=missing)
-     
+                 SignedFloat::MaybeBool=nothing, UnsignedFloat::MaybeBool=nothing,
+                 FiniteFloat::MaybeBool=nothing, ExtendedFloat::MaybeBool=nothing)
+    
     # are the keyword arguments consistent?
     if !differ(SignedFloat, UnsignedFloat)
         error("AIFloats: keyword args `SignedFloats` and `UnsignedFloats` must differ (one true, one false).")
@@ -96,11 +107,11 @@ function AIFloat(bitwidth::Int, sigbits::Int;
 
     # complete the keyword initializing
 
-    SignedFloat    = ismissing(SignedFloat)   ? ~UnsignedFloat  :  SignedFloat
-    UnsignedFloat  = ismissing(SignedFloat)   ? ~SignedFloat    :  UnsignedFloat
+    SignedFloat    = isnothing(SignedFloat)   ? ~UnsignedFloat  :  SignedFloat
+    UnsignedFloat  = isnothing(SignedFloat)   ? ~SignedFloat    :  UnsignedFloat
     
-    ExtendedFloat  = ismissing(ExtendedFloat) ? ~FiniteFloat   : ExtendedFloat
-    FiniteFloat    = ismissing(FiniteFloat)   ? ~ExtendedFloat : FiniteFloat
+    ExtendedFloat  = isnothing(ExtendedFloat) ? ~FiniteFloat   : ExtendedFloat
+    FiniteFloat    = isnothing(FiniteFloat)   ? ~ExtendedFloat : FiniteFloat
 
     # are these arguments conformant?
     params_ok = (sigbits >= 1) && 
@@ -114,21 +125,21 @@ function AIFloat(bitwidth::Int, sigbits::Int;
                    AIFloat was called using (bitwidth = $bitwidth, precision = $sigbits)."))
     end
 
-    ConstructAIFloat(bitwidth, sigbits; SignedFloat, ExtendedFloat)
+    ConstructAIFloat(bitwidth, sigbits; SignedFloat, UnsignedFloat)
 end
 
 function ConstructAIFloat(bitwidth::Int, sigbits::Int; 
                           SignedFloat::Bool, ExtendedFloat::Bool)
-    if SignedFloat
-        if ExtendedFloat
+    if SignedFloats
+        if ExtendedFloats
             SignedExtendedFloats(bitwidth, sigbits)
         else # FiniteFloats
             SignedFiniteFloats(bitwidth, sigbits)
         end
-    else # UnsignedFloat
-        if ExtendedFloat
+    else # UnsignedFloats
+        if ExtendedFloats
             UnsignedExtendedFloats(bitwidth, sigbits)
-        else # FiniteFloat
+        else # FiniteFloats
             UnsignedFiniteFloats(bitwidth, sigbits)
         end
     end
