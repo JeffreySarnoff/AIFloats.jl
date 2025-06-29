@@ -34,8 +34,8 @@ export AbstractAIFloat,
         # qualities: (signedness [signed / unsigned], finiteness [finite / extended (has Inf[s])])
 
 using AlignedAllocs: memalign_clear, alignment
+using Static: static, dynamic, StaticInt, StaticBool
 using Quadmath: Float128
-using Static: static, StaticInt, StaticBool, False, True
 
 
 include("type/constants.jl")
@@ -50,55 +50,53 @@ include("concrete/signed.jl")
 
 include("support/julialang.jl")
 
+const MaybeBool = Union{Nothing, Bool}
 
-function AIFloat(bits::Int, sigbits::Int; signed::Bool, extended::Bool)
+function AIFloat(bitwidth::Int, precision::Int;
+                 signed::MaybeBool=nothing, unsigned::MaybeBool=nothing,
+                 finite::MaybeBool=nothing, extended::MaybeBool=nothing)
+    
+    # are the keyword arguments consistent?
+    if !differ(signed, unsigned)
+        error("AIFloats: keyword args `signed` and `unsigned` must differ (one true, one false).")
+    elseif !differ(finite, extended)
+        error("AIFloats: keyword args `finite` and `extended` must differ (one true, one false).")
+    end
+
+    # are these arguments conformant?
+    #                                signed                 unsigned
+    params_ok = (precision >= 1) && ifelse(signed, bitwidth > precision, bitwidth >= precision)
+    if !params_ok
+        ifelse(unsigned, 
+            error("AIFloats: Unsigned formats require `(1 <= precision <= bitwidth <= 15).`\n
+                   AIFloat was called using (bitwidth = $bitwidth, precision = $precision)."),
+            error("AIFloats: Signed formats require `(1 <= precision < bitwidth <= 15).\n
+                   AIFloat was called using (bitwidth = $bitwidth, precision = $precision)."))
+    end
+
+    ConstructAIFloat(bitwidth, precision; signed, extended)
+end
+
+function ConstructAIFloat(bitwidth::Int, precision::Int; signed::Bool, extended::Bool)
     if signed
         if extended
-            SignedExtendedFloats(bits, sigbits)
+            SignedExtendedFloats(bitwidth, precision)
         else # finite
-            SignedFiniteFloats(bits, sigbits)
+            SignedFiniteFloats(bitwidth, precision)
         end
     else # unsigned
         if extended
-            UnsignedExtendedFloats(bits, sigbits)
+            UnsignedExtendedFloats(bitwidth, precision)
         else # finite
-            UnsignedFiniteFloats(bits, sigbits)
+            UnsignedFiniteFloats(bitwidth, precision)
         end
     end
 end
 
-#=
-export AbstractAIFloat,
-C         # concrete collective types
-         SignedExtendedFloat, SignedFiniteFloat,
-         UnsignedExtendedFloat, UnsignedFiniteFloat,
-       AIFloat, # constructor for concrete AIFloat types
-       CODE, FLOAT,
-       IsSigned, IsUnsigned, IsExtended, IsFinite,
-       is_signed, is_unsigned, is_finite, is_extended,
-       codes, floats, nonneg_codes, nonneg_floats, symbol,
-       typeforcode, typeforfloat,
-       bitwidth, precision,
-       exponent_min, exponent_max, exponent_bias,
-       subnormal_min, subnormal_max, normal_min, normal_max,
-       nZeros, nNaNs, nBits, nSigBits, nFracBits, nSignBits, nExpBits,
-       nValues, nNumericValues, nNonzeroNumericValues,
-       nPositiveValues, nNegativeValues,
-       nMagnitudes, nNonzeroMagnitudes, nExpValues, nNonzeroExpValues,
-       nInfs, nPosInfs, nNegInfs,
-       nFiniteValues, nNonzeroFiniteValues,
-       nPositiveFiniteValues, nNegativeFiniteValues,
-       nFracMagnitudes, nNonzeroFracMagnitudes,
-       nFracCycles, nExpCycles,
-       index_to_code, index_to_offset, offset_to_index,
-       compacttype,
-       Signed_dict, Unsigned_dict,
-       UF_dict, UE_dict, SF_dict, SE_dict
+differ(x::Bool, y::Bool)       = xor(x, y)
 
-import Base: convert, oftype, precision, exponent_bias
+differ(x::Bool, y::Nothing)    = true
+differ(x::Nothing, y::Bool)    = true
+differ(x::Nothing, y::Nothing) = true  # intentional (this relation is necessary)
 
-using Static
-using AlignedAllocs: memalign_clear, alignment
-using SmallCollections, Dictionaries
-=#
 end  # AIFloats
