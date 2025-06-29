@@ -1,5 +1,6 @@
-const RoundStochastic = RoundingMode(:Stochastic)
-const RoundToOdd = RoundingMode(:Odd)
+const RoundToOdd = RoundingMode{:Odd}
+const RoundStochastic = RoundingMode{:Stochastic}
+
 #=
 Floating-point Round-to-Odd (RO) is defined as follows
 [7]: if the infinitely-precise but in-range unrounded result of a
@@ -21,7 +22,7 @@ Trans. Comp., Vol. 57, no. 4, pp. 462-471, April 2008
 
 =#
 
-# =
+#=
 > map(x->searchsortedfirst([1, 3, 5], x), [0, 1, 2, 5, 6])'
                                            1  1  2  3  4
 =#
