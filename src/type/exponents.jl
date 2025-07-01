@@ -1,25 +1,36 @@
 
+expBias(::Type{T}) where {Bits, SigBits, T<:AbsSignedFloat{Bits, SigBits}}   = 2^(Bits - SigBits - 1) # 1 << (Bits - SigBits - 1) 
+expBias(::Type{T}) where {Bits, SigBits, T<:AbsUnsignedFloat{Bits, SigBits}} = 2^(Bits - SigBits )    # 1 << (Bits - SigBits)
+
 # exponent field characterizations
 
-expBiasedMin(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 0
-expBiasedMax(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nExpValues(T) - 1
-expBiasedValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = collect(expBiasedMin(T):expBiasedMax(T))
+expFieldMax(::Type{T}) where {T<:AbstractAIFloat} = nExpValues(T) - 1
 
-expUnbiasedMin(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = expBiasedMin(T) - expBias(T)
-expUnbiasedMax(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = expBiasedMax(T) - expBias(T)
-expUnbiasedValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = collect(expUnbiasedMin(T):expUnbiasedMax(T))[2:end]
+expUnbiasedNormalMax(::Type{T}) where {T<:AbstractAIFloat} = expFieldMax(T) - expBias(T)
+expUnbiasedNormalMin(::Type{T}) where {T<:AbstractAIFloat} = -expUnbiasedNormalMax(T)
+expUnbiasedSubnormal(::Type{T}) where {T<:AbstractAIFloat} = expUnbiasedNormalMin(T)
 
-expMaxValue(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 2.0^(expUnbiasedMax(T))
-expMinValue(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 2.0^(expUnbiasedMin(T))
-expValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = map(two_pow, expUnbiasedValues(T))
+expUnbiasedNormalValues(::Type{T}) where {T<:AbstractAIFloat} = collect(expUnbiasedNormalMin(T):expUnbiasedNormalMax(T))
+expUnbiasedValues(::Type{T}) where {T<:AbstractAIFloat} = vcat(expUnbiasedSubnormal(T), expUnbiasedNormalValues(T))
 
-expBias(::Type{T}) where {Bits, SigBits, T<:AbsSignedFloat{Bits, SigBits}}   = 1 << (Bits - SigBits - 1) # floor(2^(Bits - SigBits - 1))
-expBias(::Type{T}) where {Bits, SigBits, T<:AbsUnsignedFloat{Bits, SigBits}} = 1 << (Bits - SigBits)     # floor(2^(Bits - SigBits))
+expNormalValues(::Type{T}) where {T<:AbstractAIFloat} = two(T) .^ (expUnbiasedNormalMin(T):expUnbiasedNormalMax(T))
+expSubnormalValue(::Type{T}) where {T<:AbstractAIFloat} = two(T)^(expUnbiasedSubnormal(T))
+expValues(::Type{T}) where {T<:AbstractAIFloat} = [expSubnormalValue(T), expNormalValues(T)...]
+
+expMin(::Type{T}) where {T<:AbstractAIFloat} = expUnbiasedNormalMin(T)
+expMax(::Type{T}) where {T<:AbstractAIFloat} = expUnbiasedNormalMax(T)
+
+expMinValue(::Type{T}) where {T<:AbstractAIFloat} = two(T)^expMin(T)
+expMaxValue(::Type{T}) where {T<:AbstractAIFloat} = two(T)^expMax(T)
 
 # cover instantiations
 
-for F in (:expBias, :expMaxValue, :expMinValue, :expValues,
-          :expUnbiasedMax, :expUnbiasedMin, :expUnbiasedValues)
+expBias(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = expBias(T)
+
+for F in (:expMin, :expMax, :expMinValue, :expMaxValue,
+          :expFieldMax, :expMaxValue, :expMinValue, :expValues,
+          :expUnbiasedNormalMax, :expUnbiasedNormalMin, :expUnbiasedSubnormal, 
+          :expUnbiasedNormalValues, :expUnbiasedValues, :expSubnormalValue, :expValues)
     @eval $F(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = $F(T)
 end
 

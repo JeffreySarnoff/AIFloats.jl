@@ -24,12 +24,12 @@ function foundation_magnitudes(T::Type{<:AbstractAIFloat})
 end
 
 @inline function prenormal_magnitude_steps(T::Type{<:AbstractAIFloat})
-    return (0:nPrenormalMagnitudes(T)-1) ./ Float128(nPrenormalMagnitudes(T))
+    return (0:nPrenormalMagnitudes(T)-1) ./ typeforfloat(T)(nPrenormalMagnitudes(T))
 end
 
 function normal_magnitude_steps(T::Type{<:AbstractAIFloat})
     nprenormals = nPrenormalMagnitudes(T)
-    (nprenormals:(2*nprenormals-1)) ./ Float128(nprenormals)
+    (nprenormals:(2*nprenormals-1)) ./ typeforfloat(T)(nprenormals)
 end
 
 function normal_exp_stride(T::Type{<:AbstractAIFloat})
@@ -63,7 +63,7 @@ end
 end
 
 function pow2_foundation_exps(T,res::Vector{Float32})
-    expres =  (foundation_exps(T))
+    expres =  foundation_exps(T)
     map(two_pow, expres)
 end
 
