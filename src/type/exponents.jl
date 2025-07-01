@@ -29,7 +29,7 @@ expBias(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = expBias
 
 for F in (:expFieldMax, :expMin, :expMax, :expMinValue, :expMaxValue, :expValues,
           :expUnbiasedNormalMax, :expUnbiasedNormalMin, :expUnbiasedSubnormal, 
-          :expUnbiasedNormalValues, :expUnbiasedValues, :expSubnormalValue, :expValues)
+          :expUnbiasedNormalValues, :expUnbiasedValues, :expSubnormalValue)
     @eval $F(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = $F(T)
 end
 
