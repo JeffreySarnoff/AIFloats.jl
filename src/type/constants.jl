@@ -18,8 +18,6 @@ setprecision(BigFloat, 1024)
 two(T) = typeforfloat(nBits(T))(2)
 
 """
-    BitsMin, BitsMax
-"""
     CODE
 
 The built-in Unsigned Integer types available for encodings.
