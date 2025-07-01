@@ -27,8 +27,7 @@ expMaxValue(::Type{T}) where {T<:AbstractAIFloat} = two(T)^expMax(T)
 
 expBias(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = expBias(T)
 
-for F in (:expMin, :expMax, :expMinValue, :expMaxValue,
-          :expFieldMax, :expMaxValue, :expMinValue, :expValues,
+for F in (:expFieldMax, :expMin, :expMax, :expMinValue, :expMaxValue, :expValues,
           :expUnbiasedNormalMax, :expUnbiasedNormalMin, :expUnbiasedSubnormal, 
           :expUnbiasedNormalValues, :expUnbiasedValues, :expSubnormalValue, :expValues)
     @eval $F(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = $F(T)
