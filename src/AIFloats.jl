@@ -20,7 +20,7 @@ export AbstractAIFloat,
         encoding_sequence, value_sequence,
         magnitude_sequence, foundation_magnitudes,
         # counts predicated on abstract [sub]type
-        nBits, nSigBits, nFracBits, nSignBits, nExpBits,
+        nBits, nSigBits, nFracBits, nSignBits, nExpBits,  
         nNaNs, nZeros, nInfs, nPosInfs, nNegInfs,
         nPrenormalMagnitudes, nSubnormalMagnitudes, nNormalMagnitudes, nMagnitudes,
         nValues, nNumericValues, nNonzeroNumericValues,
@@ -29,7 +29,7 @@ export AbstractAIFloat,
         nFiniteValues, nNonzeroFiniteValues,
         # exponent
         expBias, expUnbiasedValues, expMinValue, expMaxValue, expValues,
-        # julia support
+        # julia support 
         index1, indexneg1, valuetoindex, indextovalue, floatleast,
         ulp_distance
         # counts predicated on type defining parameters and type specifying qualities
@@ -58,50 +58,24 @@ include("concrete/signed.jl")
 
 include("support/indices.jl")
 # include("support/julialang.jl")
-include("support/maybe_bool.jl")
-
-"""
-      MaybeBool
-
-A type that can be `Bool`, `Missing`, or `Union{Missing, Bool}`.
-
-used to type keyword arguments: 
--  contributing to clean, clear, generalized construction 
-
-specializes on signedness and finiteness:
-- with either of the two signedness symbols
-    -  `SignedFloat`, `UnsignedFloat`
-- with either of the two finiteness symbols
-    - `FiniteFloat`, `ExtendedFloat`
-
-""" MaybeBool, UnsignedFloat, SignedFloat, FiniteFloat, ExtendedFloat
-
-const MaybeBool = Union{Bool, Missing}
-
+  
 const UnsignedFloat = true
 const SignedFloat   = true
 const FiniteFloat   = true
 const ExtendedFloat = true
 
 function AIFloat(bitwidth::Int, sigbits::Int;
-                 SignedFloat::MaybeBool=missing, UnsignedFloat::MaybeBool=missing,
-                 FiniteFloat::MaybeBool=missing, ExtendedFloat::MaybeBool=missing)
+                 SignedFloat::Bool=false, UnsignedFloat::Bool=false,
+                 FiniteFloat::Bool=false, ExtendedFloat::Bool=false)
      
     # are the keyword arguments consistent?
-    if !differ(SignedFloat, UnsignedFloat)
-        error("AIFloats: keyword args `SignedFloats` and `UnsignedFloats` must differ (one true, one false).")
-    elseif !differ(FiniteFloat, ExtendedFloat)
-        error("AIFloats: keyword args `FiniteFloats` and `ExtendedFloats` must differ (one true, one false).")
+    if !xor(SignedFloat, UnsignedFloat)
+        error("AIFloats: specify one of `SignedFloat` or `UnsignedFloat`.")
+    elseif !xor(FiniteFloat, ExtendedFloat)
+        error("AIFloats: specify one of `FiniteFloat` or `ExtendedFloat`.")
     end
 
-    # complete the keyword initializing
-
-    SignedFloat    = ismissing(SignedFloat)   ? ~UnsignedFloat  :  SignedFloat
-    UnsignedFloat  = ismissing(SignedFloat)   ? ~SignedFloat    :  UnsignedFloat
-    
-    ExtendedFloat  = ismissing(ExtendedFloat) ? ~FiniteFloat   : ExtendedFloat
-    FiniteFloat    = ismissing(FiniteFloat)   ? ~ExtendedFloat : FiniteFloat
-
+    # keywords are initialized
     # are these arguments conformant?
     params_ok = (sigbits >= 1) && 
                 (SignedFloat ? bitwidth > sigbits : bitwidth >= sigbits)
