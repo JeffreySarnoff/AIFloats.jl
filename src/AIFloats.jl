@@ -47,6 +47,9 @@ include("type/abstract.jl")
 include("type/counts.jl")
 include("type/exponents.jl")
 
+typeforfloat(::Type{T}) where {T<:AbstractAIFloat} = typeforfloat(nBits(T))
+typeforcode(::Type{T}) where {T<:AbstractAIFloat} = typeforcode(nBits(T))
+
 include("projection/rounding.jl")
 # include("projection/saturation.jl")
 # include("projection/stochastic.jl")
