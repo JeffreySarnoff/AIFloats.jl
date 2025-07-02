@@ -43,6 +43,7 @@ end
 end
 
 function foundation_exps(T::Type{<:AbstractAIFloat})
+    exp
     exp_min, exp_max = foundation_extremal_exps(T)
     return exp_min:exp_max
 end
@@ -68,7 +69,7 @@ function pow2_foundation_exps(T,res::Vector{Float32})
 end
 
 function exp_unbiased_magnitude_strides(T::Type{<:AbstractAIFloat})
-    append!(fill(expUnbiasedMin(T), normal_exp_stride(T)), collect(Iterators.flatten((fill.(expUnbiasedValues(T), normal_exp_stride(T)))[:,1])))
+    append!(fill(expUnbiasedSubnormal(T), normal_exp_stride(T)), collect(Iterators.flatten((fill.(expUnbiasedNormals(T), normal_exp_stride(T)))[:,1])))
 end
 
 # cover instantiations for value sequence generation
