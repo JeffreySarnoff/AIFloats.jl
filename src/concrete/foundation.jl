@@ -19,15 +19,6 @@ function foundation_magnitudes(T::Type{<:AbstractAIFloat})
     magnitudes
 end
 
-@inline function prenormal_magnitude_steps(T::Type{<:AbstractAIFloat})
-    return (0:nPrenormalMagnitudes(T)-1) ./ typeforfloat(T)(nPrenormalMagnitudes(T))
-end
-
-function normal_magnitude_steps(T::Type{<:AbstractAIFloat})
-    nprenormals = nPrenormalMagnitudes(T)
-    (nprenormals:(2*nprenormals-1)) ./ typeforfloat(T)(nprenormals)
-end
-
 function normal_exp_stride(T::Type{<:AbstractAIFloat})
     cld(nMagnitudes(T), nExpValues(T))
 end
