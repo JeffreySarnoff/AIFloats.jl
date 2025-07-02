@@ -46,6 +46,7 @@ include("type/constants.jl")
 include("type/abstract.jl")
 include("type/counts.jl")
 include("type/exponents.jl")
+include("type/significands.jl")
 
 typeforfloat(::Type{T}) where {T<:AbstractAIFloat} = typeforfloat(nBits(T))
 typeforcode(::Type{T}) where {T<:AbstractAIFloat} = typeforcode(nBits(T))

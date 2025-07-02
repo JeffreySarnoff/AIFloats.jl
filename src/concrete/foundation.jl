@@ -2,11 +2,7 @@
 # support for foundation magnitude sequence generation
 
 function foundation_magnitudes(T::Type{<:AbstractAIFloat})
-    significands = collect(prenormal_magnitude_steps(T))
-    nmagnitudes = nMagnitudes(T) - (is_signed(T) * nPrenormalMagnitudes(T))
-    normal_cycles = fld(nmagnitudes, nPrenormalMagnitudes(T))
-    normals = Iterators.flatten(fill(normal_magnitude_steps(T), normal_cycles))
-    append!(significands, normals)
+    signficands = signficand_magnitudes(T)
 
     exp_values = map(two_pow, exp_unbiased_magnitude_strides(T))
     if iszero(exp_values[1])  
