@@ -1,8 +1,8 @@
 
 # support for foundation magnitude sequence generation
 
-function foundation_magnitudes(T::Type{<:AbstractAIFloat})
-    signficands = signficand_magnitudes(T)
+function foundation_magnitudes(::Type{T}) where {T<:AbstractAIFloat}
+    significands = significand_magnitudes(T)
 
     exp_values = map(two_pow, exp_unbiased_magnitude_strides(T))
     if iszero(exp_values[1])  
