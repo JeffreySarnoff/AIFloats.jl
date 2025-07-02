@@ -16,9 +16,7 @@ export AbstractAIFloat,
         SignedFiniteFloats, SignedExtendedFloats,
         # typed predicates
         is_aifloat, is_unsigned, is_signed, is_finite, is_extended,
-        # functions over types
-        encoding_sequence, value_sequence,
-        magnitude_sequence, foundation_magnitudes,
+        has_subnormals,
         # counts predicated on abstract [sub]type
         nBits, nSigBits, nFracBits, nSignBits, nExpBits,  
         nNaNs, nZeros, nInfs, nPosInfs, nNegInfs,
@@ -29,6 +27,12 @@ export AbstractAIFloat,
         nFiniteValues, nNonzeroFiniteValues,
         # exponent
         expBias, expUnbiasedValues, expMinValue, expMaxValue, expValues,
+        # extrema
+        subnormalMagnitudeMin, subnormalMagnitudeMax,
+        normalMagnitudeMin, normalMagnitudeMax,
+        # functions over types
+        encoding_sequence, value_sequence,
+        magnitude_sequence, foundation_magnitudes,
         # julia support 
         index1, indexneg1, valuetoindex, indextovalue, floatleast,
         ulp_distance
@@ -44,6 +48,7 @@ using Quadmath: Float128
 include("type/constants.jl")
 
 include("type/abstract.jl")
+include("type/predicates.jl")
 include("type/counts.jl")
 include("type/exponents.jl")
 include("type/significands.jl")
@@ -56,6 +61,7 @@ include("projection/rounding.jl")
 # include("projection/stochastic.jl")
 
 include("concrete/encodings.jl")
+include("concrete/extrema.jl")
 include("concrete/foundation.jl")
 include("concrete/unsigned.jl")
 include("concrete/signed.jl")

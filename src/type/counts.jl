@@ -59,7 +59,7 @@ nFiniteNonnegValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, Si
 nFinitePositiveValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nPositiveValues(T) - nPosInfs(T)
 nFiniteNegativeValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nNegativeValues(T) - nNegInfs(T)
 
-nPrenormalMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 1 << (SigBits - 1)
+nPrenormalMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 2^(SigBits-1) # 1 << (SigBits - 1)
 nSubnormalMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nPrenormalMagnitudes(T) - 1
 
 nPrenormalValues(::Type{T}) where {Bits, SigBits, T<:AbsSignedFloat{Bits, SigBits}} = 2 * nPrenormalMagnitudes(T) - 1

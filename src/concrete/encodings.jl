@@ -1,4 +1,4 @@
-@inline function encoding_sequence(::Type{T}) where {T<:AbstractAIFloat}
+@inline function encoding_sequence(T::Type{<:AbstractAIFloat})
     nbits = nBits(T)
     n = 1 << nbits
     typ = typeforcode(nbits)

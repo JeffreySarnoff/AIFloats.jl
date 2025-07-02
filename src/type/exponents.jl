@@ -3,25 +3,24 @@ expBias(::Type{T}) where {Bits, SigBits, T<:AbsSignedFloat{Bits, SigBits}}   = 2
 expBias(::Type{T}) where {Bits, SigBits, T<:AbsUnsignedFloat{Bits, SigBits}} = 2^(Bits - SigBits )    # 1 << (Bits - SigBits)
 
 # exponent field characterizations
+expFieldMax(T::Type{<:AbstractAIFloat}) = nExpValues(T) - 1
 
-expFieldMax(::Type{T}) where {T<:AbstractAIFloat} = nExpValues(T) - 1
+expUnbiasedNormalMax(T::Type{<:AbstractAIFloat}) = expFieldMax(T) - expBias(T)
+expUnbiasedNormalMin(T::Type{<:AbstractAIFloat}) = -expUnbiasedNormalMax(T)
+expUnbiasedSubnormal(T::Type{<:AbstractAIFloat}) = expUnbiasedNormalMin(T)
 
-expUnbiasedNormalMax(::Type{T}) where {T<:AbstractAIFloat} = expFieldMax(T) - expBias(T)
-expUnbiasedNormalMin(::Type{T}) where {T<:AbstractAIFloat} = -expUnbiasedNormalMax(T)
-expUnbiasedSubnormal(::Type{T}) where {T<:AbstractAIFloat} = expUnbiasedNormalMin(T)
+expUnbiasedNormals(T::Type{<:AbstractAIFloat}) = collect(expUnbiasedNormalMin(T):expUnbiasedNormalMax(T))
+expUnbiasedValues(T::Type{<:AbstractAIFloat}) = vcat(expUnbiasedSubnormal(T), expUnbiasedNormals(T))
 
-expUnbiasedNormals(::Type{T}) where {T<:AbstractAIFloat} = collect(expUnbiasedNormalMin(T):expUnbiasedNormalMax(T))
-expUnbiasedValues(::Type{T}) where {T<:AbstractAIFloat} = vcat(expUnbiasedSubnormal(T), expUnbiasedNormals(T))
+expNormalValues(T::Type{<:AbstractAIFloat}) = two(T) .^ (expUnbiasedNormalMin(T):expUnbiasedNormalMax(T))
+expSubnormalValue(T::Type{<:AbstractAIFloat}) = two(T)^(expUnbiasedSubnormal(T))
+expValues(T::Type{<:AbstractAIFloat}) = [expSubnormalValue(T), expNormalValues(T)...]
 
-expNormalValues(::Type{T}) where {T<:AbstractAIFloat} = two(T) .^ (expUnbiasedNormalMin(T):expUnbiasedNormalMax(T))
-expSubnormalValue(::Type{T}) where {T<:AbstractAIFloat} = two(T)^(expUnbiasedSubnormal(T))
-expValues(::Type{T}) where {T<:AbstractAIFloat} = [expSubnormalValue(T), expNormalValues(T)...]
+expMin(T::Type{<:AbstractAIFloat}) = expUnbiasedNormalMin(T)
+expMax(T::Type{<:AbstractAIFloat}) = expUnbiasedNormalMax(T)
 
-expMin(::Type{T}) where {T<:AbstractAIFloat} = expUnbiasedNormalMin(T)
-expMax(::Type{T}) where {T<:AbstractAIFloat} = expUnbiasedNormalMax(T)
-
-expMinValue(::Type{T}) where {T<:AbstractAIFloat} = two(T)^expMin(T)
-expMaxValue(::Type{T}) where {T<:AbstractAIFloat} = two(T)^expMax(T)
+expMinValue(T::Type{<:AbstractAIFloat}) = two(T)^expMin(T)
+expMaxValue(T::Type{<:AbstractAIFloat}) = two(T)^expMax(T)
 
 # cover instantiations
 
