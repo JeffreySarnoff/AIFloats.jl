@@ -96,8 +96,8 @@ end
  idxinf(::Type{T}) where {T<:AbsSignedExtendedFloat} = (((nValues(T) % UInt16) >> 0x0001))
  idxneginf(::Type{T}) where {T<:AbsSignedExtendedFloat} = (((nValues(T) % UInt16) ))
  
- ofsone(::Type{T}) where {T<:AbstractAIFloat} = index_to_offset(idxone(T))
- ofsnan(::Type{T}) where {T<:AbstractAIFloat} = index_to_offset(idxnan(T))
+ ofsone(T::Type{<:AbstractAIFloat}) = index_to_offset(idxone(T))
+ ofsnan(T::Type{<:AbstractAIFloat}) = index_to_offset(idxnan(T))
  ofsinf(::Type{T}) where {T<:AbsUnsignedExtendedFloat} = index_to_offset(idxinf(T))
  ofsinf(::Type{T}) where {T<:AbsSignedExtendedFloat} = index_to_offset(idxinf(T))
  ofsneginf(::Type{T}) where {T<:AbsUnsignedExtendedFloat} = index_to_offset(idxneginf(T))

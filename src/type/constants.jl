@@ -1,14 +1,21 @@
+
+# use to specify two of the four keyword args of AIFloat(), one signedness, one finiteness
+# AIFloat(bitwidth, precision; oneof{UnsignedFloat, SignedFloat}, oneof{FiniteFloat, ExtendedFloat})
+const UnsignedFloat = true
+const SignedFloat   = true
+const FiniteFloat   = true
+const ExtendedFloat = true
+
 # 7 small bitwidths (UInt8 encoded)
 const BitsSmallMin, BitsSmallMax =  2, 8
 # 7 large bitwidths (UInt16 encoded)
-const BitsLargeMin, BitsLargeMax =  12, 15
+const BitsLargeMin, BitsLargeMax =  11, 15
 const BitsTop = 16
 
 # internal assurances
 setprecision(BigFloat, 1024)
 
-const One = Int32(1)
-const Two = Int32(2)
+two(T) = typeforfloat(nBits(T))(2)
 
 """
     CODE
@@ -27,8 +34,9 @@ const CODE = Union{CODE_TYPES...}
     FLOAT
 
 The built-in floating-point types available for valuations.
-- `Float32` for bitwidths <= 8
-- `Float64` for bitwidths > 8
+- `Float32` for bitwidths  <= 7
+- `Float64` for bitwidths  > 8
+- `Float128` for bitwidths > 11
 
 see also [`CODE`](@ref)
 """ FLOAT, FLOAT_TYPES
@@ -69,11 +77,6 @@ typeforfloat(Bits) = FLOAT_TYPES[1 + (Bits > BitsSmallMax) + (Bits >= BitsLargeM
 typeforfloat(Bits::StaticInt{N}) where {N} =
     ifelse(Bits <= static(BitsSmallMax), FLOAT_TYPES[1], ifelse(Bits < BitsLargeMin, FLOAT_TYPES[2], FLOAT_TYPES[3]))
 
-# use with MLFLOATS()
-const IsUnsigned = false
-const IsSigned   = true
-const IsFinite   = false
-const IsExtended = true
 
 # convention all caps for Bools, Ints are Static consts
 

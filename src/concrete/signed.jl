@@ -60,6 +60,7 @@ function value_sequence(T::Type{<:AbsSignedExtendedFloat})
     F = typeforfloat(bits)
     
     nonnegmagnitudes = foundation_magnitudes(AbsSignedExtendedFloat{bits, sigbits})
+    nonnegmagnitudes[end] = convert(F, Inf)  # last value is Inf
     negmagnitudes = -1 .* nonnegmagnitudes
     negmagnitudes[1] = convert(F, NaN)
     magnitudes = vcat(nonnegmagnitudes, negmagnitudes)

@@ -1,12 +1,8 @@
 
 # support for foundation magnitude sequence generation
 
-function foundation_magnitudes(T::Type{<:AbstractAIFloat})
-    significands = collect(prenormal_magnitude_steps(T))
-    nmagnitudes = nMagnitudes(T) - (is_signed(T) * nPrenormalMagnitudes(T))
-    normal_cycles = fld(nmagnitudes, nPrenormalMagnitudes(T))
-    normals = Iterators.flatten(fill(normal_magnitude_steps(T), normal_cycles))
-    append!(significands, normals)
+function foundation_magnitudes(::Type{T}) where {T<:AbstractAIFloat}
+    significands = significand_magnitudes(T)
 
     exp_values = map(two_pow, exp_unbiased_magnitude_strides(T))
     if iszero(exp_values[1])  
@@ -23,15 +19,6 @@ function foundation_magnitudes(T::Type{<:AbstractAIFloat})
     magnitudes
 end
 
-@inline function prenormal_magnitude_steps(T::Type{<:AbstractAIFloat})
-    return (0:nPrenormalMagnitudes(T)-1) ./ Float128(nPrenormalMagnitudes(T))
-end
-
-function normal_magnitude_steps(T::Type{<:AbstractAIFloat})
-    nprenormals = nPrenormalMagnitudes(T)
-    (nprenormals:(2*nprenormals-1)) ./ Float128(nprenormals)
-end
-
 function normal_exp_stride(T::Type{<:AbstractAIFloat})
     cld(nMagnitudes(T), nExpValues(T))
 end
@@ -43,6 +30,7 @@ end
 end
 
 function foundation_exps(T::Type{<:AbstractAIFloat})
+    exp
     exp_min, exp_max = foundation_extremal_exps(T)
     return exp_min:exp_max
 end
@@ -63,12 +51,12 @@ end
 end
 
 function pow2_foundation_exps(T,res::Vector{Float32})
-    expres =  (foundation_exps(T))
+    expres =  foundation_exps(T)
     map(two_pow, expres)
 end
 
 function exp_unbiased_magnitude_strides(T::Type{<:AbstractAIFloat})
-    append!(fill(expUnbiasedMin(T), normal_exp_stride(T)), collect(Iterators.flatten((fill.(expUnbiasedValues(T), normal_exp_stride(T)))[:,1])))
+    append!(fill(expUnbiasedSubnormal(T), normal_exp_stride(T)), collect(Iterators.flatten((fill.(expUnbiasedNormals(T), normal_exp_stride(T)))[:,1])))
 end
 
 # cover instantiations for value sequence generation
