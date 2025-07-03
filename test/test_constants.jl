@@ -1,6 +1,8 @@
 using Test
 using AIFloats, Quadmath
 using Static
+using AIFloats: BitsSmallMin, BitsSmallMax, BitsLargeMin, BitsLargeMax, BitsTop,
+      typeforcode, typeforfloat
 
 @testset "Constants Tests" begin
     @testset "Boolean Constants" begin
@@ -68,3 +70,4 @@ using Static
         @test AIFloats.typeforfloat(AIFloats.BitsLargeMin) == Float128
     end
 end
+

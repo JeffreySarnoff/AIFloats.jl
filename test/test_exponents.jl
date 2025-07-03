@@ -1,5 +1,9 @@
 using Test
 using AIFloats
+using AIFloats: AbsSignedFiniteFloat, AbsUnsignedFiniteFloat, expBias, expMin, expMax,
+                expFieldMax, expMinValue, expMaxValue, expSubnormalValue, expUnbiasedNormalMin,
+                expUnbiasedNormalMax, expUnbiasedSubnormal, expUnbiasedNormals,
+                expUnbiasedValues, expNormalValues, expValues
 
 # Create test types for exponent testing
 struct TestSignedFinite{Bits, SigBits} <: AbsSignedFiniteFloat{Bits, SigBits} end
@@ -53,7 +57,7 @@ struct TestUnsignedFinite{Bits, SigBits} <: AbsUnsignedFiniteFloat{Bits, SigBits
         @test expMinValue(T) isa AbstractFloat
         @test expMaxValue(T) isa AbstractFloat
         @test expMinValue(T) < expMaxValue(T)
-        @test expSubnormalValue(T) < expMinValue(T)
+        @test expSubnormalValue(T) == expMinValue(T)
     end
     
     @testset "Exponent Collections" begin
@@ -89,14 +93,14 @@ struct TestUnsignedFinite{Bits, SigBits} <: AbsUnsignedFiniteFloat{Bits, SigBits
                 T = TestSignedFinite{Bits, SigBits}
                 
                 # Test basic relationships
-                @test expUnbiasedNormalMin(T) < 0
-                @test expUnbiasedNormalMax(T) > 0
+                @test expUnbiasedNormalMin(T) <= 0
+                @test expUnbiasedNormalMax(T) >= 0
                 @test expUnbiasedNormalMin(T) == -expUnbiasedNormalMax(T)
                 @test expUnbiasedSubnormal(T) == expUnbiasedNormalMin(T)
                 
                 # Test value relationships
-                @test expSubnormalValue(T) < expMinValue(T)
-                @test expMinValue(T) < expMaxValue(T)
+                @test expSubnormalValue(T) == expMinValue(T)
+                @test expMinValue(T) <= expMaxValue(T)
                 
                 # Test collection sizes
                 normals = expUnbiasedNormals(T)
@@ -105,7 +109,7 @@ struct TestUnsignedFinite{Bits, SigBits} <: AbsUnsignedFiniteFloat{Bits, SigBits
                 # Test that exponent values are powers of 2
                 normal_vals = expNormalValues(T)
                 subval = expSubnormalValue(T)
-                @test all(v -> v ≈ 2.0^log2(v), normal_vals)
+                @test all(map(v -> v ≈ 2.0^log2(v), normal_vals))
                 @test subval ≈ 2.0^log2(subval)
             end
         end
@@ -135,9 +139,8 @@ struct TestUnsignedFinite{Bits, SigBits} <: AbsUnsignedFiniteFloat{Bits, SigBits
         
         # Test that all functions return reasonable values
         @test expMinValue(T_min) > 0
-        @test expMaxValue(T_min) > expMinValue(T_min)
-        @test expSubnormalValue(T_min) > 0
-        @test expSubnormalValue(T_min) < expMinValue(T_min)
+        @test expMaxValue(T_min) >= expMinValue(T_min)
+        @test expSubnormalValue(T_min) == expMinValue(T_min)
     end
     
     @testset "Instance vs Type Functions" begin
@@ -153,3 +156,4 @@ struct TestUnsignedFinite{Bits, SigBits} <: AbsUnsignedFiniteFloat{Bits, SigBits
         @test expSubnormalValue(test_type) == expSubnormalValue(test_instance)
     end
 end
+

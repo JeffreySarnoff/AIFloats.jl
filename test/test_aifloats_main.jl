@@ -1,5 +1,12 @@
 using Test
 using AIFloats
+using AIFloats: AIFloat, ConstructAIFloat,
+                  SignedFiniteFloats, UnsignedFiniteFloats,
+                  SignedExtendedFloats, UnsignedExtendedFloats,
+                  floats, codes, typeforfloat, typeforcode,
+                  nBits, nSigBits, is_signed, is_finite, is_extended,
+                  has_subnormals, nValues, nMagnitudes, expBias
+using AIFloats: UnsignedFloat, SignedFloat, FiniteFloat, ExtendedFloat
 
 @testset "AIFloats Main Module Tests" begin
     @testset "AIFloat Constructor - Basic Functionality" begin
@@ -60,7 +67,7 @@ using AIFloats
         reconstructed = AIFloat(typeof(original))
         
         @test typeof(original) == typeof(reconstructed)
-        @test floats(original) == floats(reconstructed)
+        @test all(floats(original) .=== floats(reconstructed))
         @test codes(original) == codes(reconstructed)
         
         # Test with different configurations
@@ -160,8 +167,8 @@ using AIFloats
             @test typeof(original) == typeof(reconstructed)
             @test nBits(typeof(original)) == nBits(typeof(reconstructed))
             @test nSigBits(typeof(original)) == nSigBits(typeof(reconstructed))
-            @test is_signed(typeof(original)) == is_signed(typeof(reconstructed))
-            @test is_extended(typeof(original)) == is_extended(typeof(reconstructed))
+            @test AIFloats.is_signed(typeof(original)) == AIFloats.is_signed(typeof(reconstructed))
+            @test AIFloats.is_extended(typeof(original)) == AIFloats.is_extended(typeof(reconstructed))
         end
     end
     
@@ -226,3 +233,4 @@ using AIFloats
         @test length(floats(af_large)) == 4096  # 2^12
     end
 end
+

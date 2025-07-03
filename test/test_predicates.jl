@@ -1,5 +1,8 @@
 using Test
 using AIFloats
+using AIFloats: AbsSignedFiniteFloat, AbsUnsignedFiniteFloat,
+                  is_aifloat, is_signed, is_unsigned, is_finite, is_extended,
+                  has_subnormals
 
 # Create some test types for predicate testing
 struct TestSignedFinite{Bits, SigBits} <: AbsSignedFiniteFloat{Bits, SigBits} end
@@ -96,3 +99,4 @@ struct TestUnsignedExtended{Bits, SigBits} <: AbsUnsignedExtendedFloat{Bits, Sig
         @test has_subnormals(test_type) === has_subnormals(test_instance)
     end
 end
+

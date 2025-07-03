@@ -1,5 +1,10 @@
 using Test
 using AIFloats
+using AIFloats: UnsignedFiniteFloats, RoundingMode, RoundToOdd, RoundStochastic,
+                  round_up, round_down, round_tozero, round_fromzero,
+                  round_nearesteven, round_nearestodd,
+                  round_nearesttozero, round_nearestfromzero,
+                  round_nearestaway
 
 @testset "Rounding Tests" begin
     @testset "Rounding Mode Constants" begin
@@ -275,3 +280,4 @@ using AIFloats
         end
     end
 end
+

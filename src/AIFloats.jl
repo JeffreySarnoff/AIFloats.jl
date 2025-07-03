@@ -21,6 +21,7 @@ export AbstractAIFloat,
         nBits, nSigBits, nFracBits, nSignBits, nExpBits,  
         nNaNs, nZeros, nInfs, nPosInfs, nNegInfs,
         nPrenormalMagnitudes, nSubnormalMagnitudes, nNormalMagnitudes, nMagnitudes,
+        nPrenormalValues, nSubnormalValues, nNormalValues,
         nValues, nNumericValues, nNonzeroNumericValues,
         nMagnitudes, nNonzeroMagnitudes,
         nExpValues, nNonzeroExpValues,
@@ -34,7 +35,9 @@ export AbstractAIFloat,
         # functions over types
         encoding_sequence, value_sequence,
         magnitude_sequence, foundation_magnitudes,
-        # julia support 
+        # julia support
+        index_to_offset, offset_to_index,
+        is_idxnan, is_ofsnan,   
         index1, indexneg1, valuetoindex, indextovalue, floatleast,
         ulp_distance
         # counts predicated on type defining parameters and type specifying qualities
