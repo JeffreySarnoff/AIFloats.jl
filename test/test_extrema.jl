@@ -1,5 +1,11 @@
 using Test
 using AIFloats
+using AIFloats: AbsSignedFiniteFloat, AbsUnsignedFiniteFloat,
+                  firstNonzeroPrenormalMagnitude, lastPrenormalMagnitude,
+                  subnormalMagnitudeMin, subnormalMagnitudeMax,
+                  normalMagnitudeMin, normalMagnitudeMax,
+                  expMinValue, expMaxValue, expSubnormalValue,
+                  nPrenormalMagnitudes, has_subnormals
 
 # Create test types for extrema testing
 struct TestSignedFinite{Bits, SigBits} <: AbsSignedFiniteFloat{Bits, SigBits} end
@@ -172,7 +178,11 @@ struct TestUnsignedExtended{Bits, SigBits} <: AbsUnsignedExtendedFloat{Bits, Sig
                     sub_max = subnormalMagnitudeMax(T)
                     
                     @test sub_min !== nothing && sub_max !== nothing
-                    @test 0 < sub_min < sub_max < norm_min < norm_max
+                    if nSubnormalMagnitudes(T) > 1
+                        @test 0 < sub_min < sub_max < norm_min < norm_max
+                    else
+                        @test 0 < sub_min <= sub_max < norm_min < norm_max
+                    end
                 end
             end
         end
@@ -210,3 +220,4 @@ struct TestUnsignedExtended{Bits, SigBits} <: AbsUnsignedExtendedFloat{Bits, Sig
         end
     end
 end
+

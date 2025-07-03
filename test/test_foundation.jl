@@ -1,5 +1,10 @@
 using Test
 using AIFloats
+using AIFloats: AbsSignedFiniteFloat, AbsUnsignedFiniteFloat,
+                  foundation_magnitudes, two_pow, foundation_extremal_exps,
+                  foundation_exps, normal_exp_stride, exp_unbiased_magnitude_strides,
+                  significand_magnitudes, nBits, typeforfloat, nMagnitudes, nExpValues,
+                  expUnbiasedSubnormal, expUnbiasedNormals
 using Quadmath
 
 # Create test types for foundation testing
@@ -238,3 +243,5 @@ struct TestUnsignedFinite{Bits, SigBits} <: AbsUnsignedFiniteFloat{Bits, SigBits
         @test issorted(magnitudes_large)
     end
 end
+
+

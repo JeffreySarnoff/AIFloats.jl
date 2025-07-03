@@ -226,3 +226,4 @@ using AIFloats
         @test length(floats(af_large)) == 4096  # 2^12
     end
 end
+

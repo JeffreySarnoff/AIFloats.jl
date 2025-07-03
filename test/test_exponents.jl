@@ -1,5 +1,9 @@
 using Test
 using AIFloats
+using AIFloats: AbsSignedFiniteFloat, AbsUnsignedFiniteFloat, expBias, expMin, expMax,
+                expFieldMax, expMinValue, expMaxValue, expSubnormalValue, expUnbiasedNormalMin,
+                expUnbiasedNormalMax, expUnbiasedSubnormal, expUnbiasedNormals,
+                expUnbiasedValues, expNormalValues, expValues
 
 # Create test types for exponent testing
 struct TestSignedFinite{Bits, SigBits} <: AbsSignedFiniteFloat{Bits, SigBits} end
@@ -153,3 +157,4 @@ struct TestUnsignedFinite{Bits, SigBits} <: AbsUnsignedFiniteFloat{Bits, SigBits
         @test expSubnormalValue(test_type) == expSubnormalValue(test_instance)
     end
 end
+

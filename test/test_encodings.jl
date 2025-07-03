@@ -1,5 +1,7 @@
 using Test
 using AIFloats
+using AIFloats: AbsSignedFiniteFloat, AbsUnsignedFiniteFloat, encoding_sequence, typeforcode
+
 using AlignedAllocs
 
 # Create test types for encoding testing
@@ -163,3 +165,4 @@ struct TestUnsignedFinite{Bits, SigBits} <: AbsUnsignedFiniteFloat{Bits, SigBits
         @test length(unique(codes)) == length(codes)
     end
 end
+

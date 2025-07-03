@@ -1,5 +1,25 @@
 using Test
 using AIFloats
+using AIFloats: AbsSignedFiniteFloat, AbsUnsignedFiniteFloat,
+                  nNaNs, nZeros, nInfs, nPosInfs, nNegInfs,
+                  nBits, nSigBits, nFracBits, nSignBits, nExpBits,
+                  nValues, nNumericValues, nNonzeroNumericValues,
+                  nMagnitudes, nNonzeroMagnitudes,
+                  nFiniteValues, nNonzeroFiniteValues,
+                  nPrenormalMagnitudes, nSubnormalMagnitudes,
+                  nPrenormalValues, nSubnormalValues,
+                  nNormalMagnitudes, nNormalValues,
+                  nFiniteMagnitudes, nFiniteValues,
+                  nNonzeroFiniteMagnitudes, nNonzeroFiniteValues,
+                  nPrenormalValues, nSubnormalValues,
+                  nNormalValues, nExtendedNormalValues,
+                  nExtendedNormalMagnitudes, nFiniteNonnegValues,
+                  nFinitePositiveValues, nFiniteNegativeValues,
+                  nNonnegValues, nPositiveValues, nNegativeValues,
+                  nFiniteNonnegValues, nFinitePositiveValues, nFiniteNegativeValues,
+                  nSubnormalValues, nSubnormalMagnitudes,
+                  nNormalValues, nNormalMagnitudes,
+                  nExpValues, nNonzeroExpValues
 
 # Create test types for count testing
 struct TestSignedFinite{Bits, SigBits} <: AbsSignedFiniteFloat{Bits, SigBits} end
@@ -148,3 +168,4 @@ struct TestUnsignedExtended{Bits, SigBits} <: AbsUnsignedExtendedFloat{Bits, Sig
         end
     end
 end
+

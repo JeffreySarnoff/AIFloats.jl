@@ -38,16 +38,7 @@ end
 @inline two_pow(x::Integer) = ldexp(1.0, x)
 
 @inline function two_pow(x::F) where {F<:AbstractFloat}
-    if 0 <= x < 1
-        1 / two_pow(1/x)
-    else
-        y = trunc(Int, x)
-        if y == x
-            two_pow(y)
-        else
-            2.0^x
-        end
-    end
+    F(2)^x
 end
 
 function pow2_foundation_exps(T,res::Vector{Float32})
