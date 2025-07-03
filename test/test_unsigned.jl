@@ -1,5 +1,9 @@
 using Test
 using AIFloats
+using AIFloats: UnsignedFiniteFloats, UnsignedExtendedFloats,
+                  AbsUnsignedFiniteFloat, AbsUnsignedExtendedFloat,
+                  floats, codes, typeforfloat, typeforcode,
+                  value_sequence, foundation_magnitudes
 
 @testset "Unsigned Types Tests" begin
     @testset "UnsignedFiniteFloats Construction" begin
@@ -247,3 +251,4 @@ using AIFloats
         @test values[1:n_foundation] ≈ foundation_mags rtol=1e-12
     end
 end
+

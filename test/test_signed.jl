@@ -1,5 +1,9 @@
 using Test
 using AIFloats
+using AIFloats: SignedFiniteFloats, SignedExtendedFloats,
+                  AbsSignedFiniteFloat, AbsSignedExtendedFloat,
+                  floats, codes, typeforfloat, typeforcode,
+                  value_sequence, foundation_magnitudes
 
 @testset "Signed Types Tests" begin
     @testset "SignedFiniteFloats Construction" begin

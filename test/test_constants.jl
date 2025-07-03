@@ -4,7 +4,7 @@ using Static
 using AIFloats: BitsSmallMin, BitsSmallMax, BitsLargeMin, BitsLargeMax, BitsTop,
       typeforcode, typeforfloat
 
-@testset "Constants Tests" begina
+@testset "Constants Tests" begin
     @testset "Boolean Constants" begin
         @test AIFloats.UnsignedFloat === true
         @test AIFloats.SignedFloat === true

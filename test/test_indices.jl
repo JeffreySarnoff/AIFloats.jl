@@ -1,5 +1,14 @@
 using Test
 using AIFloats
+using AIFloats: UnsignedFiniteFloats, SignedFiniteFloats,
+                  UnsignedExtendedFloats, SignedExtendedFloats,
+                  offset_to_index, index_to_offset, index_to_code,
+                  idxone, idxnan, idxinf, idxneginf, idxnegone,
+                  ofsone, ofsnan, ofsinf, ofsneginf,
+                  isidx_nan, isofs_nan,
+                  nValues, floats,
+                  index1, valuetoindex, indextovalue,
+                  valuetoindices, valuetoindexgte
 using Static
 
 @testset "Indices Tests" begin
@@ -337,3 +346,4 @@ using Static
         end
     end
 end
+
