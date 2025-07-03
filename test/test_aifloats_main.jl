@@ -1,5 +1,29 @@
+#=
+Test Summary:                                  | Pass  Fail  Error  Total  Time
+AIFloats Main Module Tests                     |  103     1      4    108  1.4s
+  AIFloat Constructor - Basic Functionality    |    4                   4  0.0s
+  AIFloat Constructor - Parameter Validation   |    8                   8  0.0s
+  AIFloat Constructor - Valid Parameter Ranges |    4                   4  0.2s
+  AIFloat from Type Constructor                |    3     1             4  0.0s
+  ConstructAIFloat Internal Function           |    4                   4  0.0s
+  Type Helper Functions                        |    4                   4  0.0s
+  Constants and Exports                        |    8                   8  0.0s
+  Comprehensive Construction Matrix            |   32                  32  0.8s
+  Type Reconstruction Consistency              |   16            4     20  0.1s
+  Error Message Quality                        |    5                   5  0.0s
+  Module Integration                           |    9                   9  0.0s
+  Edge Case Bit Widths                         |    6                   6  0.2s
+=#
+
 using Test
 using AIFloats
+using AIFloats: AIFloat, ConstructAIFloat,
+                  SignedFiniteFloats, UnsignedFiniteFloats,
+                  SignedExtendedFloats, UnsignedExtendedFloats,
+                  floats, codes, typeforfloat, typeforcode,
+                  nBits, nSigBits, is_signed, is_finite, is_extended,
+                  has_subnormals, nValues, nMagnitudes, expBias
+using AIFloats: UnsignedFloat, SignedFloat, FiniteFloat, ExtendedFloat
 
 @testset "AIFloats Main Module Tests" begin
     @testset "AIFloat Constructor - Basic Functionality" begin

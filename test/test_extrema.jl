@@ -1,3 +1,19 @@
+#=
+Test Summary:                      | Pass  Fail  Total  Time
+Extrema Tests                      |  102     2    104  0.0s
+  Prenormal Magnitude Bounds       |    5            5  0.0s
+  Subnormal Magnitude Bounds       |   10           10  0.0s
+  Normal Magnitude Bounds          |    7            7  0.0s
+  Normal Maximum Calculations      |    1     1      2  0.0s
+  Extended vs Finite Differences   |    2            2  0.0s
+  Subnormal vs Normal Relationship |    1            1  0.0s
+  Instance vs Type Functions       |    4            4  0.0s
+  Edge Cases                       |    4     1      5  0.0s
+  Magnitude Ordering               |   60           60  0.0s
+  Consistency with Other Functions |    2            2  0.0s
+  Type Stability                   |    6            6  0.0s
+=#
+
 using Test
 using AIFloats
 using AIFloats: AbsSignedFiniteFloat, AbsUnsignedFiniteFloat,

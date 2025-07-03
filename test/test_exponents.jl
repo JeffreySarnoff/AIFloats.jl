@@ -1,3 +1,16 @@
+#=
+Test Summary:                    | Pass  Fail  Total  Time
+Exponents Tests                  |  189    38    227  0.2s
+  Exponent Bias                  |    5            5  0.0s
+  Exponent Field Characteristics |    4            4  0.0s
+  Exponent Values and Ranges     |    8     1      9  0.0s
+  Exponent Collections           |   11           11  0.0s
+  Exponent Consistency           |  145    35    180  0.2s
+  Type Differences               |    5            5  0.0s
+  Edge Cases                     |    5     2      7  0.0s
+  Instance vs Type Functions     |    6            6  0.0s
+=#
+
 using Test
 using AIFloats
 using AIFloats: AbsSignedFiniteFloat, AbsUnsignedFiniteFloat, expBias, expMin, expMax,

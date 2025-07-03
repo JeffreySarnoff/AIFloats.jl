@@ -1,3 +1,25 @@
+#=
+Test Summary:                       | Pass  Fail  Error  Total  Time
+Indices Tests                       |  116     1      4    121  0.1s
+  Offset/Index Conversion           |   10                  10  0.0s
+  Index/Code Conversion             |    6                   6  0.0s
+  Special Index Functions           |    6                   6  0.0s
+  Value/Index Mapping               |   15                  15  0.0s
+  Special Value Indices             |   12                  12  0.0s
+  Offset Functions                  |    4                   4  0.0s
+  NaN Detection                     |    3            3      6  0.0s
+  Index Bounds and Validation       |    8                   8  0.0s
+  Value/Index Consistency           |   11                  11  0.0s
+  Index Functions with Instances    |    4                   4  0.0s
+  Edge Cases and Error Handling     |    5     1             6  0.0s
+  Type Consistency                  |    8                   8  0.0s
+  Functional Relationships          |    8                   8  0.0s
+  Static vs Dynamic Behavior        |    8                   8  0.0s
+  Signed vs Unsigned Index Patterns |    6                   6  0.0s
+  Index Greater Than Equal Function |    2                   2  0.0s
+  Value to Indices Range            |                 1      1  0.0s
+=#
+
 using Test
 using AIFloats
 using AIFloats: UnsignedFiniteFloats, SignedFiniteFloats,
