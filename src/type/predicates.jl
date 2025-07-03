@@ -3,6 +3,7 @@
 
 is_aifloat(@nospecialize(T::Type{<:AbstractFloat})) = false
 is_aifloat(@nospecialize(T::Type{<:AbstractAIFloat})) = true
+is_aifloat(@nospecialize(T::Type)) = false
 
 is_signed(@nospecialize(T::Type{<:AbsSignedFloat}))     = true
 is_signed(@nospecialize(T::Type{<:AbsUnsignedFloat}))   = false

@@ -1,5 +1,5 @@
 using Test
-using AIFloats
+using AIFloats, Quadmath
 using Static
 
 @testset "Constants Tests" begin
