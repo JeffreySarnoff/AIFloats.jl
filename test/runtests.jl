@@ -10,17 +10,17 @@ using Aqua
     end
     
     # Include all test files
-    include("test_constants.jl")
-    include("test_abstract.jl")
-    include("test_predicates.jl")
-    include("test_counts.jl")
+    include("test_constants.jl")        # ok
+    include("test_abstract.jl")         # ok
+    include("test_predicates.jl")       # ok
+    include("test_counts.jl")           # ok
     include("test_exponents.jl")
-    include("test_significands.jl")
-    include("test_encodings.jl")
-    include("test_extrema.jl")
-    include("test_foundation.jl")
-    include("test_unsigned.jl")
-    include("test_signed.jl")
+    include("test_significands.jl")     # ok
+    include("test_encodings.jl")        # ok
+    include("test_extrema.jl")          # ok
+    include("test_foundation.jl")       # ok
+    include("test_unsigned.jl")         # ok
+    include("test_signed.jl")           # ok
     include("test_rounding.jl")
     include("test_indices.jl")
     include("test_aifloats_main.jl")

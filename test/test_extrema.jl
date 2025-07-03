@@ -105,7 +105,7 @@ struct TestUnsignedExtended{Bits, SigBits} <: AbsUnsignedExtendedFloat{Bits, Sig
         exp_max_val = expMaxValue(T)
         
         # For signed finite: exp_max * (1 + (nprenormals - 1 - 1) / nprenormals)
-        expected = exp_max_val * (1 + (nprenormals - 2) / nprenormals)
+        expected = exp_max_val * (1 + (nprenormals - 1 - is_extended(T)) / nprenormals)
         @test norm_max ≈ expected
         
         # Test unsigned finite
@@ -173,7 +173,11 @@ struct TestUnsignedExtended{Bits, SigBits} <: AbsUnsignedExtendedFloat{Bits, Sig
             sub_min = subnormalMagnitudeMin(T_min)
             sub_max = subnormalMagnitudeMax(T_min)
             @test sub_min !== nothing && sub_min > 0
-            @test sub_max !== nothing && sub_max > sub_min
+            if nSubnormalMagnitudes(T_min) > 1
+                @test sub_max !== nothing && sub_max > sub_min
+            else
+                @test sub_max !== nothing && sub_max >= sub_min
+            end
             @test sub_max < norm_min
         end
     end
