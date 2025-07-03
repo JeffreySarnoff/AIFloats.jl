@@ -1,22 +1,27 @@
-using AlignedAllocs, AIFloats, Test
+using Test
+using AIFloats, AlignedAllocs
+using Aqua
 
-include("test_inits.jl")
-
-@test 1 == 1
-
-#=
-# AbstractAIFloat{K,P}
-include("test_inits.jl")
-using .TestInits
-
-include("test_abstract.jl")
-
-include("test_absuais.jl")
-include("test_abssais.jl")
-
-include("test_absufais.jl")
-include("test_abssfais.jl")
-
-include("test_absueais.jl")
-include("test_absseais.jl")
-=#
+# Test organization following Julia best practices
+@testset "AIFloats.jl Tests" begin
+    # Code quality tests
+    @testset "Code Quality" begin
+        Aqua.test_all(AIFloats)
+    end
+    
+    # Include all test files
+    include("test_constants.jl")
+    include("test_abstract.jl")
+    include("test_predicates.jl")
+    include("test_counts.jl")
+    include("test_exponents.jl")
+    include("test_significands.jl")
+    include("test_encodings.jl")
+    include("test_extrema.jl")
+    include("test_foundation.jl")
+    include("test_unsigned.jl")
+    include("test_signed.jl")
+    include("test_rounding.jl")
+    include("test_indices.jl")
+    include("test_aifloats_main.jl")
+end
