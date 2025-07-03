@@ -27,7 +27,7 @@ using AIFloats: UnsignedFiniteFloats, SignedFiniteFloats,
                   offset_to_index, index_to_offset, index_to_code,
                   idxone, idxnan, idxinf, idxneginf, idxnegone,
                   ofsone, ofsnan, ofsinf, ofsneginf,
-                  isidx_nan, isofs_nan,
+                  is_idxnan, is_ofsnan,
                   nValues, floats,
                   index1, valuetoindex, indextovalue,
                   valuetoindices, valuetoindexgte
@@ -172,14 +172,14 @@ using Static
         uf = UnsignedFiniteFloats(6, 3)
         
         # Test index-based NaN detection
-        nan_idx = idxnan(typeof(uf))
-        @test isidx_nan(uf, nan_idx)
-        @test !isidx_nan(uf, nan_idx - 1)  # Adjacent index should not be NaN
+        nanidx = idxnan(uf)
+        @test is_idxnan(uf, nanidx)
+        @test !is_idxnan(uf, nanidx - 0x01)  # Adjacent index should not be NaN
         
         # Test offset-based NaN detection  
-        nan_ofs = ofsnan(typeof(uf))
-        @test isofs_nan(uf, nan_ofs)
-        @test !isofs_nan(uf, nan_ofs - 1)
+        nanofs = ofsnan(typeof(uf))
+        @test is_ofsnan(uf, nanofs)
+        @test !is_ofsnan(uf, nanofs - 0x01)
         
         # Test value-based NaN detection
         @test Base.isnan(uf, NaN32)
@@ -245,14 +245,14 @@ using Static
         @test isnan(indextovalue(uf, -1))
         @test isnan(indextovalue(uf, 0))
         @test isnan(indextovalue(uf, 1000))
-        
+          
         # Test valuetoindex with special values
         @test valuetoindex(uf, Inf) === nothing
         @test valuetoindex(uf, -Inf) === nothing
         # NaN case depends on implementation
         
         # Test conversion edge cases
-        @test offset_to_index(typemax(UInt16)) == typemax(UInt16) + 1
+        @test offset_to_index(typemax(UInt16)-1) == typemax(UInt16)
         # Note: This might overflow, which is expected behavior
     end
     
@@ -335,7 +335,7 @@ using Static
             test_val = finite_vals[2]
             
             # Should find the index of value >= test_val
-            gte_idx = valuetoindexgte(uf, test_val)
+            gte_idx = valuetoindexgte(values, test_val)
             if gte_idx !== nothing
                 @test values[gte_idx] >= test_val
                 
@@ -356,7 +356,7 @@ using Static
         if length(finite_vals) >= 2
             test_val = (finite_vals[1] + finite_vals[2]) / 2
             
-            indices_range = valuetoindices(uf, test_val)
+            indices_range = valuetoindices(finite_vals, test_val)
             if indices_range != (nothing, nothing)
                 lo, hi = indices_range
                 

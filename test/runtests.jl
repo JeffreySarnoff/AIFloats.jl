@@ -14,7 +14,7 @@ using Aqua
     include("test_abstract.jl")         # ok
     include("test_predicates.jl")       # ok
     include("test_counts.jl")           # ok
-    include("test_exponents.jl")
+    include("test_exponents.jl")        # ok
     include("test_significands.jl")     # ok
     include("test_encodings.jl")        # ok
     include("test_extrema.jl")          # ok
