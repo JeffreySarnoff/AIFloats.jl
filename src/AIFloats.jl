@@ -26,7 +26,8 @@ export AbstractAIFloat,
         nExpValues, nNonzeroExpValues,
         nFiniteValues, nNonzeroFiniteValues,
         # exponent
-        expBias, expUnbiasedValues, expMinValue, expMaxValue, expValues,
+        expBias, expMin, expMax, expMinValue, expMaxValue, expValues,
+        expSubnormal, expSubnormalValue, expUnbiasedValues,
         # extrema
         subnormalMagnitudeMin, subnormalMagnitudeMax,
         normalMagnitudeMin, normalMagnitudeMax,
@@ -116,6 +117,10 @@ function ConstructAIFloat(bitwidth::Int, sigbits::Int;
             UnsignedFiniteFloats(bitwidth, sigbits)
         end
     end
+end
+
+function AIFloat(T::Type{<:AbstractAIFloat})
+    ConstructAIFloat(nBits(T), nSigBits(T); SignedFloat=is_signed(T), ExtendedFloat=is_extended(T)) 
 end
 
 end  # AIFloats

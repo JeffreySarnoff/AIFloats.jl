@@ -9,11 +9,13 @@ expUnbiasedNormalMax(T::Type{<:AbstractAIFloat}) = expFieldMax(T) - expBias(T)
 expUnbiasedNormalMin(T::Type{<:AbstractAIFloat}) = -expUnbiasedNormalMax(T)
 expUnbiasedSubnormal(T::Type{<:AbstractAIFloat}) = expUnbiasedNormalMin(T)
 
+expSubnormal(T::Type{<:AbstractAIFloat}) = expUnbiasedSubnormal(T)
+expSubnormalValue(T::Type{<:AbstractAIFloat}) = two(T)^(expUnbiasedSubnormal(T))
+
 expUnbiasedNormals(T::Type{<:AbstractAIFloat}) = collect(expUnbiasedNormalMin(T):expUnbiasedNormalMax(T))
 expUnbiasedValues(T::Type{<:AbstractAIFloat}) = vcat(expUnbiasedSubnormal(T), expUnbiasedNormals(T))
 
 expNormalValues(T::Type{<:AbstractAIFloat}) = two(T) .^ (expUnbiasedNormalMin(T):expUnbiasedNormalMax(T))
-expSubnormalValue(T::Type{<:AbstractAIFloat}) = two(T)^(expUnbiasedSubnormal(T))
 expValues(T::Type{<:AbstractAIFloat}) = [expSubnormalValue(T), expNormalValues(T)...]
 
 expMin(T::Type{<:AbstractAIFloat}) = expUnbiasedNormalMin(T)
