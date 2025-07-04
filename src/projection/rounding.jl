@@ -1,5 +1,5 @@
-const RoundToOdd = RoundingMode{:Odd}
-const RoundStochastic = RoundingMode{:Stochastic}
+const RoundToOdd = RoundingMode{:Odd}()
+const RoundStochastic = RoundingMode{:Stochastic}()
 
 #=
 Floating-point Round-to-Odd (RO) is defined as follows
@@ -55,7 +55,7 @@ function round_nearesteven(xs::T, x::F) where {T<:AbsUnsignedFloat, F<:AbstractF
     isnan(x) && return x
     n = nValues(xs)
     idx1 = searchsortedfirst(floats(xs), x)  # floats(xs)[idx] >= x
-    val1 = floats(xs)[idx]
+    val1 = floats(xs)[idx1]
     (x == val1 || idx1 === 1) && floats(xs)[idx1]
     idx1 >= n && return floats(xs)[end-1]
 
@@ -83,7 +83,7 @@ function round_nearestodd(xs::T, x::F) where {T<:AbsUnsignedFloat, F<:AbstractFl
     isnan(x) && return x
     n = nValues(xs)
     idx1 = searchsortedfirst(floats(xs), x)  # floats(xs)[idx] >= x
-    val1 = floats(xs)[idx]
+    val1 = floats(xs)[idx1]
     (x == val1 || idx1 === 1) && floats(xs)[idx1]
     idx1 >= n && return floats(xs)[end-1]
 
@@ -111,7 +111,7 @@ function round_nearesttozero(xs::T, x::F) where {T<:AbsUnsignedFloat, F<:Abstrac
     isnan(x) && return x
     n = nValues(xs)
     idx1 = searchsortedfirst(floats(xs), x)  # floats(xs)[idx] >= x
-    val1 = floats(xs)[idx]
+    val1 = floats(xs)[idx1]
     (x == val1 || idx1 === 1) && floats(xs)[idx1]
     idx1 >= n && return floats(xs)[end-1]
 
@@ -124,7 +124,7 @@ function round_nearestfromzero(xs::T, x::F) where {T<:AbsUnsignedFloat, F<:Abstr
     isnan(x) && return x
     n = nValues(xs)
     idx1 = searchsortedfirst(floats(xs), x)  # floats(xs)[idx] >= x
-    val1 = floats(xs)[idx]
+    val1 = floats(xs)[idx1]
     (x == val1 || idx1 === 1) && floats(xs)[idx1]
     idx1 >= n && return floats(xs)[end-1]
     return val1

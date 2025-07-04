@@ -1,7 +1,7 @@
 #=
 Test Summary:                         | Pass  Fail  Error  Total  Time
-Rounding Tests                        |   46     2     14     62  0.3s
-  Rounding Mode Constants             |          2             2  0.0s
+Rounding Tests                        |   48     2     14     62  0.3s
+  Rounding Mode Constants             |    2                   2  0.0s
   Basic Rounding Functions - Unsigned |    8                   8  0.0s
   Round Up and Down                   |    6                   6  0.0s
   Round To/From Zero                  |    2                   2  0.0s
@@ -19,7 +19,7 @@ Rounding Tests                        |   46     2     14     62  0.3s
 
 using Test
 using AIFloats
-using AIFloats: UnsignedFiniteFloats, RoundingMode,
+using AIFloats: UnsignedFiniteFloats, RoundingMode, RoundToOdd, RoundStochastic,
                   round_up, round_down, round_tozero, round_fromzero,
                   round_nearesteven, round_nearestodd,
                   round_nearesttozero, round_nearestfromzero,
