@@ -15,7 +15,7 @@ export AbstractAIFloat,
         is_aifloat, is_unsigned, is_signed, is_finite, is_extended,
         # functions over types
         encoding_sequence, value_sequence,
-        magnitude_sequence, foundation_magnitudes,
+         foundation_magnitudes,
         # counts predicated on abstract [sub]type
         nBits, nSigBits, nFracBits, nSignBits, nExpBits,
         nNaNs, nZeros, nInfs, nPosInfs, nNegInfs,
@@ -27,7 +27,7 @@ export AbstractAIFloat,
         # exponent
         expBias, expUnbiasedValues, expMinValue, expMaxValue, expValues,
         # julia support
-        index1, indexneg1, value_to_index, index_to_value, floatleast,
+        index1,  value_to_index, index_to_value, floatleast,
         ulp_distance
         # counts predicated on type defining parameters and type specifying qualities
         # parameters: (bits, sigbits, exponent bias)

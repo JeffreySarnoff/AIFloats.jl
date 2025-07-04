@@ -133,6 +133,9 @@ end
     index_to_offset(value_to_index(xs, x))
 end
 
+offset_to_value(xs::T, ofs::Integer) where {T<:AbstractAIFloat} = index_to_value(xs, offset_to_index(ofs))
+offset_to_value(xs::Vector{<:AbstractFloat}, ofs::Integer) = index_to_value(xs, offset_to_index(ofs))
+
 idxone(::Type{T}) where {T<:AbsUnsignedFloat} = (((nValues(T) % UInt16) >> 0x0001) + 0x0001)
 idxone(::Type{T}) where {T<:AbsSignedFloat} = (((nValues(T) % UInt16) >> 0x0002) + 0x0001)
 idxnegone(::Type{T}) where {T<:AbsSignedFloat} = ((((nValues(T) % UInt16) >> 0x0002) + 0x0001) + nValues(T)>>1)

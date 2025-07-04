@@ -63,7 +63,7 @@ The main exports from the `AIFloats` module are:
 ### Functions Over Types
 
 - `encoding_sequence`, `value_sequence`
-- `magnitude_sequence`, `foundation_magnitudes`
+-  `foundation_magnitudes`
 
 ### Bit/Value Counts
 
@@ -81,7 +81,7 @@ The main exports from the `AIFloats` module are:
 
 ### Julia Support Functions
 
-- `index1`, `indexneg1`, `value_to_index`, `index_to_value`, `floatleast`
+- `index1`,  `value_to_index`, `index_to_value`, `floatleast`
 - `ulp_distance`
 
 ---
@@ -131,11 +131,11 @@ AIFloat(bits::Int, sigbits::Int; signed::Bool, extended::Bool)
 
 ### Sequences
 
-- `encoding_sequence`, `value_sequence`, `magnitude_sequence`, `foundation_magnitudes`: Enumerate underlying representations and corresponding values.
+- `encoding_sequence`, `value_sequence`,  `foundation_magnitudes`: Enumerate underlying representations and corresponding values.
 
 ### Julia Support
 
-- Indexing and conversion helpers: `index1`, `indexneg1`, `value_to_index`, `index_to_value`, `floatleast`, `ulp_distance`.
+- Indexing and conversion helpers: `index1`,  `value_to_index`, `index_to_value`, `floatleast`, `ulp_distance`.
 
 ---
 

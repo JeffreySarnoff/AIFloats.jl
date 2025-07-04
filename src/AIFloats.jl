@@ -37,10 +37,10 @@ export AbstractAIFloat,
         normalMagnitudeMin, normalMagnitudeMax,
         # functions over types
         encoding_sequence, value_sequence,
-        magnitude_sequence, foundation_magnitudes,
+         foundation_magnitudes,
         # indices and offsets
         index_to_offset, offset_to_index,
-        index1, indexneg1, 
+        index1,  
         value_to_index, index_to_value, value_to_offset, offset_to_value,
         is_idxnan, is_ofsnan 
         # counts predicated on type defining parameters and type specifying qualities
@@ -71,6 +71,7 @@ include("concrete/signed.jl")
 
 include("support/indices.jl")
 # include("support/julialang.jl")
+include("support/aqua.jl")
   
 const UnsignedFloat = true
 const SignedFloat   = true

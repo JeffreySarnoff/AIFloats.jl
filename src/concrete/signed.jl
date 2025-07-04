@@ -1,4 +1,4 @@
-struct SignedFiniteFloat{bits, sigbits, T, S} <: AbsSignedFiniteFloat{bits, sigbits}
+struct SignedFiniteFloat{bits, sigbits, T<:AbstractFloat, S<:Unsigned} <: AbsSignedFiniteFloat{bits, sigbits}
     floats::Vector{T} # memory for the floats
     codes::Vector{S} # memory for the codes
 end
@@ -6,7 +6,7 @@ end
 floats(x::SignedFiniteFloat) = x.floats
 codes(x::SignedFiniteFloat) = x.codes
 
-struct SignedExtendedFloat{bits, sigbits, T, S} <: AbsSignedExtendedFloat{bits, sigbits}
+struct SignedExtendedFloat{bits, sigbits, T<:AbstractFloat, S<:Unsigned} <: AbsSignedExtendedFloat{bits, sigbits}
     floats::Vector{T} # memory for the floats
     codes::Vector{S} # memory for the codes
 end
