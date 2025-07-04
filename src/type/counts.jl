@@ -17,8 +17,8 @@ nNegInfs(@nospecialize(T::Type{<:AbsUnsignedFloat})) = 0
 # parameters: (bits, sigbits, exponent bias)
 # qualities: (signedness [signed / unsigned], finiteness [finite / extended (has Inf[s])])
 
-nBits(::Type{T<:AbstractAIFloat{Bits, SigBits}}) where {Bits, SigBits} = Bits
-nSigBits(::Type{T<:AbstractAIFloat{Bits, SigBits}}) where {Bits, SigBits} = SigBits
+nBits(T::Type{<:AbstractAIFloat{Bits, SigBits}}) where {Bits, SigBits} = Bits
+nSigBits(T::Type{<:AbstractAIFloat{Bits, SigBits}}) where {Bits, SigBits} = SigBits
 
 nFracBits(@nospecialize(T::Type{<:AbstractAIFloat})) = nSigBits(T) - 1
 
@@ -43,38 +43,38 @@ nNonzeroFiniteNumericValues(T::Type{<:AbstractAIFloat}) = nFiniteNumericValues(T
 
 #--->
 
-nSigMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 1 << nSigBits(T)
-nNonzeroSigMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nSigMagnitudes(T) - 1
+nSigMagnitudes(T::Type{<:AbstractAIFloat}) = 1 << nSigBits(T)
+nNonzeroSigMagnitudes(T::Type{<:AbstractAIFloat}) = nSigMagnitudes(T) - 1
 
-nFracMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 1 << nFracBits(T)
-nNonzeroFracMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nFracMagnitudes(T) - 1
+nFracMagnitudes(T::Type{<:AbstractAIFloat}) = 1 << nFracBits(T)
+nNonzeroFracMagnitudes(T::Type{<:AbstractAIFloat}) = nFracMagnitudes(T) - 1
 
-nExpValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 1 << nExpBits(T)
-nNonzeroExpValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nExpValues(T) - 1
+nExpValues(T::Type{<:AbstractAIFloat}) = 1 << nExpBits(T)
+nNonzeroExpValues(T::Type{<:AbstractAIFloat}) = nExpValues(T) - 1
 
-nNonnegValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nMagnitudes(T)
+nNonnegValues(T::Type{<:AbstractAIFloat}) = nMagnitudes(T)
 nPositiveValues(::Type{T}) where {Bits, SigBits, T<:AbsSignedFloat{Bits, SigBits}} = nNonnegValues(T) - 1
 nNegativeValues(::Type{T}) where {Bits, SigBits, T<:AbsSignedFloat{Bits, SigBits}} = nNumericValues(T) - nNonnegValues(T)
 
-nFiniteNonnegValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nNonnegValues(T) - nPosInfs(T)
-nFinitePositiveValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nPositiveValues(T) - nPosInfs(T)
-nFiniteNegativeValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nNegativeValues(T) - nNegInfs(T)
+nFiniteNonnegValues(T::Type{<:AbstractAIFloat}) = nNonnegValues(T) - nPosInfs(T)
+nFinitePositiveValues(T::Type{<:AbstractAIFloat}) = nPositiveValues(T) - nPosInfs(T)
+nFiniteNegativeValues(T::Type{<:AbstractAIFloat}) = nNegativeValues(T) - nNegInfs(T)
 
-nPrenormalMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 2^(SigBits-1) # 1 << (SigBits - 1)
-nSubnormalMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nPrenormalMagnitudes(T) - 1
+nPrenormalMagnitudes(T::Type{<:AbstractAIFloat}) = 2^(SigBits-1) # 1 << (SigBits - 1)
+nSubnormalMagnitudes(T::Type{<:AbstractAIFloat}) = nPrenormalMagnitudes(T) - 1
 
 nPrenormalValues(::Type{T}) where {Bits, SigBits, T<:AbsSignedFloat{Bits, SigBits}} = 2 * nPrenormalMagnitudes(T) - 1
 nPrenormalValues(::Type{T}) where {Bits, SigBits, T<:AbsUnsignedFloat{Bits, SigBits}} = nPrenormalMagnitudes(T)
 
-nSubnormalValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nPrenormalValues(T) - 1
+nSubnormalValues(T::Type{<:AbstractAIFloat}) = nPrenormalValues(T) - 1
 
-nNormalMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nFiniteMagnitudes(T) - nPrenormalMagnitudes(T)
-nNormalValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nFiniteValues(T) - nPrenormalValues(T)
+nNormalMagnitudes(T::Type{<:AbstractAIFloat}) = nFiniteMagnitudes(T) - nPrenormalMagnitudes(T)
+nNormalValues(T::Type{<:AbstractAIFloat}) = nFiniteValues(T) - nPrenormalValues(T)
 
-nExtendedNormalMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} =
+nExtendedNormalMagnitudes(T::Type{<:AbstractAIFloat}) =
     nNormalMagnitudes(T) + nPosInfs(T)
 
-nExtendedNormalValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} =
+nExtendedNormalValues(T::Type{<:AbstractAIFloat}) =
     nNormalMagnitudes(T) + nInfs(T)
 
 # support for instantiations

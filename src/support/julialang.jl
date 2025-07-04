@@ -24,7 +24,7 @@ end
 Base.sign(xs::T, x::F) where {T<:AbsUnsignedFloat, F<:AbstractFloat} = ifelse(iszero(x), x, one(F))
 Base.sign(xs::T, x::F) where {T<:AbsSignedFloat, F<:AbstractFloat} = ifelse(iszero(x), x, (signbit(x) ? -one(F) : one(F)))
 
-Base.precision(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = SigBits
+Base.precision(T::Type{<:AbstractAIFloat}) = SigBits
 Base.precision(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = SigBits
 
 function Base.eps(xs::T) where {T<:AbstractAIFloat}
