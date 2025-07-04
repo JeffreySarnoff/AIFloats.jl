@@ -72,3 +72,53 @@ overflowsFloat64(x) = iszero(floats(x)[2])
           flxs2 = map(T, flxs)
           all(flxs .== flxs2)
        end
+
+
+
+sf21  = collect(filter(x->isfinite(x) && !signbit(x), floats(SignedFiniteFloats(2,i))) for i=1:1);
+sf31, sf32  = collect(filter(x->isfinite(x) && !signbit(x), floats(SignedFiniteFloats(3,i))) for i=1:2);
+sf41, sf42, sf43  = collect(filter(x->isfinite(x) && !signbit(x), floats(SignedFiniteFloats(4,i))) for i=1:3);
+sf51, sf52, sf53, sf54  = collect(filter(x->isfinite(x) && !signbit(x), floats(SignedFiniteFloats(5,i))) for i=1:4);
+sf61, sf62, sf63, sf64, sf65  = collect(filter(x->isfinite(x) && !signbit(x), floats(SignedFiniteFloats(6,i))) for i=1:5);
+sf71, sf72, sf73, sf74, sf75, sf76  = collect(filter(x->isfinite(x) && !signbit(x), floats(SignedFiniteFloats(7,i))) for i=1:6);
+sf81, sf82, sf83, sf84, sf85, sf86, sf87  = collect(filter(x->isfinite(x) && !signbit(x), floats(SignedFiniteFloats(8,i))) for i=1:7);
+sf91, sf92, sf93, sf94, sf95, sf96, sf97, sf98  = collect(filter(x->isfinite(x) && !signbit(x), floats(SignedFiniteFloats(9,i))) for i=1:8);
+sfA1, sfA2, sfA3, sfA4, sfA5, sfA6, sfA7, sfA8, sfA9  = collect(filter(x->isfinite(x) && !signbit(x), floats(SignedFiniteFloats(10,i))) for i=1:9);
+sfB1, sfB2, sfB3, sfB4, sfB5, sfB6, sfB7, sfB8, sfB9, sfBA  = collect(filter(x->isfinite(x) && !signbit(x), floats(SignedFiniteFloats(11,i))) for i=1:10);
+sfC1, sfC2, sfC3, sfC4, sfC5, sfC6, sfC7, sfC8, sfC9, sfCA, sfCB  = collect(filter(x->isfinite(x) && !signbit(x), floats(SignedFiniteFloats(12,i))) for i=1:11);
+sfD1, sfD2, sfD3, sfD4, sfD5, sfD6, sfD7, sfD8, sfD9, sfDA, sfDB, sfDC  = collect(filter(x->isfinite(x) && !signbit(x), floats(SignedFiniteFloats(13,i))) for i=1:12);
+sfE1, sfE2, sfE3, sfE4, sfE5, sfE6, sfE7, sfE8, sfE9, sfEA, sfEB, sfEC, sfED  = collect(filter(x->isfinite(x) && !signbit(x), floats(SignedFiniteFloats(14,i))) for i=1:13);
+sfF1, sfF2, sfF3, sfF4, sfF5, sfF6, sfF7, sfF8, sfF9, sfFA, sfFB, sfFC, sfFD, sfFE  = collect(filter(x->isfinite(x) && !signbit(x), floats(SignedFiniteFloats(15,i))) for i=1:14);
+sfG1, sfG2, sfG3, sfG4, sfG5, sfG6, sfG7, sfG8, sfG9, sfGA, sfGB, sfGC, sfGD, sfGE, sfGF  = collect(filter(x->isfinite(x) && !signbit(x), floats(SignedFiniteFloats(16,i))) for i=1:15);
+
+s2to8 = unique(sort(vcat(sf21[1],sf31,sf32,sf41, sf42, sf43,sf51, sf52, sf53, sf54,sf61, sf62, sf63, sf64, sf65,sf71, sf72, sf73, sf74, sf75, sf76,sf81, sf82, sf83, sf84, sf85, sf86, sf87)))
+s2to8q = map(x->convert(Rational{Int128},x), s2to8)
+s2to8frexp = map(frexp, s2to8)
+s2to8frexp1 = unique(sort(map(first, s2to8frexp)))
+s2to8frexp1q = map(x->convert(Rational,x), s2to8frexp1)
+
+setdiff(s2to8q,  map(x->convert(Rational{BigInt},BigFloat(x)), sfE7)) # Rational{BigInt}[]
+
+uf21, uf22  = collect(filter(isfinite, floats(UnsignedFiniteFloats(2,i))) for i=1:2);
+uf31, uf32, uf33  = collect(filter(isfinite, floats(UnsignedFiniteFloats(3,i))) for i=1:3);
+uf41, uf42, uf43, uf44  = collect(filter(isfinite, floats(UnsignedFiniteFloats(4,i))) for i=1:4);
+uf51, uf52, uf53, uf54, uf55  = collect(filter(isfinite, floats(UnsignedFiniteFloats(5,i))) for i=1:5);
+uf61, uf62, uf63, uf64, uf65, uf66  = collect(filter(isfinite, floats(UnsignedFiniteFloats(6,i))) for i=1:6);
+uf71, uf72, uf73, uf74, uf75, uf76, uf77  = collect(filter(isfinite, floats(UnsignedFiniteFloats(7,i))) for i=1:7);
+uf81, uf82, uf83, uf84, uf85, uf86, uf87, uf88  = collect(filter(isfinite, floats(UnsignedFiniteFloats(8,i))) for i=1:8);
+uf91, uf92, uf93, uf94, uf95, uf96, uf97, uf98, uf99  = collect(filter(isfinite, floats(UnsignedFiniteFloats(9,i))) for i=1:9);
+ufA1, ufA2, ufA3, ufA4, ufA5, ufA6, ufA7, ufA8, ufA9, ufAA  = collect(filter(isfinite, floats(UnsignedFiniteFloats(10,i))) for i=1:10);
+ufB1, ufB2, ufB3, ufB4, ufB5, ufB6, ufB7, ufB8, ufB9, ufBA, ufBB  = collect(filter(isfinite, floats(UnsignedFiniteFloats(11,i))) for i=1:11);
+ufC1, ufC2, ufC3, ufC4, ufC5, ufC6, ufC7, ufC8, ufC9, ufCA, ufCB, ufCC  = collect(filter(isfinite, floats(UnsignedFiniteFloats(12,i))) for i=1:12);
+ufD1, ufD2, ufD3, ufD4, ufD5, ufD6, ufD7, ufD8, ufD9, ufDA, ufDB, ufDC, ufDD  = collect(filter(isfinite, floats(UnsignedFiniteFloats(13,i))) for i=1:13);
+ufE1, ufE2, ufE3, ufE4, ufE5, ufE6, ufE7, ufE8, ufE9, ufEA, ufEB, ufEC, ufED, ufEE  = collect(filter(isfinite, floats(UnsignedFiniteFloats(14,i))) for i=1:14);
+ufF1, ufF2, ufF3, ufF4, ufF5, ufF6, ufF7, ufF8, ufF9, ufFA, ufFB, ufFC, ufFD, ufFE, ufFF  = collect(filter(isfinite, floats(UnsignedFiniteFloats(15,i))) for i=1:15);
+
+u2to8 = unique(sort(vcat(uf21[1],uf22,uf31,uf32,uf33,uf41, uf42, uf43,uf44,uf51, uf52, uf53, uf54,uf55,uf61, uf62, uf63, uf64, uf65,uf66,uf71, uf72, uf73, uf74, uf75, uf76,uf77,uf81, uf82, uf83, uf84, uf85, uf86, uf87, uf88)))
+u2to8q = map(x->convert(Rational{BigInt},BigFloat(x)), u2to8)
+u2to8frexp = map(frexp, u2to8)
+u2to8frexp1 = unique(sort(map(first, u2to8frexp)))
+u2to8frexp1q = map(x->convert(Rational,x), u2to8frexp1)
+
+setdiff(u2to8q,  map(x->convert(Rational{BigInt},BigFloat(x)), ufF8)) # Rational{BigInt}[]
+setdiff(u2to6q,  map(x->convert(Rational{BigInt},BigFloat(x)), ufB6)) # Rational{BigInt}[]

@@ -4,21 +4,57 @@ import Base: precision, zero, one, eps, nextfloat, prevfloat, floatmax, floatmin
 export precision, zero, one, eps, nextfloat, prevfloat, floatmax, floatmin, typemax, typemin,
        sign, exponent, significand, sign_mask, exponent_mask, trailing_significand_mask
 
+function rawbits(x::U) where {U<:Union{UInt8, UInt16}}
+    base2 = string(x, base=2)
+end
+
+function rawbits(x::U, mask::U) where {U<:Union{UInt8, UInt16}}
+    base2 = string(x, base=2)
+end
+
+function bits(x::UInt8; uscore=false)
+    base2 = string(x, base=2)
+    nbits = length(base2)
+    xtrabits = 8 - nbits
+    morebits = "00000000"[1:xtrabits]
+    str = morebits*base2
+    if uscore; str = str[1:4] * "_" * str[5:end]; end
+    string( "0b", str)
+end
 
 # Julia Base primitive attributes
 
-Base.sign_mask(::Type{T}) where {T<:AbsUnsignedFloat} = zero(typeforcode(nBits(T)))
-Base.sign_mask(::Type{T}) where {T<:AbsSignedFloat} = one(typeforcode(nBits(T))) << (nBits(T) - 1)
+Base.sign_mask(T::Type{<:AbsUnsignedFloat}) = zero(typeforcode(nBits(T)))
+Base.sign_mask(T::Type{<:AbsSignedFloat}) = one(typeforcode(nBits(T))) << (nBits(T) - 1)
 
-function Base.exponent_mask(::Type{T}) where {T<:AbstractAIFloat}
+function Base.exponent_mask(T::Type{<:AbstractAIFloat})
     unit = one(typeforcode(nBits(T)))
     mask = (unit << nExpBits(T)) - unit
     mask << nFracBits(T)
 end
 
-function trailing_significand_mask(::Type{T}) where {T<:AbstractAIFloat}
+function trailing_significand_mask(T::Type{<:AbstractAIFloat})
     unit = one(typeforcode(nBits(T)))
     (unit << nFracBits(T)) - unit
+end
+
+function unmask(T<:Type{AbsSignedFloat})
+    signmask  = Base.sign_mask(T)
+    expmask   = Base.exponent_mask(T)
+    fracmask  = Base.trailing_significand_mask(T)
+    (; signmask, expmask, fracmask)
+end
+
+function unmask(T<:Type{AbsUnsignedFloat})
+    expmask   = Base.exponent_mask(T)
+    fracmask  = Base.trailing_significand_mask(T)
+    (; expmask, fracmask)
+end
+
+function unmask(x::T) where {T<:AbsSignedFloat}
+    smask, emask, fmask = unmask(T)
+    sbits, ebits, fbits = (x & smask), (x & emask), (x & fmask)
+    "0b" * rawbits(smask, sbits) * "_" * rawbits(emask, ebits) * "_" * rawbits(fmask, fbits)
 end
 
 Base.sign(xs::T, x::F) where {T<:AbsUnsignedFloat, F<:AbstractFloat} = ifelse(iszero(x), x, one(F))

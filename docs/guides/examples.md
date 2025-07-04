@@ -272,14 +272,16 @@ println("  Value at -Inf index: $(indextovalue(sf, idxneginf(sf)))")
 ### Quantization Simulation
 
 ```julia
+using AIFloats, Printf
+using AIFloats: round_nearesteven
 # Simulate quantizing neural network weights
-original_weights = randn(10)  # Some random weights
+original_weights = abs.(randn(10))  # Some random weights
 
 # Different quantization schemes
 quantization_formats = [
-    (AIFloat(8, 4; SignedFloat=true, FiniteFloat=true), "8-bit weights"),
-    (AIFloat(6, 3; SignedFloat=true, FiniteFloat=true), "6-bit weights"),
-    (AIFloat(4, 2; SignedFloat=true, FiniteFloat=true), "4-bit weights")
+    (AIFloat(8, 4; UnsignedFloat=true, FiniteFloat=true), "8-bit weights"),
+    (AIFloat(6, 3; UnsignedFloat=true, FiniteFloat=true), "6-bit weights"),
+    (AIFloat(4, 2; UnsignedFloat=true, FiniteFloat=true), "4-bit weights")
 ]
 
 println("Weight Quantization Simulation:")
