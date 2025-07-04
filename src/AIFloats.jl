@@ -42,7 +42,7 @@ export AbstractAIFloat,
         index_to_offset, offset_to_index,
         index1, indexneg1, 
         value_to_index, index_to_value, value_to_offset, offset_to_value,
-        is_idxnan, is_ofsnan   
+        is_idxnan, is_ofsnan 
         # counts predicated on type defining parameters and type specifying qualities
         # parameters: (bits, sigbits, exponent bias)
         # qualities: (signedness [signed / unsigned], finiteness [finite / extended (has Inf[s])])

@@ -20,7 +20,8 @@ function SignedFiniteFloat(T::Type{<:AbsSignedFloat})
     SignedFiniteFloat(bits, sigbits)
 end
 
-function SignedFiniteFloat(bits, sigbits)
+# use types to eliminate an ambiguity
+function SignedFiniteFloat(bits::Int, sigbits::Int)
     T = typeforfloat(bits)
     S = typeforcode(bits)
     codes = encoding_sequence(S, bits)
@@ -47,13 +48,15 @@ function SignedExtendedFloat(T::Type{<:AbsSignedFloat})
     SignedExtendedFloat(bits, sigbits)
 end
 
-function SignedExtendedFloat(bits, sigbits)
+# use types to eliminate an ambiguity
+function SignedExtendedFloat(bits::Int, sigbits::Int)
     T = typeforfloat(bits)
     S = typeforcode(bits)
     codes = encoding_sequence(S, bits)
     floats = value_sequence(AbsSignedExtendedFloat{bits, sigbits})
     SignedExtendedFloat{bits, sigbits, T, S}(floats, codes)
 end
+
 function value_sequence(T::Type{<:AbsSignedExtendedFloat})
     bits = nBits(T)
     sigbits = nSigBits(T)
