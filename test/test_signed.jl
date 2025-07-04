@@ -65,7 +65,7 @@ using Quadmath
         # Test consistency between construction methods
         sf_direct = SignedFiniteFloats(8, 4)
         @test typeof(sf_from_type) == typeof(sf_direct)
-        @test floats(sf_from_type) == floats(sf_direct)
+        @test all(floats(sf_from_type) .=== floats(sf_direct))
         @test codes(sf_from_type) == codes(sf_direct)
     end
     
@@ -386,7 +386,7 @@ using Quadmath
         
         # Should produce identical results
         @test typeof(sf1) == typeof(sf2)
-        @test floats(sf1) == floats(sf2)
+        @test all(floats(sf1) .=== floats(sf2))
         @test codes(sf1) == codes(sf2)
         
         # Test for extended types
@@ -394,7 +394,7 @@ using Quadmath
         se2 = SignedExtendedFloats(AbsSignedExtendedFloat{bits, sigbits})
         
         @test typeof(se1) == typeof(se2)
-        @test floats(se1) == floats(se2)
+        @test all(floats(se1) .=== floats(se2))
         @test codes(se1) == codes(se2)
     end
     

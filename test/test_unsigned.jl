@@ -65,7 +65,7 @@ using Quadmath
         # Test consistency between construction methods
         uf_direct = UnsignedFiniteFloats(8, 4)
         @test typeof(uf_from_type) == typeof(uf_direct)
-        @test floats(uf_from_type) == floats(uf_direct)
+        @test all(floats(uf_from_type) .=== floats(uf_direct))
         @test codes(uf_from_type) == codes(uf_direct)
     end
     
@@ -289,32 +289,32 @@ using Quadmath
         
         finite_values = floats(uf)
         extended_values = floats(ue)
-        
+
         # Both should have same total length
         @test length(finite_values) == length(extended_values)
-        
-        # Both should start with zero
-        @test finite_values[1] == extended_values[1] == 0.0
-        
+
         # Both should end with NaN
         @test isnan(finite_values[end]) && isnan(extended_values[end])
-        
+
+        # Both should start with zero
+        @test finite_values[1] == extended_values[1] == 0.0
+                
         # Only extended should have infinity
         @test !any(isinf, finite_values)
         @test count(isinf, extended_values) == 1
         @test isinf(extended_values[end-1]) && extended_values[end-1] > 0
-        
-        # The finite portions should be nearly identical
-        # Finite: [...finite values..., NaN]
-        # Extended: [...finite values..., +Inf, NaN]
-        finite_subset = finite_values[1:end-1]
-        extended_subset = extended_values[1:end-2]
-        @test finite_subset ≈ extended_subset
-        
+
         # Test that extended has one fewer finite value (replaced by +Inf)
         finite_count = count(isfinite, finite_values)
         extended_finite_count = count(isfinite, extended_values)
         @test extended_finite_count == finite_count - 1
+
+        # The finite portions should be nearly identical
+        # Finite: [...finite values..., NaN]
+        # Extended: [...finite values..., +Inf, NaN]
+        finite_subset = finite_values[1:end-2]
+        extended_subset = extended_values[1:end-2]
+        @test finite_subset ≈ extended_subset
     end
     
     @testset "Type Parameter Consistency" begin
@@ -441,7 +441,7 @@ using Quadmath
         
         # Should produce identical results
         @test typeof(uf1) == typeof(uf2)
-        @test floats(uf1) == floats(uf2)
+        @test all(floats(uf1) .=== floats(uf2))
         @test codes(uf1) == codes(uf2)
         
         # Test for extended types
@@ -449,12 +449,12 @@ using Quadmath
         ue2 = UnsignedExtendedFloats(AbsUnsignedExtendedFloat{bits, sigbits})
         
         @test typeof(ue1) == typeof(ue2)
-        @test floats(ue1) == floats(ue2)
+        @test all(floats(ue1) .=== floats(ue2))
         @test codes(ue1) == codes(ue2)
         
         # Test that construction is deterministic
         uf3 = UnsignedFiniteFloats(bits, sigbits)
-        @test floats(uf1) == floats(uf3)
+        @test all(floats(uf1) .=== floats(uf3))
         @test codes(uf1) == codes(uf3)
     end
     
