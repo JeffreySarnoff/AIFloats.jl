@@ -1,25 +1,26 @@
 module AIFloats
 
 export AbstractAIFloat,
-         AbsUnsignedFloat,
-           AbsUnsignedFiniteFloat, AbsUnsignedExtendedFloat,
-         AbsSignedFloat,
-           AbsSignedFiniteFloat, AbsSignedExtendedFloat,
-        # concrete types
-        floats, codes,
-        # generalized constructor
-        AIFloat, 
-        UnsignedFloat, SignedFloat,
-        FiniteFloat, ExtendedFloat,
-        # concrete constructors        
-        UnsignedFiniteFloats, UnsignedExtendedFloats,
-        SignedFiniteFloats, SignedExtendedFloats,
-        # typed predicates
-        is_aifloat, is_unsigned, is_signed, is_finite, is_extended,
+       # abstract types
+       AbsUnsignedFloat, AbsUnsignedFiniteFloat, AbsUnsignedExtendedFloat,
+       AbsSignedFloat, AbsSignedFiniteFloat, AbsSignedExtendedFloat,
+       # concrete types
+       UnsignedFiniteFloat, UnsignedExtendedFloat,
+       SignedFiniteFloat, SignedExtendedFloat,
+       # field retrieval 
+       floats, codes,
+       # generalized constructor, keyword consts
+       AIFloat, UnsignedFloat, SignedFloat, FiniteFloat, ExtendedFloat,
+       # concrete constructive types
+       UnsignedFiniteFloat, UnsignedExtendedFloat,
+       SignedFiniteFloat, SignedExtendedFloat,
+       # type characterization predicates
+       is_aifloat, is_unsigned, is_signed, is_finite, is_extended,
+       # subtype characterization predicate
         has_subnormals,
         # counts by fiat
         nNaNs, nZeros,
-        # counts by formats' definition
+        # counts by format definitions 
         nInfs, nPosInfs, nNegInfs,
         # counts predicated on abstract [sub]type
         nBits, nSigBits, nFracBits, nSignBits, nExpBits,  
@@ -37,11 +38,11 @@ export AbstractAIFloat,
         # functions over types
         encoding_sequence, value_sequence,
         magnitude_sequence, foundation_magnitudes,
-        # julia support
+        # indices and offsets
         index_to_offset, offset_to_index,
-        is_idxnan, is_ofsnan,   
         index1, indexneg1, 
-        value_to_index, index_to_value, value_to_offset, offset_to_value
+        value_to_index, index_to_value, value_to_offset, offset_to_value,
+        is_idxnan, is_ofsnan   
         # counts predicated on type defining parameters and type specifying qualities
         # parameters: (bits, sigbits, exponent bias)
         # qualities: (signedness [signed / unsigned], finiteness [finite / extended (has Inf[s])])
@@ -107,15 +108,15 @@ function ConstructAIFloat(bitwidth::Int, sigbits::Int;
                           SignedFloat::Bool, ExtendedFloat::Bool)
     if SignedFloat
         if ExtendedFloat
-            SignedExtendedFloats(bitwidth, sigbits)
-        else # FiniteFloats
-            SignedFiniteFloats(bitwidth, sigbits)
+            SignedExtendedFloat(bitwidth, sigbits)
+        else # FiniteFloat
+            SignedFiniteFloat(bitwidth, sigbits)
         end
     else # UnsignedFloat
         if ExtendedFloat
-            UnsignedExtendedFloats(bitwidth, sigbits)
+            UnsignedExtendedFloat(bitwidth, sigbits)
         else # FiniteFloat
-            UnsignedFiniteFloats(bitwidth, sigbits)
+            UnsignedFiniteFloat(bitwidth, sigbits)
         end
     end
 end

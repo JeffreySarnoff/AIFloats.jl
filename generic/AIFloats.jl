@@ -9,8 +9,8 @@ export AbstractAIFloat,
         floats, codes,
         # generalized constructor
         AIFloat, 
-        UnsignedFiniteFloats, UnsignedExtendedFloats,
-        SignedFiniteFloats, SignedExtendedFloats,
+        UnsignedFiniteFloat, UnsignedExtendedFloat,
+        SignedFiniteFloat, SignedExtendedFloat,
         # typed predicates
         is_aifloat, is_unsigned, is_signed, is_finite, is_extended,
         # functions over types
@@ -102,7 +102,7 @@ function AIFloat(bitwidth::Int, sigbits::Int;
     if !differ(SignedFloat, UnsignedFloat)
         error("AIFloats: keyword args `SignedFloats` and `UnsignedFloats` must differ (one true, one false).")
     elseif !differ(FiniteFloat, ExtendedFloat)
-        error("AIFloats: keyword args `FiniteFloats` and `ExtendedFloats` must differ (one true, one false).")
+        error("AIFloats: keyword args `FiniteFloat` and `ExtendedFloat` must differ (one true, one false).")
     end
 
     # complete the keyword initializing
@@ -131,16 +131,16 @@ end
 function ConstructAIFloat(bitwidth::Int, sigbits::Int; 
                           SignedFloat::Bool, ExtendedFloat::Bool)
     if SignedFloats
-        if ExtendedFloats
-            SignedExtendedFloats(bitwidth, sigbits)
-        else # FiniteFloats
-            SignedFiniteFloats(bitwidth, sigbits)
+        if ExtendedFloat
+            SignedExtendedFloat(bitwidth, sigbits)
+        else # FiniteFloat
+            SignedFiniteFloat(bitwidth, sigbits)
         end
     else # UnsignedFloats
-        if ExtendedFloats
-            UnsignedExtendedFloats(bitwidth, sigbits)
-        else # FiniteFloats
-            UnsignedFiniteFloats(bitwidth, sigbits)
+        if ExtendedFloat
+            UnsignedExtendedFloat(bitwidth, sigbits)
+        else # FiniteFloat
+            UnsignedFiniteFloat(bitwidth, sigbits)
         end
     end
 end

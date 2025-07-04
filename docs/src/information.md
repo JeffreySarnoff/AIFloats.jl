@@ -53,8 +53,8 @@ The main exports from the `AIFloats` module are:
 
 - `floats`, `codes`
 - `AIFloat` — generalized constructor
-- `UnsignedFiniteFloats`, `UnsignedExtendedFloats`
-- `SignedFiniteFloats`, `SignedExtendedFloats`
+- `UnsignedFiniteFloat`, `UnsignedExtendedFloat`
+- `SignedFiniteFloat`, `SignedExtendedFloat`
 
 ### Typed Predicates
 

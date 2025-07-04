@@ -1,6 +1,6 @@
 using Test
 using AIFloats
-using AIFloats: UnsignedFiniteFloats, RoundingMode, RoundToOdd, RoundStochastic,
+using AIFloats: UnsignedFiniteFloat, RoundingMode, RoundToOdd, RoundStochastic,
                   round_up, round_down, round_tozero, round_fromzero,
                   round_nearesteven, round_nearestodd,
                   round_nearesttozero, round_nearestfromzero,
@@ -14,7 +14,7 @@ using AIFloats: UnsignedFiniteFloats, RoundingMode, RoundToOdd, RoundStochastic,
     
     @testset "Basic Rounding Functions - Unsigned" begin
         # Create a test unsigned float type
-        uf = UnsignedFiniteFloats(6, 3)
+        uf = UnsignedFiniteFloat(6, 3)
         test_values = floats(uf)
         
         # Test with a value that exists exactly
@@ -32,7 +32,7 @@ using AIFloats: UnsignedFiniteFloats, RoundingMode, RoundToOdd, RoundStochastic,
     end
     
     @testset "Round Up and Down" begin
-        uf = UnsignedFiniteFloats(8, 4)
+        uf = UnsignedFiniteFloat(8, 4)
         values = floats(uf)
         
         # Test with a value between two representable values
@@ -67,7 +67,7 @@ using AIFloats: UnsignedFiniteFloats, RoundingMode, RoundToOdd, RoundStochastic,
     end
     
     @testset "Round To/From Zero" begin
-        uf = UnsignedFiniteFloats(6, 3)
+        uf = UnsignedFiniteFloat(6, 3)
         
         # For unsigned types, round_tozero == round_down
         # and round_fromzero == round_up
@@ -78,7 +78,7 @@ using AIFloats: UnsignedFiniteFloats, RoundingMode, RoundToOdd, RoundStochastic,
     end
     
     @testset "Nearest Even Rounding" begin
-        uf = UnsignedFiniteFloats(8, 4)
+        uf = UnsignedFiniteFloat(8, 4)
         values = floats(uf)
         
         # Test exact values
@@ -104,7 +104,7 @@ using AIFloats: UnsignedFiniteFloats, RoundingMode, RoundToOdd, RoundStochastic,
     end
     
     @testset "Nearest Odd Rounding" begin
-        uf = UnsignedFiniteFloats(8, 4)
+        uf = UnsignedFiniteFloat(8, 4)
         values = floats(uf)
         
         # Test exact values
@@ -129,7 +129,7 @@ using AIFloats: UnsignedFiniteFloats, RoundingMode, RoundToOdd, RoundStochastic,
     end
     
     @testset "Nearest To/From Zero" begin
-        uf = UnsignedFiniteFloats(6, 3)
+        uf = UnsignedFiniteFloat(6, 3)
         
         # Test that these functions exist and handle basic cases
         test_val = 1.0
@@ -142,7 +142,7 @@ using AIFloats: UnsignedFiniteFloats, RoundingMode, RoundToOdd, RoundStochastic,
     end
     
     @testset "Nearest Away (typo test)" begin
-        uf = UnsignedFiniteFloats(6, 3)
+        uf = UnsignedFiniteFloat(6, 3)
         
         # Test the function with the typo in the original code
         # (round_nearesrfromzero instead of round_nearestfromzero)
@@ -151,7 +151,7 @@ using AIFloats: UnsignedFiniteFloats, RoundingMode, RoundToOdd, RoundStochastic,
     end
     
     @testset "Rounding Consistency" begin
-        uf = UnsignedFiniteFloats(7, 3)
+        uf = UnsignedFiniteFloat(7, 3)
         values = floats(uf)
         finite_vals = filter(isfinite, values)
         
@@ -171,7 +171,7 @@ using AIFloats: UnsignedFiniteFloats, RoundingMode, RoundToOdd, RoundStochastic,
     end
     
     @testset "Edge Case Values" begin
-        uf = UnsignedFiniteFloats(6, 3)
+        uf = UnsignedFiniteFloat(6, 3)
         values = floats(uf)
         
         # Test with zero
@@ -191,7 +191,7 @@ using AIFloats: UnsignedFiniteFloats, RoundingMode, RoundToOdd, RoundStochastic,
     end
     
     @testset "Monotonicity Properties" begin
-        uf = UnsignedFiniteFloats(6, 3)
+        uf = UnsignedFiniteFloat(6, 3)
         
         # round_up should be monotonic
         test_vals = [0.1, 0.5, 1.0, 1.5, 2.0]
@@ -212,7 +212,7 @@ using AIFloats: UnsignedFiniteFloats, RoundingMode, RoundToOdd, RoundStochastic,
     end
     
     @testset "Rounding Function Types" begin
-        uf = UnsignedFiniteFloats(6, 3)
+        uf = UnsignedFiniteFloat(6, 3)
         test_val = 1.5
         
         # All rounding functions should return the same type as input values
@@ -229,7 +229,7 @@ using AIFloats: UnsignedFiniteFloats, RoundingMode, RoundToOdd, RoundStochastic,
     end
     
     @testset "Search Functions Behavior" begin
-        uf = UnsignedFiniteFloats(8, 4)
+        uf = UnsignedFiniteFloat(8, 4)
         values = floats(uf)
         
         # Test that searchsortedfirst/last are used correctly
@@ -255,7 +255,7 @@ using AIFloats: UnsignedFiniteFloats, RoundingMode, RoundToOdd, RoundStochastic,
     end
     
     @testset "Boundary Handling" begin
-        uf = UnsignedFiniteFloats(6, 3)
+        uf = UnsignedFiniteFloat(6, 3)
         values = floats(uf)
         
         # Test at the boundaries of the representable range

@@ -24,22 +24,22 @@ abstract type AbsUnsignedExtendedFloat{Bits, SigBits} <: AbsUnsignedFloat{Bits, 
 ### Concrete Implementation Types
 
 ```julia
-struct SignedFiniteFloats{bits, sigbits, T, S} <: AbsSignedFiniteFloat{bits, sigbits}
+struct SignedFiniteFloat{bits, sigbits, T, S} <: AbsSignedFiniteFloat{bits, sigbits}
     floats::Vector{T}  # Aligned memory for float values
     codes::Vector{S}   # Aligned memory for encodings
 end
 
-struct SignedExtendedFloats{bits, sigbits, T, S} <: AbsSignedExtendedFloat{bits, sigbits}
+struct SignedExtendedFloat{bits, sigbits, T, S} <: AbsSignedExtendedFloat{bits, sigbits}
     floats::Vector{T}
     codes::Vector{S}
 end
 
-struct UnsignedFiniteFloats{bits, sigbits, T, S} <: AbsUnsignedFiniteFloat{bits, sigbits}
+struct UnsignedFiniteFloat{bits, sigbits, T, S} <: AbsUnsignedFiniteFloat{bits, sigbits}
     floats::Vector{T}
     codes::Vector{S}
 end
 
-struct UnsignedExtendedFloats{bits, sigbits, T, S} <: AbsUnsignedExtendedFloat{bits, sigbits}
+struct UnsignedExtendedFloat{bits, sigbits, T, S} <: AbsUnsignedExtendedFloat{bits, sigbits}
     floats::Vector{T}
     codes::Vector{S}
 end

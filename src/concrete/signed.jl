@@ -1,31 +1,31 @@
-struct SignedFiniteFloats{bits, sigbits, T, S} <: AbsSignedFiniteFloat{bits, sigbits}
+struct SignedFiniteFloat{bits, sigbits, T, S} <: AbsSignedFiniteFloat{bits, sigbits}
     floats::Vector{T} # memory for the floats
     codes::Vector{S} # memory for the codes
 end
 
-floats(x::SignedFiniteFloats) = x.floats
-codes(x::SignedFiniteFloats) = x.codes
+floats(x::SignedFiniteFloat) = x.floats
+codes(x::SignedFiniteFloat) = x.codes
 
-struct SignedExtendedFloats{bits, sigbits, T, S} <: AbsSignedExtendedFloat{bits, sigbits}
+struct SignedExtendedFloat{bits, sigbits, T, S} <: AbsSignedExtendedFloat{bits, sigbits}
     floats::Vector{T} # memory for the floats
     codes::Vector{S} # memory for the codes
 end
 
-floats(x::SignedExtendedFloats) = x.floats
-codes(x::SignedExtendedFloats) = x.codes
+floats(x::SignedExtendedFloat) = x.floats
+codes(x::SignedExtendedFloat) = x.codes
 
-function SignedFiniteFloats(T::Type{<:AbsSignedFloat})
+function SignedFiniteFloat(T::Type{<:AbsSignedFloat})
     bits = nBits(T)
     sigbits = nSigBits(T)
-    SignedFiniteFloats(bits, sigbits)
+    SignedFiniteFloat(bits, sigbits)
 end
 
-function SignedFiniteFloats(bits, sigbits)
+function SignedFiniteFloat(bits, sigbits)
     T = typeforfloat(bits)
     S = typeforcode(bits)
     codes = encoding_sequence(S, bits)
     floats = value_sequence(AbsSignedFiniteFloat{bits, sigbits})
-    SignedFiniteFloats{bits, sigbits, T, S}(floats, codes)
+    SignedFiniteFloat{bits, sigbits, T, S}(floats, codes)
 end
 
 function value_sequence(T::Type{<:AbsSignedFiniteFloat})
@@ -41,18 +41,18 @@ function value_sequence(T::Type{<:AbsSignedFiniteFloat})
     floats
 end
 
-function SignedExtendedFloats(T::Type{<:AbsSignedFloat})
+function SignedExtendedFloat(T::Type{<:AbsSignedFloat})
     bits = nBits(T)
     sigbits = nSigBits(T)
-    SignedExtendedFloats(bits, sigbits)
+    SignedExtendedFloat(bits, sigbits)
 end
 
-function SignedExtendedFloats(bits, sigbits)
+function SignedExtendedFloat(bits, sigbits)
     T = typeforfloat(bits)
     S = typeforcode(bits)
     codes = encoding_sequence(S, bits)
     floats = value_sequence(AbsSignedExtendedFloat{bits, sigbits})
-    SignedExtendedFloats{bits, sigbits, T, S}(floats, codes)
+    SignedExtendedFloat{bits, sigbits, T, S}(floats, codes)
 end
 function value_sequence(T::Type{<:AbsSignedExtendedFloat})
     bits = nBits(T)

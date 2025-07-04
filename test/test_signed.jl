@@ -1,20 +1,20 @@
 using Test
 using AIFloats
-using AIFloats: SignedFiniteFloats, SignedExtendedFloats,
+using AIFloats: SignedFiniteFloat, SignedExtendedFloat,
                   AbsSignedFiniteFloat, AbsSignedExtendedFloat,
                   floats, codes, typeforfloat, typeforcode,
                   value_sequence, foundation_magnitudes
 using Quadmath
 
 @testset "Signed Types Tests" begin
-    @testset "SignedFiniteFloats Construction" begin
+    @testset "SignedFiniteFloat Construction" begin
         # Test basic construction with parameters
-        sf = SignedFiniteFloats(6, 3)
-        @test isa(sf, SignedFiniteFloats)
+        sf = SignedFiniteFloat(6, 3)
+        @test isa(sf, SignedFiniteFloat)
         @test isa(sf, AbsSignedFiniteFloat{6, 3})
         
         # Test type parameters are correctly embedded
-        @test isa(sf, SignedFiniteFloats{6, 3, Float64, UInt8})
+        @test isa(sf, SignedFiniteFloat{6, 3, Float64, UInt8})
         
         # Test accessor functions
         @test isa(floats(sf), Vector)
@@ -27,14 +27,14 @@ using Quadmath
         @test eltype(codes(sf)) == typeforcode(6)    # UInt8 for 6 bits
     end
     
-    @testset "SignedExtendedFloats Construction" begin
+    @testset "SignedExtendedFloat Construction" begin
         # Test basic construction with parameters
-        se = SignedExtendedFloats(6, 3)
-        @test isa(se, SignedExtendedFloats)
+        se = SignedExtendedFloat(6, 3)
+        @test isa(se, SignedExtendedFloat)
         @test isa(se, AbsSignedExtendedFloat{6, 3})
         
         # Test type parameters
-        @test isa(se, SignedExtendedFloats{6, 3, Float64, UInt8})
+        @test isa(se, SignedExtendedFloat{6, 3, Float64, UInt8})
         
         # Test accessor functions
         @test isa(floats(se), Vector)
@@ -50,20 +50,20 @@ using Quadmath
     @testset "Type-based Construction" begin
         # Test construction from abstract type - finite
         T_finite = AbsSignedFiniteFloat{8, 4}
-        sf_from_type = SignedFiniteFloats(T_finite)
-        @test isa(sf_from_type, SignedFiniteFloats{8, 4})
+        sf_from_type = SignedFiniteFloat(T_finite)
+        @test isa(sf_from_type, SignedFiniteFloat{8, 4})
         @test nBits(T_finite) == 8
         @test nSigBits(T_finite) == 4
         
         # Test construction from abstract type - extended
         T_extended = AbsSignedExtendedFloat{8, 4}
-        se_from_type = SignedExtendedFloats(T_extended)
-        @test isa(se_from_type, SignedExtendedFloats{8, 4})
+        se_from_type = SignedExtendedFloat(T_extended)
+        @test isa(se_from_type, SignedExtendedFloat{8, 4})
         @test nBits(T_extended) == 8
         @test nSigBits(T_extended) == 4
         
         # Test consistency between construction methods
-        sf_direct = SignedFiniteFloats(8, 4)
+        sf_direct = SignedFiniteFloat(8, 4)
         @test typeof(sf_from_type) == typeof(sf_direct)
         @test all(floats(sf_from_type) .=== floats(sf_direct))
         @test codes(sf_from_type) == codes(sf_direct)
@@ -145,7 +145,7 @@ using Quadmath
     end
     
     @testset "Signed Value Structure and Symmetry" begin
-        sf = SignedFiniteFloats(8, 4)
+        sf = SignedFiniteFloat(8, 4)
         values = floats(sf)
         
         # Test basic structure
@@ -183,7 +183,7 @@ using Quadmath
     
     @testset "Special Value Placement" begin
         # Test finite type special value placement
-        sf = SignedFiniteFloats(6, 3)
+        sf = SignedFiniteFloat(6, 3)
         values = floats(sf)
         half_length = length(values) ÷ 2
         
@@ -197,7 +197,7 @@ using Quadmath
         @test !any(isinf, values)
         
         # Test extended type special value placement
-        se = SignedExtendedFloats(6, 3)
+        se = SignedExtendedFloat(6, 3)
         ext_values = floats(se)
         
         # Zero should still be first
@@ -236,7 +236,7 @@ using Quadmath
     end
     
     @testset "Codes Sequence Integrity" begin
-        sf = SignedFiniteFloats(8, 4)
+        sf = SignedFiniteFloat(8, 4)
         codes_vec = codes(sf)
         
         # Test completeness of encoding sequence
@@ -256,8 +256,8 @@ using Quadmath
     
     @testset "Finite vs Extended Comparison" begin
         # Compare finite and extended versions of same configuration
-        sf = SignedFiniteFloats(7, 3)
-        se = SignedExtendedFloats(7, 3)
+        sf = SignedFiniteFloat(7, 3)
+        se = SignedExtendedFloat(7, 3)
         
         finite_values = floats(sf)
         extended_values = floats(se)
@@ -286,11 +286,11 @@ using Quadmath
     
     @testset "Type Parameter Consistency" begin
         # Test different bit width configurations
-        sf_small = SignedFiniteFloats(6, 3)
-        sf_large = SignedFiniteFloats(12, 6)
+        sf_small = SignedFiniteFloat(6, 3)
+        sf_large = SignedFiniteFloat(12, 6)
         
-        @test isa(sf_small, SignedFiniteFloats{6, 3})
-        @test isa(sf_large, SignedFiniteFloats{12, 6})
+        @test isa(sf_small, SignedFiniteFloat{6, 3})
+        @test isa(sf_large, SignedFiniteFloat{12, 6})
         
         # Test element types scale appropriately
         @test eltype(floats(sf_small)) == typeforfloat(6)   # Float64
@@ -299,16 +299,16 @@ using Quadmath
         @test eltype(codes(sf_large)) == typeforcode(12)    # UInt16
         
         # Test extended versions
-        se_small = SignedExtendedFloats(6, 3)
-        se_large = SignedExtendedFloats(12, 6)
+        se_small = SignedExtendedFloat(6, 3)
+        se_large = SignedExtendedFloat(12, 6)
         
-        @test isa(se_small, SignedExtendedFloats{6, 3})
-        @test isa(se_large, SignedExtendedFloats{12, 6})
+        @test isa(se_small, SignedExtendedFloat{6, 3})
+        @test isa(se_large, SignedExtendedFloat{12, 6})
     end
     
     @testset "Edge Cases and Minimal Configurations" begin
         # Test minimal signed configuration
-        sf_min = SignedFiniteFloats(3, 2)
+        sf_min = SignedFiniteFloat(3, 2)
         @test length(floats(sf_min)) == 8  # 2^3
         
         values_min = floats(sf_min)
@@ -323,13 +323,13 @@ using Quadmath
         @test isnan(values_min[half_length + 1])  # NaN at start of second half
         
         # Test precision = 1 edge case
-        sf_p1 = SignedFiniteFloats(3, 1)
+        sf_p1 = SignedFiniteFloat(3, 1)
         @test !has_subnormals(typeof(sf_p1))  # No subnormals with precision 1
         @test length(floats(sf_p1)) == 8
     end
     
     @testset "Numerical Precision and Accuracy" begin
-        sf = SignedFiniteFloats(8, 4)
+        sf = SignedFiniteFloat(8, 4)
         values = floats(sf)
         
         # Test that values span reasonable range
@@ -358,7 +358,7 @@ using Quadmath
     end
     
     @testset "Memory Layout and Efficiency" begin
-        sf = SignedFiniteFloats(8, 4)
+        sf = SignedFiniteFloat(8, 4)
         
         # Test that vectors are properly allocated
         @test isa(floats(sf), Vector{Float64})
@@ -381,8 +381,8 @@ using Quadmath
         bits, sigbits = 8, 4
         
         # Test different construction paths
-        sf1 = SignedFiniteFloats(bits, sigbits)
-        sf2 = SignedFiniteFloats(AbsSignedFiniteFloat{bits, sigbits})
+        sf1 = SignedFiniteFloat(bits, sigbits)
+        sf2 = SignedFiniteFloat(AbsSignedFiniteFloat{bits, sigbits})
         
         # Should produce identical results
         @test typeof(sf1) == typeof(sf2)
@@ -390,8 +390,8 @@ using Quadmath
         @test codes(sf1) == codes(sf2)
         
         # Test for extended types
-        se1 = SignedExtendedFloats(bits, sigbits)
-        se2 = SignedExtendedFloats(AbsSignedExtendedFloat{bits, sigbits})
+        se1 = SignedExtendedFloat(bits, sigbits)
+        se2 = SignedExtendedFloat(AbsSignedExtendedFloat{bits, sigbits})
         
         @test typeof(se1) == typeof(se2)
         @test all(floats(se1) .=== floats(se2))
@@ -399,7 +399,7 @@ using Quadmath
     end
     
     @testset "Integration with Type System" begin
-        sf = SignedFiniteFloats(8, 4)
+        sf = SignedFiniteFloat(8, 4)
         
         # Test that all expected type functions work
         @test nBits(typeof(sf)) == 8
@@ -409,7 +409,7 @@ using Quadmath
         @test is_extended(typeof(sf)) == false
         
         # Test with extended version
-        se = SignedExtendedFloats(8, 4)
+        se = SignedExtendedFloat(8, 4)
         @test is_extended(typeof(se)) == true
         @test is_finite(typeof(se)) == false
         

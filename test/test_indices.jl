@@ -1,7 +1,7 @@
 using Test
 using AIFloats
-using AIFloats: UnsignedFiniteFloats, SignedFiniteFloats,
-                  UnsignedExtendedFloats, SignedExtendedFloats,
+using AIFloats: UnsignedFiniteFloat, SignedFiniteFloat,
+                  UnsignedExtendedFloat, SignedExtendedFloat,
                   offset_to_index, index_to_offset, index_to_code,
                   idxone, idxnan, idxinf, idxneginf, idxnegone,
                   ofsone, ofsnan, ofsinf, ofsneginf,
@@ -47,8 +47,8 @@ using Static
     
     @testset "Special Index Functions" begin
         # Create test types
-        uf = UnsignedFiniteFloats(6, 3)
-        sf = SignedFiniteFloats(6, 3)
+        uf = UnsignedFiniteFloat(6, 3)
+        sf = SignedFiniteFloat(6, 3)
         
         # Test index1 function
         @test index1(typeof(uf)) isa Integer
@@ -64,7 +64,7 @@ using Static
     end
     
     @testset "Value/Index Mapping" begin
-        uf = UnsignedFiniteFloats(6, 3)
+        uf = UnsignedFiniteFloat(6, 3)
         values = floats(uf)
         
         # Test value_to_index
@@ -91,7 +91,7 @@ using Static
     
     @testset "Special Value Indices" begin
         # Test with unsigned finite
-        uf = UnsignedFiniteFloats(6, 3)
+        uf = UnsignedFiniteFloat(6, 3)
         
         # Test NaN index
         nan_idx = idxnan(typeof(uf))
@@ -106,13 +106,13 @@ using Static
         @test one_idx <= nValues(typeof(uf))
         
         # Test with unsigned extended (has infinity)
-        ue = UnsignedExtendedFloats(6, 3)
+        ue = UnsignedExtendedFloat(6, 3)
         inf_idx = idxinf(typeof(ue))
         @test inf_idx isa Integer
         @test inf_idx > 0
         
         # Test with signed types
-        sf = SignedFiniteFloats(6, 3)
+        sf = SignedFiniteFloat(6, 3)
         
         nan_idx_s = idxnan(typeof(sf))
         one_idx_s = idxone(typeof(sf))
@@ -125,7 +125,7 @@ using Static
     end
     
     @testset "Offset Functions" begin
-        uf = UnsignedFiniteFloats(6, 3)
+        uf = UnsignedFiniteFloat(6, 3)
         
         # Test offset functions
         one_ofs = ofsone(typeof(uf))
@@ -135,19 +135,19 @@ using Static
         @test nan_ofs == index_to_offset(idxnan(typeof(uf)))
         
         # Test with extended types
-        ue = UnsignedExtendedFloats(6, 3)
+        ue = UnsignedExtendedFloat(6, 3)
         inf_ofs = ofsinf(typeof(ue))
         @test inf_ofs == index_to_offset(idxinf(typeof(ue)))
         
         # Test with signed extended
-        se = SignedExtendedFloats(6, 3)
+        se = SignedExtendedFloat(6, 3)
         inf_ofs_s = ofsinf(typeof(se))
         neginf_ofs_s = ofsneginf(typeof(se))
         @test inf_ofs_s != neginf_ofs_s
     end
     
     @testset "NaN Detection" begin
-        uf = UnsignedFiniteFloats(6, 3)
+        uf = UnsignedFiniteFloat(6, 3)
         
         # Test index-based NaN detection
         nanidx = idxnan(uf)
@@ -165,7 +165,7 @@ using Static
     end
     
     @testset "Index Bounds and Validation" begin
-        uf = UnsignedFiniteFloats(8, 4)
+        uf = UnsignedFiniteFloat(8, 4)
         n_vals = nValues(typeof(uf))
         
         # Test that special indices are within bounds
@@ -173,22 +173,22 @@ using Static
         @test 1 <= idxnan(typeof(uf)) <= n_vals
         
         # Test with extended types
-        ue = UnsignedExtendedFloats(8, 4)
+        ue = UnsignedExtendedFloat(8, 4)
         @test 1 <= idxinf(typeof(ue)) <= n_vals
         
         # Test signed types
-        sf = SignedFiniteFloats(8, 4)
+        sf = SignedFiniteFloat(8, 4)
         @test 1 <= idxone(typeof(sf)) <= n_vals
         @test 1 <= idxnegone(typeof(sf)) <= n_vals
         @test 1 <= idxnan(typeof(sf)) <= n_vals
         
-        se = SignedExtendedFloats(8, 4)
+        se = SignedExtendedFloat(8, 4)
         @test 1 <= idxinf(typeof(se)) <= n_vals
         @test 1 <= idxneginf(typeof(se)) <= n_vals
     end
     
     @testset "Value/Index Consistency" begin
-        uf = UnsignedFiniteFloats(6, 3)
+        uf = UnsignedFiniteFloat(6, 3)
         values = floats(uf)
         
         # Test round-trip conversion for valid indices
@@ -207,8 +207,8 @@ using Static
     
     @testset "Index Functions with Instances" begin
         # Test that index functions work with both types and instances
-        uf_type = UnsignedFiniteFloats{6, 3}
-        uf_instance = UnsignedFiniteFloats(6, 3)
+        uf_type = UnsignedFiniteFloat{6, 3}
+        uf_instance = UnsignedFiniteFloat(6, 3)
         
         @test idxone(uf_type) == idxone(uf_instance)
         @test idxnan(uf_type) == idxnan(uf_instance)
@@ -217,7 +217,7 @@ using Static
     end
     
     @testset "Edge Cases and Error Handling" begin
-        uf = UnsignedFiniteFloats(6, 3)
+        uf = UnsignedFiniteFloat(6, 3)
         
         # Test with extreme indices
         @test isnan(index_to_value(uf, -1))
@@ -236,7 +236,7 @@ using Static
     
     @testset "Type Consistency" begin
         # Test that index functions return consistent types
-        uf = UnsignedFiniteFloats(8, 4)
+        uf = UnsignedFiniteFloat(8, 4)
         
         @test idxone(typeof(uf)) isa Integer
         @test idxnan(typeof(uf)) isa Integer
@@ -282,8 +282,8 @@ using Static
     
     @testset "Signed vs Unsigned Index Patterns" begin
         # Compare index patterns between signed and unsigned types
-        uf = UnsignedFiniteFloats(8, 4)
-        sf = SignedFiniteFloats(8, 4)
+        uf = UnsignedFiniteFloat(8, 4)
+        sf = SignedFiniteFloat(8, 4)
         
         # Both should have valid one indices
         uf_one_idx = idxone(typeof(uf))
@@ -303,7 +303,7 @@ using Static
     end
     
     @testset "Index Greater Than Equal Function" begin
-        uf = UnsignedFiniteFloats(6, 3)
+        uf = UnsignedFiniteFloat(6, 3)
         values = floats(uf)
         
         # Test value_to_indexgte function if it exists
@@ -326,7 +326,7 @@ using Static
     end
     
     @testset "Value to Indices Range" begin
-        uf = UnsignedFiniteFloats(6, 3)
+        uf = UnsignedFiniteFloat(6, 3)
         values = floats(uf)
         
         # Test value_to_indices function for range finding
