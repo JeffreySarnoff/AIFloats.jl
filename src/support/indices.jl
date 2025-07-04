@@ -38,7 +38,6 @@ end
 
 @inline offset_to_index(::Type{Target}, x::T) where {Target<:Integer, T<:Integer} = (x + one(T)) % Target
 
-
 """
     index_to_code(bits, index)
 
@@ -66,38 +65,38 @@ convert the Julia offset `x` into a P3109 encoding value as a UInt8|16
 @inline index1(::Type{T}) where {T<:AbsSignedFloat} = nValues(T) >> 0x02 + 0x01
 @inline index1(x::T) where {T<:AbsSignedFloat} = index1(T)
 
-@inline function valuetoindex(xs::T, x::F) where {T<:AbstractAIFloat, F<:AbstractFloat}
+@inline function value_to_index(xs::T, x::F) where {T<:AbstractAIFloat, F<:AbstractFloat}
     findfirst(isequal(x), floats(xs))
 end
 
-@inline function valuetoindex(xs::T, x::F) where {T<:Vector{<:AbstractFloat}, F<:AbstractFloat}
+@inline function value_to_index(xs::T, x::F) where {T<:Vector{<:AbstractFloat}, F<:AbstractFloat}
     findfirst(isequal(x), xs)
 end
 
-@inline function indextovalue(xs::T, index::Integer) where {T<:AbstractAIFloat}
+@inline function index_to_value(xs::T, index::Integer) where {T<:AbstractAIFloat}
     if index < 1 || index > nValues(T)
         return eltype(floats(xs))(NaN)
     end
     floats(xs)[index]
 end
 
-@inline function indextovalue(xs::T, index::Integer) where {T<:Vector{AbstractFloat}}
+@inline function index_to_value(xs::T, index::Integer) where {T<:Vector{AbstractFloat}}
     if index < 1 || index > nValues(T)
         return eltype(floats(xs))(NaN)
     end
     floats(xs)[index]
 end
 
-@inline function valuetoindexgte(xs::T, x::F) where {T<:AbstractAIFloat, F<:AbstractFloat}
+@inline function value_to_indexgte(xs::T, x::F) where {T<:AbstractAIFloat, F<:AbstractFloat}
     findfirst(>=(x), floats(xs))
 end
 
-@inline function valuetoindexgte(xs::T, x::F) where {T<:Vector{<:AbstractFloat}, F<:AbstractFloat}
+@inline function value_to_indexgte(xs::T, x::F) where {T<:Vector{<:AbstractFloat}, F<:AbstractFloat}
     findfirst(>=(x), xs)
 end
 
-@inline function valuetoindices(xs::T, x::F) where {T<:AbstractAIFloat, F<:AbstractFloat}
-    hi = valuetoindexgte(xs, x)
+@inline function value_to_indices(xs::T, x::F) where {T<:AbstractAIFloat, F<:AbstractFloat}
+    hi = value_to_indexgte(xs, x)
     isnothing(hi) && return (nothing, nothing)
     if !isnothing(hi) && x == float(xs)[hi]
         lo = hi
@@ -107,8 +106,8 @@ end
     (lo, hi)
 end
 
-@inline function valuetoindices(xs::T, x::F) where {T<:Vector{<:AbstractFloat}, F<:AbstractFloat}
-    hi = valuetoindexgte(xs, x)
+@inline function value_to_indices(xs::T, x::F) where {T<:Vector{<:AbstractFloat}, F<:AbstractFloat}
+    hi = value_to_indexgte(xs, x)
     isnothing(hi) && return (nothing, nothing)
     if !isnothing(hi) && x == float(xs)[hi]
         lo = hi
@@ -116,6 +115,22 @@ end
         lo = hi - 1
     end
     (lo, hi)
+end
+
+@inline function value_to_offset(xs::T, x::F) where {T<:AbstractAIFloat, F<:AbstractFloat}
+    index_to_offset(value_to_index(xs, x))
+end
+
+@inline function value_to_offset(xs::T, x::F) where {T<:Vector{<:AbstractFloat}, F<:AbstractFloat}
+    index_to_offset(value_to_index(xs, x))
+end
+
+@inline function value_to_offset(xs::T, index::Integer) where {T<:AbstractAIFloat}
+    index_to_offset(value_to_index(xs, x))
+end
+
+@inline function value_to_offset(xs::T, index::Integer) where {T<:Vector{AbstractFloat}}
+    index_to_offset(value_to_index(xs, x))
 end
 
 idxone(::Type{T}) where {T<:AbsUnsignedFloat} = (((nValues(T) % UInt16) >> 0x0001) + 0x0001)

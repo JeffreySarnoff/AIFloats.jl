@@ -17,15 +17,17 @@ export AbstractAIFloat,
         # typed predicates
         is_aifloat, is_unsigned, is_signed, is_finite, is_extended,
         has_subnormals,
+        # counts by fiat
+        nNaNs, nZeros,
+        # counts by formats' definition
+        nInfs, nPosInfs, nNegInfs,
         # counts predicated on abstract [sub]type
         nBits, nSigBits, nFracBits, nSignBits, nExpBits,  
-        nNaNs, nZeros, nInfs, nPosInfs, nNegInfs,
-        nPrenormalMagnitudes, nSubnormalMagnitudes, nNormalMagnitudes, nMagnitudes,
+        nMagnitudes, nNonzeroMagnitudes, nFiniteMagnitudes, nNonzeroFiniteMagnitudes,
+        nPrenormalMagnitudes, nSubnormalMagnitudes, nNormalMagnitudes,
+        nValues, nNumericValues, nNonzeroNumericValues, nFiniteValues, nNonzeroFiniteValues,
         nPrenormalValues, nSubnormalValues, nNormalValues,
-        nValues, nNumericValues, nNonzeroNumericValues,
-        nMagnitudes, nNonzeroMagnitudes,
         nExpValues, nNonzeroExpValues,
-        nFiniteValues, nNonzeroFiniteValues,
         # exponent
         expBias, expMin, expMax, expMinValue, expMaxValue, expValues,
         expSubnormal, expSubnormalValue, expUnbiasedValues,
@@ -38,8 +40,8 @@ export AbstractAIFloat,
         # julia support
         index_to_offset, offset_to_index,
         is_idxnan, is_ofsnan,   
-        index1, indexneg1, valuetoindex, indextovalue, floatleast,
-        ulp_distance
+        index1, indexneg1, 
+        value_to_index, index_to_value, value_to_offset, offset_to_value
         # counts predicated on type defining parameters and type specifying qualities
         # parameters: (bits, sigbits, exponent bias)
         # qualities: (signedness [signed / unsigned], finiteness [finite / extended (has Inf[s])])
@@ -48,17 +50,13 @@ using AlignedAllocs: memalign_clear, alignment
 using Static: static, dynamic, StaticInt, StaticBool
 using Quadmath: Float128
 
-
+include("type/abstract.jl")
 include("type/constants.jl")
 
-include("type/abstract.jl")
 include("type/predicates.jl")
 include("type/counts.jl")
 include("type/exponents.jl")
 include("type/significands.jl")
-
-typeforfloat(::Type{T}) where {T<:AbstractAIFloat} = typeforfloat(nBits(T))
-typeforcode(::Type{T}) where {T<:AbstractAIFloat} = typeforcode(nBits(T))
 
 include("projection/rounding.jl")
 # include("projection/saturation.jl")

@@ -72,36 +72,3 @@ overflowsFloat64(x) = iszero(floats(x)[2])
           flxs2 = map(T, flxs)
           all(flxs .== flxs2)
        end
-
-#=
-    sf61..sf65, uf51..uf55 allmatch Float16
-    sf71, uf61            !allmatch Float16
-
-    sf91..sf98, uf81..uf88 allmatch BFloat16
-    sfA1, uf91 !allmatch BFloat16
-    sfA1, uf91 !allmatch Float32
-    
-    sfC1..sfCB, ufB1..ufBB allmatch Float64
-    sfD1, ufC1             !allmatch Float64
-
-=#
-
-       #=
-
-all ok using Float64
- 
-ufe{2..11}
-sfe{2...12}
-
-overflowsFloat64
-
-ufe{12,13,14,15}{1}
-ufe{13,14,15}{2}
-ufe{14,15}{3}
-ufe{15}{4}
-
-sfe{13,14,15}{1}
-sfe{14,15}{2}
-sfe{15}{3}
-
-=#

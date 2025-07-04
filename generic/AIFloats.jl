@@ -27,7 +27,7 @@ export AbstractAIFloat,
         # exponent
         expBias, expUnbiasedValues, expMinValue, expMaxValue, expValues,
         # julia support
-        index1, indexneg1, valuetoindex, indextovalue, floatleast,
+        index1, indexneg1, value_to_index, index_to_value, floatleast,
         ulp_distance
         # counts predicated on type defining parameters and type specifying qualities
         # parameters: (bits, sigbits, exponent bias)

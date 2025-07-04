@@ -81,7 +81,7 @@ The main exports from the `AIFloats` module are:
 
 ### Julia Support Functions
 
-- `index1`, `indexneg1`, `valuetoindex`, `indextovalue`, `floatleast`
+- `index1`, `indexneg1`, `value_to_index`, `index_to_value`, `floatleast`
 - `ulp_distance`
 
 ---
@@ -135,7 +135,7 @@ AIFloat(bits::Int, sigbits::Int; signed::Bool, extended::Bool)
 
 ### Julia Support
 
-- Indexing and conversion helpers: `index1`, `indexneg1`, `valuetoindex`, `indextovalue`, `floatleast`, `ulp_distance`.
+- Indexing and conversion helpers: `index1`, `indexneg1`, `value_to_index`, `index_to_value`, `floatleast`, `ulp_distance`.
 
 ---
 
