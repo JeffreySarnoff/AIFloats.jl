@@ -21,7 +21,7 @@ function UnsignedFiniteFloat(T::Type{<:AbsUnsignedFloat})
 end
 
 # use types to eliminate an ambiguity
-function UnsignedFiniteFloat(bits:Int, sigbits::Int)
+function UnsignedFiniteFloat(bits::Int, sigbits::Int)
    T = typeforfloat(bits)
    S = typeforcode(bits)
    codes = encoding_sequence(S, bits)
@@ -45,7 +45,7 @@ function UnsignedExtendedFloat(T::Type{<:AbsUnsignedFloat})
 end
 
 # use types to eliminate an ambiguity
-function UnsignedExtendedFloat(bits:Int, sigbits::Int)
+function UnsignedExtendedFloat(bits::Int, sigbits::Int)
    T = typeforfloat(bits)
    S = typeforcode(bits)
    codes = encoding_sequence(S, bits)
