@@ -1,6 +1,5 @@
 using Test
-using AIFloats, AlignedAllocs
-using Aqua
+using AIFloats
 
 # Test organization following Julia best practices
 @testset "AIFloats.jl Tests" begin
