@@ -60,7 +60,7 @@ nFiniteNonnegValues(T::Type{<:AbstractAIFloat}) = nNonnegValues(T) - nPosInfs(T)
 nFinitePositiveValues(T::Type{<:AbstractAIFloat}) = nPositiveValues(T) - nPosInfs(T)
 nFiniteNegativeValues(T::Type{<:AbstractAIFloat}) = nNegativeValues(T) - nNegInfs(T)
 
-nPrenormalMagnitudes(T::Type{<:AbstractAIFloat}) = 2^(SigBits-1) # 1 << (SigBits - 1)
+nPrenormalMagnitudes(T::Type{<:AbstractAIFloat}) = 2^(nSigBits(T)-1) # 1 << (SigBits - 1)
 nSubnormalMagnitudes(T::Type{<:AbstractAIFloat}) = nPrenormalMagnitudes(T) - 1
 
 nPrenormalValues(::Type{T}) where {Bits, SigBits, T<:AbsSignedFloat{Bits, SigBits}} = 2 * nPrenormalMagnitudes(T) - 1
@@ -78,7 +78,7 @@ nExtendedNormalValues(T::Type{<:AbstractAIFloat}) =
     nNormalMagnitudes(T) + nInfs(T)
 
 # support for instantiations
-for F in (:nBits, :nSigBits, :nFracBits,
+for F in (:nBits, :nSigBits, :nFracBits, :nExpBits, :nSignBits,
           :nNaNs, :nZeros, :nInfs, :nPosInfs, :nNegInfs,
           :nValues, :nNumericValues, :nNonzeroNumericValues,
           :nSigMagnitudes, :nNonzeroSigMagnitudes, :nFracMagnitudes, :nNonzeroFracMagnitudes,
