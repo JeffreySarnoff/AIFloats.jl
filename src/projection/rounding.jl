@@ -60,6 +60,8 @@ function round_nearesteven(xs::T, x::F) where {T<:AbsUnsignedFloat, F<:AbstractF
     idx1 >= n && return floats(xs)[end-1]
 
     idx0 = idx1 - 1
+    iszero(idx0) && return val1
+
     val0 = floats(xs)[idx0]
     dval0 = x - val0
     dval1 = val1 - x
@@ -88,6 +90,8 @@ function round_nearestodd(xs::T, x::F) where {T<:AbsUnsignedFloat, F<:AbstractFl
     idx1 >= n && return floats(xs)[end-1]
 
     idx0 = idx1 - 1
+    iszero(idx0) && return val1
+
     val0 = floats(xs)[idx0]
     dval0 = x - val0
     dval1 = val1 - x
@@ -116,6 +120,8 @@ function round_nearesttozero(xs::T, x::F) where {T<:AbsUnsignedFloat, F<:Abstrac
     idx1 >= n && return floats(xs)[end-1]
 
     idx0 = idx1 - 1
+    iszero(idx0) && return val1
+
     val0 = floats(xs)[idx0]
     return val0
 end
@@ -133,3 +139,6 @@ end
 function round_nearestaway(xs::T, x::F) where {T<:AbsUnsignedFloat, F<:AbstractFloat}
     round_nearesrfromzero(xs, x)
 end
+
+# rounding for T<:AbsSignedFloat
+
