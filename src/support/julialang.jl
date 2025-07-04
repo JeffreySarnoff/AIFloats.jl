@@ -37,7 +37,7 @@ end
 
 function Base.eps(xs::T, x::F) where {T<:AbsUnsignedFiniteFloat, F<:AbstractFloat}
     x == 1 && return eps(xs)
-    idx1 = valuetoindex(xs, x)
+    idx1 = value_to_index(xs, x)
     if idx1 === nothing
         return eps(xs)
     end
@@ -47,7 +47,7 @@ end
 
 function Base.eps(xs::T, x::F) where {T<:AbsUnsignedExtendedFloat, F<:AbstractFloat}
     x == 1 && return eps(xs)
-    idx1 = valuetoindex(xs, x)
+    idx1 = value_to_index(xs, x)
     if idx1 === nothing
         return eps(xs)
     end
@@ -58,7 +58,7 @@ end
 function Base.eps(xs::T, x::F) where {T<:AbsSignedFiniteFloat, F<:AbstractFloat}
     ax = abs(x)
     ax == 1 && return eps(xs)
-    idx1 = valuetoindex(xs, ax)
+    idx1 = value_to_index(xs, ax)
     if idx1 === nothing
         return eps(xs)
     end
@@ -68,7 +68,7 @@ end
 
 function Base.eps(xs::T, x::F) where {T<:AbsSignedExtendedFloat, F<:AbstractFloat}
     x == 1 && return eps(xs)
-    idx1 = valuetoindex(xs, x)
+    idx1 = value_to_index(xs, x)
     if idx1 === nothing
         return eps(xs)
     end
@@ -78,7 +78,7 @@ end
 
 function Base.eps(xs::T, x::F) where {T<:AbsSignedFloat, F<:AbstractFloat}
     x == 1 && return eps(xs)
-    idx1 = valuetoindex(xs, x)
+    idx1 = value_to_index(xs, x)
     if idx1 === nothing
         return eps(xs)
     end
@@ -121,7 +121,7 @@ Otherwise, the smallest positive normal value.
 floatleast(x::T) where {T<:AbstractAIFloat} = floats(x)[2]
 
 function Base.nextfloat(xs::T, x::F) where {T<:AbstractAIFloat, F<:AbstractFloat}
-    idx = valuetoindex(xs, x)
+    idx = value_to_index(xs, x)
     if idx === nothing
         return eltype(floats(xs))(NaN)
     end
@@ -132,7 +132,7 @@ function Base.nextfloat(xs::T, x::F) where {T<:AbstractAIFloat, F<:AbstractFloat
 end
 
 function Base.prevfloat(xs::T, x::F) where {T<:AbstractAIFloat, F<:AbstractFloat}
-    idx = valuetoindex(xs, x)
+    idx = value_to_index(xs, x)
     if idx === nothing
         return eltype(floats(xs))(NaN)
     end

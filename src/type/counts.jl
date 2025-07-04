@@ -9,27 +9,39 @@ nInfs(@nospecialize(T::Type{<:AbsUnsignedFiniteFloat}))   = 0
 nInfs(@nospecialize(T::Type{<:AbsSignedExtendedFloat}))   = 2
 nInfs(@nospecialize(T::Type{<:AbsUnsignedExtendedFloat})) = 1
 
-nPosInfs(@nospecialize(T::Type{<:AbstractAIFloat})) = (nInfs(T) + 1) >> 1
-nNegInfs(@nospecialize(T::Type{<:AbsSignedFloat})) = (nInfs(T) + 1) >> 1
+nPosInfs(@nospecialize(T::Type{<:AbstractAIFloat}))  = (nInfs(T) + 1) >> 1
+nNegInfs(@nospecialize(T::Type{<:AbsSignedFloat}))   = (nInfs(T) + 1) >> 1
 nNegInfs(@nospecialize(T::Type{<:AbsUnsignedFloat})) = 0
 
 # counts predicated on type defining parameters and type specifying qualities
 # parameters: (bits, sigbits, exponent bias)
 # qualities: (signedness [signed / unsigned], finiteness [finite / extended (has Inf[s])])
 
-nBits(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = Bits
-nSigBits(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = SigBits
-nFracBits(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nSigBits(T) - 1
+nBits(::Type{T<:AbstractAIFloat{Bits, SigBits}}) where {Bits, SigBits} = Bits
+nSigBits(::Type{T<:AbstractAIFloat{Bits, SigBits}}) where {Bits, SigBits} = SigBits
 
-nSignBits(::Type{T}) where {T<:AbsSignedFloat} = 1
-nSignBits(::Type{T}) where {T<:AbsUnsignedFloat} = 0
+nFracBits(@nospecialize(T::Type{<:AbstractAIFloat})) = nSigBits(T) - 1
 
-nExpBits(::Type{T}) where {Bits, SigBits, T<:AbsSignedFloat{Bits, SigBits}} = nBits(T) - nSigBits(T)
-nExpBits(::Type{T}) where {Bits, SigBits, T<:AbsUnsignedFloat{Bits, SigBits}} = nBits(T) - nSigBits(T) + 1
+nSignBits(@nospecialize(T::Type{<:AbsSignedFloat})) = 1
+nSignBits(@nospecialize(T::Type{<:AbsUnsignedFloat})) = 0
 
-nValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 1 << nBits(T)
-nNumericValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nValues(T) - 1
-nNonzeroNumericValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nNumericValues(T) - 1
+nExpBits(@nospecialize(T::Type{<:AbsSignedFloat})) = nBits(T) - nSigBits(T)
+nExpBits(@nospecialize(T::Type{<:AbsUnsignedFloat})) = nBits(T) - nSigBits(T) + 1
+
+nMagnitudes(T::Type{<:AbsUnsignedFloat}) = 2^(nBits(T)) - 1
+nMagnitudes(T::Type{<:AbsSignedFloat})   = 2^(nBits(T)  - 1)
+
+nFiniteMagnitudes(T::Type{<:AbsUnsignedFiniteFloat}) = nMagnitudes(T) - nInfs(T)
+nNonzeroMagnitudes(T::Type{<:AbsUnsignedFiniteFloat}) = nMagnitudes(T) - nZeros(T)
+nNonzeroFiniteMagnitudes(T::Type{<:AbsUnsignedFiniteFloat}) = nFiniteMagnitudes(T) - nZeros(T)
+
+nValues(T::Type{<:AbstractAIFloat}) = 2^nBits(T)
+nNumericValues(T::Type{<:AbstractAIFloat}) = nValues(T) - nNans(T)
+nNonzeroNumericValues(T::Type{<:AbstractAIFloat}) = nNumericValues(T) - nZeros(T)
+nFiniteNumericValues(T::Type{<:AbstractAIFloat}) = nNumericValues(T) - nInfs(T)
+nNonzeroFiniteNumericValues(T::Type{<:AbstractAIFloat}) = nFiniteNumericValues(T) - nZeros(T)
+
+#--->
 
 nSigMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 1 << nSigBits(T)
 nNonzeroSigMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nSigMagnitudes(T) - 1
@@ -39,17 +51,6 @@ nNonzeroFracMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits,
 
 nExpValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 1 << nExpBits(T)
 nNonzeroExpValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nExpValues(T) - 1
-
-nMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbsSignedFloat{Bits, SigBits}} = nValues(T) >> 1
-nMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbsUnsignedFloat{Bits, SigBits}} = nNumericValues(T)
-
-nNonzeroMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nMagnitudes(T) - 1
-
-nFiniteValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nNumericValues(T) - nInfs(T)
-nNonzeroFiniteValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nFiniteValues(T) - 1
-
-nFiniteMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbsSignedFloat{Bits, SigBits}} = nMagnitudes(T) - nPosInfs(T)
-nNonzeroFiniteMagnitudes(::Type{T}) where {Bits, SigBits, T<:AbsSignedFloat{Bits, SigBits}} = nFiniteMagnitudes(T) - 1
 
 nNonnegValues(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = nMagnitudes(T)
 nPositiveValues(::Type{T}) where {Bits, SigBits, T<:AbsSignedFloat{Bits, SigBits}} = nNonnegValues(T) - 1

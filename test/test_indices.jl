@@ -7,8 +7,8 @@ using AIFloats: UnsignedFiniteFloats, SignedFiniteFloats,
                   ofsone, ofsnan, ofsinf, ofsneginf,
                   is_idxnan, is_ofsnan,
                   nValues, floats,
-                  index1, valuetoindex, indextovalue,
-                  valuetoindices, valuetoindexgte
+                  index1, value_to_index, index_to_value,
+                  value_to_indices, value_to_indexgte
 using Static
 
 @testset "Indices Tests" begin
@@ -67,26 +67,26 @@ using Static
         uf = UnsignedFiniteFloats(6, 3)
         values = floats(uf)
         
-        # Test valuetoindex
+        # Test value_to_index
         for i in [1, 5, 10, length(values)]
             if i <= length(values)
                 val = values[i]
-                found_idx = valuetoindex(uf, val)
+                found_idx = value_to_index(uf, val)
                 if !isnan(val)
                     @test found_idx == i
                 end
             end
         end
         
-        # Test indextovalue
+        # Test index_to_value
         for i in 1:min(10, length(values))
-            val = indextovalue(uf, i)
+            val = index_to_value(uf, i)
             @test val == values[i]
         end
         
         # Test out-of-bounds
-        @test isnan(indextovalue(uf, 0))
-        @test isnan(indextovalue(uf, length(values) + 1))
+        @test isnan(index_to_value(uf, 0))
+        @test isnan(index_to_value(uf, length(values) + 1))
     end
     
     @testset "Special Value Indices" begin
@@ -193,16 +193,16 @@ using Static
         
         # Test round-trip conversion for valid indices
         for i in 1:min(10, length(values))
-            val = indextovalue(uf, i)
+            val = index_to_value(uf, i)
             if !isnan(val)
-                found_idx = valuetoindex(uf, val)
+                found_idx = value_to_index(uf, val)
                 @test found_idx == i
             end
         end
         
-        # Test that valuetoindex returns nothing for non-existent values
+        # Test that value_to_index returns nothing for non-existent values
         non_existent = 12345.6789
-        @test valuetoindex(uf, non_existent) === nothing
+        @test value_to_index(uf, non_existent) === nothing
     end
     
     @testset "Index Functions with Instances" begin
@@ -220,13 +220,13 @@ using Static
         uf = UnsignedFiniteFloats(6, 3)
         
         # Test with extreme indices
-        @test isnan(indextovalue(uf, -1))
-        @test isnan(indextovalue(uf, 0))
-        @test isnan(indextovalue(uf, 1000))
+        @test isnan(index_to_value(uf, -1))
+        @test isnan(index_to_value(uf, 0))
+        @test isnan(index_to_value(uf, 1000))
           
-        # Test valuetoindex with special values
-        @test valuetoindex(uf, Inf) === nothing
-        @test valuetoindex(uf, -Inf) === nothing
+        # Test value_to_index with special values
+        @test value_to_index(uf, Inf) === nothing
+        @test value_to_index(uf, -Inf) === nothing
         # NaN case depends on implementation
         
         # Test conversion edge cases
@@ -306,14 +306,14 @@ using Static
         uf = UnsignedFiniteFloats(6, 3)
         values = floats(uf)
         
-        # Test valuetoindexgte function if it exists
+        # Test value_to_indexgte function if it exists
         # This tests the >= search functionality
         finite_vals = filter(isfinite, values)
         if length(finite_vals) >= 2
             test_val = finite_vals[2]
             
             # Should find the index of value >= test_val
-            gte_idx = valuetoindexgte(values, test_val)
+            gte_idx = value_to_indexgte(values, test_val)
             if gte_idx !== nothing
                 @test values[gte_idx] >= test_val
                 
@@ -329,12 +329,12 @@ using Static
         uf = UnsignedFiniteFloats(6, 3)
         values = floats(uf)
         
-        # Test valuetoindices function for range finding
+        # Test value_to_indices function for range finding
         finite_vals = filter(isfinite, values)
         if length(finite_vals) >= 2
             test_val = (finite_vals[1] + finite_vals[2]) / 2
             
-            indices_range = valuetoindices(finite_vals, test_val)
+            indices_range = value_to_indices(finite_vals, test_val)
             if indices_range != (nothing, nothing)
                 lo, hi = indices_range
                 

@@ -53,12 +53,6 @@ using AIFloats: BitsSmallMin, BitsSmallMax, BitsLargeMin, BitsLargeMax, BitsTop,
         @test AIFloats.typeforfloat(15) == Float128
         @test AIFloats.typeforfloat(static(6)) == Float64
         @test AIFloats.typeforfloat(static(13)) == Float128
-        
-        # Test type4code with error cases
-        @test AIFloats.type4code(5) == UInt8
-        @test AIFloats.type4code(12) == UInt16
-        @test_throws DomainError AIFloats.type4code(1)
-        @test_throws DomainError AIFloats.type4code(16)
     end
     
     @testset "Type Selection Edge Cases" begin

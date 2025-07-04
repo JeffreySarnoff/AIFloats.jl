@@ -59,11 +59,7 @@ typeforcode(Bits) = CODE_TYPES[1 + (Bits > BitsSmallMax)]
 typeforcode(Bits::StaticInt{N}) where {N} =
     ifelse(Bits <= static(BitsSmallMax), CODE_TYPES[1], CODE_TYPES[2])
 
-function type4code(bitwidth::Integer)
-    (2 <= bitwidth <= 8)  && return UInt8
-    (9 <= bitwidth < 16)  && return UInt16
-    throw(DomainError(bitwidth, "require: 2 <= bitwidth ($bitwidth) < 16"))
-end
+typeforcode(T::Type{<:AbstractAIFloat}) = typeforcode(nBits(T))
 
 """
     typeforfloat(bitwidth)
@@ -76,6 +72,8 @@ It is an *unchecked error* to set bitwidth outside BitsMin..BitsMax
 typeforfloat(Bits) = FLOAT_TYPES[1 + (Bits > BitsSmallMax) + (Bits >= BitsLargeMin)]
 typeforfloat(Bits::StaticInt{N}) where {N} =
     ifelse(Bits <= static(BitsSmallMax), FLOAT_TYPES[1], ifelse(Bits < BitsLargeMin, FLOAT_TYPES[2], FLOAT_TYPES[3]))
+
+typeforfloat(T::Type{<:AbstractAIFloat}) = typeforfloat(nBits(T))
 
 
 # convention all caps for Bools, Ints are Static consts
