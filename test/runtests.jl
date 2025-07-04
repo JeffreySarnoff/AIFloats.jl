@@ -22,6 +22,6 @@ using Aqua
     include("test_unsigned.jl")         # ok
     include("test_signed.jl")           # ok
     include("test_indices.jl")          # ok
-    include("test_rounding.jl")
+    include("test_rounding.jl")         # ok
     include("test_aifloats_main.jl")    # ok
 end

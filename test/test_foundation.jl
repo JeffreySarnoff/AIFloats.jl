@@ -209,7 +209,7 @@ struct TestUnsignedFinite{Bits, SigBits} <: AbsUnsignedFiniteFloat{Bits, SigBits
         for exp in [-2.5, -1.5, -0.5, 0.5, 1.5, 2.5]
             computed = two_pow(exp)
             expected = 2.0^exp
-            @test computed ≈ expected rtol=1e-14
+            @test computed ≈ expected # rtol=1e-14
         end
     end
     
