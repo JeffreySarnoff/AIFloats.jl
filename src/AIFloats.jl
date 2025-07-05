@@ -72,58 +72,94 @@ include("concrete/signed.jl")
 include("support/indices.jl")
 # include("support/julialang.jl")
 include("support/aqua.jl")
-  
-const UnsignedFloat = true
-const SignedFloat   = true
-const FiniteFloat   = true
-const ExtendedFloat = true
 
-function AIFloat(bitwidth::Int, sigbits::Int;
-                 SignedFloat::Bool=false, UnsignedFloat::Bool=false,
-                 FiniteFloat::Bool=false, ExtendedFloat::Bool=false)
+"""    
+    AIFloat(<:AbstractAIFloat)
+
+    AIFloat(bitwidth, precision, `<signedness>`, `<domain`)
+
+- bitwidth is the total number of bits in the floating-point representation
+- precision is the number of bits in the significand (implicit bit + fractional bits)
+
+-  `<signedness>` is one of {:signed, :unsigned} 
+-  `<domain>`     is one of {:finite, :extended} 
+
+generates a corresponding concrete AI floating-point type
+
+see [`floats`](@ref), [`codes`](@ref)
+""" AIFloat
+
+"""
+    floats(x_or_T)
+
+the canonical value sequence for the given type.
+
+see [`AIFloat`](@ref), [`codes`](@ref), [`x_or_T`](@ref)
+""" floats
+
+"""
+    codes(x_or_T)
+
+the canonical encoding sequence for the given type.
+
+see [`AIFloat`](@ref), [`floats`](@ref), [`x_or_T`](@ref)
+""" codes
+
+"""
+    x_or_T
+
+`func(x_or_T)` means `func` works with abstract and concrete arguments
+- the concrete x::T 
+- the abstract T::Type
+""" x_or_T
+
+x_or_T() = true  # placeholder for x_or_T so docs work
+
+function AIFloat(bitwidth::Int, sigbits::Int, kinds...)
+    plusminus, nonnegative, extended, finite = 
+        map(kw->kw in kinds, (:signed, :unsigned, :extended, :finite))
      
     # are the keyword arguments consistent?
-    if !xor(SignedFloat, UnsignedFloat)
-        error("AIFloats: specify one of `SignedFloat` or `UnsignedFloat`.")
-    elseif !xor(FiniteFloat, ExtendedFloat)
-        error("AIFloats: specify one of `FiniteFloat` or `ExtendedFloat`.")
+    if !xor(plusminus, nonnegative)
+        error("AIFloats: specify one of `:signed` or `:unsigned`.")
+    elseif !xor(extended, finite)
+        error("AIFloats: specify one of `:extended` or `:finite`.")
     end
 
-    # keywords are initialized
-    # are these arguments conformant?
+    # are these arg values conformant?
     params_ok = (sigbits >= 1) && 
-                (SignedFloat ? bitwidth > sigbits : bitwidth >= sigbits)
+                (plusminus ? bitwidth > sigbits : bitwidth >= sigbits)
     
     if !params_ok
-        ifelse(UnsignedFloat, 
+        ifelse(nonnegative, 
             error("AIFloats: Unsigned formats require `(1 <= precision <= bitwidth <= 15).`\n
                    AIFloat was called using (bitwidth = $bitwidth, precision = $sigbits)."),
             error("AIFloats: Signed formats require `(1 <= precision < bitwidth <= 15).\n
                    AIFloat was called using (bitwidth = $bitwidth, precision = $sigbits)."))
     end
 
-    ConstructAIFloat(bitwidth, sigbits; SignedFloat, ExtendedFloat)
+    ConstructAIFloat(bitwidth, sigbits; plusminus, extended)
 end
 
 function ConstructAIFloat(bitwidth::Int, sigbits::Int; 
-                          SignedFloat::Bool, ExtendedFloat::Bool)
-    if SignedFloat
-        if ExtendedFloat
+                          plusminus::Bool, extended::Bool)
+    if plusminus
+        if extended
             SignedExtendedFloat(bitwidth, sigbits)
-        else # FiniteFloat
+        else # finite
             SignedFiniteFloat(bitwidth, sigbits)
         end
-    else # UnsignedFloat
-        if ExtendedFloat
+    else # nonnegative
+        if infinite
             UnsignedExtendedFloat(bitwidth, sigbits)
-        else # FiniteFloat
+        else # finite
             UnsignedFiniteFloat(bitwidth, sigbits)
         end
     end
 end
 
 function AIFloat(T::Type{<:AbstractAIFloat})
-    ConstructAIFloat(nBits(T), nSigBits(T); SignedFloat=is_signed(T), ExtendedFloat=is_extended(T)) 
+    ConstructAIFloat(nBits(T), nSigBits(T); plusminus=is_signed(T), extended=is_extended(T)) 
 end
 
 end  # AIFloats

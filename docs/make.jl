@@ -13,6 +13,7 @@ DocMeta.setdocmeta!(AIFloats, :DocTestSetup, :(using AIFloats); recursive = true
 
 makedocs(;
     modules = [AIFloats],
+    warnonly = [:autodocs_block],
     sitename = "AIFloats",
     authors = "Jeffrey Sarnoff <jeffrey.sarnoff@gmail.com>",
     format = Documenter.HTML(),
