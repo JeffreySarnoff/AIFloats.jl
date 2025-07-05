@@ -1,10 +1,3 @@
-using Test
-using AIFloats
-using AIFloats: AbstractAIFloat, AbsSignedFloat, AbsUnsignedFloat,
-                  AbsSignedFiniteFloat, AbsSignedExtendedFloat,
-                  AbsUnsignedFiniteFloat, AbsUnsignedExtendedFloat
-
-
 @testset "Abstract Type Tests" begin
     @testset "Type Hierarchy" begin
         # Test basic type hierarchy

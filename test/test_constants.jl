@@ -1,9 +1,3 @@
-using Test
-using AIFloats, Quadmath
-using Static
-using AIFloats: BitsSmallMin, BitsSmallMax, BitsLargeMin, BitsLargeMax, BitsTop,
-      typeforcode, typeforfloat
-
 @testset "Constants Tests" begin
     @testset "Bit Range Constants" begin
         @test AIFloats.BitsSmallMin == 2

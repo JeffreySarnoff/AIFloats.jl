@@ -20,6 +20,16 @@ end
 
 @inline index_to_offset(::Type{Target}, x::T) where {Target<:Integer, T<:Integer} = (x - one(T)) % Target
 
+@inline function index_to_offset(xs::T, x::I) where {T<:AbstractAIFloat, I<:Integer}
+    !(0x01 <= x <= length(floats(xs))) || throw(DomainError(x, "index_to_offset: index $x out of bounds for $T"))
+    index_to_offset(x)
+end
+
+@inline function index_to_offset(xs::T, x::I) where {T<:Vector{<:AbstractFloat}, I<:Integer}
+    !(0x01 <= x <= length(xs)) || throw(DomainError(x, "index_to_offset: index $x out of bounds for $T"))
+    index_to_offset(x)
+end
+
 """
     offset_to_index(x)
 
@@ -37,6 +47,16 @@ end
 @inline offset_to_index(x::I) where {I<:Integer} = offset_to_index(x % UInt16)
 
 @inline offset_to_index(::Type{Target}, x::T) where {Target<:Integer, T<:Integer} = (x + one(T)) % Target
+
+@inline function offset_to_index(xs::T, x::I) where {T<:AbstractAIFloat, I<:Integer}
+    !(0x01 <= x <= length(floats(xs))) || throw(DomainError(x, "index_to_offset: index $x out of bounds for $T"))
+    offset_to_index(x)
+end
+
+@inline function offset_to_index(xs::T, x::I) where {T<:Vector{<:AbstractFloat}, I<:Integer}
+    !(0x01 <= x <= length(xs)) || throw(DomainError(x, "index_to_offset: index $x out of bounds for $T"))
+    offset_to_index(x)
+end
 
 """
     index_to_code(bits, index)
@@ -66,12 +86,16 @@ convert the Julia offset `x` into a P3109 encoding value as a UInt8|16
 @inline index1(x::T) where {T<:AbsSignedFloat} = index1(T)
 
 @inline function value_to_index(xs::T, x::F) where {T<:AbstractAIFloat, F<:AbstractFloat}
-    findfirst(isequal(x), floats(xs))
+    idx = findfirst(isequal(x), floats(xs))
+    isnothing(idx) && throw(DomainError(x, "value_to_index: value $x not found in $xs"))
+    idx
 end
 
 @inline function value_to_index(xs::T, x::F) where {T<:Vector{<:AbstractFloat}, F<:AbstractFloat}
-    findfirst(isequal(x), xs)
-end
+    idx = findfirst(isequal(x), xs)
+    isnothing(idx) && throw(DomainError(x, "value_to_index: value $x not found in $xs"))
+    idx
+ end
 
 @inline function index_to_value(xs::T, index::Integer) where {T<:AbstractAIFloat}
     if index < 1 || index > nValues(T)
@@ -81,10 +105,10 @@ end
 end
 
 @inline function index_to_value(xs::T, index::Integer) where {T<:Vector{AbstractFloat}}
-    if index < 1 || index > nValues(T)
-        return eltype(floats(xs))(NaN)
+    if index < 1 || index > length(xs)
+        return eltype(xs)(NaN)
     end
-    floats(xs)[index]
+    xs[index]
 end
 
 @inline function value_to_indexgte(xs::T, x::F) where {T<:AbstractAIFloat, F<:AbstractFloat}
@@ -109,7 +133,7 @@ end
 @inline function value_to_indices(xs::T, x::F) where {T<:Vector{<:AbstractFloat}, F<:AbstractFloat}
     hi = value_to_indexgte(xs, x)
     isnothing(hi) && return (nothing, nothing)
-    if !isnothing(hi) && x == float(xs)[hi]
+    if !isnothing(hi) && x == xs[hi]
         lo = hi
     else
         lo = hi - 1
@@ -125,36 +149,36 @@ end
     index_to_offset(value_to_index(xs, x))
 end
 
-@inline function value_to_offset(xs::T, index::Integer) where {T<:AbstractAIFloat}
-    index_to_offset(value_to_index(xs, x))
-end
-
-@inline function value_to_offset(xs::T, index::Integer) where {T<:Vector{AbstractFloat}}
-    index_to_offset(value_to_index(xs, x))
-end
-
 offset_to_value(xs::T, ofs::Integer) where {T<:AbstractAIFloat} = index_to_value(xs, offset_to_index(ofs))
 offset_to_value(xs::Vector{<:AbstractFloat}, ofs::Integer) = index_to_value(xs, offset_to_index(ofs))
 
 idxone(::Type{T}) where {T<:AbsUnsignedFloat} = (((nValues(T) % UInt16) >> 0x0001) + 0x0001)
 idxone(::Type{T}) where {T<:AbsSignedFloat} = (((nValues(T) % UInt16) >> 0x0002) + 0x0001)
 idxnegone(::Type{T}) where {T<:AbsSignedFloat} = ((((nValues(T) % UInt16) >> 0x0002) + 0x0001) + nValues(T)>>1)
+idxnegone(::Type{T}) where {T<:AbsUnsignedFloat} = nothing # throw(DomainError(T, "idxnegone: T must be an AbsSignedFloat type, not $T"))
 
-idxnan(::Type{T}) where {T<:AbsUnsignedFloat} = ((nValues(T) % UInt16))
+idxnan(::Type{T}) where {T<:AbsUnsignedFloat} = (nValues(T) % UInt16)
 idxnan(::Type{T}) where {T<:AbsSignedFloat} = (((nValues(T) % UInt16) >> 0x0001) + 0x0001)
  
-idxinf(::Type{T}) where {T<:AbsUnsignedExtendedFloat} = (((nValues(T) - 1) % UInt16))
-idxinf(::Type{T}) where {T<:AbsSignedExtendedFloat} = (((nValues(T) % UInt16) >> 0x0001))
-idxneginf(::Type{T}) where {T<:AbsSignedExtendedFloat} = (((nValues(T) % UInt16) ))
+idxinf(::Type{T}) where {T<:AbsUnsignedExtendedFloat} = ((nValues(T) - 1) % UInt16)
+idxinf(::Type{T}) where {T<:AbsSignedExtendedFloat} = ((nValues(T) % UInt16) >> 0x0001)
+
+idxneginf(::Type{T}) where {T<:AbsSignedExtendedFloat} = (nValues(T) % UInt16)
+idxneginf(::Type{T}) where {T<:AbsSignedFiniteFloat} = nothing # throw(DomainError(T, "idxneginf: T must be an AbsSignedExtendedFloat type, not $T"))
+idxneginf(::Type{T}) where {T<:AbsUnsignedFloat} = nothing # throw(DomainError(T, "idxneginf: T must be an AbsSignedExtendedFloat type, not $T"))
 
 ofsone(T::Type{<:AbstractAIFloat}) = index_to_offset(idxone(T))
+ofsnegone(T::Type{<:AbstractAIFloat}) = index_to_offset(idxnegone(T))
+ofsnegone(::Type{T}) where {T<:AbsUnsignedFloat} = nothing # throw(DomainError(T, "ofsnegone: T must be an AbsSignedFloat type, not $T"))
+
 ofsnan(T::Type{<:AbstractAIFloat}) = index_to_offset(idxnan(T))
 ofsinf(::Type{T}) where {T<:AbsUnsignedExtendedFloat} = index_to_offset(idxinf(T))
 ofsinf(::Type{T}) where {T<:AbsSignedExtendedFloat} = index_to_offset(idxinf(T))
-ofsneginf(::Type{T}) where {T<:AbsUnsignedExtendedFloat} = index_to_offset(idxneginf(T))
 ofsneginf(::Type{T}) where {T<:AbsSignedExtendedFloat} = index_to_offset(idxneginf(T))
+ofsneginf(::Type{T}) where {T<:AbsSignedFiniteFloat} = nothing # throw(DomainError(T, "ofsneginf: T must be an AbsSignedExtendedFloat type, not $T"))
+ofsneginf(::Type{T}) where {T<:AbsUnsignedFloat} = nothing # throw(DomainError(T, "ofsneginf: T must be an AbsSignedExtendedFloat type, not $T"))
  
- # cover instantiationsS
+ # cover instantiations
  for F in (:idxone, :idxnegone, :idxnan, :idxinf, :idxneginf,
            :ofsone, :ofsnan, :ofsinf, :ofsneginf)
     @eval $F(x::T) where {T<:AbstractAIFloat} = $F(T)

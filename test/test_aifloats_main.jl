@@ -1,12 +1,3 @@
-using Test
-using AIFloats
-using AIFloats: AIFloat, ConstructAIFloat,
-                  SignedFiniteFloat, UnsignedFiniteFloat,
-                  SignedExtendedFloat, UnsignedExtendedFloat,
-                  floats, codes, typeforfloat, typeforcode,
-                  nBits, nSigBits, is_signed, is_finite, is_extended,
-                  has_subnormals, nValues, nMagnitudes, expBias
-
 @testset "AIFloats Main Module Tests" begin
     @testset "AIFloat Constructor - Basic Functionality" begin
         # Test basic signed finite construction

@@ -1,26 +1,3 @@
-using Test
-using AIFloats
-using AIFloats: AbsSignedFiniteFloat, AbsUnsignedFiniteFloat,
-                  nNaNs, nZeros, nInfs, nPosInfs, nNegInfs,
-                  nBits, nSigBits, nFracBits, nSignBits, nExpBits,
-                  nValues, nNumericValues, nNonzeroNumericValues,
-                  nMagnitudes, nNonzeroMagnitudes,
-                  nFiniteValues, nNonzeroFiniteValues,
-                  nPrenormalMagnitudes, nSubnormalMagnitudes,
-                  nPrenormalValues, nSubnormalValues,
-                  nNormalMagnitudes, nNormalValues,
-                  nFiniteMagnitudes, nFiniteValues,
-                  nNonzeroFiniteMagnitudes, nNonzeroFiniteValues,
-                  nPrenormalValues, nSubnormalValues,
-                  nNormalValues, nExtendedNormalValues,
-                  nExtendedNormalMagnitudes, nFiniteNonnegValues,
-                  nFinitePositiveValues, nFiniteNegativeValues,
-                  nNonnegValues, nPositiveValues, nNegativeValues,
-                  nFiniteNonnegValues, nFinitePositiveValues, nFiniteNegativeValues,
-                  nSubnormalValues, nSubnormalMagnitudes,
-                  nNormalValues, nNormalMagnitudes,
-                  nExpValues, nNonzeroExpValues
-
 @testset "Counts Tests" begin
     @testset "Basic Counts" begin
         @test nNaNs(TestSignedFinite{8, 4}) == 1

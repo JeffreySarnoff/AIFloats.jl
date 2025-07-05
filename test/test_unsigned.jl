@@ -1,11 +1,3 @@
-using Test
-using AIFloats
-using AIFloats: UnsignedFiniteFloat, UnsignedExtendedFloat,
-                  AbsUnsignedFiniteFloat, AbsUnsignedExtendedFloat,
-                  floats, codes, typeforfloat, typeforcode,
-                  value_sequence, foundation_magnitudes
-using Quadmath
-
 @testset "Unsigned Types Tests" begin
     @testset "UnsignedFiniteFloat Construction" begin
         # Test basic construction with parameters

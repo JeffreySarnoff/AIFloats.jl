@@ -1,9 +1,3 @@
-using Test
-using AIFloats
-using AIFloats: AbsSignedFiniteFloat, AbsUnsignedFiniteFloat, encoding_sequence, typeforcode
-
-using AlignedAllocs
-
 @testset "Encodings Tests" begin
     @testset "Basic Encoding Sequence" begin
         T = TestSignedFinite{8, 4}

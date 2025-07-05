@@ -1,10 +1,3 @@
-using Test
-using AIFloats
-using AIFloats: AbsSignedFiniteFloat, AbsUnsignedFiniteFloat,
-                  prenormal_magnitude_steps, normal_magnitude_steps,
-                  significand_magnitudes, nPrenormalMagnitudes,
-                  firstNonzeroPrenormalMagnitude, lastPrenormalMagnitude
-
 @testset "Significands Tests" begin
     @testset "Prenormal Magnitude Steps" begin
         T = TestSignedFinite{8, 4}

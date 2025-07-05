@@ -1,16 +1,3 @@
-using Test
-using AIFloats
-using AIFloats: UnsignedFiniteFloat, SignedFiniteFloat,
-                  UnsignedExtendedFloat, SignedExtendedFloat,
-                  offset_to_index, index_to_offset, index_to_code,
-                  idxone, idxnan, idxinf, idxneginf, idxnegone,
-                  ofsone, ofsnan, ofsinf, ofsneginf,
-                  is_idxnan, is_ofsnan,
-                  nValues, floats,
-                  index1, value_to_index, index_to_value,
-                  value_to_indices, value_to_indexgte
-using Static
-
 @testset "Indices Tests" begin
     @testset "Offset/Index Conversion" begin
         # Test basic conversions
@@ -202,7 +189,7 @@ using Static
         
         # Test that value_to_index returns nothing for non-existent values
         non_existent = 12345.6789
-        @test value_to_index(uf, non_existent) === nothing
+        @test_throws DomainError value_to_index(uf, non_existent)
     end
     
     @testset "Index Functions with Instances" begin
@@ -225,8 +212,8 @@ using Static
         @test isnan(index_to_value(uf, 1000))
           
         # Test value_to_index with special values
-        @test value_to_index(uf, Inf) === nothing
-        @test value_to_index(uf, -Inf) === nothing
+        @test_throws DomainError value_to_index(uf, Inf)
+        @test_throws DomainError value_to_index(uf, -Inf)
         # NaN case depends on implementation
         
         # Test conversion edge cases

@@ -137,7 +137,7 @@ function round_nearestfromzero(xs::T, x::F) where {T<:AbsUnsignedFloat, F<:Abstr
 end
 
 function round_nearestaway(xs::T, x::F) where {T<:AbsUnsignedFloat, F<:AbstractFloat}
-    round_nearesrfromzero(xs, x)
+    round_nearestfromzero(xs, x)
 end
 
 # rounding for T<:AbsSignedFloat

@@ -1,9 +1,3 @@
-using Test
-using AIFloats
-using AIFloats: AbsSignedFiniteFloat, AbsUnsignedFiniteFloat,
-                  is_aifloat, is_signed, is_unsigned, is_finite, is_extended,
-                  has_subnormals
-
 @testset "Predicates Tests" begin
     @testset "is_aifloat" begin
         @test is_aifloat(TestSignedFinite{8, 4}) === true

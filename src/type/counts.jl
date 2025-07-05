@@ -17,7 +17,7 @@ nNegInfs(@nospecialize(T::Type{<:AbsUnsignedFloat})) = 0
 # parameters: (bits, sigbits, exponent bias)
 # qualities: (signedness [signed / unsigned], finiteness [finite / extended (has Inf[s])])
 
-nBits(T::Type{<:AbstractAIFloat{Bits, SigBits}}) where {Bits, SigBits} = Bits
+nBits(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = Bits
 nSigBits(T::Type{<:AbstractAIFloat{Bits, SigBits}}) where {Bits, SigBits} = SigBits
 
 nFracBits(@nospecialize(T::Type{<:AbstractAIFloat})) = nSigBits(T) - 1
@@ -36,6 +36,7 @@ nNonzeroMagnitudes(T::Type{<:AbstractAIFloat}) = nMagnitudes(T) - nZeros(T)
 nNonzeroFiniteMagnitudes(T::Type{<:AbstractAIFloat}) = nFiniteMagnitudes(T) - nZeros(T)
 
 nValues(T::Type{<:AbstractAIFloat}) = 2^nBits(T)
+
 nNumericValues(T::Type{<:AbstractAIFloat}) = nValues(T) - nNaNs(T)
 nNonzeroNumericValues(T::Type{<:AbstractAIFloat}) = nNumericValues(T) - nZeros(T)
 nFiniteValues(T::Type{<:AbstractAIFloat}) = nNumericValues(T) - nInfs(T)

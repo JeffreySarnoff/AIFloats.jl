@@ -1,51 +1,47 @@
 module AIFloats
 
 export AbstractAIFloat,
-       # abstract types
-       AbsUnsignedFloat, AbsUnsignedFiniteFloat, AbsUnsignedExtendedFloat,
-       AbsSignedFloat, AbsSignedFiniteFloat, AbsSignedExtendedFloat,
-       # concrete types
-       UnsignedFiniteFloat, UnsignedExtendedFloat,
-       SignedFiniteFloat, SignedExtendedFloat,
-       # field retrieval 
-       floats, codes,
-       # generalized constructor, keyword consts
-       AIFloat, UnsignedFloat, SignedFloat, FiniteFloat, ExtendedFloat,
-       # concrete constructive types
-       UnsignedFiniteFloat, UnsignedExtendedFloat,
-       SignedFiniteFloat, SignedExtendedFloat,
-       # type characterization predicates
-       is_aifloat, is_unsigned, is_signed, is_finite, is_extended,
-       # subtype characterization predicate
-        has_subnormals,
-        # counts by fiat
-        nNaNs, nZeros,
-        # counts by format definitions 
-        nInfs, nPosInfs, nNegInfs,
-        # counts predicated on abstract [sub]type
-        nBits, nSigBits, nFracBits, nSignBits, nExpBits,  
-        nMagnitudes, nNonzeroMagnitudes, nFiniteMagnitudes, nNonzeroFiniteMagnitudes,
-        nPrenormalMagnitudes, nSubnormalMagnitudes, nNormalMagnitudes,
-        nValues, nNumericValues, nNonzeroNumericValues, nFiniteValues, nNonzeroFiniteValues,
-        nPrenormalValues, nSubnormalValues, nNormalValues,
-        nExpValues, nNonzeroExpValues,
-        # exponent
-        expBias, expMin, expMax, expMinValue, expMaxValue, expValues,
-        expSubnormal, expSubnormalValue, expUnbiasedValues,
-        # extrema
-        subnormalMagnitudeMin, subnormalMagnitudeMax,
-        normalMagnitudeMin, normalMagnitudeMax,
-        # functions over types
-        encoding_sequence, value_sequence,
-         foundation_magnitudes,
-        # indices and offsets
-        index_to_offset, offset_to_index,
-        index1,  
-        value_to_index, index_to_value, value_to_offset, offset_to_value,
-        is_idxnan, is_ofsnan 
-        # counts predicated on type defining parameters and type specifying qualities
-        # parameters: (bits, sigbits, exponent bias)
-        # qualities: (signedness [signed / unsigned], finiteness [finite / extended (has Inf[s])])
+    # abstract types
+    AbsUnsignedFloat, AbsUnsignedFiniteFloat, AbsUnsignedExtendedFloat,
+    AbsSignedFloat, AbsSignedFiniteFloat, AbsSignedExtendedFloat,
+    # concrete constructive types
+    UnsignedFiniteFloat, UnsignedExtendedFloat,
+    SignedFiniteFloat, SignedExtendedFloat,
+    # field retrieval 
+    floats, codes,
+    # generalized constructor, keyword consts
+    AIFloat,
+    # type characterization predicates
+    is_aifloat, is_unsigned, is_signed, is_finite, is_extended,
+    # subtype characterization predicate
+    has_subnormals,
+    # counts by fiat
+    nNaNs, nZeros,
+    # counts by format definitions 
+    nInfs, nPosInfs, nNegInfs,
+    # counts predicated on abstract [sub]type
+    nBits, nSigBits, nFracBits, nSignBits, nExpBits,  
+    nMagnitudes, nNonzeroMagnitudes, nFiniteMagnitudes, nNonzeroFiniteMagnitudes,
+    nPrenormalMagnitudes, nSubnormalMagnitudes, nNormalMagnitudes,
+    nValues, nNumericValues, nNonzeroNumericValues, nFiniteValues, nNonzeroFiniteValues,
+    nPrenormalValues, nSubnormalValues, nNormalValues,
+    nExpValues, nNonzeroExpValues,
+    # exponent
+    expBias, expMin, expMax, expMinValue, expMaxValue, expValues,
+    expSubnormal, expSubnormalValue, expUnbiasedValues,
+    # extrema
+    subnormalMagnitudeMin, subnormalMagnitudeMax,
+    normalMagnitudeMin, normalMagnitudeMax,
+    # functions over types
+    encoding_sequence, value_sequence, foundation_magnitudes,
+    # indices and offsets
+    index_to_offset, offset_to_index,
+    index1,  
+    value_to_index, index_to_value, value_to_offset, offset_to_value,
+    is_idxnan, is_ofsnan 
+    # counts predicated on type defining parameters and type specifying qualities
+    # parameters: (bits, sigbits, exponent bias)
+    # qualities: (signedness [signed / unsigned], finiteness [finite / extended (has Inf[s])])
 
 using AlignedAllocs: memalign_clear, alignment
 using Static: static, dynamic, StaticInt, StaticBool

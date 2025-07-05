@@ -1,10 +1,3 @@
-using Test
-using AIFloats
-using AIFloats: AbsSignedFiniteFloat, AbsUnsignedFiniteFloat, expBias, expMin, expMax,
-                expFieldMax, expMinValue, expMaxValue, expSubnormalValue, expUnbiasedNormalMin,
-                expUnbiasedNormalMax, expUnbiasedSubnormal, expUnbiasedNormals,
-                expUnbiasedValues, expNormalValues, expValues
-
 @testset "Exponents Tests" begin
     @testset "Exponent Bias" begin
         # Signed types: bias = 2^(Bits - SigBits - 1)
