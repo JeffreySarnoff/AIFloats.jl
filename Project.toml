@@ -12,7 +12,7 @@ Quadmath =  "be4d8f0f-7fa4-5f49-b795-2f01399ab2dd"
 Static = "1.2"
 AlignedAllocs = "0.1.12 - 0.1.40"
 Quadmath = "0.5 - 0.9"
-Test = "1.11"
+Test = "1.10"
 julia = "1.11"
 
 [extras]
