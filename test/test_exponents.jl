@@ -5,10 +5,6 @@ using AIFloats: AbsSignedFiniteFloat, AbsUnsignedFiniteFloat, expBias, expMin, e
                 expUnbiasedNormalMax, expUnbiasedSubnormal, expUnbiasedNormals,
                 expUnbiasedValues, expNormalValues, expValues
 
-# Create test types for exponent testing
-struct TestSignedFinite{Bits, SigBits} <: AbsSignedFiniteFloat{Bits, SigBits} end
-struct TestUnsignedFinite{Bits, SigBits} <: AbsUnsignedFiniteFloat{Bits, SigBits} end
-
 @testset "Exponents Tests" begin
     @testset "Exponent Bias" begin
         # Signed types: bias = 2^(Bits - SigBits - 1)

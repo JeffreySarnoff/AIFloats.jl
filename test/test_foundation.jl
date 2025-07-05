@@ -7,10 +7,6 @@ using AIFloats: AbsSignedFiniteFloat, AbsUnsignedFiniteFloat,
                   expUnbiasedSubnormal, expUnbiasedNormals
 using Quadmath
 
-# Create test types for foundation testing
-struct TestSignedFinite{Bits, SigBits} <: AbsSignedFiniteFloat{Bits, SigBits} end
-struct TestUnsignedFinite{Bits, SigBits} <: AbsUnsignedFiniteFloat{Bits, SigBits} end
-
 @testset "Foundation Tests" begin
     @testset "Foundation Magnitudes" begin
         T = TestSignedFinite{6, 3}

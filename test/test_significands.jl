@@ -5,10 +5,6 @@ using AIFloats: AbsSignedFiniteFloat, AbsUnsignedFiniteFloat,
                   significand_magnitudes, nPrenormalMagnitudes,
                   firstNonzeroPrenormalMagnitude, lastPrenormalMagnitude
 
-# Create test types for significand testing
-struct TestSignedFinite{Bits, SigBits} <: AbsSignedFiniteFloat{Bits, SigBits} end
-struct TestUnsignedFinite{Bits, SigBits} <: AbsUnsignedFiniteFloat{Bits, SigBits} end
-
 @testset "Significands Tests" begin
     @testset "Prenormal Magnitude Steps" begin
         T = TestSignedFinite{8, 4}

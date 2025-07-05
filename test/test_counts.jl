@@ -21,12 +21,6 @@ using AIFloats: AbsSignedFiniteFloat, AbsUnsignedFiniteFloat,
                   nNormalValues, nNormalMagnitudes,
                   nExpValues, nNonzeroExpValues
 
-# Create test types for count testing
-struct TestSignedFinite{Bits, SigBits} <: AbsSignedFiniteFloat{Bits, SigBits} end
-struct TestSignedExtended{Bits, SigBits} <: AbsSignedExtendedFloat{Bits, SigBits} end
-struct TestUnsignedFinite{Bits, SigBits} <: AbsUnsignedFiniteFloat{Bits, SigBits} end
-struct TestUnsignedExtended{Bits, SigBits} <: AbsUnsignedExtendedFloat{Bits, SigBits} end
-
 @testset "Counts Tests" begin
     @testset "Basic Counts" begin
         @test nNaNs(TestSignedFinite{8, 4}) == 1

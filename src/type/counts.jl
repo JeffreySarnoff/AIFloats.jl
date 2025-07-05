@@ -31,15 +31,15 @@ nExpBits(@nospecialize(T::Type{<:AbsUnsignedFloat})) = nBits(T) - nSigBits(T) + 
 nMagnitudes(T::Type{<:AbsUnsignedFloat}) = 2^(nBits(T)) - 1
 nMagnitudes(T::Type{<:AbsSignedFloat})   = 2^(nBits(T)  - 1)
 
-nFiniteMagnitudes(T::Type{<:AbsUnsignedFiniteFloat}) = nMagnitudes(T) - nInfs(T)
-nNonzeroMagnitudes(T::Type{<:AbsUnsignedFiniteFloat}) = nMagnitudes(T) - nZeros(T)
-nNonzeroFiniteMagnitudes(T::Type{<:AbsUnsignedFiniteFloat}) = nFiniteMagnitudes(T) - nZeros(T)
+nFiniteMagnitudes(T::Type{<:AbstractAIFloat}) = nMagnitudes(T) - nInfs(T)
+nNonzeroMagnitudes(T::Type{<:AbstractAIFloat}) = nMagnitudes(T) - nZeros(T)
+nNonzeroFiniteMagnitudes(T::Type{<:AbstractAIFloat}) = nFiniteMagnitudes(T) - nZeros(T)
 
 nValues(T::Type{<:AbstractAIFloat}) = 2^nBits(T)
-nNumericValues(T::Type{<:AbstractAIFloat}) = nValues(T) - nNans(T)
+nNumericValues(T::Type{<:AbstractAIFloat}) = nValues(T) - nNaNs(T)
 nNonzeroNumericValues(T::Type{<:AbstractAIFloat}) = nNumericValues(T) - nZeros(T)
-nFiniteNumericValues(T::Type{<:AbstractAIFloat}) = nNumericValues(T) - nInfs(T)
-nNonzeroFiniteNumericValues(T::Type{<:AbstractAIFloat}) = nFiniteNumericValues(T) - nZeros(T)
+nFiniteValues(T::Type{<:AbstractAIFloat}) = nNumericValues(T) - nInfs(T)
+nNonzeroFiniteValues(T::Type{<:AbstractAIFloat}) = nFiniteValues(T) - nZeros(T)
 
 #--->
 

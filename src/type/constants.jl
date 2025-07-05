@@ -1,11 +1,3 @@
-
-# use to specify two of the four keyword args of AIFloat(), one signedness, one finiteness
-# AIFloat(bitwidth, precision; oneof{UnsignedFloat, SignedFloat}, oneof{FiniteFloat, ExtendedFloat})
-const UnsignedFloat = true
-const SignedFloat   = true
-const FiniteFloat   = true
-const ExtendedFloat = true
-
 # 7 small bitwidths (UInt8 encoded)
 const BitsSmallMin, BitsSmallMax =  2, 8
 # 7 large bitwidths (UInt16 encoded)
@@ -74,19 +66,4 @@ typeforfloat(Bits::StaticInt{N}) where {N} =
     ifelse(Bits <= static(BitsSmallMax), FLOAT_TYPES[1], ifelse(Bits < BitsLargeMin, FLOAT_TYPES[2], FLOAT_TYPES[3]))
 
 typeforfloat(T::Type{<:AbstractAIFloat}) = typeforfloat(nBits(T))
-
-
-# convention all caps for Bools, Ints are Static consts
-
-const TRUE = static(true)
-const FALSE = static(false)
-
-# use for Bits, SigBits to obtain minimal (fastest) aspect value determinations
-for (N, I)  in [(:ZERO, 0), (:ONE, 1), (:TWO, 2), (:THREE, 3), (:FOUR, 4), (:FIVE, 5), (:SIX, 6), (:SEVEN, 7),
-                (:EIGHT, 8), (:NINE, 9), (:TEN, 10), (:ELEVEN, 11), (:TWELVE, 12), (:THIRTEEN, 13),
-                (:FOURTEEN, 14), (:FIFTEEN, 15), (:SIXTEEN, 16)]
-    @eval begin
-        const $N = static($I)
-    end
-end
 

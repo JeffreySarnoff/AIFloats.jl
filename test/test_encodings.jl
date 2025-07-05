@@ -4,10 +4,6 @@ using AIFloats: AbsSignedFiniteFloat, AbsUnsignedFiniteFloat, encoding_sequence,
 
 using AlignedAllocs
 
-# Create test types for encoding testing
-struct TestSignedFinite{Bits, SigBits} <: AbsSignedFiniteFloat{Bits, SigBits} end
-struct TestUnsignedFinite{Bits, SigBits} <: AbsUnsignedFiniteFloat{Bits, SigBits} end
-
 @testset "Encodings Tests" begin
     @testset "Basic Encoding Sequence" begin
         T = TestSignedFinite{8, 4}

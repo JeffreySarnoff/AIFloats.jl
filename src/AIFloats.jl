@@ -150,7 +150,7 @@ function ConstructAIFloat(bitwidth::Int, sigbits::Int;
             SignedFiniteFloat(bitwidth, sigbits)
         end
     else # nonnegative
-        if infinite
+        if extended
             UnsignedExtendedFloat(bitwidth, sigbits)
         else # finite
             UnsignedFiniteFloat(bitwidth, sigbits)

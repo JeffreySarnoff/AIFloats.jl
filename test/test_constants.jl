@@ -5,13 +5,6 @@ using AIFloats: BitsSmallMin, BitsSmallMax, BitsLargeMin, BitsLargeMax, BitsTop,
       typeforcode, typeforfloat
 
 @testset "Constants Tests" begin
-    @testset "Boolean Constants" begin
-        @test AIFloats.UnsignedFloat === true
-        @test AIFloats.SignedFloat === true
-        @test AIFloats.FiniteFloat === true
-        @test AIFloats.ExtendedFloat === true
-    end
-    
     @testset "Bit Range Constants" begin
         @test AIFloats.BitsSmallMin == 2
         @test AIFloats.BitsSmallMax == 8
@@ -26,17 +19,7 @@ using AIFloats: BitsSmallMin, BitsSmallMax, BitsLargeMin, BitsLargeMax, BitsTop,
         @test AIFloats.CODE == Union{UInt8, UInt16}
         @test AIFloats.FLOAT == Union{Float64, Float128}
     end
-    
-    @testset "Static Integer Constants" begin
-        @test AIFloats.ZERO === static(0)
-        @test AIFloats.ONE === static(1)
-        @test AIFloats.TWO === static(2)
-        @test AIFloats.FIFTEEN === static(15)
-        @test AIFloats.SIXTEEN === static(16)
-        @test AIFloats.TRUE === static(true)
-        @test AIFloats.FALSE === static(false)
-    end
-    
+        
     @testset "Type Selection Functions" begin
         # Test typeforcode
         @test AIFloats.typeforcode(4) == UInt8

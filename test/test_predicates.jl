@@ -4,12 +4,6 @@ using AIFloats: AbsSignedFiniteFloat, AbsUnsignedFiniteFloat,
                   is_aifloat, is_signed, is_unsigned, is_finite, is_extended,
                   has_subnormals
 
-# Create some test types for predicate testing
-struct TestSignedFinite{Bits, SigBits} <: AbsSignedFiniteFloat{Bits, SigBits} end
-struct TestSignedExtended{Bits, SigBits} <: AbsSignedExtendedFloat{Bits, SigBits} end
-struct TestUnsignedFinite{Bits, SigBits} <: AbsUnsignedFiniteFloat{Bits, SigBits} end
-struct TestUnsignedExtended{Bits, SigBits} <: AbsUnsignedExtendedFloat{Bits, SigBits} end
-
 @testset "Predicates Tests" begin
     @testset "is_aifloat" begin
         @test is_aifloat(TestSignedFinite{8, 4}) === true

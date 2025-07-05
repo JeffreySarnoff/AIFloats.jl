@@ -7,7 +7,12 @@ using AIFloats
     @testset "Code Quality" begin
 #        Aqua.test_all(AIFloats)
     end
-    
+    # Create some test types for predicate testing
+    struct TestSignedFinite{Bits, SigBits} <: AbsSignedFiniteFloat{Bits, SigBits} end
+    struct TestSignedExtended{Bits, SigBits} <: AbsSignedExtendedFloat{Bits, SigBits} end
+    struct TestUnsignedFinite{Bits, SigBits} <: AbsUnsignedFiniteFloat{Bits, SigBits} end
+    struct TestUnsignedExtended{Bits, SigBits} <: AbsUnsignedExtendedFloat{Bits, SigBits} end
+
     # Include all test files
     include("test_constants.jl")        # ok
     include("test_abstract.jl")         # ok

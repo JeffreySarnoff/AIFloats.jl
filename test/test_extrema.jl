@@ -23,12 +23,6 @@ using AIFloats: AbsSignedFiniteFloat, AbsUnsignedFiniteFloat,
                   expMinValue, expMaxValue, expSubnormalValue,
                   nPrenormalMagnitudes, has_subnormals
 
-# Create test types for extrema testing
-struct TestSignedFinite{Bits, SigBits} <: AbsSignedFiniteFloat{Bits, SigBits} end
-struct TestSignedExtended{Bits, SigBits} <: AbsSignedExtendedFloat{Bits, SigBits} end
-struct TestUnsignedFinite{Bits, SigBits} <: AbsUnsignedFiniteFloat{Bits, SigBits} end
-struct TestUnsignedExtended{Bits, SigBits} <: AbsUnsignedExtendedFloat{Bits, SigBits} end
-
 @testset "Extrema Tests" begin
     @testset "Prenormal Magnitude Bounds" begin
         T = TestSignedFinite{8, 4}
