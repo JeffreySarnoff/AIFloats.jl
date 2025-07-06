@@ -14,7 +14,7 @@ end
 floats(x::SignedExtendedFloat) = x.floats
 codes(x::SignedExtendedFloat) = x.codes
 
-function SignedFiniteFloat(T::Type{<:AbstractSignedFloat})
+function SignedFiniteFloat(T::Type{<:AbstractSigned})
     bits = nBits(T)
     sigbits = nSigBits(T)
     SignedFiniteFloat(bits, sigbits)
@@ -42,7 +42,7 @@ function value_sequence(T::Type{<:AbstractSignedFinite})
     floats
 end
 
-function SignedExtendedFloat(T::Type{<:AbstractSignedFloat})
+function SignedExtendedFloat(T::Type{<:AbstractSigned})
     bits = nBits(T)
     sigbits = nSigBits(T)
     SignedExtendedFloat(bits, sigbits)

@@ -46,8 +46,8 @@ The main exports from the `AIFloats` module are:
 ### Abstract Types
 
 - `AbstractAIFloat`
-- `AbstractUnsignedFloat` / `AbstractUnsignedFinite` / `AbstractUnsignedExtended`
-- `AbstractSignedFloat` / `AbstractSignedFinite` / `AbstractSignedExtended`
+- `AbstractUnsigned` / `AbstractUnsignedFinite` / `AbstractUnsignedExtended`
+- `AbstractSigned` / `AbstractSignedFinite` / `AbstractSignedExtended`
 
 ### Concrete Types & Constructors
 
@@ -99,10 +99,10 @@ The main exports from the `AIFloats` module are:
 
 ```
 AbstractAIFloat
- ├─ AbstractUnsignedFloat
+ ├─ AbstractUnsigned
  │   ├─ AbstractUnsignedFinite
  │   └─ AbstractUnsignedExtended
- └─ AbstractSignedFloat
+ └─ AbstractSigned
      ├─ AbstractSignedFinite
      └─ AbstractSignedExtended
 ```

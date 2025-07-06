@@ -35,10 +35,10 @@ The `AbstractAIFloat` system provides a flexible framework for defining custom f
 
 ```julia
 AbstractAIFloat{Bits, SigBits, IsSigned} <: AbstractFloat
-├── AbstractSignedFloat{Bits, SigBits}   # IsSigned = true
+├── AbstractSigned{Bits, SigBits}   # IsSigned = true
 │   ├── AbstractSignedFinite{Bits, SigBits}     # No infinities
 │   └── AbstractSignedExtended{Bits, SigBits}   # With ±∞
-└── AbstractUnsignedFloat{Bits, SigBits} # IsSigned = false  
+└── AbstractUnsigned{Bits, SigBits} # IsSigned = false  
     ├── AbstractUnsignedFinite{Bits, SigBits}   # No infinities
     └── AbstractUnsignedExtended{Bits, SigBits} # With +∞ only
 ```
@@ -109,8 +109,8 @@ is_extended(AbstractSignedExtended{8,4}) # true
 For use with abstract supertypes:
 
 ```julia
-isa_signed(@nospecialize(T::Type{<:AbstractSignedFloat})) → Bool
-isa_unsigned(@nospecialize(T::Type{<:AbstractUnsignedFloat})) → Bool  
+isa_signed(@nospecialize(T::Type{<:AbstractSigned})) → Bool
+isa_unsigned(@nospecialize(T::Type{<:AbstractUnsigned})) → Bool  
 isa_finite(@nospecialize(T::Type{<:AbstractSignedFinite})) → Bool
 isa_extended(@nospecialize(T::Type{<:AbstractSignedExtended})) → Bool
 ```

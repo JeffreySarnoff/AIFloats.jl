@@ -11,14 +11,14 @@ AIFloats.jl implements a comprehensive family of microfloat formats based on the
 ```julia
 abstract type AbstractAIFloat{Bits, SigBits, IsSigned} <: AbstractFloat end
 
-abstract type AbstractSignedFloat{Bits, SigBits} <: AbstractAIFloat{Bits, SigBits, true} end
-abstract type AbstractUnsignedFloat{Bits, SigBits} <: AbstractAIFloat{Bits, SigBits, false} end
+abstract type AbstractSigned{Bits, SigBits} <: AbstractAIFloat{Bits, SigBits, true} end
+abstract type AbstractUnsigned{Bits, SigBits} <: AbstractAIFloat{Bits, SigBits, false} end
 
-abstract type AbstractSignedFinite{Bits, SigBits} <: AbstractSignedFloat{Bits, SigBits} end
-abstract type AbstractSignedExtended{Bits, SigBits} <: AbstractSignedFloat{Bits, SigBits} end
+abstract type AbstractSignedFinite{Bits, SigBits} <: AbstractSigned{Bits, SigBits} end
+abstract type AbstractSignedExtended{Bits, SigBits} <: AbstractSigned{Bits, SigBits} end
 
-abstract type AbstractUnsignedFinite{Bits, SigBits} <: AbstractUnsignedFloat{Bits, SigBits} end
-abstract type AbstractUnsignedExtended{Bits, SigBits} <: AbstractUnsignedFloat{Bits, SigBits} end
+abstract type AbstractUnsignedFinite{Bits, SigBits} <: AbstractUnsigned{Bits, SigBits} end
+abstract type AbstractUnsignedExtended{Bits, SigBits} <: AbstractUnsigned{Bits, SigBits} end
 ```
 
 ### Concrete Implementation Types
@@ -298,10 +298,10 @@ index_to_code(bits::Integer, index::Integer) =
     (index - 1) % (bits <= 8 ? UInt8 : UInt16)
 
 # Special value indices (computed, not stored)
-idxone(T::Type{<:AbstractUnsignedFloat}) = (nValues(T) >> 1) + 1
-idxone(T::Type{<:AbstractSignedFloat}) = (nValues(T) >> 2) + 1  
-idxnan(T::Type{<:AbstractUnsignedFloat}) = nValues(T)
-idxnan(T::Type{<:AbstractSignedFloat}) = (nValues(T) >> 1) + 1
+idxone(T::Type{<:AbstractUnsigned}) = (nValues(T) >> 1) + 1
+idxone(T::Type{<:AbstractSigned}) = (nValues(T) >> 2) + 1  
+idxnan(T::Type{<:AbstractUnsigned}) = nValues(T)
+idxnan(T::Type{<:AbstractSigned}) = (nValues(T) >> 1) + 1
 ```
 
 ### Value-Index Mapping
@@ -328,8 +328,8 @@ end
 
 ```julia
 # Sign mask (0 for unsigned, MSB for signed)
-sign_mask(::Type{T}) where {T<:AbstractUnsignedFloat} = zero(typeforcode(nBits(T)))
-sign_mask(::Type{T}) where {T<:AbstractSignedFloat} = 
+sign_mask(::Type{T}) where {T<:AbstractUnsigned} = zero(typeforcode(nBits(T)))
+sign_mask(::Type{T}) where {T<:AbstractSigned} = 
     one(typeforcode(nBits(T))) << (nBits(T) - 1)
 
 # Exponent mask
@@ -357,15 +357,15 @@ nSigBits(T::Type{<:AbstractAIFloat}) = SigBits
 nFracBits(::Type{T}) where {T<:AbstractAIFloat} = nSigBits(T) - 1
 
 # Sign and exponent bits
-nSignBits(::Type{T}) where {T<:AbstractSignedFloat} = 1
-nSignBits(::Type{T}) where {T<:AbstractUnsignedFloat} = 0
-nExpBits(::Type{T}) where {T<:AbstractSignedFloat} = nBits(T) - nSigBits(T)
-nExpBits(::Type{T}) where {T<:AbstractUnsignedFloat} = nBits(T) - nSigBits(T) + 1
+nSignBits(::Type{T}) where {T<:AbstractSigned} = 1
+nSignBits(::Type{T}) where {T<:AbstractUnsigned} = 0
+nExpBits(::Type{T}) where {T<:AbstractSigned} = nBits(T) - nSigBits(T)
+nExpBits(::Type{T}) where {T<:AbstractUnsigned} = nBits(T) - nSigBits(T) + 1
 
 # Value counts
 nValues(::Type{T}) where {T<:AbstractAIFloat} = 1 << nBits(T)
-nMagnitudes(::Type{T}) where {T<:AbstractSignedFloat} = nValues(T) >> 1
-nMagnitudes(::Type{T}) where {T<:AbstractUnsignedFloat} = nValues(T) - 1
+nMagnitudes(::Type{T}) where {T<:AbstractSigned} = nValues(T) >> 1
+nMagnitudes(::Type{T}) where {T<:AbstractUnsigned} = nValues(T) - 1
 
 # Special value counts
 nInfs(::Type{T}) where {T<:AbstractSignedExtended} = 2    # ±Inf

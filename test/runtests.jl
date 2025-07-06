@@ -1,7 +1,7 @@
 using Test
 using AIFloats, AlignedAllocs, Quadmath, Static
 
-using AIFloats: AbstractAIFloat, AbstractUnsignedFloat, AbstractUnsignedFloat,
+using AIFloats: AbstractAIFloat, AbstractUnsigned, AbstractUnsigned,
     AbstractUnsignedExtended, AbstractUnsignedFinite, 
     AbstractSignedExtended, AbstractSignedFinite, 
     AIFloat, ConstructAIFloat, floats, codes,

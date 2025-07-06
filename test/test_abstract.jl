@@ -2,14 +2,14 @@
     @testset "Type Hierarchy" begin
         # Test basic type hierarchy
         @test AbstractAIFloat <: AbstractFloat
-        @test AbstractSignedFloat <: AbstractAIFloat
-        @test AbstractUnsignedFloat <: AbstractAIFloat
+        @test AbstractSigned <: AbstractAIFloat
+        @test AbstractUnsigned <: AbstractAIFloat
         
         # Test finite/extended hierarchy
-        @test AbstractSignedFinite <: AbstractSignedFloat
-        @test AbstractSignedExtended <: AbstractSignedFloat
-        @test AbstractUnsignedFinite <: AbstractUnsignedFloat
-        @test AbstractUnsignedExtended <: AbstractUnsignedFloat
+        @test AbstractSignedFinite <: AbstractSigned
+        @test AbstractSignedExtended <: AbstractSigned
+        @test AbstractUnsignedFinite <: AbstractUnsigned
+        @test AbstractUnsignedExtended <: AbstractUnsigned
     end
     
     @testset "Type Parameters" begin
@@ -27,8 +27,8 @@
     
     @testset "Type Relationships" begin
         # Test disjoint unions
-        @test !(AbstractSignedFloat <: AbstractUnsignedFloat)
-        @test !(AbstractUnsignedFloat <: AbstractSignedFloat)
+        @test !(AbstractSigned <: AbstractUnsigned)
+        @test !(AbstractUnsigned <: AbstractSigned)
         @test !(AbstractSignedFinite <: AbstractSignedExtended)
         @test !(AbstractSignedExtended <: AbstractSignedFinite)
         @test !(AbstractUnsignedFinite <: AbstractUnsignedExtended)
@@ -37,9 +37,9 @@
     
     @testset "Common Supertype" begin
         # Test common supertypes
-        @test typejoin(AbstractSignedFloat, AbstractUnsignedFloat) == AbstractAIFloat
-        @test typejoin(AbstractSignedFinite, AbstractSignedExtended) == AbstractSignedFloat
-        @test typejoin(AbstractUnsignedFinite, AbstractUnsignedExtended) == AbstractUnsignedFloat
+        @test typejoin(AbstractSigned, AbstractUnsigned) == AbstractAIFloat
+        @test typejoin(AbstractSignedFinite, AbstractSignedExtended) == AbstractSigned
+        @test typejoin(AbstractUnsignedFinite, AbstractUnsignedExtended) == AbstractUnsigned
     end
 end
 

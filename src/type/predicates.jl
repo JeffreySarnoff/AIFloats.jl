@@ -5,11 +5,11 @@ is_aifloat(@nospecialize(T::Type{<:AbstractFloat})) = false
 is_aifloat(@nospecialize(T::Type{<:AbstractAIFloat})) = true
 is_aifloat(@nospecialize(T::Type)) = false
 
-is_signed(@nospecialize(T::Type{<:AbstractSignedFloat}))     = true
-is_signed(@nospecialize(T::Type{<:AbstractUnsignedFloat}))   = false
+is_signed(@nospecialize(T::Type{<:AbstractSigned}))     = true
+is_signed(@nospecialize(T::Type{<:AbstractUnsigned}))   = false
 
-is_unsigned(@nospecialize(T::Type{<:AbstractSignedFloat}))   = false
-is_unsigned(@nospecialize(T::Type{<:AbstractUnsignedFloat})) = true
+is_unsigned(@nospecialize(T::Type{<:AbstractSigned}))   = false
+is_unsigned(@nospecialize(T::Type{<:AbstractUnsigned})) = true
 
 is_finite(@nospecialize(T::Type{<:AbstractSignedFinite}))     = true
 is_finite(@nospecialize(T::Type{<:AbstractUnsignedFinite}))   = true

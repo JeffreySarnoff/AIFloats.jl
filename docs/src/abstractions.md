@@ -5,8 +5,8 @@
 ```mermaid
 graph TD
     A[AbstractAIFloat]
-    A--> S[AbstractSignedFloat]
-    A--> U[AbstractUnsignedFloat]
+    A--> S[AbstractSigned]
+    A--> U[AbstractUnsigned]
     S--> SF[AbstractSignedFinite]
     S--> SE[AbstractSignedExtended]
     U--> UF[AbstractUnsignedFinite]
