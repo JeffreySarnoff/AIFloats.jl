@@ -79,11 +79,11 @@ convert the Julia offset `x` into a P3109 encoding value as a UInt8|16
 - (9, 255) ↦ 0x00ff
 """
 
-@inline index1(::Type{T}) where {T<:AbsUnsignedFloat} = nValues(T) >> 0x0001 + 0x01
-@inline index1(x::T) where {T<:AbsUnsignedFloat} = index1(T)                                                            
+@inline index1(::Type{T}) where {T<:AbstractUnsignedFloat} = nValues(T) >> 0x0001 + 0x01
+@inline index1(x::T) where {T<:AbstractUnsignedFloat} = index1(T)                                                            
 
-@inline index1(::Type{T}) where {T<:AbsSignedFloat} = nValues(T) >> 0x02 + 0x01
-@inline index1(x::T) where {T<:AbsSignedFloat} = index1(T)
+@inline index1(::Type{T}) where {T<:AbstractSignedFloat} = nValues(T) >> 0x02 + 0x01
+@inline index1(x::T) where {T<:AbstractSignedFloat} = index1(T)
 
 @inline function value_to_index(xs::T, x::F) where {T<:AbstractAIFloat, F<:AbstractFloat}
     idx = findfirst(isequal(x), floats(xs))
@@ -152,31 +152,31 @@ end
 offset_to_value(xs::T, ofs::Integer) where {T<:AbstractAIFloat} = index_to_value(xs, offset_to_index(ofs))
 offset_to_value(xs::Vector{<:AbstractFloat}, ofs::Integer) = index_to_value(xs, offset_to_index(ofs))
 
-idxone(::Type{T}) where {T<:AbsUnsignedFloat} = (((nValues(T) % UInt16) >> 0x0001) + 0x0001)
-idxone(::Type{T}) where {T<:AbsSignedFloat} = (((nValues(T) % UInt16) >> 0x0002) + 0x0001)
-idxnegone(::Type{T}) where {T<:AbsSignedFloat} = ((((nValues(T) % UInt16) >> 0x0002) + 0x0001) + nValues(T)>>1)
-idxnegone(::Type{T}) where {T<:AbsUnsignedFloat} = nothing # throw(DomainError(T, "idxnegone: T must be an AbsSignedFloat type, not $T"))
+idxone(::Type{T}) where {T<:AbstractUnsignedFloat} = (((nValues(T) % UInt16) >> 0x0001) + 0x0001)
+idxone(::Type{T}) where {T<:AbstractSignedFloat} = (((nValues(T) % UInt16) >> 0x0002) + 0x0001)
+idxnegone(::Type{T}) where {T<:AbstractSignedFloat} = ((((nValues(T) % UInt16) >> 0x0002) + 0x0001) + nValues(T)>>1)
+idxnegone(::Type{T}) where {T<:AbstractUnsignedFloat} = nothing # throw(DomainError(T, "idxnegone: T must be an AbstractSignedFloat type, not $T"))
 
-idxnan(::Type{T}) where {T<:AbsUnsignedFloat} = (nValues(T) % UInt16)
-idxnan(::Type{T}) where {T<:AbsSignedFloat} = (((nValues(T) % UInt16) >> 0x0001) + 0x0001)
+idxnan(::Type{T}) where {T<:AbstractUnsignedFloat} = (nValues(T) % UInt16)
+idxnan(::Type{T}) where {T<:AbstractSignedFloat} = (((nValues(T) % UInt16) >> 0x0001) + 0x0001)
  
-idxinf(::Type{T}) where {T<:AbsUnsignedExtendedFloat} = ((nValues(T) - 1) % UInt16)
-idxinf(::Type{T}) where {T<:AbsSignedExtendedFloat} = ((nValues(T) % UInt16) >> 0x0001)
+idxinf(::Type{T}) where {T<:AbstractUnsignedExtended} = ((nValues(T) - 1) % UInt16)
+idxinf(::Type{T}) where {T<:AbstractSignedExtended} = ((nValues(T) % UInt16) >> 0x0001)
 
-idxneginf(::Type{T}) where {T<:AbsSignedExtendedFloat} = (nValues(T) % UInt16)
-idxneginf(::Type{T}) where {T<:AbsSignedFiniteFloat} = nothing # throw(DomainError(T, "idxneginf: T must be an AbsSignedExtendedFloat type, not $T"))
-idxneginf(::Type{T}) where {T<:AbsUnsignedFloat} = nothing # throw(DomainError(T, "idxneginf: T must be an AbsSignedExtendedFloat type, not $T"))
+idxneginf(::Type{T}) where {T<:AbstractSignedExtended} = (nValues(T) % UInt16)
+idxneginf(::Type{T}) where {T<:AbstractSignedFinite} = nothing # throw(DomainError(T, "idxneginf: T must be an AbstractSignedExtended type, not $T"))
+idxneginf(::Type{T}) where {T<:AbstractUnsignedFloat} = nothing # throw(DomainError(T, "idxneginf: T must be an AbstractSignedExtended type, not $T"))
 
 ofsone(T::Type{<:AbstractAIFloat}) = index_to_offset(idxone(T))
 ofsnegone(T::Type{<:AbstractAIFloat}) = index_to_offset(idxnegone(T))
-ofsnegone(::Type{T}) where {T<:AbsUnsignedFloat} = nothing # throw(DomainError(T, "ofsnegone: T must be an AbsSignedFloat type, not $T"))
+ofsnegone(::Type{T}) where {T<:AbstractUnsignedFloat} = nothing # throw(DomainError(T, "ofsnegone: T must be an AbstractSignedFloat type, not $T"))
 
 ofsnan(T::Type{<:AbstractAIFloat}) = index_to_offset(idxnan(T))
-ofsinf(::Type{T}) where {T<:AbsUnsignedExtendedFloat} = index_to_offset(idxinf(T))
-ofsinf(::Type{T}) where {T<:AbsSignedExtendedFloat} = index_to_offset(idxinf(T))
-ofsneginf(::Type{T}) where {T<:AbsSignedExtendedFloat} = index_to_offset(idxneginf(T))
-ofsneginf(::Type{T}) where {T<:AbsSignedFiniteFloat} = nothing # throw(DomainError(T, "ofsneginf: T must be an AbsSignedExtendedFloat type, not $T"))
-ofsneginf(::Type{T}) where {T<:AbsUnsignedFloat} = nothing # throw(DomainError(T, "ofsneginf: T must be an AbsSignedExtendedFloat type, not $T"))
+ofsinf(::Type{T}) where {T<:AbstractUnsignedExtended} = index_to_offset(idxinf(T))
+ofsinf(::Type{T}) where {T<:AbstractSignedExtended} = index_to_offset(idxinf(T))
+ofsneginf(::Type{T}) where {T<:AbstractSignedExtended} = index_to_offset(idxneginf(T))
+ofsneginf(::Type{T}) where {T<:AbstractSignedFinite} = nothing # throw(DomainError(T, "ofsneginf: T must be an AbstractSignedExtended type, not $T"))
+ofsneginf(::Type{T}) where {T<:AbstractUnsignedFloat} = nothing # throw(DomainError(T, "ofsneginf: T must be an AbstractSignedExtended type, not $T"))
  
  # cover instantiations
  for F in (:idxone, :idxnegone, :idxnan, :idxinf, :idxneginf,

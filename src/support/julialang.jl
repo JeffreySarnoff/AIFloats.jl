@@ -24,8 +24,8 @@ end
 
 # Julia Base primitive attributes
 
-Base.sign_mask(T::Type{<:AbsUnsignedFloat}) = zero(typeforcode(nBits(T)))
-Base.sign_mask(T::Type{<:AbsSignedFloat}) = one(typeforcode(nBits(T))) << (nBits(T) - 1)
+Base.sign_mask(T::Type{<:AbstractUnsignedFloat}) = zero(typeforcode(nBits(T)))
+Base.sign_mask(T::Type{<:AbstractSignedFloat}) = one(typeforcode(nBits(T))) << (nBits(T) - 1)
 
 function Base.exponent_mask(T::Type{<:AbstractAIFloat})
     unit = one(typeforcode(nBits(T)))
@@ -38,27 +38,27 @@ function trailing_significand_mask(T::Type{<:AbstractAIFloat})
     (unit << nFracBits(T)) - unit
 end
 
-function unmask(T<:Type{AbsSignedFloat})
+function unmask(T<:Type{AbstractSignedFloat})
     signmask  = Base.sign_mask(T)
     expmask   = Base.exponent_mask(T)
     fracmask  = Base.trailing_significand_mask(T)
     (; signmask, expmask, fracmask)
 end
 
-function unmask(T<:Type{AbsUnsignedFloat})
+function unmask(T<:Type{AbstractUnsignedFloat})
     expmask   = Base.exponent_mask(T)
     fracmask  = Base.trailing_significand_mask(T)
     (; expmask, fracmask)
 end
 
-function unmask(x::T) where {T<:AbsSignedFloat}
+function unmask(x::T) where {T<:AbstractSignedFloat}
     smask, emask, fmask = unmask(T)
     sbits, ebits, fbits = (x & smask), (x & emask), (x & fmask)
     "0b" * rawbits(smask, sbits) * "_" * rawbits(emask, ebits) * "_" * rawbits(fmask, fbits)
 end
 
-Base.sign(xs::T, x::F) where {T<:AbsUnsignedFloat, F<:AbstractFloat} = ifelse(iszero(x), x, one(F))
-Base.sign(xs::T, x::F) where {T<:AbsSignedFloat, F<:AbstractFloat} = ifelse(iszero(x), x, (signbit(x) ? -one(F) : one(F)))
+Base.sign(xs::T, x::F) where {T<:AbstractUnsignedFloat, F<:AbstractFloat} = ifelse(iszero(x), x, one(F))
+Base.sign(xs::T, x::F) where {T<:AbstractSignedFloat, F<:AbstractFloat} = ifelse(iszero(x), x, (signbit(x) ? -one(F) : one(F)))
 
 Base.precision(T::Type{<:AbstractAIFloat}) = SigBits
 Base.precision(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = SigBits
@@ -71,7 +71,7 @@ function Base.eps(xs::T) where {T<:AbstractAIFloat}
     end    
 end
 
-function Base.eps(xs::T, x::F) where {T<:AbsUnsignedFiniteFloat, F<:AbstractFloat}
+function Base.eps(xs::T, x::F) where {T<:AbstractUnsignedFinite, F<:AbstractFloat}
     x == 1 && return eps(xs)
     idx1 = value_to_index(xs, x)
     if idx1 === nothing
@@ -81,7 +81,7 @@ function Base.eps(xs::T, x::F) where {T<:AbsUnsignedFiniteFloat, F<:AbstractFloa
     floats(xs)[idx1 + 0x01] - floats(xs)[idx1]
 end
 
-function Base.eps(xs::T, x::F) where {T<:AbsUnsignedExtendedFloat, F<:AbstractFloat}
+function Base.eps(xs::T, x::F) where {T<:AbstractUnsignedExtended, F<:AbstractFloat}
     x == 1 && return eps(xs)
     idx1 = value_to_index(xs, x)
     if idx1 === nothing
@@ -91,7 +91,7 @@ function Base.eps(xs::T, x::F) where {T<:AbsUnsignedExtendedFloat, F<:AbstractFl
     floats(xs)[idx1 + 0x01] - floats(xs)[idx1]
 end
 
-function Base.eps(xs::T, x::F) where {T<:AbsSignedFiniteFloat, F<:AbstractFloat}
+function Base.eps(xs::T, x::F) where {T<:AbstractSignedFinite, F<:AbstractFloat}
     ax = abs(x)
     ax == 1 && return eps(xs)
     idx1 = value_to_index(xs, ax)
@@ -102,7 +102,7 @@ function Base.eps(xs::T, x::F) where {T<:AbsSignedFiniteFloat, F<:AbstractFloat}
     floats(xs)[idx1 + 0x01] - floats(xs)[idx1]
 end
 
-function Base.eps(xs::T, x::F) where {T<:AbsSignedExtendedFloat, F<:AbstractFloat}
+function Base.eps(xs::T, x::F) where {T<:AbstractSignedExtended, F<:AbstractFloat}
     x == 1 && return eps(xs)
     idx1 = value_to_index(xs, x)
     if idx1 === nothing
@@ -112,7 +112,7 @@ function Base.eps(xs::T, x::F) where {T<:AbsSignedExtendedFloat, F<:AbstractFloa
     floats(xs)[idx1 + 0x01] - floats(xs)[idx1]
 end
 
-function Base.eps(xs::T, x::F) where {T<:AbsSignedFloat, F<:AbstractFloat}
+function Base.eps(xs::T, x::F) where {T<:AbstractSignedFloat, F<:AbstractFloat}
     x == 1 && return eps(xs)
     idx1 = value_to_index(xs, x)
     if idx1 === nothing
@@ -134,19 +134,19 @@ function Base.floatmin(x::T) where {T<:AbstractAIFloat}
     floats(x)[nprenormals+0x01]
 end
 
-function Base.floatmax(x::T) where {T<:AbsUnsignedFloat}
+function Base.floatmax(x::T) where {T<:AbstractUnsignedFloat}
     floats(x)[nValues(T) - 0x01 - is_extended(T)]
 end
 
-function Base.floatmax(x::T) where {T<:AbsSignedFloat}
+function Base.floatmax(x::T) where {T<:AbstractSignedFloat}
     floats(x)[(nValues(T) >> 1) - is_extended(T)]
 end
 
-Base.typemin(x::T) where {T<:AbsUnsignedFloat} = floats(x)[0x01]
-Base.typemin(x::T) where {T<:AbsSignedFloat} = floats(x)[end]
+Base.typemin(x::T) where {T<:AbstractUnsignedFloat} = floats(x)[0x01]
+Base.typemin(x::T) where {T<:AbstractSignedFloat} = floats(x)[end]
 
-Base.typemax(x::T) where {T<:AbsUnsignedFloat} = floats(x)[end-1]
-Base.typemax(x::T) where {T<:AbsSignedFloat} = floats(x)[(nValues(T) >> 1)]
+Base.typemax(x::T) where {T<:AbstractUnsignedFloat} = floats(x)[end-1]
+Base.typemax(x::T) where {T<:AbstractSignedFloat} = floats(x)[(nValues(T) >> 1)]
 
 """
     floatleast(x::T) where {T<:AbstractAIFloat}

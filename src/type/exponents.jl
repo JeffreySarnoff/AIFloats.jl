@@ -1,6 +1,6 @@
 
-expBias(::Type{T}) where {Bits, SigBits, T<:AbsSignedFloat{Bits, SigBits}}   = 2^(Bits - SigBits - 1) # 1 << (Bits - SigBits - 1) 
-expBias(::Type{T}) where {Bits, SigBits, T<:AbsUnsignedFloat{Bits, SigBits}} = 2^(Bits - SigBits )    # 1 << (Bits - SigBits)
+expBias(::Type{T}) where {Bits, SigBits, T<:AbstractSignedFloat{Bits, SigBits}}   = 2^(Bits - SigBits - 1) # 1 << (Bits - SigBits - 1) 
+expBias(::Type{T}) where {Bits, SigBits, T<:AbstractUnsignedFloat{Bits, SigBits}} = 2^(Bits - SigBits )    # 1 << (Bits - SigBits)
 
 # exponent field characterizations
 expFieldMax(T::Type{<:AbstractAIFloat}) = nExpValues(T) - 1

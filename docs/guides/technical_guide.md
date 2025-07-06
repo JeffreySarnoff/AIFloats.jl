@@ -11,35 +11,35 @@ AIFloats.jl implements a comprehensive family of microfloat formats based on the
 ```julia
 abstract type AbstractAIFloat{Bits, SigBits, IsSigned} <: AbstractFloat end
 
-abstract type AbsSignedFloat{Bits, SigBits} <: AbstractAIFloat{Bits, SigBits, true} end
-abstract type AbsUnsignedFloat{Bits, SigBits} <: AbstractAIFloat{Bits, SigBits, false} end
+abstract type AbstractSignedFloat{Bits, SigBits} <: AbstractAIFloat{Bits, SigBits, true} end
+abstract type AbstractUnsignedFloat{Bits, SigBits} <: AbstractAIFloat{Bits, SigBits, false} end
 
-abstract type AbsSignedFiniteFloat{Bits, SigBits} <: AbsSignedFloat{Bits, SigBits} end
-abstract type AbsSignedExtendedFloat{Bits, SigBits} <: AbsSignedFloat{Bits, SigBits} end
+abstract type AbstractSignedFinite{Bits, SigBits} <: AbstractSignedFloat{Bits, SigBits} end
+abstract type AbstractSignedExtended{Bits, SigBits} <: AbstractSignedFloat{Bits, SigBits} end
 
-abstract type AbsUnsignedFiniteFloat{Bits, SigBits} <: AbsUnsignedFloat{Bits, SigBits} end
-abstract type AbsUnsignedExtendedFloat{Bits, SigBits} <: AbsUnsignedFloat{Bits, SigBits} end
+abstract type AbstractUnsignedFinite{Bits, SigBits} <: AbstractUnsignedFloat{Bits, SigBits} end
+abstract type AbstractUnsignedExtended{Bits, SigBits} <: AbstractUnsignedFloat{Bits, SigBits} end
 ```
 
 ### Concrete Implementation Types
 
 ```julia
-struct SignedFiniteFloat{bits, sigbits, T, S} <: AbsSignedFiniteFloat{bits, sigbits}
+struct SignedFiniteFloat{bits, sigbits, T, S} <: AbstractSignedFinite{bits, sigbits}
     floats::Vector{T}  # Aligned memory for float values
     codes::Vector{S}   # Aligned memory for encodings
 end
 
-struct SignedExtendedFloat{bits, sigbits, T, S} <: AbsSignedExtendedFloat{bits, sigbits}
+struct SignedExtendedFloat{bits, sigbits, T, S} <: AbstractSignedExtended{bits, sigbits}
     floats::Vector{T}
     codes::Vector{S}
 end
 
-struct UnsignedFiniteFloat{bits, sigbits, T, S} <: AbsUnsignedFiniteFloat{bits, sigbits}
+struct UnsignedFiniteFloat{bits, sigbits, T, S} <: AbstractUnsignedFinite{bits, sigbits}
     floats::Vector{T}
     codes::Vector{S}
 end
 
-struct UnsignedExtendedFloat{bits, sigbits, T, S} <: AbsUnsignedExtendedFloat{bits, sigbits}
+struct UnsignedExtendedFloat{bits, sigbits, T, S} <: AbstractUnsignedExtended{bits, sigbits}
     floats::Vector{T}
     codes::Vector{S}
 end
@@ -298,10 +298,10 @@ index_to_code(bits::Integer, index::Integer) =
     (index - 1) % (bits <= 8 ? UInt8 : UInt16)
 
 # Special value indices (computed, not stored)
-idxone(T::Type{<:AbsUnsignedFloat}) = (nValues(T) >> 1) + 1
-idxone(T::Type{<:AbsSignedFloat}) = (nValues(T) >> 2) + 1  
-idxnan(T::Type{<:AbsUnsignedFloat}) = nValues(T)
-idxnan(T::Type{<:AbsSignedFloat}) = (nValues(T) >> 1) + 1
+idxone(T::Type{<:AbstractUnsignedFloat}) = (nValues(T) >> 1) + 1
+idxone(T::Type{<:AbstractSignedFloat}) = (nValues(T) >> 2) + 1  
+idxnan(T::Type{<:AbstractUnsignedFloat}) = nValues(T)
+idxnan(T::Type{<:AbstractSignedFloat}) = (nValues(T) >> 1) + 1
 ```
 
 ### Value-Index Mapping
@@ -328,8 +328,8 @@ end
 
 ```julia
 # Sign mask (0 for unsigned, MSB for signed)
-sign_mask(::Type{T}) where {T<:AbsUnsignedFloat} = zero(typeforcode(nBits(T)))
-sign_mask(::Type{T}) where {T<:AbsSignedFloat} = 
+sign_mask(::Type{T}) where {T<:AbstractUnsignedFloat} = zero(typeforcode(nBits(T)))
+sign_mask(::Type{T}) where {T<:AbstractSignedFloat} = 
     one(typeforcode(nBits(T))) << (nBits(T) - 1)
 
 # Exponent mask
@@ -357,19 +357,19 @@ nSigBits(T::Type{<:AbstractAIFloat}) = SigBits
 nFracBits(::Type{T}) where {T<:AbstractAIFloat} = nSigBits(T) - 1
 
 # Sign and exponent bits
-nSignBits(::Type{T}) where {T<:AbsSignedFloat} = 1
-nSignBits(::Type{T}) where {T<:AbsUnsignedFloat} = 0
-nExpBits(::Type{T}) where {T<:AbsSignedFloat} = nBits(T) - nSigBits(T)
-nExpBits(::Type{T}) where {T<:AbsUnsignedFloat} = nBits(T) - nSigBits(T) + 1
+nSignBits(::Type{T}) where {T<:AbstractSignedFloat} = 1
+nSignBits(::Type{T}) where {T<:AbstractUnsignedFloat} = 0
+nExpBits(::Type{T}) where {T<:AbstractSignedFloat} = nBits(T) - nSigBits(T)
+nExpBits(::Type{T}) where {T<:AbstractUnsignedFloat} = nBits(T) - nSigBits(T) + 1
 
 # Value counts
 nValues(::Type{T}) where {T<:AbstractAIFloat} = 1 << nBits(T)
-nMagnitudes(::Type{T}) where {T<:AbsSignedFloat} = nValues(T) >> 1
-nMagnitudes(::Type{T}) where {T<:AbsUnsignedFloat} = nValues(T) - 1
+nMagnitudes(::Type{T}) where {T<:AbstractSignedFloat} = nValues(T) >> 1
+nMagnitudes(::Type{T}) where {T<:AbstractUnsignedFloat} = nValues(T) - 1
 
 # Special value counts
-nInfs(::Type{T}) where {T<:AbsSignedExtendedFloat} = 2    # ±Inf
-nInfs(::Type{T}) where {T<:AbsUnsignedExtendedFloat} = 1  # +Inf only
+nInfs(::Type{T}) where {T<:AbstractSignedExtended} = 2    # ±Inf
+nInfs(::Type{T}) where {T<:AbstractUnsignedExtended} = 1  # +Inf only
 nInfs(::Type{T}) where {T<:AbsFiniteFloat} = 0            # No infinities
 
 # Prenormal/subnormal counts

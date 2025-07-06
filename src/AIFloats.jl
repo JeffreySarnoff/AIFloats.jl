@@ -2,8 +2,8 @@ module AIFloats
 
 export AbstractAIFloat,
     # abstract types
-    AbsUnsignedFloat, AbsUnsignedFiniteFloat, AbsUnsignedExtendedFloat,
-    AbsSignedFloat, AbsSignedFiniteFloat, AbsSignedExtendedFloat,
+    AbstractUnsignedFloat, AbstractUnsignedFinite, AbstractUnsignedExtended,
+    AbstractSignedFloat, AbstractSignedFinite, AbstractSignedExtended,
     # concrete constructive types
     UnsignedFiniteFloat, UnsignedExtendedFloat,
     SignedFiniteFloat, SignedExtendedFloat,

@@ -2,23 +2,23 @@
     @testset "Type Hierarchy" begin
         # Test basic type hierarchy
         @test AbstractAIFloat <: AbstractFloat
-        @test AbsSignedFloat <: AbstractAIFloat
-        @test AbsUnsignedFloat <: AbstractAIFloat
+        @test AbstractSignedFloat <: AbstractAIFloat
+        @test AbstractUnsignedFloat <: AbstractAIFloat
         
         # Test finite/extended hierarchy
-        @test AbsSignedFiniteFloat <: AbsSignedFloat
-        @test AbsSignedExtendedFloat <: AbsSignedFloat
-        @test AbsUnsignedFiniteFloat <: AbsUnsignedFloat
-        @test AbsUnsignedExtendedFloat <: AbsUnsignedFloat
+        @test AbstractSignedFinite <: AbstractSignedFloat
+        @test AbstractSignedExtended <: AbstractSignedFloat
+        @test AbstractUnsignedFinite <: AbstractUnsignedFloat
+        @test AbstractUnsignedExtended <: AbstractUnsignedFloat
     end
     
     @testset "Type Parameters" begin
         # Test that abstract types can be parameterized
-        TestSignedFinite = AbsSignedFiniteFloat{8, 4}
-        TestUnsignedExtended = AbsUnsignedExtendedFloat{6, 3}
+        TestSignedFinite = AbstractSignedFinite{8, 4}
+        TestUnsignedExtended = AbstractUnsignedExtended{6, 3}
         
-        @test TestSignedFinite <: AbsSignedFiniteFloat
-        @test TestUnsignedExtended <: AbsUnsignedExtendedFloat
+        @test TestSignedFinite <: AbstractSignedFinite
+        @test TestUnsignedExtended <: AbstractUnsignedExtended
         
         # Test parameter extraction would work with concrete types
         @test TestSignedFinite <: AbstractAIFloat{8, 4}
@@ -27,19 +27,19 @@
     
     @testset "Type Relationships" begin
         # Test disjoint unions
-        @test !(AbsSignedFloat <: AbsUnsignedFloat)
-        @test !(AbsUnsignedFloat <: AbsSignedFloat)
-        @test !(AbsSignedFiniteFloat <: AbsSignedExtendedFloat)
-        @test !(AbsSignedExtendedFloat <: AbsSignedFiniteFloat)
-        @test !(AbsUnsignedFiniteFloat <: AbsUnsignedExtendedFloat)
-        @test !(AbsUnsignedExtendedFloat <: AbsUnsignedFiniteFloat)
+        @test !(AbstractSignedFloat <: AbstractUnsignedFloat)
+        @test !(AbstractUnsignedFloat <: AbstractSignedFloat)
+        @test !(AbstractSignedFinite <: AbstractSignedExtended)
+        @test !(AbstractSignedExtended <: AbstractSignedFinite)
+        @test !(AbstractUnsignedFinite <: AbstractUnsignedExtended)
+        @test !(AbstractUnsignedExtended <: AbstractUnsignedFinite)
     end
     
     @testset "Common Supertype" begin
         # Test common supertypes
-        @test typejoin(AbsSignedFloat, AbsUnsignedFloat) == AbstractAIFloat
-        @test typejoin(AbsSignedFiniteFloat, AbsSignedExtendedFloat) == AbsSignedFloat
-        @test typejoin(AbsUnsignedFiniteFloat, AbsUnsignedExtendedFloat) == AbsUnsignedFloat
+        @test typejoin(AbstractSignedFloat, AbstractUnsignedFloat) == AbstractAIFloat
+        @test typejoin(AbstractSignedFinite, AbstractSignedExtended) == AbstractSignedFloat
+        @test typejoin(AbstractUnsignedFinite, AbstractUnsignedExtended) == AbstractUnsignedFloat
     end
 end
 

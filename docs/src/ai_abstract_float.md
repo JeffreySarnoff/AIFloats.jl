@@ -35,12 +35,12 @@ The `AbstractAIFloat` system provides a flexible framework for defining custom f
 
 ```julia
 AbstractAIFloat{Bits, SigBits, IsSigned} <: AbstractFloat
-├── AbsSignedFloat{Bits, SigBits}   # IsSigned = true
-│   ├── AbsSignedFiniteFloat{Bits, SigBits}     # No infinities
-│   └── AbsSignedExtendedFloat{Bits, SigBits}   # With ±∞
-└── AbsUnsignedFloat{Bits, SigBits} # IsSigned = false  
-    ├── AbsUnsignedFiniteFloat{Bits, SigBits}   # No infinities
-    └── AbsUnsignedExtendedFloat{Bits, SigBits} # With +∞ only
+├── AbstractSignedFloat{Bits, SigBits}   # IsSigned = true
+│   ├── AbstractSignedFinite{Bits, SigBits}     # No infinities
+│   └── AbstractSignedExtended{Bits, SigBits}   # With ±∞
+└── AbstractUnsignedFloat{Bits, SigBits} # IsSigned = false  
+    ├── AbstractUnsignedFinite{Bits, SigBits}   # No infinities
+    └── AbstractUnsignedExtended{Bits, SigBits} # With +∞ only
 ```
 
 ### Type Parameters
@@ -53,8 +53,8 @@ AbstractAIFloat{Bits, SigBits, IsSigned} <: AbstractFloat
 
 ```julia
 # Define concrete types by subtyping the abstracts
-struct MyFloat8_4 <: AbsSignedFiniteFloat{8, 4} end
-struct MyUFloat8_4 <: AbsUnsignedFiniteFloat{8, 4} end
+struct MyFloat8_4 <: AbstractSignedFinite{8, 4} end
+struct MyUFloat8_4 <: AbstractUnsignedFinite{8, 4} end
 
 # Query basic properties
 nBits(MyFloat8_4)     # 8
@@ -87,8 +87,8 @@ Test whether a type supports negative values.
 
 **Examples:**
 ```julia
-is_signed(AbsSignedFiniteFloat{8,4})   # true
-is_unsigned(AbsUnsignedFiniteFloat{8,4}) # true
+is_signed(AbstractSignedFinite{8,4})   # true
+is_unsigned(AbstractUnsignedFinite{8,4}) # true
 ```
 
 #### `is_finite(T)` / `is_extended(T)`
@@ -100,8 +100,8 @@ Test whether a type includes infinity values.
 
 **Examples:**
 ```julia
-is_finite(AbsSignedFiniteFloat{8,4})   # true
-is_extended(AbsSignedExtendedFloat{8,4}) # true
+is_finite(AbstractSignedFinite{8,4})   # true
+is_extended(AbstractSignedExtended{8,4}) # true
 ```
 
 #### Abstract Type Predicates
@@ -109,10 +109,10 @@ is_extended(AbsSignedExtendedFloat{8,4}) # true
 For use with abstract supertypes:
 
 ```julia
-isa_signed(@nospecialize(T::Type{<:AbsSignedFloat})) → Bool
-isa_unsigned(@nospecialize(T::Type{<:AbsUnsignedFloat})) → Bool  
-isa_finite(@nospecialize(T::Type{<:AbsSignedFiniteFloat})) → Bool
-isa_extended(@nospecialize(T::Type{<:AbsSignedExtendedFloat})) → Bool
+isa_signed(@nospecialize(T::Type{<:AbstractSignedFloat})) → Bool
+isa_unsigned(@nospecialize(T::Type{<:AbstractUnsignedFloat})) → Bool  
+isa_finite(@nospecialize(T::Type{<:AbstractSignedFinite})) → Bool
+isa_extended(@nospecialize(T::Type{<:AbstractSignedExtended})) → Bool
 ```
 
 ### Basic Properties
@@ -249,7 +249,7 @@ pow2_foundation_exps(T, res) → Vector{Float32}  # 2^exponent values
 ### Example 1: 8-bit Signed Finite Float with 4 Significand Bits
 
 ```julia
-struct Float8_4 <: AbsSignedFiniteFloat{8, 4} end
+struct Float8_4 <: AbstractSignedFinite{8, 4} end
 
 # Basic properties
 @show nBits(Float8_4)          # 8
@@ -278,7 +278,7 @@ println("Finite count: $(count(isfinite, values))")
 ### Example 2: 16-bit Unsigned Extended Float with 8 Significand Bits
 
 ```julia
-struct UFloat16_8 <: AbsUnsignedExtendedFloat{16, 8} end
+struct UFloat16_8 <: AbstractUnsignedExtended{16, 8} end
 
 # Extended type properties
 @show is_unsigned(UFloat16_8)    # true
@@ -304,8 +304,8 @@ println("Infinity values: $inf_count")
 ### Example 3: Comparing Signed vs Unsigned Layouts
 
 ```julia
-struct SignedFloat{B,S} <: AbsSignedFiniteFloat{B,S} end
-struct UnsignedFloat{B,S} <: AbsUnsignedFiniteFloat{B,S} end
+struct SignedFloat{B,S} <: AbstractSignedFinite{B,S} end
+struct UnsignedFloat{B,S} <: AbstractUnsignedFinite{B,S} end
 
 function compare_layouts(bits, sigbits)
     S = SignedFloat{bits, sigbits}
@@ -332,7 +332,7 @@ compare_layouts(8, 4)
 ### Example 4: Exploring Value Distributions
 
 ```julia
-struct TestFloat <: AbsSignedExtendedFloat{10, 5} end
+struct TestFloat <: AbstractSignedExtended{10, 5} end
 
 function analyze_value_distribution(T)
     println("Value distribution for $(T):")

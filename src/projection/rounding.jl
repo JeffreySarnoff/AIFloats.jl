@@ -27,7 +27,7 @@ Trans. Comp., Vol. 57, no. 4, pp. 462-471, April 2008
                                            1  1  2  3  4
 =#
 
-function round_up(xs::T, x::F) where {T<:AbsUnsignedFloat, F<:AbstractFloat}
+function round_up(xs::T, x::F) where {T<:AbstractUnsignedFloat, F<:AbstractFloat}
     isnan(x) && return x
     n = nValues(xs)
     idx = searchsortedfirst(floats(xs), x)  # floats(xs)[idx] >= x
@@ -35,7 +35,7 @@ function round_up(xs::T, x::F) where {T<:AbsUnsignedFloat, F<:AbstractFloat}
     floats(xs)[idx]
 end
 
-function round_down(xs::T, x::F) where {T<:AbsUnsignedFloat, F<:AbstractFloat}
+function round_down(xs::T, x::F) where {T<:AbstractUnsignedFloat, F<:AbstractFloat}
     isnan(x) && return x
     n = nValues(xs)
     idx = searchsortedlast(floats(xs), x)  # floats(xs)[idx] >= x
@@ -43,15 +43,15 @@ function round_down(xs::T, x::F) where {T<:AbsUnsignedFloat, F<:AbstractFloat}
     floats(xs)[idx]
 end
 
-function round_tozero(xs::T, x::F) where {T<:AbsUnsignedFloat, F<:AbstractFloat}
+function round_tozero(xs::T, x::F) where {T<:AbstractUnsignedFloat, F<:AbstractFloat}
     round_down(xs, x)
 end
 
-function round_fromzero(xs::T, x::F) where {T<:AbsUnsignedFloat, F<:AbstractFloat}
+function round_fromzero(xs::T, x::F) where {T<:AbstractUnsignedFloat, F<:AbstractFloat}
     round_up(xs, x)
 end
  
-function round_nearesteven(xs::T, x::F) where {T<:AbsUnsignedFloat, F<:AbstractFloat}
+function round_nearesteven(xs::T, x::F) where {T<:AbstractUnsignedFloat, F<:AbstractFloat}
     isnan(x) && return x
     n = nValues(xs)
     idx1 = searchsortedfirst(floats(xs), x)  # floats(xs)[idx] >= x
@@ -81,7 +81,7 @@ function round_nearesteven(xs::T, x::F) where {T<:AbsUnsignedFloat, F<:AbstractF
     end
 end
 
-function round_nearestodd(xs::T, x::F) where {T<:AbsUnsignedFloat, F<:AbstractFloat}
+function round_nearestodd(xs::T, x::F) where {T<:AbstractUnsignedFloat, F<:AbstractFloat}
     isnan(x) && return x
     n = nValues(xs)
     idx1 = searchsortedfirst(floats(xs), x)  # floats(xs)[idx] >= x
@@ -111,7 +111,7 @@ function round_nearestodd(xs::T, x::F) where {T<:AbsUnsignedFloat, F<:AbstractFl
     end
 end
 
-function round_nearesttozero(xs::T, x::F) where {T<:AbsUnsignedFloat, F<:AbstractFloat}
+function round_nearesttozero(xs::T, x::F) where {T<:AbstractUnsignedFloat, F<:AbstractFloat}
     isnan(x) && return x
     n = nValues(xs)
     idx1 = searchsortedfirst(floats(xs), x)  # floats(xs)[idx] >= x
@@ -126,7 +126,7 @@ function round_nearesttozero(xs::T, x::F) where {T<:AbsUnsignedFloat, F<:Abstrac
     return val0
 end
 
-function round_nearestfromzero(xs::T, x::F) where {T<:AbsUnsignedFloat, F<:AbstractFloat}
+function round_nearestfromzero(xs::T, x::F) where {T<:AbstractUnsignedFloat, F<:AbstractFloat}
     isnan(x) && return x
     n = nValues(xs)
     idx1 = searchsortedfirst(floats(xs), x)  # floats(xs)[idx] >= x
@@ -136,9 +136,9 @@ function round_nearestfromzero(xs::T, x::F) where {T<:AbsUnsignedFloat, F<:Abstr
     return val1
 end
 
-function round_nearestaway(xs::T, x::F) where {T<:AbsUnsignedFloat, F<:AbstractFloat}
+function round_nearestaway(xs::T, x::F) where {T<:AbstractUnsignedFloat, F<:AbstractFloat}
     round_nearestfromzero(xs, x)
 end
 
-# rounding for T<:AbsSignedFloat
+# rounding for T<:AbstractSignedFloat
 

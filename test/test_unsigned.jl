@@ -3,7 +3,7 @@
         # Test basic construction with parameters
         uf = UnsignedFiniteFloat(6, 3)
         @test isa(uf, UnsignedFiniteFloat)
-        @test isa(uf, AbsUnsignedFiniteFloat{6, 3})
+        @test isa(uf, AbstractUnsignedFinite{6, 3})
         
         # Test type parameters are correctly embedded
         @test isa(uf, UnsignedFiniteFloat{6, 3, Float64, UInt8})
@@ -23,7 +23,7 @@
         # Test basic construction with parameters
         ue = UnsignedExtendedFloat(6, 3)
         @test isa(ue, UnsignedExtendedFloat)
-        @test isa(ue, AbsUnsignedExtendedFloat{6, 3})
+        @test isa(ue, AbstractUnsignedExtended{6, 3})
         
         # Test type parameters
         @test isa(ue, UnsignedExtendedFloat{6, 3, Float64, UInt8})
@@ -41,14 +41,14 @@
     
     @testset "Type-based Construction" begin
         # Test construction from abstract type - finite
-        T_finite = AbsUnsignedFiniteFloat{8, 4}
+        T_finite = AbstractUnsignedFinite{8, 4}
         uf_from_type = UnsignedFiniteFloat(T_finite)
         @test isa(uf_from_type, UnsignedFiniteFloat{8, 4})
         @test nBits(T_finite) == 8
         @test nSigBits(T_finite) == 4
         
         # Test construction from abstract type - extended
-        T_extended = AbsUnsignedExtendedFloat{8, 4}
+        T_extended = AbstractUnsignedExtended{8, 4}
         ue_from_type = UnsignedExtendedFloat(T_extended)
         @test isa(ue_from_type, UnsignedExtendedFloat{8, 4})
         @test nBits(T_extended) == 8
@@ -62,7 +62,7 @@
     end
     
     @testset "Value Sequence Generation - Finite" begin
-        T = AbsUnsignedFiniteFloat{6, 3}
+        T = AbstractUnsignedFinite{6, 3}
         values = value_sequence(T)
         
         @test isa(values, Vector)
@@ -98,7 +98,7 @@
     end
     
     @testset "Value Sequence Generation - Extended" begin
-        T = AbsUnsignedExtendedFloat{6, 3}
+        T = AbstractUnsignedExtended{6, 3}
         values = value_sequence(T)
         
         @test isa(values, Vector)
@@ -223,7 +223,7 @@
     end
     
     @testset "Foundation Magnitude Integration" begin
-        T = AbsUnsignedFiniteFloat{8, 4}
+        T = AbstractUnsignedFinite{8, 4}
         values = value_sequence(T)
         foundation_mags = foundation_magnitudes(T)
         
@@ -429,7 +429,7 @@
         
         # Test different construction paths for finite
         uf1 = UnsignedFiniteFloat(bits, sigbits)
-        uf2 = UnsignedFiniteFloat(AbsUnsignedFiniteFloat{bits, sigbits})
+        uf2 = UnsignedFiniteFloat(AbstractUnsignedFinite{bits, sigbits})
         
         # Should produce identical results
         @test typeof(uf1) == typeof(uf2)
@@ -438,7 +438,7 @@
         
         # Test for extended types
         ue1 = UnsignedExtendedFloat(bits, sigbits)
-        ue2 = UnsignedExtendedFloat(AbsUnsignedExtendedFloat{bits, sigbits})
+        ue2 = UnsignedExtendedFloat(AbstractUnsignedExtended{bits, sigbits})
         
         @test typeof(ue1) == typeof(ue2)
         @test all(floats(ue1) .=== floats(ue2))

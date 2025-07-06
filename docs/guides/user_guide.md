@@ -47,8 +47,8 @@ You can also work directly with abstract types:
 
 ```julia
 # Using abstract type constructors
-uf31_abstract = AIFloat(AbsUnsignedFiniteFloat{3, 1})
-se32_abstract = AIFloat(AbsSignedExtendedFloat{3, 2})
+uf31_abstract = AIFloat(AbstractUnsignedFinite{3, 1})
+se32_abstract = AIFloat(AbstractSignedExtended{3, 2})
 
 # Results are identical to parameter-based construction
 floats(uf31_abstract) == floats(uf31)  # true

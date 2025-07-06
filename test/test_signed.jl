@@ -3,7 +3,7 @@
         # Test basic construction with parameters
         sf = SignedFiniteFloat(6, 3)
         @test isa(sf, SignedFiniteFloat)
-        @test isa(sf, AbsSignedFiniteFloat{6, 3})
+        @test isa(sf, AbstractSignedFinite{6, 3})
         
         # Test type parameters are correctly embedded
         @test isa(sf, SignedFiniteFloat{6, 3, Float64, UInt8})
@@ -23,7 +23,7 @@
         # Test basic construction with parameters
         se = SignedExtendedFloat(6, 3)
         @test isa(se, SignedExtendedFloat)
-        @test isa(se, AbsSignedExtendedFloat{6, 3})
+        @test isa(se, AbstractSignedExtended{6, 3})
         
         # Test type parameters
         @test isa(se, SignedExtendedFloat{6, 3, Float64, UInt8})
@@ -41,14 +41,14 @@
     
     @testset "Type-based Construction" begin
         # Test construction from abstract type - finite
-        T_finite = AbsSignedFiniteFloat{8, 4}
+        T_finite = AbstractSignedFinite{8, 4}
         sf_from_type = SignedFiniteFloat(T_finite)
         @test isa(sf_from_type, SignedFiniteFloat{8, 4})
         @test nBits(T_finite) == 8
         @test nSigBits(T_finite) == 4
         
         # Test construction from abstract type - extended
-        T_extended = AbsSignedExtendedFloat{8, 4}
+        T_extended = AbstractSignedExtended{8, 4}
         se_from_type = SignedExtendedFloat(T_extended)
         @test isa(se_from_type, SignedExtendedFloat{8, 4})
         @test nBits(T_extended) == 8
@@ -62,7 +62,7 @@
     end
     
     @testset "Value Sequence Generation - Finite" begin
-        T = AbsSignedFiniteFloat{6, 3}
+        T = AbstractSignedFinite{6, 3}
         values = value_sequence(T)
         
         @test isa(values, Vector)
@@ -100,7 +100,7 @@
     end
     
     @testset "Value Sequence Generation - Extended" begin
-        T = AbsSignedExtendedFloat{6, 3}
+        T = AbstractSignedExtended{6, 3}
         values = value_sequence(T)
         
         @test isa(values, Vector)
@@ -206,7 +206,7 @@
     end
     
     @testset "Foundation Magnitude Integration" begin
-        T = AbsSignedFiniteFloat{7, 3}
+        T = AbstractSignedFinite{7, 3}
         values = value_sequence(T)
         foundation_mags = foundation_magnitudes(T)
         
@@ -374,7 +374,7 @@
         
         # Test different construction paths
         sf1 = SignedFiniteFloat(bits, sigbits)
-        sf2 = SignedFiniteFloat(AbsSignedFiniteFloat{bits, sigbits})
+        sf2 = SignedFiniteFloat(AbstractSignedFinite{bits, sigbits})
         
         # Should produce identical results
         @test typeof(sf1) == typeof(sf2)
@@ -383,7 +383,7 @@
         
         # Test for extended types
         se1 = SignedExtendedFloat(bits, sigbits)
-        se2 = SignedExtendedFloat(AbsSignedExtendedFloat{bits, sigbits})
+        se2 = SignedExtendedFloat(AbstractSignedExtended{bits, sigbits})
         
         @test typeof(se1) == typeof(se2)
         @test all(floats(se1) .=== floats(se2))

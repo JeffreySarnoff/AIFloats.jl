@@ -30,7 +30,7 @@ sf = AIFloat(8, 4; SignedFloat=true, FiniteFloat=true)
 ue = AIFloat(6, 3; UnsignedFloat=true, ExtendedFloat=true)
 
 # Construct from abstract type
-uf = AIFloat(AbsUnsignedFiniteFloat{8, 4})
+uf = AIFloat(AbstractUnsignedFinite{8, 4})
 ```
 
 ## Accessor Functions

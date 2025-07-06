@@ -4,11 +4,11 @@ lastPrenormalMagnitude(T::Type{<:AbstractAIFloat}) = (nPrenormalMagnitudes(T) - 
 subnormalMagnitudeMin(T::Type{<:AbstractAIFloat}) = has_subnormals(T) ? firstNonzeroPrenormalMagnitude(T) * expSubnormalValue(T) : nothing
 subnormalMagnitudeMax(T::Type{<:AbstractAIFloat}) = has_subnormals(T) ? lastPrenormalMagnitude(T) * expSubnormalValue(T) : nothing
 
-normalMagnitudeMin(T::Type{<:AbsUnsignedFloat}) = expMinValue(T)
-normalMagnitudeMin(T::Type{<:AbsSignedFloat}) = expMinValue(T)
+normalMagnitudeMin(T::Type{<:AbstractUnsignedFloat}) = expMinValue(T)
+normalMagnitudeMin(T::Type{<:AbstractSignedFloat}) = expMinValue(T)
 
-normalMagnitudeMax(T::Type{<:AbsUnsignedFloat}) = expMaxValue(T) * (1 + ((nPrenormalMagnitudes(T) - 1) - 1 - is_extended(T)) / nPrenormalMagnitudes(T))
-normalMagnitudeMax(T::Type{<:AbsSignedFloat}) = expMaxValue(T) * (1 + ((nPrenormalMagnitudes(T) - 1) - is_extended(T)) / nPrenormalMagnitudes(T))
+normalMagnitudeMax(T::Type{<:AbstractUnsignedFloat}) = expMaxValue(T) * (1 + ((nPrenormalMagnitudes(T) - 1) - 1 - is_extended(T)) / nPrenormalMagnitudes(T))
+normalMagnitudeMax(T::Type{<:AbstractSignedFloat}) = expMaxValue(T) * (1 + ((nPrenormalMagnitudes(T) - 1) - is_extended(T)) / nPrenormalMagnitudes(T))
 
 # cover instantiations
 for F in (:subnormalMagnitudeMin, :subnormalMagnitudeMax, :normalMagnitudeMin, :normalMagnitudeMax)

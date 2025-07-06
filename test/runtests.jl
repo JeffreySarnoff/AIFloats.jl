@@ -1,9 +1,9 @@
 using Test
 using AIFloats, AlignedAllocs, Quadmath, Static
 
-using AIFloats: AbstractAIFloat, AbsUnsignedFloat, AbsUnsignedFloat,
-    AbsUnsignedExtendedFloat, AbsUnsignedFiniteFloat, 
-    AbsSignedExtendedFloat, AbsSignedFiniteFloat, 
+using AIFloats: AbstractAIFloat, AbstractUnsignedFloat, AbstractUnsignedFloat,
+    AbstractUnsignedExtended, AbstractUnsignedFinite, 
+    AbstractSignedExtended, AbstractSignedFinite, 
     AIFloat, ConstructAIFloat, floats, codes,
     UnsignedExtendedFloat, UnsignedFiniteFloat, 
     SignedExtendedFloat, SignedFiniteFloat,
@@ -49,10 +49,10 @@ using AIFloats: AbstractAIFloat, AbsUnsignedFloat, AbsUnsignedFloat,
 #        Aqua.test_all(AIFloats)
     end
     # Create some test types for predicate testing
-    struct TestSignedFinite{Bits, SigBits} <: AbsSignedFiniteFloat{Bits, SigBits} end
-    struct TestSignedExtended{Bits, SigBits} <: AbsSignedExtendedFloat{Bits, SigBits} end
-    struct TestUnsignedFinite{Bits, SigBits} <: AbsUnsignedFiniteFloat{Bits, SigBits} end
-    struct TestUnsignedExtended{Bits, SigBits} <: AbsUnsignedExtendedFloat{Bits, SigBits} end
+    struct TestSignedFinite{Bits, SigBits} <: AbstractSignedFinite{Bits, SigBits} end
+    struct TestSignedExtended{Bits, SigBits} <: AbstractSignedExtended{Bits, SigBits} end
+    struct TestUnsignedFinite{Bits, SigBits} <: AbstractUnsignedFinite{Bits, SigBits} end
+    struct TestUnsignedExtended{Bits, SigBits} <: AbstractUnsignedExtended{Bits, SigBits} end
 
     # Include all test files
     include("test_constants.jl")        # ok
