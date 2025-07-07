@@ -2,19 +2,19 @@
     @testset "AIFloat Constructor - Basic Functionality" begin
         # Test basic signed finite construction
         af1 = AIFloat(8, 4, :signed, :finite)
-        @test isa(af1, SignedFiniteFloat{8, 4})
+        @test isa(af1, SignedFinite{8, 4})
         
         # Test basic unsigned finite construction
         af2 = AIFloat(8, 4, :unsigned, :finite)
-        @test isa(af2, UnsignedFiniteFloat{8, 4})
+        @test isa(af2, UnsignedFinite{8, 4})
         
         # Test basic signed extended construction
         af3 = AIFloat(8, 4, :signed, :extended)
-        @test isa(af3, SignedExtendedFloat{8, 4})
+        @test isa(af3, SignedExtended{8, 4})
         
         # Test basic unsigned extended construction
         af4 = AIFloat(8, 4, :unsigned, :extended)
-        @test isa(af4, UnsignedExtendedFloat{8, 4})
+        @test isa(af4, UnsignedExtended{8, 4})
     end
     
     @testset "AIFloat Constructor - Parameter Validation" begin
@@ -38,17 +38,17 @@
     @testset "AIFloat Constructor - Valid Parameter Ranges" begin
         # Test valid unsigned ranges
         af_u1 = AIFloat(8, 8, :unsigned, :finite)  # sigbits == bitwidth is OK for unsigned
-        @test isa(af_u1, UnsignedFiniteFloat{8, 8})
+        @test isa(af_u1, UnsignedFinite{8, 8})
         
         af_u2 = AIFloat(6, 3, :unsigned, :finite)
-        @test isa(af_u2, UnsignedFiniteFloat{6, 3})
+        @test isa(af_u2, UnsignedFinite{6, 3})
         
         # Test valid signed ranges
         af_s1 = AIFloat(8, 7, :signed, :finite)   # sigbits < bitwidth required for signed
-        @test isa(af_s1, SignedFiniteFloat{8, 7})
+        @test isa(af_s1, SignedFinite{8, 7})
         
         af_s2 = AIFloat(6, 3, :signed, :finite)
-        @test isa(af_s2, SignedFiniteFloat{6, 3})
+        @test isa(af_s2, SignedFinite{6, 3})
     end
     
     @testset "AIFloat from Type Constructor" begin
@@ -69,16 +69,16 @@
     @testset "ConstructAIFloat Internal Function" begin
         # Test the internal constructor directly
         sf = ConstructAIFloat(8, 4; plusminus=true, extended=false)
-        @test isa(sf, SignedFiniteFloat{8, 4})
+        @test isa(sf, SignedFinite{8, 4})
         
         se = ConstructAIFloat(8, 4; plusminus=true, extended=true)
-        @test isa(se, SignedExtendedFloat{8, 4})
+        @test isa(se, SignedExtended{8, 4})
         
         uf = ConstructAIFloat(8, 4; plusminus=false, extended=false)
-        @test isa(uf, UnsignedFiniteFloat{8, 4})
+        @test isa(uf, UnsignedFinite{8, 4})
         
         ue = ConstructAIFloat(8, 4; plusminus=false, extended=true)
-        @test isa(ue, UnsignedExtendedFloat{8, 4})
+        @test isa(ue, UnsignedExtended{8, 4})
     end
     
     @testset "Type Helper Functions" begin
@@ -101,23 +101,23 @@
         for (bits, sigbits) in bit_sig_pairs
             # Signed finite
             sf = AIFloat(bits, sigbits, :signed, :finite)
-            @test isa(sf, SignedFiniteFloat{bits, sigbits})
+            @test isa(sf, SignedFinite{bits, sigbits})
             @test length(floats(sf)) == 2^bits
             
             # Signed extended  
             se = AIFloat(bits, sigbits, :signed, :extended)
-            @test isa(se, SignedExtendedFloat{bits, sigbits})
+            @test isa(se, SignedExtended{bits, sigbits})
             @test length(floats(se)) == 2^bits
             
             # Unsigned finite (allow sigbits == bits for unsigned)
             if sigbits <= bits
                 uf = AIFloat(bits, sigbits, :unsigned, :finite)
-                @test isa(uf, UnsignedFiniteFloat{bits, sigbits})
+                @test isa(uf, UnsignedFinite{bits, sigbits})
                 @test length(floats(uf)) == 2^bits
                 
                 # Unsigned extended
                 ue = AIFloat(bits, sigbits, :unsigned, :extended)
-                @test isa(ue, UnsignedExtendedFloat{bits, sigbits})
+                @test isa(ue, UnsignedExtended{bits, sigbits})
                 @test length(floats(ue)) == 2^bits
             end
         end
@@ -169,17 +169,17 @@
     @testset "Edge Case Bit Widths" begin
         # Test minimal configurations
         af_min = AIFloat(3, 2, :signed, :finite)
-        @test isa(af_min, SignedFiniteFloat{3, 2})
+        @test isa(af_min, SignedFinite{3, 2})
         @test length(floats(af_min)) == 8  # 2^3
         
         # Test with precision = 1 (should work for unsigned)
         af_p1 = AIFloat(3, 1, :unsigned, :finite)
-        @test isa(af_p1, UnsignedFiniteFloat{3, 1})
+        @test isa(af_p1, UnsignedFinite{3, 1})
         @test !has_subnormals(typeof(af_p1))  # precision 1 has no subnormals
         
         # Test larger configurations
         af_large = AIFloat(12, 8, :signed, :extended)
-        @test isa(af_large, SignedExtendedFloat{12, 8})
+        @test isa(af_large, SignedExtended{12, 8})
         @test length(floats(af_large)) == 4096  # 2^12
     end
 end

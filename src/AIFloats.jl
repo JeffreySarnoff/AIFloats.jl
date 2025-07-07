@@ -5,8 +5,8 @@ export AbstractAIFloat,
     AbstractUnsigned, AbstractUnsignedFinite, AbstractUnsignedExtended,
     AbstractSigned, AbstractSignedFinite, AbstractSignedExtended,
     # concrete constructive types
-    UnsignedFiniteFloat, UnsignedExtendedFloat,
-    SignedFiniteFloat, SignedExtendedFloat,
+    UnsignedFinite, UnsignedExtended,
+    SignedFinite, SignedExtended,
     # field retrieval 
     floats, codes,
     # generalized constructor, keyword consts
@@ -141,15 +141,15 @@ function ConstructAIFloat(bitwidth::Int, sigbits::Int;
                           plusminus::Bool, extended::Bool)
     if plusminus
         if extended
-            SignedExtendedFloat(bitwidth, sigbits)
+            SignedExtended(bitwidth, sigbits)
         else # finite
-            SignedFiniteFloat(bitwidth, sigbits)
+            SignedFinite(bitwidth, sigbits)
         end
     else # nonnegative
         if extended
-            UnsignedExtendedFloat(bitwidth, sigbits)
+            UnsignedExtended(bitwidth, sigbits)
         else # finite
-            UnsignedFiniteFloat(bitwidth, sigbits)
+            UnsignedFinite(bitwidth, sigbits)
         end
     end
 end

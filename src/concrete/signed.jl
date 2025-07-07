@@ -1,32 +1,32 @@
-struct SignedFiniteFloat{bits, sigbits, T<:AbstractFloat, S<:Unsigned} <: AbstractSignedFinite{bits, sigbits}
+struct SignedFinite{bits, sigbits, T<:AbstractFloat, S<:Unsigned} <: AbstractSignedFinite{bits, sigbits}
     floats::Vector{T} # memory for the floats
     codes::Vector{S} # memory for the codes
 end
 
-floats(x::SignedFiniteFloat) = x.floats
-codes(x::SignedFiniteFloat) = x.codes
+floats(x::SignedFinite) = x.floats
+codes(x::SignedFinite) = x.codes
 
-struct SignedExtendedFloat{bits, sigbits, T<:AbstractFloat, S<:Unsigned} <: AbstractSignedExtended{bits, sigbits}
+struct SignedExtended{bits, sigbits, T<:AbstractFloat, S<:Unsigned} <: AbstractSignedExtended{bits, sigbits}
     floats::Vector{T} # memory for the floats
     codes::Vector{S} # memory for the codes
 end
 
-floats(x::SignedExtendedFloat) = x.floats
-codes(x::SignedExtendedFloat) = x.codes
+floats(x::SignedExtended) = x.floats
+codes(x::SignedExtended) = x.codes
 
-function SignedFiniteFloat(T::Type{<:AbstractSigned})
+function SignedFinite(T::Type{<:AbstractSigned})
     bits = nBits(T)
     sigbits = nSigBits(T)
-    SignedFiniteFloat(bits, sigbits)
+    SignedFinite(bits, sigbits)
 end
 
 # use types to eliminate an ambiguity
-function SignedFiniteFloat(bits::Int, sigbits::Int)
+function SignedFinite(bits::Int, sigbits::Int)
     T = typeforfloat(bits)
     S = typeforcode(bits)
     codes = encoding_sequence(S, bits)
     floats = value_sequence(AbstractSignedFinite{bits, sigbits})
-    SignedFiniteFloat{bits, sigbits, T, S}(floats, codes)
+    SignedFinite{bits, sigbits, T, S}(floats, codes)
 end
 
 function value_sequence(T::Type{<:AbstractSignedFinite})
@@ -42,19 +42,19 @@ function value_sequence(T::Type{<:AbstractSignedFinite})
     floats
 end
 
-function SignedExtendedFloat(T::Type{<:AbstractSigned})
+function SignedExtended(T::Type{<:AbstractSigned})
     bits = nBits(T)
     sigbits = nSigBits(T)
-    SignedExtendedFloat(bits, sigbits)
+    SignedExtended(bits, sigbits)
 end
 
 # use types to eliminate an ambiguity
-function SignedExtendedFloat(bits::Int, sigbits::Int)
+function SignedExtended(bits::Int, sigbits::Int)
     T = typeforfloat(bits)
     S = typeforcode(bits)
     codes = encoding_sequence(S, bits)
     floats = value_sequence(AbstractSignedExtended{bits, sigbits})
-    SignedExtendedFloat{bits, sigbits, T, S}(floats, codes)
+    SignedExtended{bits, sigbits, T, S}(floats, codes)
 end
 
 function value_sequence(T::Type{<:AbstractSignedExtended})

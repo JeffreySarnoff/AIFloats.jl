@@ -6,7 +6,7 @@
     
     @testset "Basic Rounding Functions - Unsigned" begin
         # Create a test unsigned float type
-        uf = UnsignedFiniteFloat(6, 3)
+        uf = UnsignedFinite(6, 3)
         test_values = floats(uf)
         
         # Test with a value that exists exactly
@@ -24,7 +24,7 @@
     end
     
     @testset "Round Up and Down" begin
-        uf = UnsignedFiniteFloat(8, 4)
+        uf = UnsignedFinite(8, 4)
         values = floats(uf)
         
         # Test with a value between two representable values
@@ -59,7 +59,7 @@
     end
     
     @testset "Round To/From Zero" begin
-        uf = UnsignedFiniteFloat(6, 3)
+        uf = UnsignedFinite(6, 3)
         
         # For unsigned types, round_tozero == round_down
         # and round_fromzero == round_up
@@ -70,7 +70,7 @@
     end
     
     @testset "Nearest Even Rounding" begin
-        uf = UnsignedFiniteFloat(8, 4)
+        uf = UnsignedFinite(8, 4)
         values = floats(uf)
         
         # Test exact values
@@ -96,7 +96,7 @@
     end
     
     @testset "Nearest Odd Rounding" begin
-        uf = UnsignedFiniteFloat(8, 4)
+        uf = UnsignedFinite(8, 4)
         values = floats(uf)
         
         # Test exact values
@@ -121,7 +121,7 @@
     end
     
     @testset "Nearest To/From Zero" begin
-        uf = UnsignedFiniteFloat(6, 3)
+        uf = UnsignedFinite(6, 3)
         
         # Test that these functions exist and handle basic cases
         test_val = 1.0
@@ -135,7 +135,7 @@
     
     #= this passes locally, CI says no error thrown
     @testset "Nearest Away (typo test)" begin
-        uf = UnsignedFiniteFloat(6, 3)
+        uf = UnsignedFinite(6, 3)
         
         # Test the function with the typo in the original code
         # (round_nearesrfromzero instead of round_nearestfromzero)
@@ -145,7 +145,7 @@
     =#
     
     @testset "Rounding Consistency" begin
-        uf = UnsignedFiniteFloat(7, 3)
+        uf = UnsignedFinite(7, 3)
         values = floats(uf)
         finite_vals = filter(isfinite, values)
         
@@ -165,7 +165,7 @@
     end
     
     @testset "Edge Case Values" begin
-        uf = UnsignedFiniteFloat(6, 3)
+        uf = UnsignedFinite(6, 3)
         values = floats(uf)
         
         # Test with zero
@@ -185,7 +185,7 @@
     end
     
     @testset "Monotonicity Properties" begin
-        uf = UnsignedFiniteFloat(6, 3)
+        uf = UnsignedFinite(6, 3)
         
         # round_up should be monotonic
         test_vals = [0.1, 0.5, 1.0, 1.5, 2.0]
@@ -206,7 +206,7 @@
     end
     
     @testset "Rounding Function Types" begin
-        uf = UnsignedFiniteFloat(6, 3)
+        uf = UnsignedFinite(6, 3)
         test_val = 1.5
         
         # All rounding functions should return the same type as input values
@@ -223,7 +223,7 @@
     end
     
     @testset "Search Functions Behavior" begin
-        uf = UnsignedFiniteFloat(8, 4)
+        uf = UnsignedFinite(8, 4)
         values = floats(uf)
         
         # Test that searchsortedfirst/last are used correctly
@@ -249,7 +249,7 @@
     end
     
     @testset "Boundary Handling" begin
-        uf = UnsignedFiniteFloat(6, 3)
+        uf = UnsignedFinite(6, 3)
         values = floats(uf)
         
         # Test at the boundaries of the representable range

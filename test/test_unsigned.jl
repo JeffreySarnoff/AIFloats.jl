@@ -1,12 +1,12 @@
 @testset "Unsigned Types Tests" begin
-    @testset "UnsignedFiniteFloat Construction" begin
+    @testset "UnsignedFinite Construction" begin
         # Test basic construction with parameters
-        uf = UnsignedFiniteFloat(6, 3)
-        @test isa(uf, UnsignedFiniteFloat)
+        uf = UnsignedFinite(6, 3)
+        @test isa(uf, UnsignedFinite)
         @test isa(uf, AbstractUnsignedFinite{6, 3})
         
         # Test type parameters are correctly embedded
-        @test isa(uf, UnsignedFiniteFloat{6, 3, Float64, UInt8})
+        @test isa(uf, UnsignedFinite{6, 3, Float64, UInt8})
         
         # Test accessor functions
         @test isa(floats(uf), Vector)
@@ -19,14 +19,14 @@
         @test eltype(codes(uf)) == typeforcode(6)    # UInt8 for 6 bits
     end
     
-    @testset "UnsignedExtendedFloat Construction" begin
+    @testset "UnsignedExtended Construction" begin
         # Test basic construction with parameters
-        ue = UnsignedExtendedFloat(6, 3)
-        @test isa(ue, UnsignedExtendedFloat)
+        ue = UnsignedExtended(6, 3)
+        @test isa(ue, UnsignedExtended)
         @test isa(ue, AbstractUnsignedExtended{6, 3})
         
         # Test type parameters
-        @test isa(ue, UnsignedExtendedFloat{6, 3, Float64, UInt8})
+        @test isa(ue, UnsignedExtended{6, 3, Float64, UInt8})
         
         # Test accessor functions
         @test isa(floats(ue), Vector)
@@ -42,20 +42,20 @@
     @testset "Type-based Construction" begin
         # Test construction from abstract type - finite
         T_finite = AbstractUnsignedFinite{8, 4}
-        uf_from_type = UnsignedFiniteFloat(T_finite)
-        @test isa(uf_from_type, UnsignedFiniteFloat{8, 4})
+        uf_from_type = UnsignedFinite(T_finite)
+        @test isa(uf_from_type, UnsignedFinite{8, 4})
         @test nBits(T_finite) == 8
         @test nSigBits(T_finite) == 4
         
         # Test construction from abstract type - extended
         T_extended = AbstractUnsignedExtended{8, 4}
-        ue_from_type = UnsignedExtendedFloat(T_extended)
-        @test isa(ue_from_type, UnsignedExtendedFloat{8, 4})
+        ue_from_type = UnsignedExtended(T_extended)
+        @test isa(ue_from_type, UnsignedExtended{8, 4})
         @test nBits(T_extended) == 8
         @test nSigBits(T_extended) == 4
         
         # Test consistency between construction methods
-        uf_direct = UnsignedFiniteFloat(8, 4)
+        uf_direct = UnsignedFinite(8, 4)
         @test typeof(uf_from_type) == typeof(uf_direct)
         @test all(floats(uf_from_type) .=== floats(uf_direct))
         @test codes(uf_from_type) == codes(uf_direct)
@@ -132,7 +132,7 @@
     end
     
     @testset "Unsigned Value Structure and Ordering" begin
-        uf = UnsignedFiniteFloat(8, 4)
+        uf = UnsignedFinite(8, 4)
         values = floats(uf)
         
         # Test basic structure
@@ -167,7 +167,7 @@
     end
     
     @testset "Special Value Placement - Finite" begin
-        uf = UnsignedFiniteFloat(7, 3)
+        uf = UnsignedFinite(7, 3)
         values = floats(uf)
         
         # Zero should always be first
@@ -193,7 +193,7 @@
     end
     
     @testset "Special Value Placement - Extended" begin
-        ue = UnsignedExtendedFloat(7, 3)
+        ue = UnsignedExtended(7, 3)
         values = floats(ue)
         
         # Zero should always be first
@@ -247,7 +247,7 @@
     end
     
     @testset "Codes Sequence Integrity" begin
-        uf = UnsignedFiniteFloat(8, 4)
+        uf = UnsignedFinite(8, 4)
         codes_vec = codes(uf)
         
         # Test completeness of encoding sequence
@@ -276,8 +276,8 @@
     
     @testset "Finite vs Extended Comparison" begin
         # Compare finite and extended versions of same configuration
-        uf = UnsignedFiniteFloat(7, 3)
-        ue = UnsignedExtendedFloat(7, 3)
+        uf = UnsignedFinite(7, 3)
+        ue = UnsignedExtended(7, 3)
         
         finite_values = floats(uf)
         extended_values = floats(ue)
@@ -311,11 +311,11 @@
     
     @testset "Type Parameter Consistency" begin
         # Test different bit width configurations
-        uf_small = UnsignedFiniteFloat(6, 3)
-        uf_large = UnsignedFiniteFloat(12, 6)
+        uf_small = UnsignedFinite(6, 3)
+        uf_large = UnsignedFinite(12, 6)
         
-        @test isa(uf_small, UnsignedFiniteFloat{6, 3})
-        @test isa(uf_large, UnsignedFiniteFloat{12, 6})
+        @test isa(uf_small, UnsignedFinite{6, 3})
+        @test isa(uf_large, UnsignedFinite{12, 6})
         
         # Test element types scale appropriately
         @test eltype(floats(uf_small)) == typeforfloat(6)   # Float64
@@ -324,11 +324,11 @@
         @test eltype(codes(uf_large)) == typeforcode(12)    # UInt16
         
         # Test extended versions
-        ue_small = UnsignedExtendedFloat(6, 3)
-        ue_large = UnsignedExtendedFloat(12, 6)
+        ue_small = UnsignedExtended(6, 3)
+        ue_large = UnsignedExtended(12, 6)
         
-        @test isa(ue_small, UnsignedExtendedFloat{6, 3})
-        @test isa(ue_large, UnsignedExtendedFloat{12, 6})
+        @test isa(ue_small, UnsignedExtended{6, 3})
+        @test isa(ue_large, UnsignedExtended{12, 6})
         
         # Test that all maintain proper unsigned structure
         for uf_test in [uf_small, uf_large, ue_small, ue_large]
@@ -342,7 +342,7 @@
     
     @testset "Edge Cases and Boundary Conditions" begin
         # Test minimal unsigned configuration
-        uf_min = UnsignedFiniteFloat(2, 1)
+        uf_min = UnsignedFinite(2, 1)
         @test length(floats(uf_min)) == 4  # 2^2
         
         values_min = floats(uf_min)
@@ -356,12 +356,12 @@
         @test nPrenormalMagnitudes(typeof(uf_min)) == 1
         
         # Test maximum unsigned precision (precision == bitwidth)
-        uf_max_prec = UnsignedFiniteFloat(6, 6)
+        uf_max_prec = UnsignedFinite(6, 6)
         @test length(floats(uf_max_prec)) == 64
         @test nExpBits(typeof(uf_max_prec)) == 1  # Only 1 exponent bit left
         
         # Test near-maximum bit width
-        uf_large = UnsignedFiniteFloat(15, 8)
+        uf_large = UnsignedFinite(15, 8)
         values_large = floats(uf_large)
         @test length(values_large) == 2^15
         @test values_large[1] == 0.0
@@ -370,7 +370,7 @@
     end
     
     @testset "Numerical Properties and Precision" begin
-        uf = UnsignedFiniteFloat(8, 4)
+        uf = UnsignedFinite(8, 4)
         values = floats(uf)
         
         # Test range coverage
@@ -402,7 +402,7 @@
     end
     
     @testset "Memory Layout and Efficiency" begin
-        uf = UnsignedFiniteFloat(8, 4)
+        uf = UnsignedFinite(8, 4)
         
         # Test that vectors are properly allocated using AlignedAllocs
         @test isa(floats(uf), Vector{Float64})
@@ -428,8 +428,8 @@
         bits, sigbits = 8, 4
         
         # Test different construction paths for finite
-        uf1 = UnsignedFiniteFloat(bits, sigbits)
-        uf2 = UnsignedFiniteFloat(AbstractUnsignedFinite{bits, sigbits})
+        uf1 = UnsignedFinite(bits, sigbits)
+        uf2 = UnsignedFinite(AbstractUnsignedFinite{bits, sigbits})
         
         # Should produce identical results
         @test typeof(uf1) == typeof(uf2)
@@ -437,21 +437,21 @@
         @test codes(uf1) == codes(uf2)
         
         # Test for extended types
-        ue1 = UnsignedExtendedFloat(bits, sigbits)
-        ue2 = UnsignedExtendedFloat(AbstractUnsignedExtended{bits, sigbits})
+        ue1 = UnsignedExtended(bits, sigbits)
+        ue2 = UnsignedExtended(AbstractUnsignedExtended{bits, sigbits})
         
         @test typeof(ue1) == typeof(ue2)
         @test all(floats(ue1) .=== floats(ue2))
         @test codes(ue1) == codes(ue2)
         
         # Test that construction is deterministic
-        uf3 = UnsignedFiniteFloat(bits, sigbits)
+        uf3 = UnsignedFinite(bits, sigbits)
         @test all(floats(uf1) .=== floats(uf3))
         @test codes(uf1) == codes(uf3)
     end
     
     @testset "Integration with Type System" begin
-        uf = UnsignedFiniteFloat(8, 4)
+        uf = UnsignedFinite(8, 4)
         
         # Test that all expected type functions work
         @test nBits(typeof(uf)) == 8
@@ -462,7 +462,7 @@
         @test is_extended(typeof(uf)) == false
         
         # Test with extended version
-        ue = UnsignedExtendedFloat(8, 4)
+        ue = UnsignedExtended(8, 4)
         @test is_extended(typeof(ue)) == true
         @test is_finite(typeof(ue)) == false
         
@@ -490,8 +490,8 @@
     
     @testset "Unsigned vs Signed Comparison" begin
         # Compare unsigned and signed types of same configuration
-        uf = UnsignedFiniteFloat(8, 4)
-        sf = SignedFiniteFloat(8, 4)
+        uf = UnsignedFinite(8, 4)
+        sf = SignedFinite(8, 4)
         
         uf_values = floats(uf)
         sf_values = floats(sf)
