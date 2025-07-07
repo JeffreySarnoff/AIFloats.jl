@@ -66,20 +66,10 @@ Base.precision(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = 
 function Base.eps(xs::T) where {T<:AbstractAIFloat}
     idx1 = index1(T)
     idx1next = idx1 + 0x01
-    let flts = view(floats(xs), 1:idx1next)
-        flts[end] - flts[end-1]
-    end    
+    floats(xs)[idx1next] - floats(xs)[idx1]
 end
 
-function Base.eps(xs::T, x::F) where {T<:AbstractUnsignedFinite, F<:AbstractFloat}
-    x == 1 && return eps(xs)
-    idx1 = value_to_index(xs, x)
-    if idx1 === nothing
-        return eps(xs)
-    end
-    idx1 = min(nValues(T)-3, idx1)
-    floats(xs)[idx1 + 0x01] - floats(xs)[idx1]
-end
+Base.eps(T::Type{<:AbstractAIFloat}) = eps(AIFloat(T))
 
 function Base.eps(xs::T, x::F) where {T<:AbstractUnsignedExtended, F<:AbstractFloat}
     x == 1 && return eps(xs)

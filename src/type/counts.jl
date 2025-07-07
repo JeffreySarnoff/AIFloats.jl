@@ -54,8 +54,8 @@ nExpValues(T::Type{<:AbstractAIFloat}) = 1 << nExpBits(T)
 nNonzeroExpValues(T::Type{<:AbstractAIFloat}) = nExpValues(T) - 1
 
 nNonnegValues(T::Type{<:AbstractAIFloat}) = nMagnitudes(T)
-nPositiveValues(::Type{T}) where {Bits, SigBits, T<:AbstractSigned{Bits, SigBits}} = nNonnegValues(T) - 1
-nNegativeValues(::Type{T}) where {Bits, SigBits, T<:AbstractSigned{Bits, SigBits}} = nNumericValues(T) - nNonnegValues(T)
+nPositiveValues(T::Type{<:AbstractAIFloat}) = nNonnegValues(T) - 1
+nNegativeValues(T::Type{<:AbstractAIFloat}) = nNumericValues(T) - nNonnegValues(T)
 
 nFiniteNonnegValues(T::Type{<:AbstractAIFloat}) = nNonnegValues(T) - nPosInfs(T)
 nFinitePositiveValues(T::Type{<:AbstractAIFloat}) = nPositiveValues(T) - nPosInfs(T)
