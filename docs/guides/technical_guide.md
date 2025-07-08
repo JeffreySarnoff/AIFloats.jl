@@ -9,39 +9,40 @@ AIFloats.jl implements a comprehensive family of microfloat formats based on the
 ### Abstract Type Hierarchy
 
 ```julia
-abstract type AbstractAIFloat{Bits, SigBits, IsSigned} <: AbstractFloat end
+                                 abstract type AbstractAIFloat{Bits, SigBits} <: AbstractFloat end
 
-abstract type AbstractSigned{Bits, SigBits} <: AbstractAIFloat{Bits, SigBits, true} end
-abstract type AbstractUnsigned{Bits, SigBits} <: AbstractAIFloat{Bits, SigBits, false} end
+abstract type AbstractSigned{Bits, SigBits} <: AbstractAIFloat{Bits, SigBits} end
 
-abstract type AbstractSignedFinite{Bits, SigBits} <: AbstractSigned{Bits, SigBits} end
-abstract type AbstractSignedExtended{Bits, SigBits} <: AbstractSigned{Bits, SigBits} end
+    abstract type AbstractSignedFinite{Bits, SigBits} <: AbstractSigned{Bits, SigBits} end
+    abstract type AbstractSignedExtended{Bits, SigBits} <: AbstractSigned{Bits, SigBits} end
 
-abstract type AbstractUnsignedFinite{Bits, SigBits} <: AbstractUnsigned{Bits, SigBits} end
-abstract type AbstractUnsignedExtended{Bits, SigBits} <: AbstractUnsigned{Bits, SigBits} end
+abstract type AbstractUnsigned{Bits, SigBits} <: AbstractAIFloat{Bits, SigBits} end
+
+    abstract type AbstractUnsignedFinite{Bits, SigBits} <: AbstractUnsigned{Bits, SigBits} end
+    abstract type AbstractUnsignedExtended{Bits, SigBits} <: AbstractUnsigned{Bits, SigBits} end
 ```
 
 ### Concrete Implementation Types
 
 ```julia
-struct SignedFinite{bits, sigbits, T, S} <: AbstractSignedFinite{bits, sigbits}
+struct SignedFinite{bits, sigbits, T, U} <: AbstractSignedFinite{bits, sigbits}
     floats::Vector{T}  # Aligned memory for float values
-    codes::Vector{S}   # Aligned memory for encodings
+    codes::Vector{U}   # Aligned memory for encodings
 end
 
-struct SignedExtended{bits, sigbits, T, S} <: AbstractSignedExtended{bits, sigbits}
+struct SignedExtended{bits, sigbits, T, U} <: AbstractSignedExtended{bits, sigbits}
     floats::Vector{T}
-    codes::Vector{S}
+    codes::Vector{U}
 end
 
-struct UnsignedFinite{bits, sigbits, T, S} <: AbstractUnsignedFinite{bits, sigbits}
+struct UnsignedFinite{bits, sigbits, T, U} <: AbstractUnsignedFinite{bits, sigbits}
     floats::Vector{T}
-    codes::Vector{S}
+    codes::Vector{U}
 end
 
-struct UnsignedExtended{bits, sigbits, T, S} <: AbstractUnsignedExtended{bits, sigbits}
+struct UnsignedExtended{bits, sigbits, T, U} <: AbstractUnsignedExtended{bits, sigbits}
     floats::Vector{T}
-    codes::Vector{S}
+    codes::Vector{U}
 end
 ```
 
@@ -63,10 +64,13 @@ The format uses **prenormal** magnitudes (a generalization of subnormal):
 
 ```julia
 n_prenormals(precision) = 2^(precision - 1)
-n_subnormals = n_prenormals - 1
+n_subnormals(precision) = n_prenormals(precision) - 1
 fractional_step(precision) = 1 / n_prenormals(precision)
-prenormal_sequence(precision) = (0:(n_prenormals-1)) * fractional_step * exponent_min
+prenormal_sequence(precision) = (0:1:(n_prenormals-1)) * fractional_step * exponent_min
 normal_sequence(precision) = 1.0 .+ prenormal_sequence(precision)
+
+prenormal_values(bits, precision) = prenormal_sequence(precision) * exponent_min(bits, precision)
+
 ```
 
 ### Exponent System

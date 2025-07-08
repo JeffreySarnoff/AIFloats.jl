@@ -9,7 +9,93 @@ export isnan, isinf, iszero, isone, isfinite,
 convert the Julia index `x` into a P3109 offset as a UInt16
 - (0x040) ↦ 0x0039
 - in 0-based languages, this is a do nothing operation
+
 """ index_to_offset
+
+"""
+    index_to_code(bits, index)
+
+convert the Julia index (1-based) into a P3109 encoding (0-based)
+- (8, 31) ↦ 0x1e
+- (9, 30) ↦ 0x1d
+
+""" index_to_code
+
+"""
+    offset_to_index(x)
+
+convert the P3109 encoding `x` into a Julia index as an UInt16
+- (0x39) ↦ 0x0040
+- (255) ↦ 0x01
+- in 0-based languages, this is a do nothing operation
+
+""" offset_to_index
+
+"""
+    offset_to_code(bits, x)
+
+convert the 0-based offset `x` into a P3109 encoding value as a UInt8|16
+- (8, 30) ↦ 0x1e
+- (9, 0x1d) ↦ 0x1d
+
+""" offset_to_code
+
+"""
+    code_to_index(bits, code)
+
+convert the P3019 encoding to a Julia index
+- (8, 0x1e) ↦ 31
+- (9, 0x1d) ↦ 30
+
+""" code_to_index
+
+"""
+    code_to_offset(bits, code)
+
+convert the P3019 encoding to a (0-based) offset
+- (8, 0x1e) ↦ 29
+- (9, 0x1d) ↦ 0x1c
+
+""" code_to_offset
+
+
+
+"""
+    code_to_value(values, code)
+
+    - values[code+1] i f   0 <= code < length(values)
+                     else NaN
+""" code_to_value
+
+offset_to_value = code_to_value
+
+"""
+    index_to_value(values, idx)
+
+    - values[idx] if   0 < idx <= length(values)
+                  else NaN
+
+""" index_to_value
+
+"""
+    value_to_code
+
+""" value_to_code
+
+"""
+    value_to_offset
+
+""" value_to_offset
+
+
+"""
+    value_to_index
+
+""" value_to_index
+
+
+value_to_index = 1 + value_to_offset
+
 
 @inline function index_to_offset(x::StaticInt{N}) where {N}
     (x % UInt16) - one(UInt16)
@@ -30,15 +116,6 @@ end
     index_to_offset(x)
 end
 
-"""
-    offset_to_index(x)
-
-convert the P3109 encoding `x` into a Julia index as an UInt16
-- (0x39) ↦ 0x0040
-- (255) ↦ 0x01
-- in 0-based languages, this is a do nothing operation
-""" offset_to_index
-
 @inline function offset_to_index(x::StaticInt{N}) where {N}
     x % UInt16 + one(UInt16)
 end
@@ -58,26 +135,13 @@ end
     offset_to_index(x)
 end
 
-"""
-    index_to_code(bits, index)
 
-convert the Julia index `x` into a P3109 encoding value as a UInt8|16
-- (8, 256) ↦ 0xff
-- (9, 256) ↦ 0x00ff
-
-""" index_to_code
 
 @inline function index_to_code(bits, index)
     index_to_offset(index) % typeforcode(bits)
 end
 
-"""
-    offset_to_code(bits, x)
 
-convert the Julia offset `x` into a P3109 encoding value as a UInt8|16
-- (8, 255) ↦ 0xff
-- (9, 255) ↦ 0x00ff
-"""
 
 @inline index1(::Type{T}) where {T<:AbstractUnsigned} = nValues(T) >> 0x0001 + 0x01
 @inline index1(x::T) where {T<:AbstractUnsigned} = index1(T)                                                            
