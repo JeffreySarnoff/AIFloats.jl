@@ -3,7 +3,7 @@
         # Test basic construction with parameters
         uf = UnsignedFinite(6, 3)
         @test isa(uf, UnsignedFinite)
-        @test isa(uf, AbstractUnsignedFinite{6, 3})
+        @test isa(uf, AkoUnsignedFinite{6, 3})
         
         # Test type parameters are correctly embedded
         @test isa(uf, UnsignedFinite{6, 3, Float64, UInt8})
@@ -23,7 +23,7 @@
         # Test basic construction with parameters
         ue = UnsignedExtended(6, 3)
         @test isa(ue, UnsignedExtended)
-        @test isa(ue, AbstractUnsignedExtended{6, 3})
+        @test isa(ue, AkoUnsignedExtended{6, 3})
         
         # Test type parameters
         @test isa(ue, UnsignedExtended{6, 3, Float64, UInt8})
@@ -41,14 +41,14 @@
     
     @testset "Type-based Construction" begin
         # Test construction from abstract type - finite
-        T_finite = AbstractUnsignedFinite{8, 4}
+        T_finite = AkoUnsignedFinite{8, 4}
         uf_from_type = UnsignedFinite(T_finite)
         @test isa(uf_from_type, UnsignedFinite{8, 4})
         @test nBits(T_finite) == 8
         @test nSigBits(T_finite) == 4
         
         # Test construction from abstract type - extended
-        T_extended = AbstractUnsignedExtended{8, 4}
+        T_extended = AkoUnsignedExtended{8, 4}
         ue_from_type = UnsignedExtended(T_extended)
         @test isa(ue_from_type, UnsignedExtended{8, 4})
         @test nBits(T_extended) == 8
@@ -62,7 +62,7 @@
     end
     
     @testset "Value Sequence Generation - Finite" begin
-        T = AbstractUnsignedFinite{6, 3}
+        T = AkoUnsignedFinite{6, 3}
         values = value_sequence(T)
         
         @test isa(values, Vector)
@@ -98,7 +98,7 @@
     end
     
     @testset "Value Sequence Generation - Extended" begin
-        T = AbstractUnsignedExtended{6, 3}
+        T = AkoUnsignedExtended{6, 3}
         values = value_sequence(T)
         
         @test isa(values, Vector)
@@ -223,7 +223,7 @@
     end
     
     @testset "Foundation Magnitude Integration" begin
-        T = AbstractUnsignedFinite{8, 4}
+        T = AkoUnsignedFinite{8, 4}
         values = value_sequence(T)
         foundation_mags = foundation_magnitudes(T)
         
@@ -429,7 +429,7 @@
         
         # Test different construction paths for finite
         uf1 = UnsignedFinite(bits, sigbits)
-        uf2 = UnsignedFinite(AbstractUnsignedFinite{bits, sigbits})
+        uf2 = UnsignedFinite(AkoUnsignedFinite{bits, sigbits})
         
         # Should produce identical results
         @test typeof(uf1) == typeof(uf2)
@@ -438,7 +438,7 @@
         
         # Test for extended types
         ue1 = UnsignedExtended(bits, sigbits)
-        ue2 = UnsignedExtended(AbstractUnsignedExtended{bits, sigbits})
+        ue2 = UnsignedExtended(AkoUnsignedExtended{bits, sigbits})
         
         @test typeof(ue1) == typeof(ue2)
         @test all(floats(ue1) .=== floats(ue2))

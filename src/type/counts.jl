@@ -4,10 +4,10 @@
 nNaNs(@nospecialize(T::Type{<:AbstractAIFloat})) = 1
 nZeros(@nospecialize(T::Type{<:AbstractAIFloat})) = 1
 
-nInfs(@nospecialize(T::Type{<:AbstractSignedFinite}))     = 0
-nInfs(@nospecialize(T::Type{<:AbstractUnsignedFinite}))   = 0
-nInfs(@nospecialize(T::Type{<:AbstractSignedExtended}))   = 2
-nInfs(@nospecialize(T::Type{<:AbstractUnsignedExtended})) = 1
+nInfs(@nospecialize(T::Type{<:AkoSignedFinite}))     = 0
+nInfs(@nospecialize(T::Type{<:AkoUnsignedFinite}))   = 0
+nInfs(@nospecialize(T::Type{<:AkoSignedExtended}))   = 2
+nInfs(@nospecialize(T::Type{<:AkoUnsignedExtended})) = 1
 
 nPosInfs(@nospecialize(T::Type{<:AbstractAIFloat}))  = (nInfs(T) + 1) >> 1
 nNegInfs(@nospecialize(T::Type{<:AbstractSigned}))   = (nInfs(T) + 1) >> 1

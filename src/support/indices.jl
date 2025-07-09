@@ -234,23 +234,23 @@ idxnegone(::Type{T}) where {T<:AbstractUnsigned} = nothing # throw(DomainError(T
 idxnan(::Type{T}) where {T<:AbstractUnsigned} = (nValues(T) % UInt16)
 idxnan(::Type{T}) where {T<:AbstractSigned} = (((nValues(T) % UInt16) >> 0x0001) + 0x0001)
  
-idxinf(::Type{T}) where {T<:AbstractUnsignedExtended} = ((nValues(T) - 1) % UInt16)
-idxinf(::Type{T}) where {T<:AbstractSignedExtended} = ((nValues(T) % UInt16) >> 0x0001)
+idxinf(::Type{T}) where {T<:AkoUnsignedExtended} = ((nValues(T) - 1) % UInt16)
+idxinf(::Type{T}) where {T<:AkoSignedExtended} = ((nValues(T) % UInt16) >> 0x0001)
 
-idxneginf(::Type{T}) where {T<:AbstractSignedExtended} = (nValues(T) % UInt16)
-idxneginf(::Type{T}) where {T<:AbstractSignedFinite} = nothing # throw(DomainError(T, "idxneginf: T must be an AbstractSignedExtended type, not $T"))
-idxneginf(::Type{T}) where {T<:AbstractUnsigned} = nothing # throw(DomainError(T, "idxneginf: T must be an AbstractSignedExtended type, not $T"))
+idxneginf(::Type{T}) where {T<:AkoSignedExtended} = (nValues(T) % UInt16)
+idxneginf(::Type{T}) where {T<:AkoSignedFinite} = nothing # throw(DomainError(T, "idxneginf: T must be an AkoSignedExtended type, not $T"))
+idxneginf(::Type{T}) where {T<:AbstractUnsigned} = nothing # throw(DomainError(T, "idxneginf: T must be an AkoSignedExtended type, not $T"))
 
 ofsone(T::Type{<:AbstractAIFloat}) = index_to_offset(idxone(T))
 ofsnegone(T::Type{<:AbstractAIFloat}) = index_to_offset(idxnegone(T))
 ofsnegone(::Type{T}) where {T<:AbstractUnsigned} = nothing # throw(DomainError(T, "ofsnegone: T must be an AbstractSigned type, not $T"))
 
 ofsnan(T::Type{<:AbstractAIFloat}) = index_to_offset(idxnan(T))
-ofsinf(::Type{T}) where {T<:AbstractUnsignedExtended} = index_to_offset(idxinf(T))
-ofsinf(::Type{T}) where {T<:AbstractSignedExtended} = index_to_offset(idxinf(T))
-ofsneginf(::Type{T}) where {T<:AbstractSignedExtended} = index_to_offset(idxneginf(T))
-ofsneginf(::Type{T}) where {T<:AbstractSignedFinite} = nothing # throw(DomainError(T, "ofsneginf: T must be an AbstractSignedExtended type, not $T"))
-ofsneginf(::Type{T}) where {T<:AbstractUnsigned} = nothing # throw(DomainError(T, "ofsneginf: T must be an AbstractSignedExtended type, not $T"))
+ofsinf(::Type{T}) where {T<:AkoUnsignedExtended} = index_to_offset(idxinf(T))
+ofsinf(::Type{T}) where {T<:AkoSignedExtended} = index_to_offset(idxinf(T))
+ofsneginf(::Type{T}) where {T<:AkoSignedExtended} = index_to_offset(idxneginf(T))
+ofsneginf(::Type{T}) where {T<:AkoSignedFinite} = nothing # throw(DomainError(T, "ofsneginf: T must be an AkoSignedExtended type, not $T"))
+ofsneginf(::Type{T}) where {T<:AbstractUnsigned} = nothing # throw(DomainError(T, "ofsneginf: T must be an AkoSignedExtended type, not $T"))
  
  # cover instantiations
  for F in (:idxone, :idxnegone, :idxnan, :idxinf, :idxneginf,

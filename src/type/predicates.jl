@@ -11,15 +11,15 @@ is_signed(@nospecialize(T::Type{<:AbstractUnsigned}))   = false
 is_unsigned(@nospecialize(T::Type{<:AbstractSigned}))   = false
 is_unsigned(@nospecialize(T::Type{<:AbstractUnsigned})) = true
 
-is_finite(@nospecialize(T::Type{<:AbstractSignedFinite}))     = true
-is_finite(@nospecialize(T::Type{<:AbstractUnsignedFinite}))   = true
-is_finite(@nospecialize(T::Type{<:AbstractSignedExtended}))   = false
-is_finite(@nospecialize(T::Type{<:AbstractUnsignedExtended})) = false
+is_finite(@nospecialize(T::Type{<:AkoSignedFinite}))     = true
+is_finite(@nospecialize(T::Type{<:AkoUnsignedFinite}))   = true
+is_finite(@nospecialize(T::Type{<:AkoSignedExtended}))   = false
+is_finite(@nospecialize(T::Type{<:AkoUnsignedExtended})) = false
 
-is_extended(@nospecialize(T::Type{<:AbstractSignedFinite}))     = false
-is_extended(@nospecialize(T::Type{<:AbstractUnsignedFinite}))   = false
-is_extended(@nospecialize(T::Type{<:AbstractSignedExtended}))   = true
-is_extended(@nospecialize(T::Type{<:AbstractUnsignedExtended})) = true
+is_extended(@nospecialize(T::Type{<:AkoSignedFinite}))     = false
+is_extended(@nospecialize(T::Type{<:AkoUnsignedFinite}))   = false
+is_extended(@nospecialize(T::Type{<:AkoSignedExtended}))   = true
+is_extended(@nospecialize(T::Type{<:AkoUnsignedExtended})) = true
 
 has_subnormals(::Type{T}) where {Bits, T<:AbstractAIFloat{Bits, 1}} = false
 has_subnormals(T::Type{<:AbstractAIFloat}) = true
