@@ -1,16 +1,16 @@
-firstNonzeroPrenormalMagnitude(T::Type{<:AbstractAIFloat}) = 1 / nPrenormalMagnitudes(T)
-lastPrenormalMagnitude(T::Type{<:AbstractAIFloat}) = (nPrenormalMagnitudes(T) - 1) / nPrenormalMagnitudes(T)
+firstNonzeroPrenormalMagnitude(T::Type{<:AbstractAIFloat}) = 1 / nmagnitudes_prenormal(T)
+lastPrenormalMagnitude(T::Type{<:AbstractAIFloat}) = (nmagnitudes_prenormal(T) - 1) / nmagnitudes_prenormal(T)
 
-subnormalMagnitudeMin(T::Type{<:AbstractAIFloat}) = has_subnormals(T) ? firstNonzeroPrenormalMagnitude(T) * expSubnormalValue(T) : nothing
-subnormalMagnitudeMax(T::Type{<:AbstractAIFloat}) = has_subnormals(T) ? lastPrenormalMagnitude(T) * expSubnormalValue(T) : nothing
+magnitude_subnormal_min(T::Type{<:AbstractAIFloat}) = has_subnormals(T) ? firstNonzeroPrenormalMagnitude(T) * exp_subnormal_value(T) : nothing
+magnitude_subnormal_max(T::Type{<:AbstractAIFloat}) = has_subnormals(T) ? lastPrenormalMagnitude(T) * exp_subnormal_value(T) : nothing
 
-normalMagnitudeMin(T::Type{<:AbstractUnsigned}) = expMinValue(T)
-normalMagnitudeMin(T::Type{<:AbstractSigned}) = expMinValue(T)
+magnitude_normal_min(T::Type{<:AbstractUnsigned}) = exp_value_min(T)
+magnitude_normal_min(T::Type{<:AbstractSigned}) = exp_value_min(T)
 
-normalMagnitudeMax(T::Type{<:AbstractUnsigned}) = expMaxValue(T) * (1 + ((nPrenormalMagnitudes(T) - 1) - 1 - is_extended(T)) / nPrenormalMagnitudes(T))
-normalMagnitudeMax(T::Type{<:AbstractSigned}) = expMaxValue(T) * (1 + ((nPrenormalMagnitudes(T) - 1) - is_extended(T)) / nPrenormalMagnitudes(T))
+magnitude_normal_max(T::Type{<:AbstractUnsigned}) = exp_value_max(T) * (1 + ((nmagnitudes_prenormal(T) - 1) - 1 - is_extended(T)) / nmagnitudes_prenormal(T))
+magnitude_normal_max(T::Type{<:AbstractSigned}) = exp_value_max(T) * (1 + ((nmagnitudes_prenormal(T) - 1) - is_extended(T)) / nmagnitudes_prenormal(T))
 
 # cover instantiations
-for F in (:subnormalMagnitudeMin, :subnormalMagnitudeMax, :normalMagnitudeMin, :normalMagnitudeMax)
+for F in (:magnitude_subnormal_min, :magnitude_subnormal_max, :magnitude_normal_min, :magnitude_normal_max)
     @eval $F(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = $F(T)
 end

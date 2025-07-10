@@ -4,14 +4,14 @@
         
         steps = prenormal_magnitude_steps(T)
         @test isa(steps, AbstractVector)
-        @test length(steps) == nPrenormalMagnitudes(T)
+        @test length(steps) == nmagnitudes_prenormal(T)
         
         # Should start at 0 and end just before 1
         @test steps[1] == 0.0
         @test steps[end] < 1.0
         
         # Should be evenly spaced
-        expected_step = 1.0 / nPrenormalMagnitudes(T)
+        expected_step = 1.0 / nmagnitudes_prenormal(T)
         for i in 1:length(steps)
             @test steps[i] ≈ (i-1) * expected_step
         end
@@ -19,9 +19,9 @@
         # Test with different configurations
         T2 = TestUnsignedFinite{6, 3}
         steps2 = prenormal_magnitude_steps(T2)
-        @test length(steps2) == nPrenormalMagnitudes(T2)
+        @test length(steps2) == nmagnitudes_prenormal(T2)
         @test steps2[1] == 0.0
-        @test steps2[end] == (nPrenormalMagnitudes(T2) - 1) / nPrenormalMagnitudes(T2)
+        @test steps2[end] == (nmagnitudes_prenormal(T2) - 1) / nmagnitudes_prenormal(T2)
     end
     
     @testset "Normal Magnitude Steps" begin
@@ -30,7 +30,7 @@
         steps = normal_magnitude_steps(T)
         @test isa(steps, AbstractVector)
         
-        nprenormals = nPrenormalMagnitudes(T)
+        nprenormals = nmagnitudes_prenormal(T)
         @test length(steps) == nprenormals
         
         # Should start at 1 and go to just before 2
@@ -72,8 +72,8 @@
                 magnitudes = significand_magnitudes(T)
                 
                 # Basic structure tests
-                @test length(prenormals) == nPrenormalMagnitudes(T)
-                @test length(normals) == nPrenormalMagnitudes(T)
+                @test length(prenormals) == nmagnitudes_prenormal(T)
+                @test length(normals) == nmagnitudes_prenormal(T)
                 @test length(magnitudes) >= length(prenormals)
                 
                 # Range tests
@@ -93,7 +93,7 @@
         normals = normal_magnitude_steps(T)
         
         # Test that steps have the correct precision
-        nprenormals = nPrenormalMagnitudes(T)
+        nprenormals = nmagnitudes_prenormal(T)
         
         # Prenormal step size
         prenormal_step = 1.0 / nprenormals

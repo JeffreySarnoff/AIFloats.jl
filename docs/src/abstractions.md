@@ -26,6 +26,17 @@ graph LR
     U--> UE[Finite ⊕ Inf ⊕ NaN]
 ```
 
+```mermaid
+graph LR
+    A[AbstractAIFloat]
+    A--> S[Signed]
+    A--> U[Unsigned]
+    S--> SF[Finite ⊕ NaN] o==o AkoSignedFinite
+    U--> UF[Finite ⊕ NaN] o==o AkoUnsignedFinite
+    S--> SE[Finite ⊕ Inf ⊕ NaN] o==o AkoSignedExtended
+    U--> UE[Finite ⊕ Inf ⊕ NaN] o==o AkoUnsignedExtended
+```
+
 ----
 
 ### Computing over these abstractions
@@ -46,16 +57,16 @@ signbits(T::Type{<:AbstractAIFloat{Bits,Precision}}) where {Bits,Precision} =
 expbits(T::Type{<:AbstractAIFloat{Bits,Precision}}) where {Bits,Precision} =
    Bits - Precision + is_unsigned(T)
 
-nValues(T::Type{<:AbstractAIFloat}) = 2^nBits(T)
-nNumericValues(T::Type{<:AbstractAIFloat}) = nValues(T) - 1 # remove NaN
-nFiniteValues(T::Type{<:AbstractAIFloat}) = nNumericValues(T) - nInfs(T) # remove Infs
+nvalues(T::Type{<:AbstractAIFloat}) = 2^nbits(T)
+nvalues_numeric(T::Type{<:AbstractAIFloat}) = nvalues(T) - 1 # remove NaN
+nvalues_finite(T::Type{<:AbstractAIFloat}) = nvalues_numeric(T) - nInfs(T) # remove Infs
 
 nInfs(T::Type{<:AbstractAIFloat}) = is_extended(T) * (is_signed(T) + is_extended(T))
 ```
 and then
 ```
 for F in (:bitsize, :sigbits, :fracbits, :expbits, :signbits,
-          :nValues, :nNumericValues, :nFiniteValues, :nInfs)
+          :nvalues, :nvalues_numeric, :nvalues_finite, :nInfs)
     @eval $(F)(x::AbstractAIFloat) = $(F)(typeof(x))
 end
 ```

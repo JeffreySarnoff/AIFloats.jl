@@ -1,36 +1,37 @@
 
-expBias(::Type{T}) where {Bits, SigBits, T<:AbstractSigned{Bits, SigBits}}   = 2^(Bits - SigBits - 1) # 1 << (Bits - SigBits - 1) 
-expBias(::Type{T}) where {Bits, SigBits, T<:AbstractUnsigned{Bits, SigBits}} = 2^(Bits - SigBits )    # 1 << (Bits - SigBits)
+exp_bias(::Type{T}) where {Bits, SigBits, T<:AbstractSigned{Bits, SigBits}}   = 2^(Bits - SigBits - 1) # 1 << (Bits - SigBits - 1) 
+exp_bias(::Type{T}) where {Bits, SigBits, T<:AbstractUnsigned{Bits, SigBits}} = 2^(Bits - SigBits )    # 1 << (Bits - SigBits)
 
 # exponent field characterizations
-expFieldMax(T::Type{<:AbstractAIFloat}) = nExpValues(T) - 1
+exp_field_min(T::Type{<:AbstractAIFloat}) = 0
+exp_field_max(T::Type{<:AbstractAIFloat}) = nvalues_exp(T) - 1
 
-expUnbiasedNormalMax(T::Type{<:AbstractAIFloat}) = expFieldMax(T) - expBias(T)
-expUnbiasedNormalMin(T::Type{<:AbstractAIFloat}) = -expUnbiasedNormalMax(T)
-expUnbiasedSubnormal(T::Type{<:AbstractAIFloat}) = expUnbiasedNormalMin(T)
+exp_unbiased_normal_max(T::Type{<:AbstractAIFloat}) = exp_field_max(T) - exp_bias(T)
+exp_unbiased_normal_min(T::Type{<:AbstractAIFloat}) = -exp_unbiased_normal_max(T)
+exp_unbiased_subnormal(T::Type{<:AbstractAIFloat}) = exp_unbiased_normal_min(T)
 
-expSubnormal(T::Type{<:AbstractAIFloat}) = expUnbiasedSubnormal(T)
-expSubnormalValue(T::Type{<:AbstractAIFloat}) = two(T)^(expUnbiasedSubnormal(T))
+exp_subnormal_value(T::Type{<:AbstractAIFloat}) = two(T)^(exp_unbiased_subnormal(T))
 
-expUnbiasedNormals(T::Type{<:AbstractAIFloat}) = collect(expUnbiasedNormalMin(T):expUnbiasedNormalMax(T))
-expUnbiasedValues(T::Type{<:AbstractAIFloat}) = vcat(expUnbiasedSubnormal(T), expUnbiasedNormals(T))
+exp_unbiased_normal_seq(T::Type{<:AbstractAIFloat}) = collect(exp_unbiased_normal_min(T):exp_unbiased_normal_max(T))
+exp_unbiased_seq(T::Type{<:AbstractAIFloat}) = [exp_unbiased_subnormal(T), exp_unbiased_normal_seq(T)...]
 
-expNormalValues(T::Type{<:AbstractAIFloat}) = two(T) .^ (expUnbiasedNormalMin(T):expUnbiasedNormalMax(T))
-expValues(T::Type{<:AbstractAIFloat}) = [expSubnormalValue(T), expNormalValues(T)...]
+exp_normal_value_seq(T::Type{<:AbstractAIFloat}) = two(T) .^ (exp_unbiased_normal_min(T):exp_unbiased_normal_max(T))
+exp_value_seq(T::Type{<:AbstractAIFloat}) = [exp_subnormal_value(T), exp_normal_value_seq(T)...]
 
-expMin(T::Type{<:AbstractAIFloat}) = expUnbiasedNormalMin(T)
-expMax(T::Type{<:AbstractAIFloat}) = expUnbiasedNormalMax(T)
+exp_unbiased_min(T::Type{<:AbstractAIFloat}) = exp_unbiased_normal_min(T)
+exp_unbiased_max(T::Type{<:AbstractAIFloat}) = exp_unbiased_normal_max(T)
 
-expMinValue(T::Type{<:AbstractAIFloat}) = two(T)^expMin(T)
-expMaxValue(T::Type{<:AbstractAIFloat}) = two(T)^expMax(T)
+exp_value_min(T::Type{<:AbstractAIFloat}) = two(T)^exp_unbiased_min(T)
+exp_value_max(T::Type{<:AbstractAIFloat}) = two(T)^exp_unbiased_max(T)
 
 # cover instantiations
 
-expBias(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = expBias(T)
+exp_bias(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = exp_bias(T)
 
-for F in (:expFieldMax, :expMin, :expMax, :expMinValue, :expMaxValue, :expValues,
-          :expUnbiasedNormalMax, :expUnbiasedNormalMin, :expUnbiasedSubnormal, 
-          :expUnbiasedNormalValues, :expUnbiasedValues, :expSubnormalValue)
+for F in (:exp_field_min, :exp_field_max, :exp_unbiased_min, :exp_unbiased_max, :exp_unbiased_seq,
+          :exp_value_min, :exp_value_max, :exp_value_seq, exp_normal_value_seq,
+          :exp_unbiased_normal_max, :exp_unbiased_normal_min, :exp_unbiased_subnormal,
+          :exp_unbiased_normal_seq, :exp_subnormal_value)
     @eval $F(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = $F(T)
 end
 

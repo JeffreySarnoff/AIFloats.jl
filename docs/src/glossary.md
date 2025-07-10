@@ -18,5 +18,5 @@ unit fraction and complementary unit fraction
 
 0/1 < Qunit < ... <  Qcomplement  < 1/1
 
-subnormal_min(nFracBits(T)) == Qunit(nFracBits(T))
-subnormal_max(nFracBits(T)) == Qcomplement(nFracBits(T))
+subnormal_min(nbits_frac(T)) == Qunit(nbits_frac(T))
+subnormal_max(nbits_frac(T)) == Qcomplement(nbits_frac(T))

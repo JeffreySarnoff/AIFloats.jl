@@ -2,7 +2,7 @@
     @testset "Foundation Magnitudes" begin
         T = TestSignedFinite{6, 3}
         
-        magnitudes = foundation_magnitudes(T)
+        magnitudes = magnitude_foundation_seq(T)
         @test isa(magnitudes, Vector)
         @test length(magnitudes) > 0
         
@@ -16,7 +16,7 @@
         @test all(x -> x > 0, magnitudes[2:end])
         
         # Should use the correct float type
-        expected_type = typeforfloat(nBits(T))
+        expected_type = typeforfloat(nbits(T))
         @test eltype(magnitudes) == expected_type
     end
     
@@ -62,7 +62,7 @@
         @test isa(stride, Integer)
         
         # Should be ceiling division of magnitudes by exponent values
-        expected = cld(nMagnitudes(T), nExpValues(T))
+        expected = cld(nmagnitudes(T), nvalues_exp(T))
         @test stride == expected
     end
     
@@ -74,11 +74,11 @@
         @test length(strides) > 0
         
         # Should contain subnormal exponent values
-        subnormal_exp = expUnbiasedSubnormal(T)
+        subnormal_exp = exp_unbiased_subnormal(T)
         @test any(x -> x ≈ subnormal_exp, strides)
         
         # Should contain normal exponent values
-        normal_exps = expUnbiasedNormals(T)
+        normal_exps = exp_unbiased_normal_seq(T)
         for exp in normal_exps
             @test any(x -> x ≈ exp, strides)
         end
@@ -87,7 +87,7 @@
     @testset "Foundation Magnitude Structure" begin
         T = TestSignedFinite{7, 3}
         
-        magnitudes = foundation_magnitudes(T)
+        magnitudes = magnitude_foundation_seq(T)
         
         # Should start with significand pattern
         significands = significand_magnitudes(T)
@@ -125,7 +125,7 @@
             for SigBits in 2:(Bits-1)
                 T = TestSignedFinite{Bits, SigBits}
                 
-                magnitudes = foundation_magnitudes(T)
+                magnitudes = magnitude_foundation_seq(T)
                 
                 # Basic sanity checks
                 @test length(magnitudes) > 0
@@ -143,12 +143,12 @@
     @testset "High Precision Handling" begin
         T = TestSignedFinite{12, 6}  # Larger precision
         
-        magnitudes = foundation_magnitudes(T)
+        magnitudes = magnitude_foundation_seq(T)
         
         # Should handle larger ranges gracefully
         @test length(magnitudes) > 0
         @test issorted(magnitudes)
-        @test eltype(magnitudes) == typeforfloat(nBits(T))
+        @test eltype(magnitudes) == typeforfloat(nbits(T))
         
         # Should not overflow or underflow
         @test all(isfinite, magnitudes)
@@ -160,7 +160,7 @@
         test_type = TestSignedFinite{6, 3}
         test_instance = test_type()
         
-        @test foundation_magnitudes(test_type) == foundation_magnitudes(test_instance)
+        @test magnitude_foundation_seq(test_type) == magnitude_foundation_seq(test_instance)
         @test foundation_extremal_exps(test_type) == foundation_extremal_exps(test_instance)
         @test foundation_exps(test_type) == foundation_exps(test_instance)
         @test normal_exp_stride(test_type) == normal_exp_stride(test_instance)
@@ -171,7 +171,7 @@
         # Test minimal configuration
         T_min = TestSignedFinite{3, 2}
         
-        magnitudes = foundation_magnitudes(T_min)
+        magnitudes = magnitude_foundation_seq(T_min)
         @test length(magnitudes) >= 2  # At least zero and something positive
         @test magnitudes[1] == 0
         
@@ -204,14 +204,14 @@
         T = TestSignedFinite{8, 4}
         
         # Foundation magnitudes should be efficiently allocated
-        @test @allocated(foundation_magnitudes(T)) > 0
+        @test @allocated(magnitude_foundation_seq(T)) > 0
         
-        magnitudes = foundation_magnitudes(T)
+        magnitudes = magnitude_foundation_seq(T)
         @test isa(magnitudes, Vector)
         
         # Should be reasonable size
-        @test length(magnitudes) <= 2^nBits(T)
-        @test length(magnitudes) >= nPrenormalMagnitudes(T)
+        @test length(magnitudes) <= 2^nbits(T)
+        @test length(magnitudes) >= nmagnitudes_prenormal(T)
     end
     
     @testset "Type Correctness" begin
@@ -219,8 +219,8 @@
         T_small = TestSignedFinite{6, 3}
         T_large = TestSignedFinite{12, 6}
         
-        magnitudes_small = foundation_magnitudes(T_small)
-        magnitudes_large = foundation_magnitudes(T_large)
+        magnitudes_small = magnitude_foundation_seq(T_small)
+        magnitudes_large = magnitude_foundation_seq(T_large)
         
         @test eltype(magnitudes_small) == typeforfloat(6)
         @test eltype(magnitudes_large) == typeforfloat(12)

@@ -44,15 +44,15 @@
         T_finite = AkoSignedFinite{8, 4}
         sf_from_type = SignedFinite(T_finite)
         @test isa(sf_from_type, SignedFinite{8, 4})
-        @test nBits(T_finite) == 8
-        @test nSigBits(T_finite) == 4
+        @test nbits(T_finite) == 8
+        @test nbits_sig(T_finite) == 4
         
         # Test construction from abstract type - extended
         T_extended = AkoSignedExtended{8, 4}
         se_from_type = SignedExtended(T_extended)
         @test isa(se_from_type, SignedExtended{8, 4})
-        @test nBits(T_extended) == 8
-        @test nSigBits(T_extended) == 4
+        @test nbits(T_extended) == 8
+        @test nbits_sig(T_extended) == 4
         
         # Test consistency between construction methods
         sf_direct = SignedFinite(8, 4)
@@ -63,7 +63,7 @@
     
     @testset "Value Sequence Generation - Finite" begin
         T = AkoSignedFinite{6, 3}
-        values = value_sequence(T)
+        values = value_seq(T)
         
         @test isa(values, Vector)
         @test eltype(values) == typeforfloat(6)
@@ -86,7 +86,7 @@
         @test !any(isinf, values)
         
         # Test magnitude structure based on foundation magnitudes
-        foundation_mags = foundation_magnitudes(T)
+        foundation_mags = magnitude_foundation_seq(T)
         half_length = length(values) ÷ 2
         
         # First half should be non-negative magnitudes (including zero)
@@ -101,7 +101,7 @@
     
     @testset "Value Sequence Generation - Extended" begin
         T = AkoSignedExtended{6, 3}
-        values = value_sequence(T)
+        values = value_seq(T)
         
         @test isa(values, Vector)
         @test eltype(values) == typeforfloat(6)
@@ -207,8 +207,8 @@
     
     @testset "Foundation Magnitude Integration" begin
         T = AkoSignedFinite{7, 3}
-        values = value_sequence(T)
-        foundation_mags = foundation_magnitudes(T)
+        values = value_seq(T)
+        foundation_mags = magnitude_foundation_seq(T)
         
         # The first half should be based on foundation magnitudes
         half_length = length(values) ÷ 2
@@ -394,8 +394,8 @@
         sf = SignedFinite(8, 4)
         
         # Test that all expected type functions work
-        @test nBits(typeof(sf)) == 8
-        @test nSigBits(typeof(sf)) == 4
+        @test nbits(typeof(sf)) == 8
+        @test nbits_sig(typeof(sf)) == 4
         @test is_signed(typeof(sf)) == true
         @test is_finite(typeof(sf)) == true
         @test is_extended(typeof(sf)) == false
@@ -406,8 +406,8 @@
         @test is_finite(typeof(se)) == false
         
         # Test count functions
-        @test nValues(typeof(sf)) == 256
-        @test nMagnitudes(typeof(sf)) == 128  # Half for signed
+        @test nvalues(typeof(sf)) == 256
+        @test nmagnitudes(typeof(sf)) == 128  # Half for signed
         @test nInfs(typeof(sf)) == 0          # Finite has no infinities
         @test nInfs(typeof(se)) == 2          # Extended has +Inf and -Inf
     end

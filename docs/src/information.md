@@ -62,26 +62,26 @@ The main exports from the `AIFloats` module are:
 
 ### Functions Over Types
 
-- `encoding_sequence`, `value_sequence`
--  `foundation_magnitudes`
+- `encoding_seq`, `value_seq`
+-  `magnitude_foundation_seq`
 
 ### Bit/Value Counts
 
-- `nBits`, `nSigBits`, `nFracBits`, `nSignBits`, `nExpBits`
+- `nbits`, `nbits_sig`, `nbits_frac`, `nbits_sign`, `nbits_exp`
 - `nNaNs`, `nZeros`, `nInfs`, `nPosInfs`, `nNegInfs`
-- `nPrenormalMagnitudes`, `nSubnormalMagnitudes`, `nNormalMagnitudes`, `nMagnitudes`
-- `nValues`, `nNumericValues`, `nNonzeroNumericValues`
-- `nMagnitudes`, `nNonzeroMagnitudes`
-- `nExpValues`, `nNonzeroExpValues`
-- `nFiniteValues`, `nNonzeroFiniteValues`
+- `nmagnitudes_prenormal`, `nmagnitudes_subnormal`, `nmagnitudes_normal`, `nmagnitudes`
+- `nvalues`, `nvalues_numeric`, `nvalues_numeric_nonzero`
+- `nmagnitudes`, `nmagnitudes_nonzero`
+- `nvalues_exp`, `nvalues_exp_nonzero`
+- `nvalues_finite`, `nvalues_finite_nonzero`
 
 ### Exponent Utilities
 
-- `expBias`, `expUnbiasedValues`, `expMinValue`, `expMaxValue`, `expValues`
+- `exp_bias`, `expUnbiased`, `exp_value_min`, `exp_value_max`, `exp_value_seq`
 
 ### Julia Support Functions
 
-- `index1`,  `value_to_index`, `index_to_value`, `floatleast`
+- `index_one`,  `value_to_index`, `index_to_value`, `floatleast`
 - `ulp_distance`
 
 ---
@@ -127,15 +127,15 @@ AIFloat(bits::Int, sigbits::Int; signed::Bool, extended::Bool)
 
 ### Bit/Value Analysis
 
-- Functions such as `nBits`, `nSigBits`, `nExpBits`, `nMagnitudes`, `nValues`, etc., return details about the bit structure and value set for a given type.
+- Functions such as `nbits`, `nbits_sig`, `nbits_exp`, `nmagnitudes`, `nvalues`, etc., return details about the bit structure and value set for a given type.
 
 ### Sequences
 
-- `encoding_sequence`, `value_sequence`,  `foundation_magnitudes`: Enumerate underlying representations and corresponding values.
+- `encoding_seq`, `value_seq`,  `magnitude_foundation_seq`: Enumerate underlying representations and corresponding values.
 
 ### Julia Support
 
-- Indexing and conversion helpers: `index1`,  `value_to_index`, `index_to_value`, `floatleast`, `ulp_distance`.
+- Indexing and conversion helpers: `index_one`,  `value_to_index`, `index_to_value`, `floatleast`, `ulp_distance`.
 
 ---
 
@@ -150,8 +150,8 @@ using AIFloats
 T = AIFloat(16, 11; signed=true, extended=true)
 
 # Query some properties
-nBits(T)            # Number of bits
-nFiniteValues(T)    # Number of finite representable values
+nbits(T)            # Number of bits
+nvalues_finite(T)    # Number of finite representable values
 ```
 
 ### Checking Type Properties

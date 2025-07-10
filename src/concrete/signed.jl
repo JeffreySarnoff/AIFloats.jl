@@ -15,8 +15,8 @@ floats(x::SignedExtended) = x.floats
 codes(x::SignedExtended) = x.codes
 
 function SignedFinite(T::Type{<:AbstractSigned})
-    bits = nBits(T)
-    sigbits = nSigBits(T)
+    bits = nbits(T)
+    sigbits = nbits_sig(T)
     SignedFinite(bits, sigbits)
 end
 
@@ -24,16 +24,16 @@ end
 function SignedFinite(bits::Int, sigbits::Int)
     T = typeforfloat(bits)
     S = typeforcode(bits)
-    codes = encoding_sequence(S, bits)
-    floats = value_sequence(AkoSignedFinite{bits, sigbits})
+    codes = encoding_seq(S, bits)
+    floats = value_seq(AkoSignedFinite{bits, sigbits})
     SignedFinite{bits, sigbits, T, S}(floats, codes)
 end
 
-function value_sequence(T::Type{<:AkoSignedFinite})
-    bits = nBits(T)
-    sigbits = nSigBits(T)
+function value_seq(T::Type{<:AkoSignedFinite})
+    bits = nbits(T)
+    sigbits = nbits_sig(T)
     F = typeforfloat(bits)
-    nonnegmagnitudes = foundation_magnitudes(AkoSignedFinite{bits, sigbits})
+    nonnegmagnitudes = magnitude_foundation_seq(AkoSignedFinite{bits, sigbits})
     negmagnitudes = -1 .* nonnegmagnitudes
     negmagnitudes[1] = convert(F, NaN)
     magnitudes = vcat(nonnegmagnitudes, negmagnitudes)
@@ -43,8 +43,8 @@ function value_sequence(T::Type{<:AkoSignedFinite})
 end
 
 function SignedExtended(T::Type{<:AbstractSigned})
-    bits = nBits(T)
-    sigbits = nSigBits(T)
+    bits = nbits(T)
+    sigbits = nbits_sig(T)
     SignedExtended(bits, sigbits)
 end
 
@@ -52,17 +52,17 @@ end
 function SignedExtended(bits::Int, sigbits::Int)
     T = typeforfloat(bits)
     S = typeforcode(bits)
-    codes = encoding_sequence(S, bits)
-    floats = value_sequence(AkoSignedExtended{bits, sigbits})
+    codes = encoding_seq(S, bits)
+    floats = value_seq(AkoSignedExtended{bits, sigbits})
     SignedExtended{bits, sigbits, T, S}(floats, codes)
 end
 
-function value_sequence(T::Type{<:AkoSignedExtended})
-    bits = nBits(T)
-    sigbits = nSigBits(T)
+function value_seq(T::Type{<:AkoSignedExtended})
+    bits = nbits(T)
+    sigbits = nbits_sig(T)
     F = typeforfloat(bits)
     
-    nonnegmagnitudes = foundation_magnitudes(AkoSignedExtended{bits, sigbits})
+    nonnegmagnitudes = magnitude_foundation_seq(AkoSignedExtended{bits, sigbits})
     nonnegmagnitudes[end] = convert(F, Inf)  # last value is Inf
     negmagnitudes = -1 .* nonnegmagnitudes
     negmagnitudes[1] = convert(F, NaN)

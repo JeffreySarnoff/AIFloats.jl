@@ -57,19 +57,19 @@ struct MyFloat8_4 <: AkoSignedFinite{8, 4} end
 struct MyUFloat8_4 <: AkoUnsignedFinite{8, 4} end
 
 # Query basic properties
-nBits(MyFloat8_4)     # 8
-nSigBits(MyFloat8_4)  # 4  
-nFracBits(MyFloat8_4) # 3
+nbits(MyFloat8_4)     # 8
+nbits_sig(MyFloat8_4)  # 4  
+nbits_frac(MyFloat8_4) # 3
 is_signed(MyFloat8_4) # true
 is_finite(MyFloat8_4) # true
 
 # Count different value types
-nValues(MyFloat8_4)         # 256 (total possible values)
-nFiniteValues(MyFloat8_4)   # 255 (excluding NaN)
-nPositiveValues(MyFloat8_4) # 127 (positive finite values)
+nvalues(MyFloat8_4)         # 256 (total possible values)
+nvalues_finite(MyFloat8_4)   # 255 (excluding NaN)
+nvalues_positive(MyFloat8_4) # 127 (positive finite values)
 
 # Generate value sequences
-values = value_sequence(MyFloat8_4)  # Complete sequence of representable values
+values = value_seq(MyFloat8_4)  # Complete sequence of representable values
 ```
 
 ## API Reference
@@ -119,19 +119,19 @@ isa_extended(@nospecialize(T::Type{<:AkoSignedExtended})) → Bool
 
 #### Bit Layout Functions
 ```julia
-nBits(T) → Int          # Total bits in representation
-nSigBits(T) → Int       # Significand bits (including implicit bit)
-nFracBits(T) → Int      # Fractional bits (nSigBits - 1)
-nExpBits(T) → Int       # Exponent bits
+nbits(T) → Int          # Total bits in representation
+nbits_sig(T) → Int       # Significand bits (including implicit bit)
+nbits_frac(T) → Int      # Fractional bits (nbits_sig - 1)
+nbits_exp(T) → Int       # Exponent bits
 ```
 
 **Note:** Unsigned types get an extra exponent bit since no sign bit is needed.
 
 #### Value Counts
 ```julia
-nValues(T) → Int                # Total representable values (2^nBits)
-nNumericValues(T) → Int         # Non-NaN values  
-nNonzeroNumericValues(T) → Int  # Non-NaN, non-zero values
+nvalues(T) → Int                # Total representable values (2^nbits)
+nvalues_numeric(T) → Int         # Non-NaN values  
+nvalues_numeric_nonzero(T) → Int  # Non-NaN, non-zero values
 ```
 
 ### Special Value Counts
@@ -149,63 +149,63 @@ nNegInfs(T) → Int   # Negative infinities (0 for unsigned)
 
 #### Magnitude Functions
 ```julia
-nMagnitudes(T) → Int           # Total magnitude values
-nNonzeroMagnitudes(T) → Int    # Non-zero magnitude values
-nFiniteMagnitudes(T) → Int     # Finite magnitude values
+nmagnitudes(T) → Int           # Total magnitude values
+nmagnitudes_nonzero(T) → Int    # Non-zero magnitude values
+nmagnitudes_finite(T) → Int     # Finite magnitude values
 ```
 
 #### Sign-Specific Counts
 ```julia
-nNonnegValues(T) → Int         # Non-negative values (≥ 0)
-nPositiveValues(T) → Int       # Positive values (> 0)  
-nNegativeValues(T) → Int       # Negative values (< 0)
-nFinitePositiveValues(T) → Int # Finite positive values
-nFiniteNegativeValues(T) → Int # Finite negative values
+nvalues_nonneg(T) → Int         # Non-negative values (≥ 0)
+nvalues_positive(T) → Int       # Positive values (> 0)  
+nvalues_negative(T) → Int       # Negative values (< 0)
+nvalues_finite_positive(T) → Int # Finite positive values
+nvalues_finite_negative(T) → Int # Finite negative values
 ```
 
 ### Normal and Subnormal Counts
 
 #### Subnormal (Denormalized) Values
 ```julia
-nPrenormalMagnitudes(T) → Int  # Magnitudes in subnormal range (including zero)
-nSubnormalMagnitudes(T) → Int  # Non-zero subnormal magnitudes
-nPrenormalValues(T) → Int      # Subnormal values (including zero)
-nSubnormalValues(T) → Int      # Non-zero subnormal values
+nmagnitudes_prenormal(T) → Int  # Magnitudes in subnormal range (including zero)
+nmagnitudes_subnormal(T) → Int  # Non-zero subnormal magnitudes
+nvalues_prenormal(T) → Int      # Subnormal values (including zero)
+nvalues_subnormal(T) → Int      # Non-zero subnormal values
 ```
 
 #### Normal Values  
 ```julia
-nNormalMagnitudes(T) → Int        # Normal magnitude values
-nNormalValues(T) → Int            # Normal values
-nExtendedNormalMagnitudes(T) → Int # Normal + infinity magnitudes
-nExtendedNormalValues(T) → Int    # Normal + infinity values
+nmagnitudes_normal(T) → Int        # Normal magnitude values
+nvalues_normal(T) → Int            # Normal values
+nmagnitudes_normal_extended(T) → Int # Normal + infinity magnitudes
+nvalues_normal_extended(T) → Int    # Normal + infinity values
 ```
 
 ### Exponent System
 
 #### Exponent Properties
 ```julia
-expBias(T) → Int              # Exponent bias
-expUnbiasedMax(T) → Int       # Maximum unbiased exponent
-expUnbiasedMin(T) → Int       # Minimum unbiased exponent  
-expUnbiasedValues(T) → Vector # All unbiased exponent values
-expMaxValue(T) → Float64      # 2^expUnbiasedMax
-expMinValue(T) → Float64      # 2^expUnbiasedMin
+exp_bias(T) → Int              # Exponent bias
+exp_unbiased_max(T) → Int       # Maximum unbiased exponent
+exp_unbiased_min(T) → Int       # Minimum unbiased exponent  
+exp_unbiased_seq(T) → Vector # All unbiased exponent values
+exp_value_max(T) → Float64      # 2^exp_unbiased_max
+exp_value_min(T) → Float64      # 2^exp_unbiased_min
 ```
 
 #### Exponent Counts
 ```julia
-nExpValues(T) → Int           # Total exponent values (2^nExpBits)
-nNonzeroExpValues(T) → Int    # Non-zero exponent values
+nvalues_exp(T) → Int           # Total exponent values (2^nbits_exp)
+nvalues_exp_nonzero(T) → Int    # Non-zero exponent values
 ```
 
 ### Significand Properties
 
 ```julia
-nSigMagnitudes(T) → Int       # Significand magnitude values (2^nSigBits)
-nNonzeroSigMagnitudes(T) → Int # Non-zero significand magnitudes
-nFracMagnitudes(T) → Int      # Fractional part values (2^nFracBits)  
-nNonzeroFracMagnitudes(T) → Int # Non-zero fractional parts
+nmagnitudes_sig(T) → Int       # Significand magnitude values (2^nbits_sig)
+nmagnitudes_sig_nonzero(T) → Int # Non-zero significand magnitudes
+nmagnitudes_frac(T) → Int      # Fractional part values (2^nbits_frac)  
+nmagnitudes_frac_nonzero(T) → Int # Non-zero fractional parts
 ```
 
 ### Value Generation Functions
@@ -221,12 +221,12 @@ Generate normalized magnitude steps for subnormal and normal ranges.
 ```julia
 foundation_extremal_exps(T) → Tuple{Int, Int}    # (min_exp, max_exp)
 foundation_exps(T) → UnitRange{Int}              # Range of foundation exponents
-foundation_magnitudes(T) → Vector{Float64}       # Base magnitude values
+magnitude_foundation_seq(T) → Vector{Float64}       # Base magnitude values
 ```
 
 #### Complete Value Sequences
 ```julia
-value_sequence(T) → Vector{Float64}
+value_seq(T) → Vector{Float64}
 ```
 Generate the complete sequence of representable values for the type, including special values (NaN, ±∞) in appropriate positions.
 
@@ -252,24 +252,24 @@ pow2_foundation_exps(T, res) → Vector{Float32}  # 2^exponent values
 struct Float8_4 <: AkoSignedFinite{8, 4} end
 
 # Basic properties
-@show nBits(Float8_4)          # 8
-@show nSigBits(Float8_4)       # 4  
-@show nExpBits(Float8_4)       # 4 (8 - 4 = 4)
-@show expBias(Float8_4)        # 8 (2^(8-4-1) = 2^3)
+@show nbits(Float8_4)          # 8
+@show nbits_sig(Float8_4)       # 4  
+@show nbits_exp(Float8_4)       # 4 (8 - 4 = 4)
+@show exp_bias(Float8_4)        # 8 (2^(8-4-1) = 2^3)
 
 # Value counts
-@show nValues(Float8_4)        # 256 (2^8)
-@show nFiniteValues(Float8_4)  # 255 (no infinities)
-@show nPositiveValues(Float8_4) # 127 (half minus zero)
-@show nNegativeValues(Float8_4) # 127
+@show nvalues(Float8_4)        # 256 (2^8)
+@show nvalues_finite(Float8_4)  # 255 (no infinities)
+@show nvalues_positive(Float8_4) # 127 (half minus zero)
+@show nvalues_negative(Float8_4) # 127
 
 # Subnormal analysis  
-@show nPrenormalMagnitudes(Float8_4)  # 8 (2^(4-1))
-@show nSubnormalMagnitudes(Float8_4)  # 7 (8-1)
-@show nPrenormalValues(Float8_4)      # 15 (2*8-1)
+@show nmagnitudes_prenormal(Float8_4)  # 8 (2^(4-1))
+@show nmagnitudes_subnormal(Float8_4)  # 7 (8-1)
+@show nvalues_prenormal(Float8_4)      # 15 (2*8-1)
 
 # Generate all values
-values = value_sequence(Float8_4)
+values = value_seq(Float8_4)
 println("Total values generated: $(length(values))")
 println("NaN count: $(count(isnan, values))")  
 println("Finite count: $(count(isfinite, values))")
@@ -288,15 +288,15 @@ struct UFloat16_8 <: AkoUnsignedExtended{16, 8} end
 @show nNegInfs(UFloat16_8)       # 0
 
 # Bit allocation (unsigned gets extra exponent bit)
-@show nExpBits(UFloat16_8)       # 9 (16 - 8 + 1)
-@show expBias(UFloat16_8)        # 256 (2^(16-8))
+@show nbits_exp(UFloat16_8)       # 9 (16 - 8 + 1)
+@show exp_bias(UFloat16_8)        # 256 (2^(16-8))
 
 # Value counts
-@show nFiniteValues(UFloat16_8)  # 65534 (65535 - 1 inf)
-@show nMagnitudes(UFloat16_8)    # 65535 (all non-NaN)
+@show nvalues_finite(UFloat16_8)  # 65534 (65535 - 1 inf)
+@show nmagnitudes(UFloat16_8)    # 65535 (all non-NaN)
 
 # Generate values  
-values = value_sequence(UFloat16_8)
+values = value_seq(UFloat16_8)
 inf_count = count(isinf, values)
 println("Infinity values: $inf_count")
 ```
@@ -313,10 +313,10 @@ function compare_layouts(bits, sigbits)
     
     println("Comparing $(bits)-bit floats with $(sigbits) significand bits:")
     println("                    Signed  Unsigned")
-    println("Exponent bits:      $(nExpBits(S))       $(nExpBits(U))")
-    println("Exponent bias:      $(expBias(S))       $(expBias(U))")  
-    println("Max unbiased exp:   $(expUnbiasedMax(S))       $(expUnbiasedMax(U))")
-    println("Total magnitudes:   $(nMagnitudes(S))     $(nMagnitudes(U))")
+    println("Exponent bits:      $(nbits_exp(S))       $(nbits_exp(U))")
+    println("Exponent bias:      $(exp_bias(S))       $(exp_bias(U))")  
+    println("Max unbiased exp:   $(exp_unbiased_max(S))       $(exp_unbiased_max(U))")
+    println("Total magnitudes:   $(nmagnitudes(S))     $(nmagnitudes(U))")
 end
 
 compare_layouts(8, 4)
@@ -336,7 +336,7 @@ struct TestFloat <: AkoSignedExtended{10, 5} end
 
 function analyze_value_distribution(T)
     println("Value distribution for $(T):")
-    println("Total bits: $(nBits(T)), Significand: $(nSigBits(T))")
+    println("Total bits: $(nbits(T)), Significand: $(nbits_sig(T))")
     println()
     
     # Special values
@@ -349,21 +349,21 @@ function analyze_value_distribution(T)
     
     # Normal vs subnormal
     println("Normal/Subnormal breakdown:")
-    println("  Subnormal values: $(nSubnormalValues(T))")
-    println("  Normal values: $(nNormalValues(T))")
-    println("  Extended normal: $(nExtendedNormalValues(T))")
+    println("  Subnormal values: $(nvalues_subnormal(T))")
+    println("  Normal values: $(nvalues_normal(T))")
+    println("  Extended normal: $(nvalues_normal_extended(T))")
     println()
     
     # Sign distribution  
     println("Sign distribution:")
-    println("  Positive: $(nPositiveValues(T))")
-    println("  Negative: $(nNegativeValues(T))")
-    println("  Non-negative: $(nNonnegValues(T))")
+    println("  Positive: $(nvalues_positive(T))")
+    println("  Negative: $(nvalues_negative(T))")
+    println("  Non-negative: $(nvalues_nonneg(T))")
     println()
     
     # Verification
-    total = nNaNs(T) + nZeros(T) + nInfs(T) + nSubnormalValues(T) + nNormalValues(T)
-    println("Verification: $(total) = $(nValues(T)) ✓")
+    total = nNaNs(T) + nZeros(T) + nInfs(T) + nvalues_subnormal(T) + nvalues_normal(T)
+    println("Verification: $(total) = $(nvalues(T)) ✓")
 end
 
 analyze_value_distribution(TestFloat)
@@ -376,7 +376,7 @@ analyze_value_distribution(TestFloat)
 ```julia
 function analyze_value_gaps(T)
     """Analyze gaps between consecutive finite values."""
-    values = value_sequence(T)
+    values = value_seq(T)
     finite_vals = filter(isfinite, values)
     sort!(finite_vals)
     
@@ -403,7 +403,7 @@ function precision_analysis(T::Type{<:AbstractAIFloat})
     """Generic analysis that works for any AbstractAIFloat type."""
     
     # Compute relative precision at different scales
-    values = value_sequence(T)
+    values = value_seq(T)
     finite_vals = filter(isfinite, values)
     positive_vals = filter(x -> x > 0, finite_vals)
     sort!(positive_vals)
@@ -435,17 +435,17 @@ function batch_type_analysis(types::Vector{Type})
     
     for T in types
         # Pre-compute commonly used values
-        bits = nBits(T)
-        sig_bits = nSigBits(T)
+        bits = nbits(T)
+        sig_bits = nbits_sig(T)
         
         results[T] = Dict(
             :bits => bits,
             :sig_bits => sig_bits,
             :signed => is_signed(T),
             :extended => is_extended(T),
-            :total_values => 1 << bits,  # More efficient than nValues(T)
-            :finite_values => nFiniteValues(T),
-            :dynamic_range => expMaxValue(T) / expMinValue(T)
+            :total_values => 1 << bits,  # More efficient than nvalues(T)
+            :finite_values => nvalues_finite(T),
+            :dynamic_range => exp_value_max(T) / exp_value_min(T)
         )
     end
     
@@ -458,13 +458,13 @@ end
 ### Memory Usage
 
 - **Type-level computations**: All property functions operate on types, not instances, with zero runtime memory overhead
-- **Value sequences**: `value_sequence(T)` generates complete value arrays - memory usage is O(2^nBits)
+- **Value sequences**: `value_seq(T)` generates complete value arrays - memory usage is O(2^nbits)
 - **Lazy evaluation**: Consider using iterators for large bit widths:
 
 ```julia
 # For large types, use iterators instead of materializing full sequences
 function iter_finite_values(T)
-    values = value_sequence(T)
+    values = value_seq(T)
     Iterators.filter(isfinite, values)
 end
 ```

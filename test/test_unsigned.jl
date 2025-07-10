@@ -44,15 +44,15 @@
         T_finite = AkoUnsignedFinite{8, 4}
         uf_from_type = UnsignedFinite(T_finite)
         @test isa(uf_from_type, UnsignedFinite{8, 4})
-        @test nBits(T_finite) == 8
-        @test nSigBits(T_finite) == 4
+        @test nbits(T_finite) == 8
+        @test nbits_sig(T_finite) == 4
         
         # Test construction from abstract type - extended
         T_extended = AkoUnsignedExtended{8, 4}
         ue_from_type = UnsignedExtended(T_extended)
         @test isa(ue_from_type, UnsignedExtended{8, 4})
-        @test nBits(T_extended) == 8
-        @test nSigBits(T_extended) == 4
+        @test nbits(T_extended) == 8
+        @test nbits_sig(T_extended) == 4
         
         # Test consistency between construction methods
         uf_direct = UnsignedFinite(8, 4)
@@ -63,7 +63,7 @@
     
     @testset "Value Sequence Generation - Finite" begin
         T = AkoUnsignedFinite{6, 3}
-        values = value_sequence(T)
+        values = value_seq(T)
         
         @test isa(values, Vector)
         @test eltype(values) == typeforfloat(6)
@@ -89,7 +89,7 @@
         @test issorted(finite_sorted)
         
         # Test based on foundation magnitudes
-        foundation_mags = foundation_magnitudes(T)
+        foundation_mags = magnitude_foundation_seq(T)
         @test length(foundation_mags) > 0
         @test foundation_mags[1] == 0.0
         
@@ -99,7 +99,7 @@
     
     @testset "Value Sequence Generation - Extended" begin
         T = AkoUnsignedExtended{6, 3}
-        values = value_sequence(T)
+        values = value_seq(T)
         
         @test isa(values, Vector)
         @test eltype(values) == typeforfloat(6)
@@ -159,7 +159,7 @@
         
         # Test that we have subnormal-like small values
         small_values = filter(x -> 0 < x < 1, finite_values)
-        @test length(small_values) >= nSubnormalMagnitudes(typeof(uf))
+        @test length(small_values) >= nmagnitudes_subnormal(typeof(uf))
         
         # Test that we have normal-like larger values  
         normal_values = filter(x -> x >= 1 && isfinite(x), finite_values)
@@ -185,7 +185,7 @@
         @test issorted(middle_values)
         
         # Test relationship to foundation magnitudes
-        foundation_mags = foundation_magnitudes(typeof(uf))
+        foundation_mags = magnitude_foundation_seq(typeof(uf))
         # Last foundation magnitude becomes NaN
         @test length(foundation_mags) == length(values)
         @test foundation_mags[1:end-1] ≈ values[1:end-1]
@@ -214,7 +214,7 @@
         @test issorted(middle_values)
         
         # Test relationship to foundation magnitudes
-        foundation_mags = foundation_magnitudes(typeof(ue))
+        foundation_mags = magnitude_foundation_seq(typeof(ue))
         # Second-to-last foundation becomes +Inf, last becomes NaN
         @test length(foundation_mags) == length(values)
         @test foundation_mags[1:end-2] ≈ values[1:end-2]
@@ -224,8 +224,8 @@
     
     @testset "Foundation Magnitude Integration" begin
         T = AkoUnsignedFinite{8, 4}
-        values = value_sequence(T)
-        foundation_mags = foundation_magnitudes(T)
+        values = value_seq(T)
+        foundation_mags = magnitude_foundation_seq(T)
         
         # Foundation should provide the base magnitude sequence
         @test length(foundation_mags) == length(values)
@@ -237,7 +237,7 @@
         @test isnan(values[end])  # Last value becomes NaN
         
         # Test that foundation incorporates significand structure
-        nprenormals = nPrenormalMagnitudes(T)
+        nprenormals = nmagnitudes_prenormal(T)
         if nprenormals > 1
             # Should have subnormal-range values
             subnormal_range = foundation_mags[2:nprenormals]  # Skip zero
@@ -353,12 +353,12 @@
         
         # Test precision = 1 characteristics
         @test !has_subnormals(typeof(uf_min))  # No subnormals with precision 1
-        @test nPrenormalMagnitudes(typeof(uf_min)) == 1
+        @test nmagnitudes_prenormal(typeof(uf_min)) == 1
         
         # Test maximum unsigned precision (precision == bitwidth)
         uf_max_prec = UnsignedFinite(6, 6)
         @test length(floats(uf_max_prec)) == 64
-        @test nExpBits(typeof(uf_max_prec)) == 1  # Only 1 exponent bit left
+        @test nbits_exp(typeof(uf_max_prec)) == 1  # Only 1 exponent bit left
         
         # Test near-maximum bit width
         uf_large = UnsignedFinite(15, 8)
@@ -395,8 +395,8 @@
         
         # Test relationship to IEEE-like structure
         if has_subnormals(typeof(uf))
-            subnormal_count = nSubnormalMagnitudes(typeof(uf))
-            actual_small = length(filter(x -> 0 < x < normalMagnitudeMin(typeof(uf)), finite_values))
+            subnormal_count = nmagnitudes_subnormal(typeof(uf))
+            actual_small = length(filter(x -> 0 < x < magnitude_normal_min(typeof(uf)), finite_values))
             @test actual_small >= subnormal_count - 2  # Allow some tolerance
         end
     end
@@ -454,8 +454,8 @@
         uf = UnsignedFinite(8, 4)
         
         # Test that all expected type functions work
-        @test nBits(typeof(uf)) == 8
-        @test nSigBits(typeof(uf)) == 4
+        @test nbits(typeof(uf)) == 8
+        @test nbits_sig(typeof(uf)) == 4
         @test is_unsigned(typeof(uf)) == true
         @test is_signed(typeof(uf)) == false
         @test is_finite(typeof(uf)) == true
@@ -467,24 +467,24 @@
         @test is_finite(typeof(ue)) == false
         
         # Test count functions
-        @test nValues(typeof(uf)) == 256
-        @test nMagnitudes(typeof(uf)) == 255    # All values except NaN
+        @test nvalues(typeof(uf)) == 256
+        @test nmagnitudes(typeof(uf)) == 255    # All values except NaN
         @test nInfs(typeof(uf)) == 0            # Finite has no infinities
         @test nInfs(typeof(ue)) == 1            # Extended has +Inf only
         @test nPosInfs(typeof(ue)) == 1         # One positive infinity
         @test nNegInfs(typeof(ue)) == 0         # No negative infinity for unsigned
         
         # Test exponent functions
-        @test expBias(typeof(uf)) > 0
-        @test nExpBits(typeof(uf)) == 5  # 8 - 4 + 1 for unsigned
+        @test exp_bias(typeof(uf)) > 0
+        @test nbits_exp(typeof(uf)) == 5  # 8 - 4 + 1 for unsigned
         
         # Test magnitude functions
-        @test normalMagnitudeMin(typeof(uf)) > 0
-        @test normalMagnitudeMax(typeof(uf)) > normalMagnitudeMin(typeof(uf))
+        @test magnitude_normal_min(typeof(uf)) > 0
+        @test magnitude_normal_max(typeof(uf)) > magnitude_normal_min(typeof(uf))
         
         if has_subnormals(typeof(uf))
-            @test subnormalMagnitudeMin(typeof(uf)) < normalMagnitudeMin(typeof(uf))
-            @test subnormalMagnitudeMax(typeof(uf)) < normalMagnitudeMin(typeof(uf))
+            @test magnitude_subnormal_min(typeof(uf)) < magnitude_normal_min(typeof(uf))
+            @test magnitude_subnormal_max(typeof(uf)) < magnitude_normal_min(typeof(uf))
         end
     end
     
@@ -516,7 +516,7 @@
         @test length(uf_finite) > length(sf_pos)
         
         # Test magnitude count differences
-        @test nMagnitudes(typeof(uf)) > nMagnitudes(typeof(sf))
+        @test nmagnitudes(typeof(uf)) > nmagnitudes(typeof(sf))
     end
 end
 

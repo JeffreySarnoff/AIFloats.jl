@@ -37,17 +37,17 @@
         uf = UnsignedFinite(6, 3)
         sf = SignedFinite(6, 3)
         
-        # Test index1 function
-        @test index1(typeof(uf)) isa Integer
-        @test index1(typeof(sf)) isa Integer
-        @test index1(uf) == index1(typeof(uf))
-        @test index1(sf) == index1(typeof(sf))
+        # Test index_one function
+        @test index_one(typeof(uf)) isa Integer
+        @test index_one(typeof(sf)) isa Integer
+        @test index_one(uf) == index_one(typeof(uf))
+        @test index_one(sf) == index_one(typeof(sf))
         
         # For unsigned: should be roughly half + 1
-        @test index1(typeof(uf)) == (nValues(typeof(uf)) >> 1) + 1
+        @test index_one(typeof(uf)) == (nvalues(typeof(uf)) >> 1) + 1
         
         # For signed: should be roughly quarter + 1  
-        @test index1(typeof(sf)) == (nValues(typeof(sf)) >> 2) + 1
+        @test index_one(typeof(sf)) == (nvalues(typeof(sf)) >> 2) + 1
     end
     
     @testset "Value/Index Mapping" begin
@@ -81,29 +81,29 @@
         uf = UnsignedFinite(6, 3)
         
         # Test NaN index
-        nan_idx = idxnan(typeof(uf))
+        nan_idx = idx_nan(typeof(uf))
         @test nan_idx isa Integer
         @test nan_idx > 0
-        @test nan_idx <= nValues(typeof(uf))
+        @test nan_idx <= nvalues(typeof(uf))
         
         # Test one index
-        one_idx = idxone(typeof(uf))
+        one_idx = idx_one(typeof(uf))
         @test one_idx isa Integer
         @test one_idx > 0
-        @test one_idx <= nValues(typeof(uf))
+        @test one_idx <= nvalues(typeof(uf))
         
         # Test with unsigned extended (has infinity)
         ue = UnsignedExtended(6, 3)
-        inf_idx = idxinf(typeof(ue))
+        inf_idx = idx_inf(typeof(ue))
         @test inf_idx isa Integer
         @test inf_idx > 0
         
         # Test with signed types
         sf = SignedFinite(6, 3)
         
-        nan_idx_s = idxnan(typeof(sf))
-        one_idx_s = idxone(typeof(sf))
-        negone_idx_s = idxnegone(typeof(sf))
+        nan_idx_s = idx_nan(typeof(sf))
+        one_idx_s = idx_one(typeof(sf))
+        negone_idx_s = idx_negone(typeof(sf))
         
         @test nan_idx_s isa Integer
         @test one_idx_s isa Integer  
@@ -115,21 +115,21 @@
         uf = UnsignedFinite(6, 3)
         
         # Test offset functions
-        one_ofs = ofsone(typeof(uf))
-        nan_ofs = ofsnan(typeof(uf))
+        one_ofs = ofs_one(typeof(uf))
+        nan_ofs = ofs_nan(typeof(uf))
         
-        @test one_ofs == index_to_offset(idxone(typeof(uf)))
-        @test nan_ofs == index_to_offset(idxnan(typeof(uf)))
+        @test one_ofs == index_to_offset(idx_one(typeof(uf)))
+        @test nan_ofs == index_to_offset(idx_nan(typeof(uf)))
         
         # Test with extended types
         ue = UnsignedExtended(6, 3)
-        inf_ofs = ofsinf(typeof(ue))
-        @test inf_ofs == index_to_offset(idxinf(typeof(ue)))
+        inf_ofs = ofs_inf(typeof(ue))
+        @test inf_ofs == index_to_offset(idx_inf(typeof(ue)))
         
         # Test with signed extended
         se = SignedExtended(6, 3)
-        inf_ofs_s = ofsinf(typeof(se))
-        neginf_ofs_s = ofsneginf(typeof(se))
+        inf_ofs_s = ofs_inf(typeof(se))
+        neginf_ofs_s = ofs_neginf(typeof(se))
         @test inf_ofs_s != neginf_ofs_s
     end
     
@@ -137,12 +137,12 @@
         uf = UnsignedFinite(6, 3)
         
         # Test index-based NaN detection
-        nanidx = idxnan(uf)
+        nanidx = idx_nan(uf)
         @test is_idxnan(uf, nanidx)
         @test !is_idxnan(uf, nanidx - 0x01)  # Adjacent index should not be NaN
         
         # Test offset-based NaN detection  
-        nanofs = ofsnan(typeof(uf))
+        nanofs = ofs_nan(typeof(uf))
         @test is_ofsnan(uf, nanofs)
         @test !is_ofsnan(uf, nanofs - 0x01)
         
@@ -153,25 +153,25 @@
     
     @testset "Index Bounds and Validation" begin
         uf = UnsignedFinite(8, 4)
-        n_vals = nValues(typeof(uf))
+        n_vals = nvalues(typeof(uf))
         
         # Test that special indices are within bounds
-        @test 1 <= idxone(typeof(uf)) <= n_vals
-        @test 1 <= idxnan(typeof(uf)) <= n_vals
+        @test 1 <= idx_one(typeof(uf)) <= n_vals
+        @test 1 <= idx_nan(typeof(uf)) <= n_vals
         
         # Test with extended types
         ue = UnsignedExtended(8, 4)
-        @test 1 <= idxinf(typeof(ue)) <= n_vals
+        @test 1 <= idx_inf(typeof(ue)) <= n_vals
         
         # Test signed types
         sf = SignedFinite(8, 4)
-        @test 1 <= idxone(typeof(sf)) <= n_vals
-        @test 1 <= idxnegone(typeof(sf)) <= n_vals
-        @test 1 <= idxnan(typeof(sf)) <= n_vals
+        @test 1 <= idx_one(typeof(sf)) <= n_vals
+        @test 1 <= idx_negone(typeof(sf)) <= n_vals
+        @test 1 <= idx_nan(typeof(sf)) <= n_vals
         
         se = SignedExtended(8, 4)
-        @test 1 <= idxinf(typeof(se)) <= n_vals
-        @test 1 <= idxneginf(typeof(se)) <= n_vals
+        @test 1 <= idx_inf(typeof(se)) <= n_vals
+        @test 1 <= idx_neginf(typeof(se)) <= n_vals
     end
     
     @testset "Value/Index Consistency" begin
@@ -197,10 +197,10 @@
         uf_type = UnsignedFinite{6, 3}
         uf_instance = UnsignedFinite(6, 3)
         
-        @test idxone(uf_type) == idxone(uf_instance)
-        @test idxnan(uf_type) == idxnan(uf_instance)
-        @test ofsone(uf_type) == ofsone(uf_instance)
-        @test ofsnan(uf_type) == ofsnan(uf_instance)
+        @test idx_one(uf_type) == idx_one(uf_instance)
+        @test idx_nan(uf_type) == idx_nan(uf_instance)
+        @test ofs_one(uf_type) == ofs_one(uf_instance)
+        @test ofs_nan(uf_type) == ofs_nan(uf_instance)
     end
     
     @testset "Edge Cases and Error Handling" begin
@@ -225,10 +225,10 @@
         # Test that index functions return consistent types
         uf = UnsignedFinite(8, 4)
         
-        @test idxone(typeof(uf)) isa Integer
-        @test idxnan(typeof(uf)) isa Integer
-        @test ofsone(typeof(uf)) isa Integer
-        @test ofsnan(typeof(uf)) isa Integer
+        @test idx_one(typeof(uf)) isa Integer
+        @test idx_nan(typeof(uf)) isa Integer
+        @test ofs_one(typeof(uf)) isa Integer
+        @test ofs_nan(typeof(uf)) isa Integer
         
         # Test that conversions preserve appropriate types
         @test offset_to_index(UInt8(100)) isa UInt16
@@ -273,16 +273,16 @@
         sf = SignedFinite(8, 4)
         
         # Both should have valid one indices
-        uf_one_idx = idxone(typeof(uf))
-        sf_one_idx = idxone(typeof(sf))
+        uf_one_idx = idx_one(typeof(uf))
+        sf_one_idx = idx_one(typeof(sf))
         
         @test uf_one_idx > 0
         @test sf_one_idx > 0
         @test uf_one_idx != sf_one_idx  # Should be different
         
         # Both should have valid NaN indices
-        uf_nan_idx = idxnan(typeof(uf))
-        sf_nan_idx = idxnan(typeof(sf))
+        uf_nan_idx = idx_nan(typeof(uf))
+        sf_nan_idx = idx_nan(typeof(sf))
         
         @test uf_nan_idx > 0
         @test sf_nan_idx > 0

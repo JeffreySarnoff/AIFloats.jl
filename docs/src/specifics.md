@@ -6,10 +6,10 @@ These predicates: `is_signed`, `is_unsigned`, `is_finite`, `is_extended`.
 These characterizing counts:
 ```
 bitwidth, precision,
-nValues, nNumericValues, nFiniteValues, nNormalValues, nSubnormalValues,
-nMagnitudes, nFiniteMagnitudes nNormalMagnitudes, nSubnormalMagnitudes,
+nvalues, nvalues_numeric, nvalues_finite, nvalues_normal, nvalues_subnormal,
+nmagnitudes, nmagnitudes_finite nmagnitudes_normal, nmagnitudes_subnormal,
 
-nBits, nSignBits, nExpBits, nSigBits, nFracBits
+nbits, nbits_sign, nbits_exp, nbits_sig, nbits_frac
 ```
 
 These extremal values:
