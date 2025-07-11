@@ -30,13 +30,17 @@ convert the P3019 encoding to a Julia index
 
 """ code_to_index
 
-Base.@assume_effects :nothrow function code_to_index(n, code)
+Base.@assume_effects :nothrow function code_to_index(n, code::U) where {U<:Unsigned}
     unsafe_code_to_index(validate_code(n, code))
 end
 
-@inline function unsafe_code_to_index(code)
+@inline function unsafe_code_to_index(code::U) where {U<:Unsigned}
     code + 0x01
 end
+
+unsafe_code_to_index(n::Nothing) = n
+
+code_to_index(code) = unsafe_code_to_index(code)
 
 """
     index_to_code(n, index)
@@ -47,13 +51,17 @@ convert the Julia index (1-based) into a P3109 encoding (0-based)
 
 """ index_to_code
 
-Base.@assume_effects :nothrow function index_to_code(n, code)
-    unsafe_index_to_code(validate_code(n, code))
+Base.@assume_effects :nothrow function index_to_code(n, idx::I) where {I<:Integer}
+    unsafe_index_to_code(validate_code(n, idx))
 end
 
 @inline function unsafe_index_to_code(idx::I) where {I<:Integer}
     idx - one(I)
 end
+
+unsafe_index_to_code(n::Nothing) = n
+
+index_to_code(idx) = unsafe_index_to_code(idx)
 
 """
     code_to_value(values, code)
@@ -62,9 +70,9 @@ end
                      else NaN
 """ code_to_value
 
-function code_to_value(xs::T, code::U) where {T<:AbstractVector{<:AbstractFloat}, U<:Unsigned} =
-    code = unsafe_code_to_value(xs, x)
-    isnothing(code) && throw(DomainError(x, "value $x not found in $xs"))
+function code_to_value(xs::T, code::U) where {T<:AbstractVector{<:AbstractFloat}, U<:Unsigned}
+    code = unsafe_code_to_value(xs, code)
+    isnothing(code) && throw(DomainError("value $code not found in $xs"))
     code
 end
 
@@ -75,14 +83,14 @@ unsafe_code_to_value(xs, code) = xs[unsafe_code_to_index(code)]
 
 """ value_to_code
 
-function value_to_code(xs::T, x::F) where {T<:AbstractVector{<:AbstractFloat}, F<:AbstractFloat}
-    code = unsafe_value_to_code(xs, x)
-    isnothing(code) && throw(DomainError(x, "value $x not found in $xs"))
+function value_to_code(xs::T, val::F) where {T<:AbstractVector{<:AbstractFloat}, F<:AbstractFloat}
+    code = unsafe_value_to_code(xs, val)
+    isnothing(code) && throw(DomainError(val, "value $val not found in $xs"))
     code
 end
 
-unsafe_value_to_code(xs::T, x::F) where {T<:Vector{<:AbstractFloat}, F<:AbstractFloat} =
-    unsafe_index_to_code(unsafe_value_to_index(xs, x))
+unsafe_value_to_code(xs::T, val::F) where {T<:Vector{<:AbstractFloat}, F<:AbstractFloat} =
+    unsafe_index_to_code(unsafe_value_to_index(xs, val))
 
 """
     index_to_value(values, idx)
@@ -98,7 +106,7 @@ function index_to_value(xs::T, x::I) where {T<:AbstractVector{<:AbstractFloat}, 
     code
 end
 
-unsafe_index_to_value(xs::T, idx::U) where {T<:AbstractVector{<:AbstractFloat}, I<:Integer} = xs[idx]
+unsafe_index_to_value(xs::T, x::I) where {T<:AbstractVector{<:AbstractFloat}, I<:Integer} = xs[x]
 
 """
     value_to_index
@@ -157,35 +165,35 @@ end
 
 # code points
 
-code_zero(::Type{T}) where {T<:AbstractUnsigned} = zero(type_for_code(T))
+code_zero(T::Type{<:AbstractAIFloat}) = zero(typeforcode(T))
 
-code_one(::Type{T}) where {T<:AbstractUnsigned} = ((nvalues(T) % UInt16) >> 0x0001)
-code_one(::Type{T}) where {T<:AbstractSigned} = ((nvalues(T) % UInt16) >> 0x0002)
-code_negone(::Type{T}) where {T<:AbstractSigned} = (((nvalues(T) % UInt16) >> 0x0002) + nvalues(T)>>1)
-code_negone(::Type{T}) where {T<:AbstractUnsigned} = nothing # throw(DomainError(T, "index_negone: T must be an AbstractSigned type, not $T"))
+code_one(T::Type{<:AbstractUnsigned}) = ((nvalues(T) % UInt16) >> 0x0001)
+code_one(T::Type{<:AbstractSigned}) = ((nvalues(T) % UInt16) >> 0x0002)
+code_negone(T::Type{<:AbstractSigned}) = (((nvalues(T) % UInt16) >> 0x0002) + nvalues(T)>>1)
+code_negone(T::Type{<:AbstractUnsigned}) = nothing # throw(DomainError(T, "index_negone: T must be an AbstractSigned type, not $T"))
 
-code_nan(::Type{T}) where {T<:AbstractUnsigned} = (nvalues(T) % UInt16) - 0x0001
-code_nan(::Type{T}) where {T<:AbstractSigned} = ((nvalues(T) % UInt16) >> 0x0001)
+code_nan(T::Type{<:AbstractUnsigned}) = ((nvalues(T) % UInt16) - 0x0001)
+code_nan(T::Type{<:AbstractSigned}) = ((nvalues(T) % UInt16) >> 0x0001)
  
-code_posinf(::Type{T}) where {T<:AkoUnsignedExtended} = ((nvalues(T) - 1) % UInt16)
-code_posinf(::Type{T}) where {T<:AkoSignedExtended} = ((nvalues(T) % UInt16) >> 0x0001)
+code_posinf(T::Type{<:AkoUnsignedExtended}) = ((nvalues(T) - 1) % UInt16)
+code_posinf(T::Type{<:AkoSignedExtended}) = ((nvalues(T) % UInt16) >> 0x0001)
 
-code_neginf(::Type{T}) where {T<:AkoSignedExtended} = (nvalues(T) % UInt16)
-code_neginf(::Type{T}) where {T<:AkoSignedFinite} = nothing # throw(DomainError(T, "code_neginf: T must be an AkoSignedExtended type, not $T"))
-code_neginf(::Type{T}) where {T<:AbstractUnsigned} = nothing # throw(DomainError(T, "code_neginf: T must be an AkoSignedExtended type, not $T"))
+code_neginf(T::Type{<:AkoSignedExtended}) = (nvalues(T) % UInt16)
+code_neginf(T::Type{<:AkoSignedFinite}) = nothing # throw(DomainError(T, "code_neginf: T must be an AkoSignedExtended type, not $T"))
+code_neginf(T::Type{<:AbstractUnsigned}) = nothing # throw(DomainError(T, "code_neginf: T must be an AkoSignedExtended type, not $T"))
 
-index_zero(::Type{T}) where {T<:AbstractUnsigned} = code_to_index(code_zero(T)
+index_zero(T::Type{<:AbstractUnsigned}) = code_to_index(code_zero(T))
 
-index_one(T::Type{<:AbstractAIFloat}) = code_to_index(code_one(T))
-index_negone(T::Type{<:AbstractAIFloat}) = code_to_index(code_negone(T))
-index_negone(::Type{T}) where {T<:AbstractUnsigned} = nothing # throw(DomainError(T, "ofs_negone: T must be an AbstractSigned type, not $T"))
+index_one(T::Type{<:AbstractAIFloat}) = unsafe_code_to_index(code_one(T))
+index_negone(T::Type{<:AbstractAIFloat}) = unsafe_code_to_index(code_negone(T))
+index_negone(T::Type{<:AbstractUnsigned}) = nothing # throw(DomainError(T, "ofs_negone: T must be an AbstractSigned type, not $T"))
 
-index_nan(T::Type{<:AbstractAIFloat}) = code_to_index(code_nan(T))
-index_posinf(::Type{T}) where {T<:AkoUnsignedExtended} = code_to_index(code_posinf(T))
-index_posinf(::Type{T}) where {T<:AkoSignedExtended} = code_to_index(code_posinf(T))
-index_neginf(::Type{T}) where {T<:AkoSignedExtended} = code_to_index(code_neginf(T))
-index_neginf(::Type{T}) where {T<:AkoSignedFinite} = nothing # throw(DomainError(T, "ofs_neginf: T must be an AkoSignedExtended type, not $T"))
-index_neginf(::Type{T}) where {T<:AbstractUnsigned} = nothing # throw(DomainError(T, "ofs_neginf: T must be an AkoSignedExtended type, not $T"))
+index_nan(T::Type{<:AbstractAIFloat}) = unsafe_code_to_index(code_nan(T))
+index_posinf(T::Type{<:AkoUnsignedExtended}) = unsafe_code_to_index(code_posinf(T))
+index_posinf(T::Type{<:AkoSignedExtended}) = unsafe_code_to_index(code_posinf(T))
+index_neginf(T::Type{<:AkoSignedExtended}) = unsafe_code_to_index(code_neginf(T))
+index_neginf(T::Type{<:AkoSignedFinite}) = nothing # throw(DomainError(T, "ofs_neginf: T must be an AkoSignedExtended type, not $T"))
+index_neginf(T::Type{<:AbstractUnsigned}) = nothing # throw(DomainError(T, "ofs_neginf: T must be an AkoSignedExtended type, not $T"))
  
  # cover instantiations
  for F in (:code_zero, :code_one, :code_negone, :code_nan, :code_posinf, :code_neginf,
@@ -208,7 +216,7 @@ iscode_nan(T::Type{<:AbstractAIFloat}, code::U) where {U<:Unsigned} = code_nan(T
 iscode_posinf(T::Type{<:AkoUnsignedExtended}, code::U) where {U<:Unsigned} = code_posinf(T) == code
 iscode_posinf(T::Type{<:AkoSignedExtended}, code::U) where {U<:Unsigned} = code_posinf(T) == code
 iscode_neginf(T::Type{<:AkoSignedExtended}, code::U) where {U<:Unsigned} = code_neginf(T) == code
-iscode_inf(T::Type{<:AbstractAIFloat}, code::U) where {U<:Unsigned} = iscode_posinf(T, U) || iscode_neginf(T, U)
+iscode_inf(T::Type{<:AbstractAIFloat}, code::U) where {U<:Unsigned} = iscode_posinf(T, code) || iscode_neginf(T, code)
 iscode_posinf(T::Type{<:AkoUnsignedFinite}, code::U) where {U<:Unsigned} = false
 iscode_neginf(T::Type{<:AkoUnsignedFinite}, code::U) where {U<:Unsigned} = false
 iscode_inf(T::Type{<:AkoUnsignedFinite}, code::U) where {U<:Unsigned} = false
@@ -216,15 +224,15 @@ iscode_posinf(T::Type{<:AkoSignedFinite}, code::U) where {U<:Unsigned} = false
 iscode_neginf(T::Type{<:AkoSignedFinite}, code::U) where {U<:Unsigned} = false
 iscode_inf(T::Type{<:AkoSignedFinite}, code::U) where {U<:Unsigned} = false
 
-isindex_zero(T::Type{AbstractAIFloat}, idx::U) where {T<:AbstractAIFloat, U<:Unsigned} = iscode_zero(T, index_to_code(idx))
-isindex_one(T::Type{AbstractAIFloat}, idx::U) where {T<:AbstractAIFloat, U<:Unsigned} = idx_nan(T) == idx
-isindex_negone(T::Type{AbstractAIFloat}, idx::U) where {T<:AbstractAIFloat, U<:Unsigned} = idx_nan(T) == idx
+isindex_zero(T::Type{<:AbstractAIFloat}, idx::U) where {U<:Unsigned} = iscode_zero(T, index_to_code(idx))
+isindex_one(T::Type{<:AbstractAIFloat}, idx::U) where {U<:Unsigned} = iscode_one(T, index_to_code(idx))
+isindex_negone(T::Type{<:AbstractAIFloat}, idx::U) where {U<:Unsigned} = iscode_negone(T, index_to_code(idx))
 
-isindex_nan(T::Type{AbstractAIFloat}, idx::U) where {T<:AbstractAIFloat, U<:Unsigned} = idx_nan(T) == idx
+isindex_nan(T::Type{<:AbstractAIFloat}, idx::U) where {U<:Unsigned} = iscode_nan(T, index_to_code(idx))
 
-isindex_posinf(T::Type{AbstractAIFloat}, idx::U) where {T<:AbstractAIFloat, U<:Unsigned} = idx_nan(T) == idx
-isindex_neginf(T::Type{AbstractAIFloat}, idx::U) where {T<:AbstractAIFloat, U<:Unsigned} = idx_nan(T) == idx
-isindex_inf(T::Type{AbstractAIFloat}, idx::U) where {T<:AbstractAIFloat, U<:Unsigned} = idx_nan(T) == idx
+isindex_posinf(T::Type{<:AbstractAIFloat}, idx::U) where {U<:Unsigned} = iscode_posinf(T, index_to_code(idx))
+isindex_neginf(T::Type{<:AbstractAIFloat}, idx::U) where {U<:Unsigned} = iscode_neginf(T, index_to_code(idx))
+isindex_inf(T::Type{<:AbstractAIFloat}, idx::U) where {U<:Unsigned} = iscode_inf(T, index_to_code(idx))
 
 for F in (:iscode_zero, :iscode_one, :iscode_negone, :iscode_nan, :iscode_inf, :iscode_posinf, :iscode_neginf,
           :isindex_zero, :isindex_one, :isindex_negone, :isindex_nan, :isindex_inf, :isindex_posinf, :isindex_neginf)

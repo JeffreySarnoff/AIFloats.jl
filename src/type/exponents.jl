@@ -29,7 +29,7 @@ exp_value_max(T::Type{<:AbstractAIFloat}) = two(T)^exp_unbiased_max(T)
 exp_bias(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = exp_bias(T)
 
 for F in (:exp_field_min, :exp_field_max, :exp_unbiased_min, :exp_unbiased_max, :exp_unbiased_seq,
-          :exp_value_min, :exp_value_max, :exp_value_seq, exp_normal_value_seq,
+          :exp_value_min, :exp_value_max, :exp_value_seq, :exp_normal_value_seq,
           :exp_unbiased_normal_max, :exp_unbiased_normal_min, :exp_unbiased_subnormal,
           :exp_unbiased_normal_seq, :exp_subnormal_value)
     @eval $F(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = $F(T)
