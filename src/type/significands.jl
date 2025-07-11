@@ -1,8 +1,8 @@
 
 function significand_magnitudes(T::Type{<:AbstractAIFloat})
     significands = collect(prenormal_magnitude_steps(T))
-    nmagnitudes = nmagnitudes(T) - (is_signed(T) * nmagnitudes_prenormal(T))
-    normal_cycles = fld(nmagnitudes, nmagnitudes_prenormal(T))
+    n_magnitudes = nmagnitudes(T) - (is_signed(T) * nmagnitudes_prenormal(T))
+    normal_cycles = fld(n_magnitudes, nmagnitudes_prenormal(T))
     normals = Iterators.flatten(fill(normal_magnitude_steps(T), normal_cycles))
     append!(significands, normals)
 
