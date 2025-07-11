@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Getting Started · AIFloats.jl</title><meta name="title" content="Getting Started · AIFloats.jl"/><meta property="og:title" content="Getting Started · AIFloats.jl"/><meta property="twitter:title" content="Getting Started · AIFloats.jl"/><meta name="description" content="Documentation for AIFloats.jl."/><meta property="og:description" content="Documentation for AIFloats.jl."/><meta property="twitter:description" content="Documentation for AIFloats.jl."/><meta property="og:url" content="https://jeffreysarnoff.github.io/AIFloats.jl/tutorials/getting_started/"/><meta property="twitter:url" content="https://jeffreysarnoff.github.io/AIFloats.jl/tutorials/getting_started/"/><link rel="canonical" href="https://jeffreysarnoff.github.io/AIFloats.jl/tutorials/getting_started/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">AIFloats.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Manual</span><ul><li><a class="tocitem" href="../../manual/overview/">Overview</a></li><li><a class="tocitem" href="../../manual/hierarchy/">Type Hierarchy</a></li><li><a class="tocitem" href="../../manual/construction/">Construction</a></li></ul></li><li><span class="tocitem">Tutorials</span><ul><li class="is-active"><a class="tocitem" href>Getting Started</a><ul class="internal"><li><a class="tocitem" href="#Installation-and-Basic-Setup"><span>Installation and Basic Setup</span></a></li><li><a class="tocitem" href="#Creating-Your-First-AIFloat-Format"><span>Creating Your First AIFloat Format</span></a></li><li><a class="tocitem" href="#Exploring-Format-Variants"><span>Exploring Format Variants</span></a></li><li><a class="tocitem" href="#Understanding-Value-Organization"><span>Understanding Value Organization</span></a></li><li><a class="tocitem" href="#Format-Introspection-and-Analysis"><span>Format Introspection and Analysis</span></a></li><li><a class="tocitem" href="#Working-with-Encodings-and-Indices"><span>Working with Encodings and Indices</span></a></li><li><a class="tocitem" href="#Practical-Applications"><span>Practical Applications</span></a></li><li><a class="tocitem" href="#Performance-Considerations"><span>Performance Considerations</span></a></li><li><a class="tocitem" href="#Next-Steps"><span>Next Steps</span></a></li></ul></li></ul></li><li><span class="tocitem">Reference</span><ul><li><a class="tocitem" href="../../reference/types/">Type System</a></li><li><a class="tocitem" href="../../reference/constructors/">Constructors</a></li></ul></li><li><a class="tocitem" href="../../implementation/">Implementation Notes</a></li><li><a class="tocitem" href="../../glossary/">Glossary</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Getting Started</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Getting Started</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JeffreySarnoff/AIFloats.jl/blob/main/docs/src/tutorials/getting_started.md#" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Getting-Started"><a class="docs-heading-anchor" href="#Getting-Started">Getting Started</a><a id="Getting-Started-1"></a><a class="docs-heading-anchor-permalink" href="#Getting-Started" title="Permalink"></a></h1><p>This tutorial provides a hands-on introduction to AIFloats.jl, demonstrating core concepts through practical examples that illustrate the unique characteristics of reduced-precision arithmetic designed for machine learning applications.</p><h2 id="Installation-and-Basic-Setup"><a class="docs-heading-anchor" href="#Installation-and-Basic-Setup">Installation and Basic Setup</a><a id="Installation-and-Basic-Setup-1"></a><a class="docs-heading-anchor-permalink" href="#Installation-and-Basic-Setup" title="Permalink"></a></h2><pre><code class="language-julia hljs">using Pkg
+Pkg.add(&quot;AIFloats&quot;)
+using AIFloats</code></pre><h2 id="Creating-Your-First-AIFloat-Format"><a class="docs-heading-anchor" href="#Creating-Your-First-AIFloat-Format">Creating Your First AIFloat Format</a><a id="Creating-Your-First-AIFloat-Format-1"></a><a class="docs-heading-anchor-permalink" href="#Creating-Your-First-AIFloat-Format" title="Permalink"></a></h2><h3 id="Understanding-Format-Specification"><a class="docs-heading-anchor" href="#Understanding-Format-Specification">Understanding Format Specification</a><a id="Understanding-Format-Specification-1"></a><a class="docs-heading-anchor-permalink" href="#Understanding-Format-Specification" title="Permalink"></a></h3><p>AIFloat formats are specified by four parameters that completely determine their arithmetic properties:</p><pre><code class="language-julia hljs"># Create a 4-bit unsigned finite format with 2-bit significand precision
+uf4p2 = AIFloat(4, 2, :unsigned, :finite)
+
+# Examine the complete value domain
+println(&quot;Values: &quot;, floats(uf4p2))
+println(&quot;Codes:  &quot;, codes(uf4p2))</code></pre><p>Output:</p><pre><code class="nohighlight hljs">Values: [0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, NaN]
+Codes:  [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07]</code></pre><h3 id="Analyzing-the-Bit-Layout"><a class="docs-heading-anchor" href="#Analyzing-the-Bit-Layout">Analyzing the Bit Layout</a><a id="Analyzing-the-Bit-Layout-1"></a><a class="docs-heading-anchor-permalink" href="#Analyzing-the-Bit-Layout" title="Permalink"></a></h3><p>The 4-bit unsigned format allocates bits as follows:</p><ul><li><strong>Significand</strong>: 2 bits (1 implicit + 1 fractional)</li><li><strong>Exponent</strong>: 3 bits (4 - 2 + 1 for unsigned)</li><li><strong>Sign</strong>: 0 bits (unsigned format)</li></ul><pre><code class="language-julia hljs"># Verify bit allocation
+println(&quot;Total bits: &quot;, nbits(uf4p2))           # 4
+println(&quot;Significand bits: &quot;, nbits_sig(uf4p2)) # 2  
+println(&quot;Exponent bits: &quot;, nbits_exp(uf4p2))    # 3
+println(&quot;Sign bits: &quot;, nbits_sign(uf4p2))       # 0</code></pre><h2 id="Exploring-Format-Variants"><a class="docs-heading-anchor" href="#Exploring-Format-Variants">Exploring Format Variants</a><a id="Exploring-Format-Variants-1"></a><a class="docs-heading-anchor-permalink" href="#Exploring-Format-Variants" title="Permalink"></a></h2><h3 id="Signed-vs.-Unsigned-Formats"><a class="docs-heading-anchor" href="#Signed-vs.-Unsigned-Formats">Signed vs. Unsigned Formats</a><a id="Signed-vs.-Unsigned-Formats-1"></a><a class="docs-heading-anchor-permalink" href="#Signed-vs.-Unsigned-Formats" title="Permalink"></a></h3><p>Compare equivalent signed and unsigned formats to understand the trade-offs:</p><pre><code class="language-julia hljs"># 4-bit signed finite format
+sf4p2 = AIFloat(4, 2, :signed, :finite)
+println(&quot;Signed values: &quot;, floats(sf4p2))
+
+# 4-bit unsigned finite format  
+uf4p2 = AIFloat(4, 2, :unsigned, :finite)
+println(&quot;Unsigned values: &quot;, floats(uf4p2))</code></pre><p>Output:</p><pre><code class="nohighlight hljs">Signed values:   [0.0, 0.5, 1.0, 1.5, NaN, -0.5, -1.0, -1.5]
+Unsigned values: [0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, NaN]</code></pre><p><strong>Key Observations</strong>:</p><ul><li>Signed format sacrifices one exponent bit for sign representation</li><li>Unsigned format provides finer granularity in the positive domain</li><li>Both maintain symmetric NaN placement</li></ul><h3 id="Finite-vs.-Extended-Domains"><a class="docs-heading-anchor" href="#Finite-vs.-Extended-Domains">Finite vs. Extended Domains</a><a id="Finite-vs.-Extended-Domains-1"></a><a class="docs-heading-anchor-permalink" href="#Finite-vs.-Extended-Domains" title="Permalink"></a></h3><p>Extended formats incorporate infinities for overflow handling:</p><pre><code class="language-julia hljs"># Compare finite and extended variants
+uf4_finite = AIFloat(4, 2, :unsigned, :finite)
+uf4_extended = AIFloat(4, 2, :unsigned, :extended)
+
+println(&quot;Finite values:   &quot;, floats(uf4_finite))
+println(&quot;Extended values: &quot;, floats(uf4_extended))</code></pre><p>Output:</p><pre><code class="nohighlight hljs">Finite values:   [0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, NaN]
+Extended values: [0.0, 0.25, 0.5, 0.75, 1.0, 1.25, Inf, NaN]</code></pre><p>The extended format replaces the largest finite magnitude with positive infinity, providing overflow handling at the cost of reduced finite precision.</p><h2 id="Understanding-Value-Organization"><a class="docs-heading-anchor" href="#Understanding-Value-Organization">Understanding Value Organization</a><a id="Understanding-Value-Organization-1"></a><a class="docs-heading-anchor-permalink" href="#Understanding-Value-Organization" title="Permalink"></a></h2><h3 id="Prenormal-and-Normal-Regimes"><a class="docs-heading-anchor" href="#Prenormal-and-Normal-Regimes">Prenormal and Normal Regimes</a><a id="Prenormal-and-Normal-Regimes-1"></a><a class="docs-heading-anchor-permalink" href="#Prenormal-and-Normal-Regimes" title="Permalink"></a></h3><p>AIFloat formats partition values into distinct mathematical regimes:</p><pre><code class="language-julia hljs"># Create a format with observable subnormal structure
+se6p3 = AIFloat(6, 3, :signed, :extended)
+
+# Examine regime boundaries
+println(&quot;Prenormal count: &quot;, nmagnitudes_prenormal(se6p3))
+println(&quot;Subnormal count: &quot;, nmagnitudes_subnormal(se6p3))  
+println(&quot;Normal count: &quot;, nmagnitudes_normal(se6p3))
+
+# Extract subnormal and normal value ranges
+values = floats(se6p3)
+prenormal_end = nmagnitudes_prenormal(se6p3)
+
+println(&quot;Prenormal values: &quot;, values[1:prenormal_end])
+println(&quot;First few normals: &quot;, values[prenormal_end+1:prenormal_end+4])</code></pre><p>This reveals the transition from fractional scaling (subnormals) to exponential scaling (normals), demonstrating how precision is allocated across the dynamic range.</p><h2 id="Format-Introspection-and-Analysis"><a class="docs-heading-anchor" href="#Format-Introspection-and-Analysis">Format Introspection and Analysis</a><a id="Format-Introspection-and-Analysis-1"></a><a class="docs-heading-anchor-permalink" href="#Format-Introspection-and-Analysis" title="Permalink"></a></h2><h3 id="Querying-Format-Properties"><a class="docs-heading-anchor" href="#Querying-Format-Properties">Querying Format Properties</a><a id="Querying-Format-Properties-1"></a><a class="docs-heading-anchor-permalink" href="#Querying-Format-Properties" title="Permalink"></a></h3><p>AIFloats provides comprehensive introspection capabilities:</p><pre><code class="language-julia hljs"># Create a representative format for analysis
+se8p4 = AIFloat(8, 4, :signed, :extended)
+
+# Basic format characterization
+println(&quot;Format family: &quot;, is_signed(se8p4) ? &quot;Signed&quot; : &quot;Unsigned&quot;, 
+        &quot;, &quot;, is_extended(se8p4) ? &quot;Extended&quot; : &quot;Finite&quot;)
+
+# Count various value categories
+println(&quot;Total values: &quot;, nvalues(se8p4))
+println(&quot;Finite values: &quot;, nvalues_finite(se8p4))
+println(&quot;Positive values: &quot;, nvalues_positive(se8p4))
+println(&quot;Normal values: &quot;, nvalues_normal(se8p4))
+println(&quot;Infinity count: &quot;, nInfs(se8p4))</code></pre><h3 id="Examining-Exponent-Structure"><a class="docs-heading-anchor" href="#Examining-Exponent-Structure">Examining Exponent Structure</a><a id="Examining-Exponent-Structure-1"></a><a class="docs-heading-anchor-permalink" href="#Examining-Exponent-Structure" title="Permalink"></a></h3><p>Understanding the exponent system is crucial for effective format utilization:</p><pre><code class="language-julia hljs"># Analyze exponent characteristics
+println(&quot;Exponent bias: &quot;, exp_bias(se8p4))
+println(&quot;Min unbiased exponent: &quot;, exp_unbiased_min(se8p4))
+println(&quot;Max unbiased exponent: &quot;, exp_unbiased_max(se8p4))
+println(&quot;Subnormal exponent: &quot;, exp_unbiased_subnormal(se8p4))
+
+# Examine exponent value scaling
+println(&quot;Min exponent value: &quot;, exp_value_min(se8p4))
+println(&quot;Max exponent value: &quot;, exp_value_max(se8p4))
+println(&quot;Subnormal scale: &quot;, exp_subnormal_value(se8p4))</code></pre><h2 id="Working-with-Encodings-and-Indices"><a class="docs-heading-anchor" href="#Working-with-Encodings-and-Indices">Working with Encodings and Indices</a><a id="Working-with-Encodings-and-Indices-1"></a><a class="docs-heading-anchor-permalink" href="#Working-with-Encodings-and-Indices" title="Permalink"></a></h2><h3 id="Code-Value-Correspondence"><a class="docs-heading-anchor" href="#Code-Value-Correspondence">Code-Value Correspondence</a><a id="Code-Value-Correspondence-1"></a><a class="docs-heading-anchor-permalink" href="#Code-Value-Correspondence" title="Permalink"></a></h3><p>Every AIFloat maintains perfect correspondence between bit patterns and floating-point values:</p><pre><code class="language-julia hljs">sf4p2 = AIFloat(4, 2, :signed, :finite)
+
+# Demonstrate encoding lookup
+for i in 1:length(codes(sf4p2))
+    code = codes(sf4p2)[i]
+    value = floats(sf4p2)[i]
+    println(&quot;Code 0x$(string(code, base=16, pad=2)) ↔ Value $value&quot;)
+end</code></pre><p>Output:</p><pre><code class="nohighlight hljs">Code 0x00 ↔ Value 0.0
+Code 0x01 ↔ Value 0.5
+Code 0x02 ↔ Value 1.0
+Code 0x03 ↔ Value 1.5
+Code 0x04 ↔ Value NaN
+Code 0x05 ↔ Value -0.5
+Code 0x06 ↔ Value -1.0
+Code 0x07 ↔ Value -1.5</code></pre><h3 id="Special-Value-Locations"><a class="docs-heading-anchor" href="#Special-Value-Locations">Special Value Locations</a><a id="Special-Value-Locations-1"></a><a class="docs-heading-anchor-permalink" href="#Special-Value-Locations" title="Permalink"></a></h3><p>AIFloats use deterministic placement for special values:</p><pre><code class="language-julia hljs"># Locate special value encodings
+println(&quot;Zero code: 0x$(string(code_zero(sf4p2), base=16, pad=2))&quot;)
+println(&quot;One code: 0x$(string(code_one(sf4p2), base=16, pad=2))&quot;)
+println(&quot;NaN code: 0x$(string(code_nan(sf4p2), base=16, pad=2))&quot;)
+
+# For signed formats, negative one is also available
+println(&quot;Negative one code: 0x$(string(code_negone(sf4p2), base=16, pad=2))&quot;)</code></pre><h3 id="Index-Based-Access"><a class="docs-heading-anchor" href="#Index-Based-Access">Index-Based Access</a><a id="Index-Based-Access-1"></a><a class="docs-heading-anchor-permalink" href="#Index-Based-Access" title="Permalink"></a></h3><p>Julia&#39;s 1-based indexing provides natural access to the value sequences:</p><pre><code class="language-julia hljs"># Convert between 0-based codes and 1-based indices
+code = 0x03
+index = code_to_index(length(floats(sf4p2)), code)
+value = floats(sf4p2)[index]
+
+println(&quot;Code $code → Index $index → Value $value&quot;)
+
+# Reverse lookup: find code for a specific value
+target_value = 1.0
+found_index = findfirst(==(target_value), floats(sf4p2))
+found_code = codes(sf4p2)[found_index]
+println(&quot;Value $target_value → Index $found_index → Code 0x$(string(found_code, base=16, pad=2))&quot;)</code></pre><h2 id="Practical-Applications"><a class="docs-heading-anchor" href="#Practical-Applications">Practical Applications</a><a id="Practical-Applications-1"></a><a class="docs-heading-anchor-permalink" href="#Practical-Applications" title="Permalink"></a></h2><h3 id="Neural-Network-Weight-Quantization"><a class="docs-heading-anchor" href="#Neural-Network-Weight-Quantization">Neural Network Weight Quantization</a><a id="Neural-Network-Weight-Quantization-1"></a><a class="docs-heading-anchor-permalink" href="#Neural-Network-Weight-Quantization" title="Permalink"></a></h3><p>Demonstrate AIFloat usage for weight quantization scenarios:</p><pre><code class="language-julia hljs"># Simulate weight matrix quantization
+using Random
+Random.seed!(42)
+
+# Generate synthetic weight matrix
+weights_fp32 = randn(Float32, 4, 4) * 0.5
+
+# Choose quantization format based on weight distribution
+weight_format = AIFloat(6, 3, :signed, :finite)  # 6-bit signed for weights
+
+println(&quot;Original weights (Float32):&quot;)
+display(weights_fp32)
+
+# Quantize by finding nearest representable values
+quantized_weights = similar(weights_fp32)
+for i in eachindex(weights_fp32)
+    # Find closest AIFloat representation
+    distances = abs.(floats(weight_format) .- weights_fp32[i])
+    closest_idx = argmin(distances)
+    quantized_weights[i] = floats(weight_format)[closest_idx]
+end
+
+println(&quot;\nQuantized weights (6-bit AIFloat):&quot;)
+display(quantized_weights)
+
+# Analyze quantization error
+mse = mean((weights_fp32 .- quantized_weights).^2)
+println(&quot;\nQuantization MSE: $mse&quot;)</code></pre><h3 id="Activation-Function-Table-Generation"><a class="docs-heading-anchor" href="#Activation-Function-Table-Generation">Activation Function Table Generation</a><a id="Activation-Function-Table-Generation-1"></a><a class="docs-heading-anchor-permalink" href="#Activation-Function-Table-Generation" title="Permalink"></a></h3><p>Create lookup tables for fast activation function evaluation:</p><pre><code class="language-julia hljs"># Generate ReLU lookup table for small format
+relu_format = AIFloat(4, 2, :signed, :finite)
+relu_table = max.(0.0, floats(relu_format))
+
+println(&quot;ReLU lookup table:&quot;)
+for (code, input, output) in zip(codes(relu_format), floats(relu_format), relu_table)
+    println(&quot;Code 0x$(string(code, base=16, pad=2)): ReLU($input) = $output&quot;)
+end
+
+# Demonstrate table-based computation
+input_code = 0x01  # Corresponds to 0.5
+output_value = relu_table[input_code + 1]  # +1 for Julia indexing
+println(&quot;\nTable lookup: ReLU($(floats(relu_format)[input_code + 1])) = $output_value&quot;)</code></pre><h2 id="Performance-Considerations"><a class="docs-heading-anchor" href="#Performance-Considerations">Performance Considerations</a><a id="Performance-Considerations-1"></a><a class="docs-heading-anchor-permalink" href="#Performance-Considerations" title="Permalink"></a></h2><h3 id="Memory-Layout-Inspection"><a class="docs-heading-anchor" href="#Memory-Layout-Inspection">Memory Layout Inspection</a><a id="Memory-Layout-Inspection-1"></a><a class="docs-heading-anchor-permalink" href="#Memory-Layout-Inspection" title="Permalink"></a></h3><p>Examine the memory-efficient dual-array structure:</p><pre><code class="language-julia hljs"># Create format and inspect memory layout
+format = AIFloat(6, 3, :unsigned, :finite)
+
+println(&quot;Memory usage analysis:&quot;)
+println(&quot;Values array: $(sizeof(floats(format))) bytes&quot;)
+println(&quot;Codes array: $(sizeof(codes(format))) bytes&quot;)
+println(&quot;Total overhead: $(sizeof(floats(format)) + sizeof(codes(format))) bytes&quot;)
+println(&quot;Entries: $(length(floats(format)))&quot;)
+
+# Verify cache alignment (requires AlignedAllocs.jl)
+using AlignedAllocs
+println(&quot;Values alignment: $(alignment(floats(format))) bytes&quot;)
+println(&quot;Codes alignment: $(alignment(codes(format))) bytes&quot;)</code></pre><h2 id="Next-Steps"><a class="docs-heading-anchor" href="#Next-Steps">Next Steps</a><a id="Next-Steps-1"></a><a class="docs-heading-anchor-permalink" href="#Next-Steps" title="Permalink"></a></h2><p>This tutorial covered the fundamental concepts of AIFloat format creation, introspection, and basic manipulation. To continue learning:</p><ol><li><strong><a href="../../reference/types/">Reference Documentation</a></strong>: Detailed API coverage</li></ol><h3 id="Key-Takeaways"><a class="docs-heading-anchor" href="#Key-Takeaways">Key Takeaways</a><a id="Key-Takeaways-1"></a><a class="docs-heading-anchor-permalink" href="#Key-Takeaways" title="Permalink"></a></h3><ul><li>AIFloat formats provide deterministic, exception-free arithmetic</li><li>Bit allocation trades off precision against dynamic range</li><li>Dual-array storage enables both direct computation and table lookup</li><li>Format introspection supports algorithmic format selection</li><li>Cache-aligned memory layout optimizes computational performance</li></ul><p>The next tutorial will demonstrate how to design custom formats optimized for specific neural network architectures and training regimes.</p><script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+mermaid.initialize({
+    startOnLoad: true,
+    theme: "neutral"
+});
+</script></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../manual/construction/">« Construction</a><a class="docs-footer-nextpage" href="../../reference/types/">Type System »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.14.1 on <span class="colophon-date" title="Friday 11 July 2025 09:58">Friday 11 July 2025</span>. Using Julia version 1.11.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
