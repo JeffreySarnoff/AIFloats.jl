@@ -1,36 +1,59 @@
+using Documenter
+using DocumenterMermaid
 using AIFloats
-using Documenter, DocumenterMermaid
-
-push!(LOAD_PATH,"../src/")
-
-DocMeta.setdocmeta!(AIFloats, :DocTestSetup, :(using AIFloats); recursive = true)
-
-#const page_rename = Dict("developer.md" => "Developer docs") # Without the numbers
-#const numbered_pages = [
-#    file for file in readdir(joinpath(@__DIR__, "src")) if
-#    file != "index.md" && splitext(file)[2] == ".md"
-# ]
 
 makedocs(;
-    modules = [AIFloats],
-    warnonly = [:autodocs_block],
-    sitename = "AIFloats",
-    authors = "Jeffrey Sarnoff <jeffrey.sarnoff@gmail.com>",
-    format = Documenter.HTML(),
-    repo = "https://github.com/JeffreySarnoff/AIFloats.jl/blob/{commit}{path}#{line}",
-    pages = Any[
-                "Home" => "index.md",
-                "Overview" => "overview.md",
-                "Description" => "information.md",
-                "Float Families" => "families.md",
-                "Type Specifics" => "specifics.md",
-                "Computing over Type abstractions" => "abstractions.md",
-                "The foundational sequence" => "sequence.md",
-                "Operations" => "operations.md",
-                "Mathematical Functions" => "mathfunctions.md",
-                "Acknowledgements" => "acknowledgements.md",
-               ])
+    modules=[AIFloats],
+    authors="Jeffrey Sarnoff <jeffrey.sarnoff@gmail.com>",
+    repo="https://github.com/JeffreySarnoff/AIFloats.jl/blob/{commit}{path}#{line}",
+    sitename="AIFloats.jl",
+    format=Documenter.HTML(;
+        prettyurls=get(ENV, "CI", "false") == "true",
+        canonical="https://jeffreysarnoff.github.io/AIFloats.jl",
+        edit_link="main",
+        assets=String[],
+        mathengine=MathJax3(Dict(
+            :loader => Dict("load" => ["[tex]/physics"]),
+            :tex => Dict(
+                "inlineMath" => [["\$", "\$"], ["\\(", "\\)"]],
+                "tags" => "ams",
+                "packages" => ["base", "ams", "autoload", "physics"]
+            )
+        ))
+    ),
+    pages=[
+        "Home" => "index.md",
+        "Manual" => [
+            "Overview" => "manual/overview.md",
+            "Type Hierarchy" => "manual/hierarchy.md",
+            "Construction" => "manual/construction.md",
+            "Operations" => "manual/operations.md",
+            "Value Sequences" => "manual/sequences.md",
+            "Encoding & Indexing" => "manual/encoding.md",
+        ],
+        "Tutorials" => [
+            "Getting Started" => "tutorials/getting_started.md",
+            "Custom Formats" => "tutorials/custom_formats.md",
+            "Performance Optimization" => "tutorials/performance.md",
+        ],
+        "Reference" => [
+            "Type System" => "reference/types.md",
+            "Constructors" => "reference/constructors.md",
+            "Predicates" => "reference/predicates.md",
+            "Counts & Metrics" => "reference/counts.md",
+            "Exponents" => "reference/exponents.md",
+            "Extrema" => "reference/extrema.md",
+            "Encoding Functions" => "reference/encoding.md",
+            "Index Functions" => "reference/indices.md",
+            "Julia Integration" => "reference/julia.md",
+        ],
+        "Examples" => "examples.md",
+        "Implementation Notes" => "implementation.md",
+        "Glossary" => "glossary.md",
+    ],
+)
 
-deploydocs(; 
-    repo = "github.com/JeffreySarnoff/AIFloats.jl",
-    target = "build")
+deploydocs(;
+    repo="github.com/JeffreySarnoff/AIFloats.jl",
+    devbranch="main",
+)
