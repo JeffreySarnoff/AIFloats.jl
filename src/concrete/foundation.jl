@@ -2,36 +2,44 @@
 # support for foundation magnitude sequence generation
 
 function magnitude_foundation_seq(::Type{T}) where {T<:AbstractAIFloat}
-    significands = significand_magnitudes(T)
-
-    exp_values = map(two_pow, exp_unbiased_magnitude_strides(T))
-    if iszero(exp_values[1])  
-        exp_values = map(x->Float128(2)^x, map(Float128,exp_unbiased_magnitude_strides(T)))
-        if iszero(exp_values[1])
-            exp_values = map(x->BigFloat(2)^x, map(BigFloat,exp_unbiased_magnitude_strides(T)))
-        end
+    _significands = magnitude_significand_seq(T)
+    exp_strides = magnitude_exp_unbiased_strides(T)
+    
+    if (exp_strides[1] >= Float64min_exp && exp_strides[end] <= Float64max_exp)
+        twotype = Float64
+    elseif (exp_strides[1] >= Float128min_exp && exp_strides[end] <= Float128max_exp)
+        twotype = Float128
+    else
+        twotype = BigFloat
     end
+    twopow = x->two(twotype)^x
+    
+    significands = map(twotype, _significands)
+    exp_values = map(twopow, exp_strides)
+
     significands .*= exp_values
 
-    typ = typeforfloat(nbits(T))
-    magnitudes = memalign_clear(typ, length(significands))
-    magnitudes[:] = map(typ, significands)
-    magnitudes
+    if twotype != BigFloat
+        magnitudes = memalign_clear(twotype, length(significands))
+    else 
+        magnitudes = Vector{twotype}(undef, length(significands))   
+    end
+    magnitudes[:] .= significands
 end
 
-function normal_exp_stride(T::Type{<:AbstractAIFloat})
+function exp_stride_normal(T::Type{<:AbstractAIFloat})
     cld(nmagnitudes(T), nvalues_exp(T))
 end
 
-@inline function foundation_extremal_exps(T::Type{<:AbstractAIFloat})
+@inline function exp_foundation_extremal(T::Type{<:AbstractAIFloat})
     exp_max = fld(nmagnitudes_nonzero(T), nmagnitudes_prenormal(T))
     exp_min = -exp_max
     exp_min, exp_max
 end
 
-function foundation_exps(T::Type{<:AbstractAIFloat})
+function exp_foundation(T::Type{<:AbstractAIFloat})
     exp
-    exp_min, exp_max = foundation_extremal_exps(T)
+    exp_min, exp_max = exp_foundation_extremal(T)
     return exp_min:exp_max
 end
 
@@ -41,18 +49,18 @@ end
     F(2)^x
 end
 
-function pow2_foundation_exps(T,res::Vector{Float32})
-    expres =  foundation_exps(T)
+function exp_foundation_pow2(T,res::Vector{Float32})
+    expres =  exp_foundation(T)
     map(two_pow, expres)
 end
 
-function exp_unbiased_magnitude_strides(T::Type{<:AbstractAIFloat})
-    append!(fill(exp_unbiased_subnormal(T), normal_exp_stride(T)), collect(Iterators.flatten((fill.(exp_unbiased_normal_seq(T), normal_exp_stride(T)))[:,1])))
+function magnitude_exp_unbiased_strides(T::Type{<:AbstractAIFloat})
+    append!(fill(exp_unbiased_subnormal(T), exp_stride_normal(T)), collect(Iterators.flatten((fill.(exp_unbiased_normal_seq(T), exp_stride_normal(T)))[:,1])))
 end
 
 # cover instantiations for value sequence generation
-for F in (:prenormal_magnitude_steps, :normal_magnitude_steps, :normal_exp_stride,
-          :foundation_extremal_exps, :foundation_exps, :exp_unbiased_magnitude_strides, :pow2_foundation_exps,
+for F in (:magnitude_steps_prenormal, :magnitude_steps_normal, :exp_stride_normal,
+          :exp_foundation_extremal, :exp_foundation, :magnitude_exp_unbiased_strides, :exp_foundation_pow2,
           :magnitude_foundation_seq, :foundation_values, :value_seq)
     @eval $F(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = $F(T)
 end

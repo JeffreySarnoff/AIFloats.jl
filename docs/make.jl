@@ -2,10 +2,10 @@ using Documenter
 using DocumenterMermaid
 using AIFloats
 
-makedocs(;
+makedocs(
     modules=[AIFloats],
     authors="Jeffrey Sarnoff <jeffrey.sarnoff@gmail.com>",
-    repo="https://github.com/JeffreySarnoff/AIFloats.jl/blob/{commit}{path}#{line}",
+    repo="https://github.com/JeffreySarnoff/AIFloats.jl",
     sitename="AIFloats.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",

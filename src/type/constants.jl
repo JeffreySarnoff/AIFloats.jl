@@ -1,13 +1,33 @@
 # 7 small bitwidths (UInt8 encoded)
 const BitsSmallMin, BitsSmallMax =  2, 8
 # 7 large bitwidths (UInt16 encoded)
+const BitsMidMin, BitsMidMax =  9, 10
 const BitsLargeMin, BitsLargeMax =  11, 15
 const BitsTop = 16
 
 # internal assurances
 setprecision(BigFloat, 1024)
 
-two(T) = typeforfloat(nbits(T))(2)
+const Float16min = floatmin(Float32)
+const Float16max = floatmax(Float32)
+const Float32min = floatmin(Float32)
+const Float32max = floatmax(Float32)
+const Float64min = floatmin(Float64)
+const Float64max = floatmax(Float64)
+const Float128min = floatmin(Float128)
+const Float128max = floatmax(Float128)
+
+const Float16min_exp = exponent(Float16min)
+const Float16max_exp = exponent(Float16max)
+const Float32min_exp = exponent(Float32min)
+const Float32max_exp = exponent(Float32max)
+const Float64min_exp = exponent(Float64min)
+const Float64max_exp = exponent(Float64max)
+const Float128min_exp = exponent(Float128min)
+const Float128max_exp = exponent(Float128max)
+
+two(::Type{T}) where {T<:AbstractAIFloat} = two(typeforfloat(nbits(T)))
+two(::Type{T}) where {T<:AbstractFloat} =  2*one(T) 
 
 """
     CODE
@@ -54,14 +74,14 @@ typeforcode(Bits::StaticInt{N}) where {N} =
 typeforcode(T::Type{<:AbstractAIFloat}) = typeforcode(nbits(T))
 
 """
-    typeforfloat(bitwidth)
+typeforfloat(bitwidth)
 
 The bitstype to be used for storing values of `bitwidth`
 
 It is an *unchecked error* to set bitwidth outside BitsMin..BitsMax
 """ typeforfloat
 
-typeforfloat(Bits) = FLOAT_TYPES[1 + (Bits > BitsSmallMax) + (Bits >= BitsLargeMin)]
+typeforfloat(bits) =  FLOAT_TYPES[(0 < bits) + (BitsMidMax < bits) + (BitsLargeMax <= bits)]
 typeforfloat(Bits::StaticInt{N}) where {N} =
     ifelse(Bits <= static(BitsSmallMax), FLOAT_TYPES[1], ifelse(Bits < BitsLargeMin, FLOAT_TYPES[2], FLOAT_TYPES[3]))
 

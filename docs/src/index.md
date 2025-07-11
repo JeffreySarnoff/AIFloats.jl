@@ -19,7 +19,7 @@ AIFloats.jl implements a comprehensive family of AI-optimized floating-point for
 using AIFloats
 
 # Create a 4-bit unsigned finite format with 2-bit precision
-uf4p2 = AIFloat(4, 2, :unsigned, :finite)
+binary4p2uf  uf4p2= = AIFloat(4, 2, :unsigned, :finite)
 
 # Access the value and encoding sequences
 floats(uf4p2)  # [0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, NaN]

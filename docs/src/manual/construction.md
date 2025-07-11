@@ -83,7 +83,7 @@ The constructor synthesizes mathematically precise value sequences through multi
 ```julia
 function magnitude_foundation_seq(::Type{T}) where {T<:AbstractAIFloat}
     # Generate normalized significand sequence
-    significands = significand_magnitudes(T)
+    significands = magnitude_significand_seq(T)
     
     # Compute scaled exponent values with extended precision
     exp_values = map(x -> Float128(2)^x, exp_unbiased_magnitude_strides(T))

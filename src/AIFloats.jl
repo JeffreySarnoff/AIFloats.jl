@@ -22,7 +22,8 @@ export AbstractAIFloat,
     # counts by format definitions 
     nInfs, nPosInfs, nNegInfs,
     # counts predicated on abstract [sub]type
-    nbits, nbits_sig, nbits_frac, nbits_sign, nbits_exp,  
+    nbits, nbits_sig, nbits_frac, nbits_sign, nbits_exp,
+    nmagnitudes_frac, 
     nmagnitudes, nmagnitudes_nonzero, nmagnitudes_finite, nmagnitudes_finite_nonzero,
     nmagnitudes_prenormal, nmagnitudes_subnormal, nmagnitudes_normal,
     nvalues, nvalues_numeric, nvalues_numeric_nonzero, nvalues_finite, nvalues_finite_nonzero,

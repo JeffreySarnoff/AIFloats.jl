@@ -63,8 +63,8 @@ Value sequence generation employs extended precision to ensure bit-exact reprodu
 ```julia
 function magnitude_foundation_seq(::Type{T}) where {T<:AbstractAIFloat}
     # Stage 1: Compute in extended precision
-    significands = significand_magnitudes(T)
-    exp_values = map(x -> Float128(2)^x, exp_unbiased_magnitude_strides(T))
+    significands = magnitude_significands(T)
+    exp_values = map(x -> Float128(2)^x, magnitude_exp_unbiased_strides(T))
     
     # Stage 2: Scale with maximum precision
     scaled_magnitudes = significands .* exp_values
@@ -84,13 +84,13 @@ end
 The significand generation follows IEEE-style quantization:
 
 ```julia
-function prenormal_magnitude_steps(::Type{T}) where {T<:AbstractAIFloat}
+function magnitude_steps_prenormal(::Type{T}) where {T<:AbstractAIFloat}
     nprenormal = nmagnitudes_prenormal(T)
     step_size = 1 / typeforfloat(T)(nprenormal)
     return (0:(nprenormal-1)) * step_size
 end
 
-function normal_magnitude_steps(::Type{T}) where {T<:AbstractAIFloat}
+function magnitude_steps_normal(::Type{T}) where {T<:AbstractAIFloat}
     nprenormal = nmagnitudes_prenormal(T)
     # Normal values: [1.0, 2.0) in significand space
     return (nprenormal:(2*nprenormal-1)) / typeforfloat(T)(nprenormal)
