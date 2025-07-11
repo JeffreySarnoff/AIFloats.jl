@@ -46,8 +46,8 @@ signbits(T::Type{<:AbstractAIFloat{Bits,Precision}}) where {Bits,Precision} =
 expbits(T::Type{<:AbstractAIFloat{Bits,Precision}}) where {Bits,Precision} =
    Bits - Precision + is_unsigned(T)
 
-nValues(T::Type{<:AbstractAIFloat}) = 2^nBits(T)
-nNumericValues(T::Type{<:AbstractAIFloat}) = nValues(T) - 1 # remove NaN
+nvalues(T::Type{<:AbstractAIFloat}) = 2^nbits(T)
+nNumericValues(T::Type{<:AbstractAIFloat}) = nvalues(T) - 1 # remove NaN
 nFiniteValues(T::Type{<:AbstractAIFloat}) = nNumericValues(T) - nInfs(T) # remove Infs
 
 nInfs(T::Type{<:AbstractAIFloat}) = is_extended(T) * (is_signed(T) + is_extended(T))
@@ -55,7 +55,7 @@ nInfs(T::Type{<:AbstractAIFloat}) = is_extended(T) * (is_signed(T) + is_extended
 and then
 ```
 for F in (:bitsize, :sigbits, :fracbits, :expbits, :signbits,
-          :nValues, :nNumericValues, :nFiniteValues, :nInfs)
+          :nvalues, :nNumericValues, :nFiniteValues, :nInfs)
     @eval $(F)(x::AbstractAIFloat) = $(F)(typeof(x))
 end
 ```

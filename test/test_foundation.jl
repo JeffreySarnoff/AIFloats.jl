@@ -16,7 +16,7 @@
         @test all(x -> x > 0, magnitudes[2:end])
         
         # Should use the correct float type
-        expected_type = typeforfloat(nBits(T))
+        expected_type = typeforfloat(nbits(T))
         @test eltype(magnitudes) == expected_type
     end
     
@@ -62,7 +62,7 @@
         @test isa(stride, Integer)
         
         # Should be ceiling division of magnitudes by exponent values
-        expected = cld(nMagnitudes(T), nExpValues(T))
+        expected = cld(nmagnitudes(T), nExpValues(T))
         @test stride == expected
     end
     
@@ -148,7 +148,7 @@
         # Should handle larger ranges gracefully
         @test length(magnitudes) > 0
         @test issorted(magnitudes)
-        @test eltype(magnitudes) == typeforfloat(nBits(T))
+        @test eltype(magnitudes) == typeforfloat(nbits(T))
         
         # Should not overflow or underflow
         @test all(isfinite, magnitudes)
@@ -210,7 +210,7 @@
         @test isa(magnitudes, Vector)
         
         # Should be reasonable size
-        @test length(magnitudes) <= 2^nBits(T)
+        @test length(magnitudes) <= 2^nbits(T)
         @test length(magnitudes) >= nPrenormalMagnitudes(T)
     end
     

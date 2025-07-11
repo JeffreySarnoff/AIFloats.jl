@@ -20,10 +20,10 @@ export AbstractAIFloat,
     # counts by format definitions 
     nInfs, nPosInfs, nNegInfs,
     # counts predicated on abstract [sub]type
-    nBits, nSigBits, nFracBits, nSignBits, nExpBits,  
-    nMagnitudes, nNonzeroMagnitudes, nFiniteMagnitudes, nNonzeroFiniteMagnitudes,
+    nbits, nbits_sig, nFracBits, nSignBits, nbits_exp,  
+    nmagnitudes, nNonzeroMagnitudes, nFiniteMagnitudes, nNonzeroFiniteMagnitudes,
     nPrenormalMagnitudes, nSubnormalMagnitudes, nNormalMagnitudes,
-    nValues, nNumericValues, nNonzeroNumericValues, nFiniteValues, nNonzeroFiniteValues,
+    nvalues, nNumericValues, nNonzeroNumericValues, nFiniteValues, nNonzeroFiniteValues,
     nPrenormalValues, nSubnormalValues, nNormalValues,
     nExpValues, nNonzeroExpValues,
     # exponent
@@ -155,7 +155,7 @@ function ConstructAIFloat(bitwidth::Int, sigbits::Int;
 end
 
 function AIFloat(T::Type{<:AbstractAIFloat})
-    ConstructAIFloat(nBits(T), nSigBits(T); plusminus=is_signed(T), extended=is_extended(T)) 
+    ConstructAIFloat(nbits(T), nbits_sig(T); plusminus=is_signed(T), extended=is_extended(T)) 
 end
 
 end  # AIFloats

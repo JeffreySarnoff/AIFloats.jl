@@ -15,8 +15,8 @@ floats(x::UnsignedExtended) = x.floats
 codes(x::UnsignedExtended) = x.codes
 
 function UnsignedFinite(T::Type{<:AbstractUnsigned})
-    bits = nBits(T)
-    sigbits = nSigBits(T)
+    bits = nbits(T)
+    sigbits = nbits_sig(T)
     UnsignedFinite(bits, sigbits)
 end
 
@@ -30,8 +30,8 @@ function UnsignedFinite(bits::Int, sigbits::Int)
 end
 
 function value_sequence(T::Type{<:AbstractUnsignedFinite})
-   bits = nBits(T)
-   sigbits = nSigBits(T)
+   bits = nbits(T)
+   sigbits = nbits_sig(T)
    F = typeforfloat(bits)
    floats = foundation_magnitudes(AbstractUnsignedFinite{bits, sigbits})
    floats[end] = (F)(NaN)
@@ -39,8 +39,8 @@ function value_sequence(T::Type{<:AbstractUnsignedFinite})
 end
   
 function UnsignedExtended(T::Type{<:AbstractUnsigned})
-    bits = nBits(T)
-    sigbits = nSigBits(T)
+    bits = nbits(T)
+    sigbits = nbits_sig(T)
     UnsignedExtended(bits, sigbits)
 end
 
@@ -54,8 +54,8 @@ function UnsignedExtended(bits::Int, sigbits::Int)
 end
 
 function value_sequence(T::Type{<:AbstractUnsignedExtended})
-   bits = nBits(T)
-   sigbits = nSigBits(T)
+   bits = nbits(T)
+   sigbits = nbits_sig(T)
    F = typeforfloat(bits)
    floats = foundation_magnitudes(AbstractUnsignedExtended{bits, sigbits})
    floats[end-1] = eltype(floats)(Inf)

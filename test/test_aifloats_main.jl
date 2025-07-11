@@ -141,8 +141,8 @@
             
             # Should be identical
             @test typeof(original) == typeof(reconstructed)
-            @test nBits(typeof(original)) == nBits(typeof(reconstructed))
-            @test nSigBits(typeof(original)) == nSigBits(typeof(reconstructed))
+            @test nbits(typeof(original)) == nbits(typeof(reconstructed))
+            @test nbits_sig(typeof(original)) == nbits_sig(typeof(reconstructed))
             @test AIFloats.is_signed(typeof(original)) == AIFloats.is_signed(typeof(reconstructed))
             @test AIFloats.is_extended(typeof(original)) == AIFloats.is_extended(typeof(reconstructed))
         end
@@ -155,14 +155,14 @@
         # Should be able to access all the expected functionality
         @test isa(floats(af), Vector)
         @test isa(codes(af), Vector)
-        @test nBits(typeof(af)) == 8
-        @test nSigBits(typeof(af)) == 4
+        @test nbits(typeof(af)) == 8
+        @test nbits_sig(typeof(af)) == 4
         @test is_signed(typeof(af)) == true
         @test is_finite(typeof(af)) == true
         
         # Should work with all the defined functions
-        @test nValues(typeof(af)) > 0
-        @test nMagnitudes(typeof(af)) > 0
+        @test nvalues(typeof(af)) > 0
+        @test nmagnitudes(typeof(af)) > 0
         @test expBias(typeof(af)) > 0
     end
     

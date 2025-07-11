@@ -112,7 +112,7 @@ function foundation_magnitudes(T::Type{<:AbstractAIFloat})
     magnitudes = significands .* exp_values
     
     # Convert to appropriate float type and align memory
-    typ = typeforfloat(nBits(T))
+    typ = typeforfloat(nbits(T))
     aligned_magnitudes = memalign_clear(typ, length(significands))
     aligned_magnitudes[:] = map(typ, magnitudes)
     
@@ -132,7 +132,7 @@ function significand_magnitudes(T::Type{<:AbstractAIFloat})
     
     # Combine and replicate for all exponent values
     significands = collect(prenormal_steps)
-    nmagnitudes = nMagnitudes(T) - (is_signed(T) * nPrenormalMagnitudes(T))
+    nmagnitudes = nmagnitudes(T) - (is_signed(T) * nPrenormalMagnitudes(T))
     normal_cycles = fld(nmagnitudes, nPrenormalMagnitudes(T))
     
     for _ in 1:normal_cycles
@@ -192,7 +192,7 @@ All arrays use cache-aligned allocation via AlignedAllocs.jl:
 
 ```julia
 function encoding_sequence(T::Type{<:AbstractAIFloat})
-    nbits = nBits(T)
+    nbits = nbits(T)
     n = 1 << nbits
     typ = typeforcode(nbits)  # UInt8 for ≤8 bits, UInt16 for 9-15 bits
     codes = memalign_clear(typ, n)  # Cache-line aligned
@@ -302,10 +302,10 @@ index_to_code(bits::Integer, index::Integer) =
     (index - 1) % (bits <= 8 ? UInt8 : UInt16)
 
 # Special value indices (computed, not stored)
-idxone(T::Type{<:AbstractUnsigned}) = (nValues(T) >> 1) + 1
-idxone(T::Type{<:AbstractSigned}) = (nValues(T) >> 2) + 1  
-idxnan(T::Type{<:AbstractUnsigned}) = nValues(T)
-idxnan(T::Type{<:AbstractSigned}) = (nValues(T) >> 1) + 1
+idxone(T::Type{<:AbstractUnsigned}) = (nvalues(T) >> 1) + 1
+idxone(T::Type{<:AbstractSigned}) = (nvalues(T) >> 2) + 1  
+idxnan(T::Type{<:AbstractUnsigned}) = nvalues(T)
+idxnan(T::Type{<:AbstractSigned}) = (nvalues(T) >> 1) + 1
 ```
 
 ### Value-Index Mapping
@@ -318,7 +318,7 @@ end
 
 function indextovalue(xs::T, index::Integer) where {T<:AbstractAIFloat}
     # Bounds checking with NaN fallback
-    if 1 <= index <= nValues(typeof(xs))
+    if 1 <= index <= nvalues(typeof(xs))
         return floats(xs)[index]
     else
         return eltype(floats(xs))(NaN)
@@ -332,20 +332,20 @@ end
 
 ```julia
 # Sign mask (0 for unsigned, MSB for signed)
-sign_mask(::Type{T}) where {T<:AbstractUnsigned} = zero(typeforcode(nBits(T)))
+sign_mask(::Type{T}) where {T<:AbstractUnsigned} = zero(typeforcode(nbits(T)))
 sign_mask(::Type{T}) where {T<:AbstractSigned} = 
-    one(typeforcode(nBits(T))) << (nBits(T) - 1)
+    one(typeforcode(nbits(T))) << (nbits(T) - 1)
 
 # Exponent mask
 function exponent_mask(::Type{T}) where {T<:AbstractAIFloat}
-    unit = one(typeforcode(nBits(T)))
-    mask = (unit << nExpBits(T)) - unit
+    unit = one(typeforcode(nbits(T)))
+    mask = (unit << nbits_exp(T)) - unit
     return mask << nFracBits(T)
 end
 
 # Significand mask (trailing bits only)
 function trailing_significand_mask(::Type{T}) where {T<:AbstractAIFloat}
-    unit = one(typeforcode(nBits(T)))
+    unit = one(typeforcode(nbits(T)))
     return (unit << nFracBits(T)) - unit
 end
 ```
@@ -356,20 +356,20 @@ end
 
 ```julia
 # Basic bit allocation
-nBits(T::Type{<:AbstractAIFloat}) = Bits
-nSigBits(T::Type{<:AbstractAIFloat}) = SigBits
-nFracBits(::Type{T}) where {T<:AbstractAIFloat} = nSigBits(T) - 1
+nbits(T::Type{<:AbstractAIFloat}) = Bits
+nbits_sig(T::Type{<:AbstractAIFloat}) = SigBits
+nFracBits(::Type{T}) where {T<:AbstractAIFloat} = nbits_sig(T) - 1
 
 # Sign and exponent bits
 nSignBits(::Type{T}) where {T<:AbstractSigned} = 1
 nSignBits(::Type{T}) where {T<:AbstractUnsigned} = 0
-nExpBits(::Type{T}) where {T<:AbstractSigned} = nBits(T) - nSigBits(T)
-nExpBits(::Type{T}) where {T<:AbstractUnsigned} = nBits(T) - nSigBits(T) + 1
+nbits_exp(::Type{T}) where {T<:AbstractSigned} = nbits(T) - nbits_sig(T)
+nbits_exp(::Type{T}) where {T<:AbstractUnsigned} = nbits(T) - nbits_sig(T) + 1
 
 # Value counts
-nValues(::Type{T}) where {T<:AbstractAIFloat} = 1 << nBits(T)
-nMagnitudes(::Type{T}) where {T<:AbstractSigned} = nValues(T) >> 1
-nMagnitudes(::Type{T}) where {T<:AbstractUnsigned} = nValues(T) - 1
+nvalues(::Type{T}) where {T<:AbstractAIFloat} = 1 << nbits(T)
+nmagnitudes(::Type{T}) where {T<:AbstractSigned} = nvalues(T) >> 1
+nmagnitudes(::Type{T}) where {T<:AbstractUnsigned} = nvalues(T) - 1
 
 # Special value counts
 nInfs(::Type{T}) where {T<:AbstractSignedExtended} = 2    # ±Inf
@@ -377,7 +377,7 @@ nInfs(::Type{T}) where {T<:AbstractUnsignedExtended} = 1  # +Inf only
 nInfs(::Type{T}) where {T<:AbsFiniteFloat} = 0            # No infinities
 
 # Prenormal/subnormal counts
-nPrenormalMagnitudes(::Type{T}) where {T<:AbstractAIFloat} = 1 << (nSigBits(T) - 1)
+nPrenormalMagnitudes(::Type{T}) where {T<:AbstractAIFloat} = 1 << (nbits_sig(T) - 1)
 nSubnormalMagnitudes(::Type{T}) where {T<:AbstractAIFloat} = nPrenormalMagnitudes(T) - 1
 ```
 

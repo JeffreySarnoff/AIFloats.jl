@@ -44,10 +44,10 @@
         @test index1(sf) == index1(typeof(sf))
         
         # For unsigned: should be roughly half + 1
-        @test index1(typeof(uf)) == (nValues(typeof(uf)) >> 1) + 1
+        @test index1(typeof(uf)) == (nvalues(typeof(uf)) >> 1) + 1
         
         # For signed: should be roughly quarter + 1  
-        @test index1(typeof(sf)) == (nValues(typeof(sf)) >> 2) + 1
+        @test index1(typeof(sf)) == (nvalues(typeof(sf)) >> 2) + 1
     end
     
     @testset "Value/Index Mapping" begin
@@ -84,13 +84,13 @@
         nan_idx = idxnan(typeof(uf))
         @test nan_idx isa Integer
         @test nan_idx > 0
-        @test nan_idx <= nValues(typeof(uf))
+        @test nan_idx <= nvalues(typeof(uf))
         
         # Test one index
         one_idx = idxone(typeof(uf))
         @test one_idx isa Integer
         @test one_idx > 0
-        @test one_idx <= nValues(typeof(uf))
+        @test one_idx <= nvalues(typeof(uf))
         
         # Test with unsigned extended (has infinity)
         ue = UnsignedExtended(6, 3)
@@ -153,7 +153,7 @@
     
     @testset "Index Bounds and Validation" begin
         uf = UnsignedFinite(8, 4)
-        n_vals = nValues(typeof(uf))
+        n_vals = nvalues(typeof(uf))
         
         # Test that special indices are within bounds
         @test 1 <= idxone(typeof(uf)) <= n_vals

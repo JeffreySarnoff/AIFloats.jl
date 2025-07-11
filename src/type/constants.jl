@@ -7,7 +7,7 @@ const BitsTop = 16
 # internal assurances
 setprecision(BigFloat, 1024)
 
-two(T) = typeforfloat(nBits(T))(2)
+two(T) = typeforfloat(nbits(T))(2)
 
 """
     CODE
@@ -51,7 +51,7 @@ typeforcode(Bits) = CODE_TYPES[1 + (Bits > BitsSmallMax)]
 typeforcode(Bits::StaticInt{N}) where {N} =
     ifelse(Bits <= static(BitsSmallMax), CODE_TYPES[1], CODE_TYPES[2])
 
-typeforcode(T::Type{<:AbstractAIFloat}) = typeforcode(nBits(T))
+typeforcode(T::Type{<:AbstractAIFloat}) = typeforcode(nbits(T))
 
 """
     typeforfloat(bitwidth)
@@ -65,5 +65,5 @@ typeforfloat(Bits) = FLOAT_TYPES[1 + (Bits > BitsSmallMax) + (Bits >= BitsLargeM
 typeforfloat(Bits::StaticInt{N}) where {N} =
     ifelse(Bits <= static(BitsSmallMax), FLOAT_TYPES[1], ifelse(Bits < BitsLargeMin, FLOAT_TYPES[2], FLOAT_TYPES[3]))
 
-typeforfloat(T::Type{<:AbstractAIFloat}) = typeforfloat(nBits(T))
+typeforfloat(T::Type{<:AbstractAIFloat}) = typeforfloat(nbits(T))
 

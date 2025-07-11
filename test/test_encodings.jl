@@ -4,15 +4,15 @@
         
         codes = encoding_sequence(T)
         @test isa(codes, Vector)
-        @test length(codes) == nValues(T)
-        @test length(codes) == 2^nBits(T)
+        @test length(codes) == nvalues(T)
+        @test length(codes) == 2^nbits(T)
         
         # Should contain all values from 0 to 2^bits - 1
-        expected_values = collect(0:(2^nBits(T) - 1))
+        expected_values = collect(0:(2^nbits(T) - 1))
         @test sort(codes) == expected_values
         
         # Test element type
-        expected_type = typeforcode(nBits(T))
+        expected_type = typeforcode(nbits(T))
         @test eltype(codes) == expected_type
     end
     
@@ -57,7 +57,7 @@
         # Test that all values are present and correct
         @test issorted(codes)
         @test codes[1] == 0
-        @test codes[end] == 2^nBits(T) - 1
+        @test codes[end] == 2^nbits(T) - 1
     end
     
     @testset "Encoding Consistency Across Types" begin
@@ -149,7 +149,7 @@
         
         # Test boundary values
         @test minimum(codes) == 0
-        @test maximum(codes) == 2^nBits(T) - 1
+        @test maximum(codes) == 2^nbits(T) - 1
         
         # Test no duplicates
         @test length(unique(codes)) == length(codes)

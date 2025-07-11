@@ -44,15 +44,15 @@
         T_finite = AbstractUnsignedFinite{8, 4}
         uf_from_type = UnsignedFinite(T_finite)
         @test isa(uf_from_type, UnsignedFinite{8, 4})
-        @test nBits(T_finite) == 8
-        @test nSigBits(T_finite) == 4
+        @test nbits(T_finite) == 8
+        @test nbits_sig(T_finite) == 4
         
         # Test construction from abstract type - extended
         T_extended = AbstractUnsignedExtended{8, 4}
         ue_from_type = UnsignedExtended(T_extended)
         @test isa(ue_from_type, UnsignedExtended{8, 4})
-        @test nBits(T_extended) == 8
-        @test nSigBits(T_extended) == 4
+        @test nbits(T_extended) == 8
+        @test nbits_sig(T_extended) == 4
         
         # Test consistency between construction methods
         uf_direct = UnsignedFinite(8, 4)
@@ -358,7 +358,7 @@
         # Test maximum unsigned precision (precision == bitwidth)
         uf_max_prec = UnsignedFinite(6, 6)
         @test length(floats(uf_max_prec)) == 64
-        @test nExpBits(typeof(uf_max_prec)) == 1  # Only 1 exponent bit left
+        @test nbits_exp(typeof(uf_max_prec)) == 1  # Only 1 exponent bit left
         
         # Test near-maximum bit width
         uf_large = UnsignedFinite(15, 8)
@@ -454,8 +454,8 @@
         uf = UnsignedFinite(8, 4)
         
         # Test that all expected type functions work
-        @test nBits(typeof(uf)) == 8
-        @test nSigBits(typeof(uf)) == 4
+        @test nbits(typeof(uf)) == 8
+        @test nbits_sig(typeof(uf)) == 4
         @test is_unsigned(typeof(uf)) == true
         @test is_signed(typeof(uf)) == false
         @test is_finite(typeof(uf)) == true
@@ -467,8 +467,8 @@
         @test is_finite(typeof(ue)) == false
         
         # Test count functions
-        @test nValues(typeof(uf)) == 256
-        @test nMagnitudes(typeof(uf)) == 255    # All values except NaN
+        @test nvalues(typeof(uf)) == 256
+        @test nmagnitudes(typeof(uf)) == 255    # All values except NaN
         @test nInfs(typeof(uf)) == 0            # Finite has no infinities
         @test nInfs(typeof(ue)) == 1            # Extended has +Inf only
         @test nPosInfs(typeof(ue)) == 1         # One positive infinity
@@ -476,7 +476,7 @@
         
         # Test exponent functions
         @test expBias(typeof(uf)) > 0
-        @test nExpBits(typeof(uf)) == 5  # 8 - 4 + 1 for unsigned
+        @test nbits_exp(typeof(uf)) == 5  # 8 - 4 + 1 for unsigned
         
         # Test magnitude functions
         @test normalMagnitudeMin(typeof(uf)) > 0
@@ -516,7 +516,7 @@
         @test length(uf_finite) > length(sf_pos)
         
         # Test magnitude count differences
-        @test nMagnitudes(typeof(uf)) > nMagnitudes(typeof(sf))
+        @test nmagnitudes(typeof(uf)) > nmagnitudes(typeof(sf))
     end
 end
 

@@ -57,14 +57,14 @@ struct MyFloat8_4 <: AbstractSignedFinite{8, 4} end
 struct MyUFloat8_4 <: AbstractUnsignedFinite{8, 4} end
 
 # Query basic properties
-nBits(MyFloat8_4)     # 8
-nSigBits(MyFloat8_4)  # 4  
+nbits(MyFloat8_4)     # 8
+nbits_sig(MyFloat8_4)  # 4  
 nFracBits(MyFloat8_4) # 3
 is_signed(MyFloat8_4) # true
 is_finite(MyFloat8_4) # true
 
 # Count different value types
-nValues(MyFloat8_4)         # 256 (total possible values)
+nvalues(MyFloat8_4)         # 256 (total possible values)
 nFiniteValues(MyFloat8_4)   # 255 (excluding NaN)
 nPositiveValues(MyFloat8_4) # 127 (positive finite values)
 
@@ -119,17 +119,17 @@ isa_extended(@nospecialize(T::Type{<:AbstractSignedExtended})) → Bool
 
 #### Bit Layout Functions
 ```julia
-nBits(T) → Int          # Total bits in representation
-nSigBits(T) → Int       # Significand bits (including implicit bit)
-nFracBits(T) → Int      # Fractional bits (nSigBits - 1)
-nExpBits(T) → Int       # Exponent bits
+nbits(T) → Int          # Total bits in representation
+nbits_sig(T) → Int       # Significand bits (including implicit bit)
+nFracBits(T) → Int      # Fractional bits (nbits_sig - 1)
+nbits_exp(T) → Int       # Exponent bits
 ```
 
 **Note:** Unsigned types get an extra exponent bit since no sign bit is needed.
 
 #### Value Counts
 ```julia
-nValues(T) → Int                # Total representable values (2^nBits)
+nvalues(T) → Int                # Total representable values (2^nbits)
 nNumericValues(T) → Int         # Non-NaN values  
 nNonzeroNumericValues(T) → Int  # Non-NaN, non-zero values
 ```
@@ -149,7 +149,7 @@ nNegInfs(T) → Int   # Negative infinities (0 for unsigned)
 
 #### Magnitude Functions
 ```julia
-nMagnitudes(T) → Int           # Total magnitude values
+nmagnitudes(T) → Int           # Total magnitude values
 nNonzeroMagnitudes(T) → Int    # Non-zero magnitude values
 nFiniteMagnitudes(T) → Int     # Finite magnitude values
 ```
@@ -195,14 +195,14 @@ expMinValue(T) → Float64      # 2^expUnbiasedMin
 
 #### Exponent Counts
 ```julia
-nExpValues(T) → Int           # Total exponent values (2^nExpBits)
+nExpValues(T) → Int           # Total exponent values (2^nbits_exp)
 nNonzeroExpValues(T) → Int    # Non-zero exponent values
 ```
 
 ### Significand Properties
 
 ```julia
-nSigMagnitudes(T) → Int       # Significand magnitude values (2^nSigBits)
+nSigMagnitudes(T) → Int       # Significand magnitude values (2^nbits_sig)
 nNonzeroSigMagnitudes(T) → Int # Non-zero significand magnitudes
 nFracMagnitudes(T) → Int      # Fractional part values (2^nFracBits)  
 nNonzeroFracMagnitudes(T) → Int # Non-zero fractional parts
@@ -252,13 +252,13 @@ pow2_foundation_exps(T, res) → Vector{Float32}  # 2^exponent values
 struct Float8_4 <: AbstractSignedFinite{8, 4} end
 
 # Basic properties
-@show nBits(Float8_4)          # 8
-@show nSigBits(Float8_4)       # 4  
-@show nExpBits(Float8_4)       # 4 (8 - 4 = 4)
+@show nbits(Float8_4)          # 8
+@show nbits_sig(Float8_4)       # 4  
+@show nbits_exp(Float8_4)       # 4 (8 - 4 = 4)
 @show expBias(Float8_4)        # 8 (2^(8-4-1) = 2^3)
 
 # Value counts
-@show nValues(Float8_4)        # 256 (2^8)
+@show nvalues(Float8_4)        # 256 (2^8)
 @show nFiniteValues(Float8_4)  # 255 (no infinities)
 @show nPositiveValues(Float8_4) # 127 (half minus zero)
 @show nNegativeValues(Float8_4) # 127
@@ -288,12 +288,12 @@ struct UFloat16_8 <: AbstractUnsignedExtended{16, 8} end
 @show nNegInfs(UFloat16_8)       # 0
 
 # Bit allocation (unsigned gets extra exponent bit)
-@show nExpBits(UFloat16_8)       # 9 (16 - 8 + 1)
+@show nbits_exp(UFloat16_8)       # 9 (16 - 8 + 1)
 @show expBias(UFloat16_8)        # 256 (2^(16-8))
 
 # Value counts
 @show nFiniteValues(UFloat16_8)  # 65534 (65535 - 1 inf)
-@show nMagnitudes(UFloat16_8)    # 65535 (all non-NaN)
+@show nmagnitudes(UFloat16_8)    # 65535 (all non-NaN)
 
 # Generate values  
 values = value_sequence(UFloat16_8)
@@ -313,10 +313,10 @@ function compare_layouts(bits, sigbits)
     
     println("Comparing $(bits)-bit floats with $(sigbits) significand bits:")
     println("                    Signed  Unsigned")
-    println("Exponent bits:      $(nExpBits(S))       $(nExpBits(U))")
+    println("Exponent bits:      $(nbits_exp(S))       $(nbits_exp(U))")
     println("Exponent bias:      $(expBias(S))       $(expBias(U))")  
     println("Max unbiased exp:   $(expUnbiasedMax(S))       $(expUnbiasedMax(U))")
-    println("Total magnitudes:   $(nMagnitudes(S))     $(nMagnitudes(U))")
+    println("Total magnitudes:   $(nmagnitudes(S))     $(nmagnitudes(U))")
 end
 
 compare_layouts(8, 4)
@@ -336,7 +336,7 @@ struct TestFloat <: AbstractSignedExtended{10, 5} end
 
 function analyze_value_distribution(T)
     println("Value distribution for $(T):")
-    println("Total bits: $(nBits(T)), Significand: $(nSigBits(T))")
+    println("Total bits: $(nbits(T)), Significand: $(nbits_sig(T))")
     println()
     
     # Special values
@@ -363,7 +363,7 @@ function analyze_value_distribution(T)
     
     # Verification
     total = nNaNs(T) + nZeros(T) + nInfs(T) + nSubnormalValues(T) + nNormalValues(T)
-    println("Verification: $(total) = $(nValues(T)) ✓")
+    println("Verification: $(total) = $(nvalues(T)) ✓")
 end
 
 analyze_value_distribution(TestFloat)
@@ -435,15 +435,15 @@ function batch_type_analysis(types::Vector{Type})
     
     for T in types
         # Pre-compute commonly used values
-        bits = nBits(T)
-        sig_bits = nSigBits(T)
+        bits = nbits(T)
+        sig_bits = nbits_sig(T)
         
         results[T] = Dict(
             :bits => bits,
             :sig_bits => sig_bits,
             :signed => is_signed(T),
             :extended => is_extended(T),
-            :total_values => 1 << bits,  # More efficient than nValues(T)
+            :total_values => 1 << bits,  # More efficient than nvalues(T)
             :finite_values => nFiniteValues(T),
             :dynamic_range => expMaxValue(T) / expMinValue(T)
         )
@@ -458,7 +458,7 @@ end
 ### Memory Usage
 
 - **Type-level computations**: All property functions operate on types, not instances, with zero runtime memory overhead
-- **Value sequences**: `value_sequence(T)` generates complete value arrays - memory usage is O(2^nBits)
+- **Value sequences**: `value_sequence(T)` generates complete value arrays - memory usage is O(2^nbits)
 - **Lazy evaluation**: Consider using iterators for large bit widths:
 
 ```julia

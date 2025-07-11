@@ -28,7 +28,7 @@ Pkg.add("AIFloats")
 using AIFloats
 
 # Create a 3-bit unsigned finite float with 1-bit precision
-uf31 = AIFloat(3, 1; UnsignedFloat=true, FiniteFloat=true)
+uf31 = AIFloat(3, 1, :unsigned, :finite)
 
 # Access the float values and their encodings
 floats(uf31)  # Float32[0.0, 0.125, 0.25, 0.5, 1.0, 2.0, 4.0, NaN]
@@ -94,13 +94,13 @@ All formats follow consistent patterns:
 ### Querying Format Properties
 
 ```julia
-uf = AIFloat(8, 4; UnsignedFloat=true, FiniteFloat=true)
+uf = AIFloat(8, 4, :unsigned, :finite)
 
 # Basic properties
-nBits(uf)      # 8
-nSigBits(uf)   # 4
-nValues(uf)    # 256
-nMagnitudes(uf) # 255
+nbits(uf)      # 8
+nbits_sig(uf)   # 4
+nvalues(uf)    # 256
+nmagnitudes(uf) # 255
 
 # Type predicates
 is_unsigned(uf)  # true
@@ -160,7 +160,7 @@ AIFloats.jl uses cache-aligned memory allocation via AlignedAllocs.jl for optima
 
 ```julia
 # All internal arrays are cache-line aligned for best performance
-uf = AIFloat(8, 4; UnsignedFloat=true, FiniteFloat=true)
+uf = AIFloat(8, 4, :unsigned, :finite)
 # floats(uf) and codes(uf) are automatically aligned
 ```
 
@@ -180,7 +180,7 @@ For small bit widths (3-8 bits), lookup tables provide extremely fast operations
 ```julia
 # Create formats optimized for different training phases
 weights_format = AIFloat(8, 4; SignedFloat=true, FiniteFloat=true)
-activations_format = AIFloat(6, 3; UnsignedFloat=true, FiniteFloat=true) 
+activations_format = AIFloat(6, 3, :unsigned, :finite) 
 gradients_format = AIFloat(8, 5; SignedFloat=true, ExtendedFloat=true)
 ```
 
@@ -188,7 +188,7 @@ gradients_format = AIFloat(8, 5; SignedFloat=true, ExtendedFloat=true)
 
 ```julia
 # Ultra-low precision for inference
-inference_format = AIFloat(4, 2; UnsignedFloat=true, FiniteFloat=true)
+inference_format = AIFloat(4, 2, :unsigned, :finite)
 
 # Check value ranges
 min_val = minimum(filter(isfinite, floats(inference_format)))
@@ -201,7 +201,7 @@ max_val = maximum(filter(isfinite, floats(inference_format)))
 # Explore different precision trade-offs
 for bits in 4:8, precision in 2:(bits-1)
     sf = AIFloat(bits, precision; SignedFloat=true, FiniteFloat=true)
-    println("$bits-bit, $precision-precision: $(nMagnitudes(sf)) magnitudes")
+    println("$bits-bit, $precision-precision: $(nmagnitudes(sf)) magnitudes")
 end
 ```
 
@@ -236,6 +236,5 @@ end
 ## Next Steps
 
 - Explore the [Technical Documentation](technical_guide.md) for implementation details
-- See [Examples](examples.md) for complete usage examples
 - Check [API Reference](api_reference.md) for detailed function documentation
 - Learn about [IEEE P3109 Standard](p3109_overview.md) compliance

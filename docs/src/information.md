@@ -67,11 +67,11 @@ The main exports from the `AIFloats` module are:
 
 ### Bit/Value Counts
 
-- `nBits`, `nSigBits`, `nFracBits`, `nSignBits`, `nExpBits`
+- `nbits`, `nbits_sig`, `nFracBits`, `nSignBits`, `nbits_exp`
 - `nNaNs`, `nZeros`, `nInfs`, `nPosInfs`, `nNegInfs`
-- `nPrenormalMagnitudes`, `nSubnormalMagnitudes`, `nNormalMagnitudes`, `nMagnitudes`
-- `nValues`, `nNumericValues`, `nNonzeroNumericValues`
-- `nMagnitudes`, `nNonzeroMagnitudes`
+- `nPrenormalMagnitudes`, `nSubnormalMagnitudes`, `nNormalMagnitudes`, `nmagnitudes`
+- `nvalues`, `nNumericValues`, `nNonzeroNumericValues`
+- `nmagnitudes`, `nNonzeroMagnitudes`
 - `nExpValues`, `nNonzeroExpValues`
 - `nFiniteValues`, `nNonzeroFiniteValues`
 
@@ -127,7 +127,7 @@ AIFloat(bits::Int, sigbits::Int; signed::Bool, extended::Bool)
 
 ### Bit/Value Analysis
 
-- Functions such as `nBits`, `nSigBits`, `nExpBits`, `nMagnitudes`, `nValues`, etc., return details about the bit structure and value set for a given type.
+- Functions such as `nbits`, `nbits_sig`, `nbits_exp`, `nmagnitudes`, `nvalues`, etc., return details about the bit structure and value set for a given type.
 
 ### Sequences
 
@@ -150,7 +150,7 @@ using AIFloats
 T = AIFloat(16, 11; signed=true, extended=true)
 
 # Query some properties
-nBits(T)            # Number of bits
+nbits(T)            # Number of bits
 nFiniteValues(T)    # Number of finite representable values
 ```
 

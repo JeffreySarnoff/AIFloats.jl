@@ -30,10 +30,10 @@
     
     @testset "Bit Counts" begin
         # Test parameter extraction
-        @test nBits(TestSignedFinite{8, 4}) == 8
-        @test nBits(TestUnsignedExtended{6, 3}) == 6
-        @test nSigBits(TestSignedFinite{8, 4}) == 4
-        @test nSigBits(TestUnsignedExtended{6, 3}) == 3
+        @test nbits(TestSignedFinite{8, 4}) == 8
+        @test nbits(TestUnsignedExtended{6, 3}) == 6
+        @test nbits_sig(TestSignedFinite{8, 4}) == 4
+        @test nbits_sig(TestUnsignedExtended{6, 3}) == 3
         @test nFracBits(TestSignedFinite{8, 4}) == 3
         @test nFracBits(TestUnsignedExtended{6, 3}) == 2
         
@@ -42,14 +42,14 @@
         @test nSignBits(TestUnsignedFinite{6, 3}) == 0
         
         # Exponent bits
-        @test nExpBits(TestSignedFinite{8, 4}) == 4  # 8 - 4 = 4
-        @test nExpBits(TestUnsignedFinite{6, 3}) == 4  # 6 - 3 + 1 = 4
+        @test nbits_exp(TestSignedFinite{8, 4}) == 4  # 8 - 4 = 4
+        @test nbits_exp(TestUnsignedFinite{6, 3}) == 4  # 6 - 3 + 1 = 4
     end
     
     @testset "Value Counts" begin
         # Total values
-        @test nValues(TestSignedFinite{8, 4}) == 256  # 2^8
-        @test nValues(TestUnsignedFinite{6, 3}) == 64   # 2^6
+        @test nvalues(TestSignedFinite{8, 4}) == 256  # 2^8
+        @test nvalues(TestUnsignedFinite{6, 3}) == 64   # 2^6
         
         # Numeric values (excluding NaN)
         @test nNumericValues(TestSignedFinite{8, 4}) == 255  # 256 - 1
@@ -58,12 +58,12 @@
     
     @testset "Magnitude Counts" begin
         # For signed types, magnitudes are half the values
-        @test nMagnitudes(TestSignedFinite{8, 4}) == 128  # 256 / 2
-        @test nMagnitudes(TestSignedExtended{8, 4}) == 128
+        @test nmagnitudes(TestSignedFinite{8, 4}) == 128  # 256 / 2
+        @test nmagnitudes(TestSignedExtended{8, 4}) == 128
         
         # For unsigned types, magnitudes exclude NaN
-        @test nMagnitudes(TestUnsignedFinite{6, 3}) == 63  # 64 - 1
-        @test nMagnitudes(TestUnsignedExtended{6, 3}) == 63
+        @test nmagnitudes(TestUnsignedFinite{6, 3}) == 63  # 64 - 1
+        @test nmagnitudes(TestUnsignedExtended{6, 3}) == 63
         
         @test nNonzeroMagnitudes(TestSignedFinite{8, 4}) == 127  # 128 - 1
         @test nNonzeroMagnitudes(TestUnsignedFinite{6, 3}) == 62  # 63 - 1
@@ -100,14 +100,14 @@
         # Test relationships between different counts
         T = TestSignedFinite{8, 4}
         
-        @test nNumericValues(T) == nValues(T) - nNaNs(T)
+        @test nNumericValues(T) == nvalues(T) - nNaNs(T)
         @test nNonzeroNumericValues(T) == nNumericValues(T) - nZeros(T)
         @test nFiniteValues(T) == nNumericValues(T) - nInfs(T)
         @test nSubnormalValues(T) == nPrenormalValues(T) - 1
         @test nSubnormalMagnitudes(T) == nPrenormalMagnitudes(T) - 1
         
         # Bit relationships
-        @test nFracBits(T) == nSigBits(T) - 1
+        @test nFracBits(T) == nbits_sig(T) - 1
     end
     
     @testset "Instance vs Type Counts" begin
@@ -115,26 +115,26 @@
         test_type = TestSignedFinite{8, 4}
         test_instance = test_type()
         
-        @test nBits(test_type) == nBits(test_instance)
-        @test nSigBits(test_type) == nSigBits(test_instance)
-        @test nValues(test_type) == nValues(test_instance)
-        @test nMagnitudes(test_type) == nMagnitudes(test_instance)
+        @test nbits(test_type) == nbits(test_instance)
+        @test nbits_sig(test_type) == nbits_sig(test_instance)
+        @test nvalues(test_type) == nvalues(test_instance)
+        @test nmagnitudes(test_type) == nmagnitudes(test_instance)
         @test nInfs(test_type) == nInfs(test_instance)
     end
     
     @testset "Edge Cases" begin
         # Test minimal configurations
         T_min = TestUnsignedFinite{2, 1}
-        @test nBits(T_min) == 2
-        @test nSigBits(T_min) == 1
-        @test nValues(T_min) == 4
+        @test nbits(T_min) == 2
+        @test nbits_sig(T_min) == 1
+        @test nvalues(T_min) == 4
         @test nPrenormalMagnitudes(T_min) == 1  # 2^(1-1) = 1
         
         # Test that counts are always positive
         for Bits in 3:8, SigBits in 1:(Bits-1)
             T = TestSignedFinite{Bits, SigBits}
-            @test nValues(T) > 0
-            @test nMagnitudes(T) > 0
+            @test nvalues(T) > 0
+            @test nmagnitudes(T) > 0
             @test nPrenormalMagnitudes(T) > 0
         end
     end

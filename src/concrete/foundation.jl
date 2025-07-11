@@ -13,14 +13,14 @@ function foundation_magnitudes(::Type{T}) where {T<:AbstractAIFloat}
     end
     significands .*= exp_values
 
-    typ = typeforfloat(nBits(T))
+    typ = typeforfloat(nbits(T))
     magnitudes = memalign_clear(typ, length(significands))
     magnitudes[:] = map(typ, significands)
     magnitudes
 end
 
 function normal_exp_stride(T::Type{<:AbstractAIFloat})
-    cld(nMagnitudes(T), nExpValues(T))
+    cld(nmagnitudes(T), nExpValues(T))
 end
 
 @inline function foundation_extremal_exps(T::Type{<:AbstractAIFloat})

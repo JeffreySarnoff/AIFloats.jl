@@ -15,8 +15,8 @@ floats(x::SignedExtended) = x.floats
 codes(x::SignedExtended) = x.codes
 
 function SignedFinite(T::Type{<:AbstractSigned})
-    bits = nBits(T)
-    sigbits = nSigBits(T)
+    bits = nbits(T)
+    sigbits = nbits_sig(T)
     SignedFinite(bits, sigbits)
 end
 
@@ -30,8 +30,8 @@ function SignedFinite(bits::Int, sigbits::Int)
 end
 
 function value_sequence(T::Type{<:AbstractSignedFinite})
-    bits = nBits(T)
-    sigbits = nSigBits(T)
+    bits = nbits(T)
+    sigbits = nbits_sig(T)
     F = typeforfloat(bits)
     nonnegmagnitudes = foundation_magnitudes(AbstractSignedFinite{bits, sigbits})
     negmagnitudes = -1 .* nonnegmagnitudes
@@ -43,8 +43,8 @@ function value_sequence(T::Type{<:AbstractSignedFinite})
 end
 
 function SignedExtended(T::Type{<:AbstractSigned})
-    bits = nBits(T)
-    sigbits = nSigBits(T)
+    bits = nbits(T)
+    sigbits = nbits_sig(T)
     SignedExtended(bits, sigbits)
 end
 
@@ -58,8 +58,8 @@ function SignedExtended(bits::Int, sigbits::Int)
 end
 
 function value_sequence(T::Type{<:AbstractSignedExtended})
-    bits = nBits(T)
-    sigbits = nSigBits(T)
+    bits = nbits(T)
+    sigbits = nbits_sig(T)
     F = typeforfloat(bits)
     
     nonnegmagnitudes = foundation_magnitudes(AbstractSignedExtended{bits, sigbits})

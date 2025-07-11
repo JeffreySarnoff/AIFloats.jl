@@ -26,7 +26,7 @@ Create an AIFloat format with specified parameters.
 sf = AIFloat(8, 4; SignedFloat=true, FiniteFloat=true)
 
 # 6-bit unsigned extended format with 3-bit precision  
-ue = AIFloat(6, 3; UnsignedFloat=true, ExtendedFloat=true)
+ue = AIFloat(6, 3, :unsigned, :extended)
 
 # Construct from abstract type
 uf = AIFloat(AbstractUnsignedFinite{8, 4})
@@ -55,21 +55,21 @@ Return the vector of encoding values (bit patterns) for the format.
 ### Bitfield Size Functions
 
 ```julia
-nBits(T::Type{<:AbstractAIFloat}) -> Int
+nbits(T::Type{<:AbstractAIFloat}) -> Int
 
 nSignBits(T::Type{<:AbstractAIFloat}) -> Int
-nExpBits(T::Type{<:AbstractAIFloat}) -> Int
-nSigBits(T::Type{<:AbstractAIFloat}) -> Int  
+nbits_exp(T::Type{<:AbstractAIFloat}) -> Int
+nbits_sig(T::Type{<:AbstractAIFloat}) -> Int  
 nFracBits(T::Type{<:AbstractAIFloat}) -> Int
 ```
 
 Query the size of a bitfield of a format.
 
-- `nBits`: Total bitwidth
-- `nSigBits`: Significand bits (including implicit leading bit)
-- `nFracBits`: Fractional bits (trailing significand bits nSigBits - 1)
+- `nbits`: Total bitwidth
+- `nbits_sig`: Significand bits (including implicit leading bit)
+- `nFracBits`: Fractional bits (trailing significand bits nbits_sig - 1)
 - `nSignBits`: Sign bits (1 for signed, 0 for unsigned)
-- `nExpBits`: Exponent bits
+- `nbits_exp`: Exponent bits
 
 
 ### Special Value Counts
@@ -86,10 +86,10 @@ nNegInfs(T::Type{<:AbstractAIFloat}) -> Int     # 1 for signed extended, 0 other
 ### Complete Magnitude and Value Counts
 
 ```julia
-nMagnitudes(T::Type{<:AbstractAIFloat}) -> Int
+nmagnitudes(T::Type{<:AbstractAIFloat}) -> Int
 nNonzeroMagnitudes(T::Type{<:AbstractAIFloat}) -> Int
 
-nValues(T::Type{<:AbstractAIFloat}) -> Int
+nvalues(T::Type{<:AbstractAIFloat}) -> Int
 nNumericValues(T::Type{<:AbstractAIFloat}) -> Int
 nNonzeroNumericValues(T::Type{<:AbstractAIFloat}) -> Int
 ```
