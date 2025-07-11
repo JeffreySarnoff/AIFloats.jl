@@ -1,4 +1,18 @@
-import Base: precision, zero, one, eps, nextfloat, prevfloat, floatmax, floatmin, typemax, typemin,
+import Base: isnan, isinf, iszero, isone
+
+Base.isnan(T::Type{<:AbstractAIFloat}, x::U) where {U<:Unsigned} = iscode_nan(T, x) 
+Base.isinf(T::Type{<:AbstractAIFloat}, x::U) where { U<:Unsigned} = iscode_inf(T, x)
+Base.iszero(T::Type{<:AbstractAIFloat}, x::U) where {U<:Unsigned} = iscode_zero(T, x)
+Base.isone(T::Type{<:AbstractAIFloat}, x::U) where {U<:Unsigned} = iscode_one(T, x)
+
+Base.isnan(T::Type{<:AbstractAIFloat}, x::I) where {I<:Integer} = isindex_nan(T, x) 
+Base.isinf(T::Type{<:AbstractAIFloat}, x::I) where {I<:Integer} = isindex_inf(T, x)
+Base.iszero(T::Type{<:AbstractAIFloat}, x::I) where {I<:Integer} = isindex_zero(T, x)
+Base.isone(T::Type{<:AbstractAIFloat}, x::I) where  {I<:Integer} = isindex_one(T, x)
+
+#=
+import Base: isnan, isinf, iszero, isone,
+             precision, zero, one, eps, nextfloat, prevfloat, floatmax, floatmin, typemax, typemin,
              sign, exponent, significand, sign_mask, exponent_mask, significand_mask
 
 export precision, zero, one, eps, nextfloat, prevfloat, floatmax, floatmin, typemax, typemin,
@@ -30,12 +44,12 @@ Base.sign_mask(T::Type{<:AbstractSigned}) = one(typeforcode(nbits(T))) << (nbits
 function Base.exponent_mask(T::Type{<:AbstractAIFloat})
     unit = one(typeforcode(nbits(T)))
     mask = (unit << nbits_exp(T)) - unit
-    mask << nFracBits(T)
+    mask << nbits_frac(T)
 end
 
 function trailing_significand_mask(T::Type{<:AbstractAIFloat})
     unit = one(typeforcode(nbits(T)))
-    (unit << nFracBits(T)) - unit
+    (unit << nbits_frac(T)) - unit
 end
 
 function unmask(T<:Type{AbstractSigned})
@@ -64,7 +78,7 @@ Base.precision(T::Type{<:AbstractAIFloat}) = SigBits
 Base.precision(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = SigBits
 
 function Base.eps(xs::T) where {T<:AbstractAIFloat}
-    idx1 = index1(T)
+    idx1 = index_one(T)
     idx1next = idx1 + 0x01
     floats(xs)[idx1next] - floats(xs)[idx1]
 end
@@ -117,10 +131,10 @@ function Base.eps(xs::T, x::F) where {T<:AbstractSigned, F<:AbstractFloat}
 end
 
 Base.zero(x::T) where {T<:AbstractAIFloat} = floats(x)[1]
-Base.one(x::T) where {T<:AbstractAIFloat} = floats(x)[AIFloats.index1(x)]
+Base.one(x::T) where {T<:AbstractAIFloat} = floats(x)[AIFloats.index_one(x)]
 
 function Base.floatmin(x::T) where {T<:AbstractAIFloat}
-    nprenormals = nPrenormalMagnitudes(T)
+    nprenormals = nmagnitudes_prenormal(T)
     floats(x)[nprenormals+0x01]
 end
 
@@ -188,3 +202,4 @@ function ulp_distance(xs, a, b)
     ulpvalue = eps(xs, maxabs)
     abs(a - b) / ulpvalue
 end
+=#

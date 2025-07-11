@@ -1,5 +1,6 @@
 import Base: isnan, isinf, iszero, isone, isfinite
 
+
 """
     validate_code(n::Integer, code::Unsigned)
 

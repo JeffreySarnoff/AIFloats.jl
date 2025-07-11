@@ -1,9 +1,11 @@
 module AIFloats
 
 export AbstractAIFloat,
-    # abstract types
-    AbstractUnsigned, AkoUnsignedFinite, AkoUnsignedExtended,
-    AbstractSigned, AkoSignedFinite, AkoSignedExtended,
+    # abstract supertypes
+    AbstractUnsigned, AbstractSigned, 
+    # Ako_ for fully qualified abstractions
+    AkoUnsignedFinite, AkoUnsignedExtended,
+    AkoSignedFinite, AkoSignedExtended,
     # concrete constructive types
     UnsignedFinite, UnsignedExtended,
     SignedFinite, SignedExtended,
@@ -20,28 +22,39 @@ export AbstractAIFloat,
     # counts by format definitions 
     nInfs, nPosInfs, nNegInfs,
     # counts predicated on abstract [sub]type
-    nbits, nbits_sig, nFracBits, nSignBits, nbits_exp,  
-    nmagnitudes, nNonzeroMagnitudes, nFiniteMagnitudes, nNonzeroFiniteMagnitudes,
-    nPrenormalMagnitudes, nSubnormalMagnitudes, nNormalMagnitudes,
-    nvalues, nNumericValues, nNonzeroNumericValues, nFiniteValues, nNonzeroFiniteValues,
-    nPrenormalValues, nSubnormalValues, nNormalValues,
-    nExpValues, nNonzeroExpValues,
+    nbits, nbits_sig, nbits_frac, nbits_sign, nbits_exp,  
+    nmagnitudes, nmagnitudes_nonzero, nmagnitudes_finite, nmagnitudes_finite_nonzero,
+    nmagnitudes_prenormal, nmagnitudes_subnormal, nmagnitudes_normal,
+    nvalues, nvalues_numeric, nvalues_numeric_nonzero, nvalues_finite, nvalues_finite_nonzero,
+    nvalues_prenormal, nvalues_subnormal, nvalues_normal,
+    nvalues_exp, nvalues_exp_nonzero,
     # exponent
-    expBias, expMin, expMax, expMinValue, expMaxValue, expValues,
-    expSubnormal, expSubnormalValue, expUnbiasedValues,
+    exp_bias,
+    exp_unbiased_min, exp_unbiased_max, exp_unbiased_seq,
+    exp_value_min, exp_value_max, exp_value_seq, 
+    exp_subnormal_value, exp_normal_value_seq,
+    exp_unbiased_subnormal, exp_unbiased_normal_max, exp_unbiased_normal_min, exp_unbiased_normal_seq,
     # extrema
-    subnormalMagnitudeMin, subnormalMagnitudeMax,
-    normalMagnitudeMin, normalMagnitudeMax,
+    magnitude_subnormal_min, magnitude_subnormal_max,
+    magnitude_normal_min, magnitude_normal_max,
     # functions over types
-    encoding_sequence, value_sequence, foundation_magnitudes,
-    # indices and offsets
-    index_to_offset, offset_to_index,
-    index1,  
-    value_to_index, index_to_value, value_to_offset, offset_to_value,
-    is_idxnan, is_ofsnan 
-    # counts predicated on type defining parameters and type specifying qualities
-    # parameters: (bits, sigbits, exponent bias)
-    # qualities: (signedness [signed / unsigned], finiteness [finite / extended (has Inf[s])])
+    encoding_seq, value_seq, magnitude_foundation_seq,
+    # code <-> index  
+    validate_code, validate_index,
+    code_to_index, index_to_code,
+    code_to_value, value_to_code,
+    # code symmetries
+    code_zero, code_one, code_negone,
+    code_nan, code_posinf, code_neginf,
+    # index symmetries
+    index_zero, index_one, index_negone,
+    index_nan, index_posinf, index_neginf,
+    # code invariants      
+    iscode_zero, iscode_one, iscode_negone,
+    iscode_nan, iscode_inf, iscode_posinf, iscode_neginf,
+    # index invariants      
+    isindex_zero, isindex_one, isindex_negone,
+    isindex_nan, isindex_inf, isindex_posinf, isindex_neginf    
 
 using AlignedAllocs: memalign_clear, alignment
 using Static: static, dynamic, StaticInt, StaticBool
@@ -55,7 +68,7 @@ include("type/counts.jl")
 include("type/exponents.jl")
 include("type/significands.jl")
 
-include("projection/rounding.jl")
+# include("projection/rounding.jl")
 # include("projection/saturation.jl")
 # include("projection/stochastic.jl")
 
@@ -66,7 +79,7 @@ include("concrete/unsigned.jl")
 include("concrete/signed.jl")
 
 include("support/indices.jl")
-# include("support/julialang.jl")
+include("support/julialang.jl")
 include("support/aqua.jl")
 
 """    
