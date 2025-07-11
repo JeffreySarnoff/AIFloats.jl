@@ -177,6 +177,8 @@ code_nan(T::Type{<:AbstractSigned}) = ((nvalues(T) % UInt16) >> 0x0001)
  
 code_posinf(T::Type{<:AkoUnsignedExtended}) = ((nvalues(T) - 1) % UInt16)
 code_posinf(T::Type{<:AkoSignedExtended}) = ((nvalues(T) % UInt16) >> 0x0001)
+code_posinf(T::Type{<:AkoUnsignedFinite}) = nothing
+code_posinf(T::Type{<:AkoSignedFinite}) = nothing
 
 code_neginf(T::Type{<:AkoSignedExtended}) = (nvalues(T) % UInt16)
 code_neginf(T::Type{<:AkoSignedFinite}) = nothing # throw(DomainError(T, "code_neginf: T must be an AkoSignedExtended type, not $T"))
