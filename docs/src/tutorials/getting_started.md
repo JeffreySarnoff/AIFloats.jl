@@ -303,9 +303,7 @@ println("Codes alignment: $(alignment(codes(format))) bytes")
 
 This tutorial covered the fundamental concepts of AIFloat format creation, introspection, and basic manipulation. To continue learning:
 
-1. **[Custom Formats Tutorial](custom_formats.md)**: Learn to design application-specific formats
-2. **[Performance Optimization](performance.md)**: Explore advanced optimization techniques
-3. **[Reference Documentation](../reference/types.md)**: Detailed API coverage
+1. **[Reference Documentation](../reference/types.md)**: Detailed API coverage
 
 ### Key Takeaways
 

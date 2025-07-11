@@ -2,9 +2,6 @@
 
 ## Primary Constructor
 
-```@docs
-AIFloat
-```
 
 The main entry point for creating AIFloat format instances. Supports both parametric specification and abstract type-based construction.
 
