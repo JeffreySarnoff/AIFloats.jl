@@ -71,7 +71,7 @@ end
 
 Base.eps(T::Type{<:AbstractAIFloat}) = eps(AIFloat(T))
 
-function Base.eps(xs::T, x::F) where {T<:AbstractUnsignedExtended, F<:AbstractFloat}
+function Base.eps(xs::T, x::F) where {T<:AkoUnsignedExtended, F<:AbstractFloat}
     x == 1 && return eps(xs)
     idx1 = value_to_index(xs, x)
     if idx1 === nothing
@@ -81,7 +81,7 @@ function Base.eps(xs::T, x::F) where {T<:AbstractUnsignedExtended, F<:AbstractFl
     floats(xs)[idx1 + 0x01] - floats(xs)[idx1]
 end
 
-function Base.eps(xs::T, x::F) where {T<:AbstractSignedFinite, F<:AbstractFloat}
+function Base.eps(xs::T, x::F) where {T<:AkoSignedFinite, F<:AbstractFloat}
     ax = abs(x)
     ax == 1 && return eps(xs)
     idx1 = value_to_index(xs, ax)
@@ -92,7 +92,7 @@ function Base.eps(xs::T, x::F) where {T<:AbstractSignedFinite, F<:AbstractFloat}
     floats(xs)[idx1 + 0x01] - floats(xs)[idx1]
 end
 
-function Base.eps(xs::T, x::F) where {T<:AbstractSignedExtended, F<:AbstractFloat}
+function Base.eps(xs::T, x::F) where {T<:AkoSignedExtended, F<:AbstractFloat}
     x == 1 && return eps(xs)
     idx1 = value_to_index(xs, x)
     if idx1 === nothing

@@ -2,8 +2,8 @@ using Test
 using AIFloats, AlignedAllocs, Quadmath, Static
 
 using AIFloats: AbstractAIFloat, AbstractUnsigned, AbstractUnsigned,
-    AbstractUnsignedExtended, AbstractUnsignedFinite, 
-    AbstractSignedExtended, AbstractSignedFinite, 
+    AkoUnsignedExtended, AkoUnsignedFinite, 
+    AkoSignedExtended, AkoSignedFinite, 
     AIFloat, ConstructAIFloat, floats, codes,
     UnsignedExtended, UnsignedFinite, 
     SignedExtended, SignedFinite,
@@ -49,10 +49,10 @@ using AIFloats: AbstractAIFloat, AbstractUnsigned, AbstractUnsigned,
 #        Aqua.test_all(AIFloats)
     end
     # Create some test types for predicate testing
-    struct TestSignedFinite{Bits, SigBits} <: AbstractSignedFinite{Bits, SigBits} end
-    struct TestSignedExtended{Bits, SigBits} <: AbstractSignedExtended{Bits, SigBits} end
-    struct TestUnsignedFinite{Bits, SigBits} <: AbstractUnsignedFinite{Bits, SigBits} end
-    struct TestUnsignedExtended{Bits, SigBits} <: AbstractUnsignedExtended{Bits, SigBits} end
+    struct TestSignedFinite{Bits, SigBits} <: AkoSignedFinite{Bits, SigBits} end
+    struct TestSignedExtended{Bits, SigBits} <: AkoSignedExtended{Bits, SigBits} end
+    struct TestUnsignedFinite{Bits, SigBits} <: AkoUnsignedFinite{Bits, SigBits} end
+    struct TestUnsignedExtended{Bits, SigBits} <: AkoUnsignedExtended{Bits, SigBits} end
 
     # Include all test files
     include("test_constants.jl")        # ok

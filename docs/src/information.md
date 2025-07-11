@@ -46,8 +46,8 @@ The main exports from the `AIFloats` module are:
 ### Abstract Types
 
 - `AbstractAIFloat`
-- `AbstractUnsigned` / `AbstractUnsignedFinite` / `AbstractUnsignedExtended`
-- `AbstractSigned` / `AbstractSignedFinite` / `AbstractSignedExtended`
+- `AbstractUnsigned` / `AkoUnsignedFinite` / `AkoUnsignedExtended`
+- `AbstractSigned` / `AkoSignedFinite` / `AkoSignedExtended`
 
 ### Concrete Types & Constructors
 
@@ -100,11 +100,11 @@ The main exports from the `AIFloats` module are:
 ```
 AbstractAIFloat
  ├─ AbstractUnsigned
- │   ├─ AbstractUnsignedFinite
- │   └─ AbstractUnsignedExtended
+ │   ├─ AkoUnsignedFinite
+ │   └─ AkoUnsignedExtended
  └─ AbstractSigned
-     ├─ AbstractSignedFinite
-     └─ AbstractSignedExtended
+     ├─ AkoSignedFinite
+     └─ AkoSignedExtended
 ```
 
 Concrete types are constructed via the `AIFloat` function and specialized subtypes, parameterized by bit width, significand bits, signedness, and extension.

@@ -13,34 +13,34 @@ AIFloats.jl implements a comprehensive family of microfloat formats based on the
 
 abstract type AbstractSigned{Bits, SigBits} <: AbstractAIFloat{Bits, SigBits} end
 
-    abstract type AbstractSignedFinite{Bits, SigBits} <: AbstractSigned{Bits, SigBits} end
-    abstract type AbstractSignedExtended{Bits, SigBits} <: AbstractSigned{Bits, SigBits} end
+    abstract type AkoSignedFinite{Bits, SigBits} <: AbstractSigned{Bits, SigBits} end
+    abstract type AkoSignedExtended{Bits, SigBits} <: AbstractSigned{Bits, SigBits} end
 
 abstract type AbstractUnsigned{Bits, SigBits} <: AbstractAIFloat{Bits, SigBits} end
 
-    abstract type AbstractUnsignedFinite{Bits, SigBits} <: AbstractUnsigned{Bits, SigBits} end
-    abstract type AbstractUnsignedExtended{Bits, SigBits} <: AbstractUnsigned{Bits, SigBits} end
+    abstract type AkoUnsignedFinite{Bits, SigBits} <: AbstractUnsigned{Bits, SigBits} end
+    abstract type AkoUnsignedExtended{Bits, SigBits} <: AbstractUnsigned{Bits, SigBits} end
 ```
 
 ### Concrete Implementation Types
 
 ```julia
-struct SignedFinite{bits, sigbits, T, U} <: AbstractSignedFinite{bits, sigbits}
+struct SignedFinite{bits, sigbits, T, U} <: AkoSignedFinite{bits, sigbits}
     floats::Vector{T}  # Aligned memory for float values
     codes::Vector{U}   # Aligned memory for encodings
 end
 
-struct SignedExtended{bits, sigbits, T, U} <: AbstractSignedExtended{bits, sigbits}
+struct SignedExtended{bits, sigbits, T, U} <: AkoSignedExtended{bits, sigbits}
     floats::Vector{T}
     codes::Vector{U}
 end
 
-struct UnsignedFinite{bits, sigbits, T, U} <: AbstractUnsignedFinite{bits, sigbits}
+struct UnsignedFinite{bits, sigbits, T, U} <: AkoUnsignedFinite{bits, sigbits}
     floats::Vector{T}
     codes::Vector{U}
 end
 
-struct UnsignedExtended{bits, sigbits, T, U} <: AbstractUnsignedExtended{bits, sigbits}
+struct UnsignedExtended{bits, sigbits, T, U} <: AkoUnsignedExtended{bits, sigbits}
     floats::Vector{T}
     codes::Vector{U}
 end
@@ -372,8 +372,8 @@ nmagnitudes(::Type{T}) where {T<:AbstractSigned} = nvalues(T) >> 1
 nmagnitudes(::Type{T}) where {T<:AbstractUnsigned} = nvalues(T) - 1
 
 # Special value counts
-nInfs(::Type{T}) where {T<:AbstractSignedExtended} = 2    # ±Inf
-nInfs(::Type{T}) where {T<:AbstractUnsignedExtended} = 1  # +Inf only
+nInfs(::Type{T}) where {T<:AkoSignedExtended} = 2    # ±Inf
+nInfs(::Type{T}) where {T<:AkoUnsignedExtended} = 1  # +Inf only
 nInfs(::Type{T}) where {T<:AbsFiniteFloat} = 0            # No infinities
 
 # Prenormal/subnormal counts

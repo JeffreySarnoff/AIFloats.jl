@@ -6,19 +6,19 @@
         @test AbstractUnsigned <: AbstractAIFloat
         
         # Test finite/extended hierarchy
-        @test AbstractSignedFinite <: AbstractSigned
-        @test AbstractSignedExtended <: AbstractSigned
-        @test AbstractUnsignedFinite <: AbstractUnsigned
-        @test AbstractUnsignedExtended <: AbstractUnsigned
+        @test AkoSignedFinite <: AbstractSigned
+        @test AkoSignedExtended <: AbstractSigned
+        @test AkoUnsignedFinite <: AbstractUnsigned
+        @test AkoUnsignedExtended <: AbstractUnsigned
     end
     
     @testset "Type Parameters" begin
         # Test that abstract types can be parameterized
-        TestSignedFinite = AbstractSignedFinite{8, 4}
-        TestUnsignedExtended = AbstractUnsignedExtended{6, 3}
+        TestSignedFinite = AkoSignedFinite{8, 4}
+        TestUnsignedExtended = AkoUnsignedExtended{6, 3}
         
-        @test TestSignedFinite <: AbstractSignedFinite
-        @test TestUnsignedExtended <: AbstractUnsignedExtended
+        @test TestSignedFinite <: AkoSignedFinite
+        @test TestUnsignedExtended <: AkoUnsignedExtended
         
         # Test parameter extraction would work with concrete types
         @test TestSignedFinite <: AbstractAIFloat{8, 4}
@@ -29,17 +29,17 @@
         # Test disjoint unions
         @test !(AbstractSigned <: AbstractUnsigned)
         @test !(AbstractUnsigned <: AbstractSigned)
-        @test !(AbstractSignedFinite <: AbstractSignedExtended)
-        @test !(AbstractSignedExtended <: AbstractSignedFinite)
-        @test !(AbstractUnsignedFinite <: AbstractUnsignedExtended)
-        @test !(AbstractUnsignedExtended <: AbstractUnsignedFinite)
+        @test !(AkoSignedFinite <: AkoSignedExtended)
+        @test !(AkoSignedExtended <: AkoSignedFinite)
+        @test !(AkoUnsignedFinite <: AkoUnsignedExtended)
+        @test !(AkoUnsignedExtended <: AkoUnsignedFinite)
     end
     
     @testset "Common Supertype" begin
         # Test common supertypes
         @test typejoin(AbstractSigned, AbstractUnsigned) == AbstractAIFloat
-        @test typejoin(AbstractSignedFinite, AbstractSignedExtended) == AbstractSigned
-        @test typejoin(AbstractUnsignedFinite, AbstractUnsignedExtended) == AbstractUnsigned
+        @test typejoin(AkoSignedFinite, AkoSignedExtended) == AbstractSigned
+        @test typejoin(AkoUnsignedFinite, AkoUnsignedExtended) == AbstractUnsigned
     end
 end
 

@@ -7,10 +7,10 @@ graph TD
     A[AbstractAIFloat]
     A--> S[AbstractSigned]
     A--> U[AbstractUnsigned]
-    S--> SF[AbstractSignedFinite]
-    S--> SE[AbstractSignedExtended]
-    U--> UF[AbstractUnsignedFinite]
-    U--> UE[AbstractUnsignedExtended]
+    S--> SF[AkoSignedFinite]
+    S--> SE[AkoSignedExtended]
+    U--> UF[AkoUnsignedFinite]
+    U--> UE[AkoUnsignedExtended]
 ```
 
 ----

@@ -3,7 +3,7 @@
         # Test basic construction with parameters
         sf = SignedFinite(6, 3)
         @test isa(sf, SignedFinite)
-        @test isa(sf, AbstractSignedFinite{6, 3})
+        @test isa(sf, AkoSignedFinite{6, 3})
         
         # Test type parameters are correctly embedded
         @test isa(sf, SignedFinite{6, 3, Float64, UInt8})
@@ -23,7 +23,7 @@
         # Test basic construction with parameters
         se = SignedExtended(6, 3)
         @test isa(se, SignedExtended)
-        @test isa(se, AbstractSignedExtended{6, 3})
+        @test isa(se, AkoSignedExtended{6, 3})
         
         # Test type parameters
         @test isa(se, SignedExtended{6, 3, Float64, UInt8})
@@ -41,14 +41,14 @@
     
     @testset "Type-based Construction" begin
         # Test construction from abstract type - finite
-        T_finite = AbstractSignedFinite{8, 4}
+        T_finite = AkoSignedFinite{8, 4}
         sf_from_type = SignedFinite(T_finite)
         @test isa(sf_from_type, SignedFinite{8, 4})
         @test nbits(T_finite) == 8
         @test nbits_sig(T_finite) == 4
         
         # Test construction from abstract type - extended
-        T_extended = AbstractSignedExtended{8, 4}
+        T_extended = AkoSignedExtended{8, 4}
         se_from_type = SignedExtended(T_extended)
         @test isa(se_from_type, SignedExtended{8, 4})
         @test nbits(T_extended) == 8
@@ -62,7 +62,7 @@
     end
     
     @testset "Value Sequence Generation - Finite" begin
-        T = AbstractSignedFinite{6, 3}
+        T = AkoSignedFinite{6, 3}
         values = value_sequence(T)
         
         @test isa(values, Vector)
@@ -100,7 +100,7 @@
     end
     
     @testset "Value Sequence Generation - Extended" begin
-        T = AbstractSignedExtended{6, 3}
+        T = AkoSignedExtended{6, 3}
         values = value_sequence(T)
         
         @test isa(values, Vector)
@@ -206,7 +206,7 @@
     end
     
     @testset "Foundation Magnitude Integration" begin
-        T = AbstractSignedFinite{7, 3}
+        T = AkoSignedFinite{7, 3}
         values = value_sequence(T)
         foundation_mags = foundation_magnitudes(T)
         
@@ -374,7 +374,7 @@
         
         # Test different construction paths
         sf1 = SignedFinite(bits, sigbits)
-        sf2 = SignedFinite(AbstractSignedFinite{bits, sigbits})
+        sf2 = SignedFinite(AkoSignedFinite{bits, sigbits})
         
         # Should produce identical results
         @test typeof(sf1) == typeof(sf2)
@@ -383,7 +383,7 @@
         
         # Test for extended types
         se1 = SignedExtended(bits, sigbits)
-        se2 = SignedExtended(AbstractSignedExtended{bits, sigbits})
+        se2 = SignedExtended(AkoSignedExtended{bits, sigbits})
         
         @test typeof(se1) == typeof(se2)
         @test all(floats(se1) .=== floats(se2))
