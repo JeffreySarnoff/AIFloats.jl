@@ -5,24 +5,20 @@ function magnitude_foundation_seq(::Type{T}) where {T<:AbstractAIFloat}
     _significands = magnitude_significand_seq(T)
     exp_strides = magnitude_exp_unbiased_strides(T)
     
-    if (exp_strides[1] >= Float64min_exp && exp_strides[end] <= Float64max_exp)
-        twotype = Float64
-    elseif (exp_strides[1] >= Float128min_exp && exp_strides[end] <= Float128max_exp)
-        twotype = Float128
-    else
-        twotype = BigFloat
-    end
-    twopow = x->two(twotype)^x
+    workingtype = typeforkp(nbits(T), nbits_sig(T))
+    twotyped = two(workingtype)
+
+    twopow = x->twotyped^x
     
-    significands = map(twotype, _significands)
+    significands = map(workingtype, _significands)
     exp_values = map(twopow, exp_strides)
 
     significands .*= exp_values
 
-    if twotype != BigFloat
-        magnitudes = memalign_clear(twotype, length(significands))
+    if workingtype != BigFloat
+        magnitudes = memalign_clear(workingtype, length(significands))
     else 
-        magnitudes = Vector{twotype}(undef, length(significands))   
+        magnitudes = Vector{workingtype}(undef, length(significands))   
     end
     magnitudes[:] .= significands
 end

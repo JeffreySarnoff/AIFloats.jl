@@ -37,7 +37,13 @@ function value_seq(T::Type{<:AkoSignedFinite})
     negmagnitudes = -1 .* nonnegmagnitudes
     negmagnitudes[1] = convert(F, NaN)
     magnitudes = vcat(nonnegmagnitudes, negmagnitudes)
-    floats = memalign_clear(F, length(magnitudes))
+    if isbitstype(F)
+        magnitudes = memalign_clear(F, length(magnitudes))
+        floats = memalign_clear(F, length(magnitudes))
+    else
+        magnitudes = Vector{F}(undef, length(magnitudes))
+        floats = Vector{F}(undef, length(magnitudes))
+    end
     floats[:] = magnitudes
     floats
 end
@@ -67,8 +73,13 @@ function value_seq(T::Type{<:AkoSignedExtended})
     negmagnitudes = -1 .* nonnegmagnitudes
     negmagnitudes[1] = convert(F, NaN)
     magnitudes = vcat(nonnegmagnitudes, negmagnitudes)
-
-    floats = memalign_clear(F, length(magnitudes))
+    if isbitstype(F)
+        magnitudes = memalign_clear(F, length(magnitudes))
+        floats = memalign_clear(F, length(magnitudes))
+    else
+        magnitudes = Vector{F}(undef, length(magnitudes))
+        floats = Vector{F}(undef, length(magnitudes))
+    end
     floats[:] = magnitudes
     floats
 end

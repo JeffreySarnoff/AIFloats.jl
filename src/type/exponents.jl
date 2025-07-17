@@ -1,7 +1,13 @@
 
-exp_bias(::Type{T}) where {Bits, SigBits, T<:AbstractSigned{Bits, SigBits}}   = 2^(Bits - SigBits - 1) # 1 << (Bits - SigBits - 1) 
-exp_bias(::Type{T}) where {Bits, SigBits, T<:AbstractUnsigned{Bits, SigBits}} = 2^(Bits - SigBits )    # 1 << (Bits - SigBits)
-
+function exp_bias(::Type{T}) where {Bits, SigBits, T<:AbstractSigned{Bits, SigBits}}   
+    ibias = (Bits - SigBits - 1)
+    signbit(ibias) ? 2.0^ibias : 2^ibias
+end
+ # 1 << (Bits - SigBits - 1) 
+function exp_bias(::Type{T}) where {Bits, SigBits, T<:AbstractUnsigned{Bits, SigBits}} 
+    ibias = (Bits - SigBits)
+    signbit(ibias) ? 2.0^ibias : 2^ibias
+end
 # exponent field characterizations
 exp_field_min(T::Type{<:AbstractAIFloat}) = 0
 exp_field_max(T::Type{<:AbstractAIFloat}) = nvalues_exp(T) - 1

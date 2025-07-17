@@ -61,6 +61,8 @@ using AlignedAllocs: memalign_clear, alignment
 using Static: static, dynamic, StaticInt, StaticBool
 using Quadmath: Float128
 
+public_has_access = false
+
 include("type/abstract.jl")
 include("type/constants.jl")
 
@@ -140,7 +142,7 @@ function AIFloat(bitwidth::Int, sigbits::Int, kinds...)
     params_ok = (sigbits >= 1) && 
                 (plusminus ? bitwidth > sigbits : bitwidth >= sigbits)
     
-    if !params_ok
+    if !params_ok && public_has_access
         ifelse(nonnegative, 
             error("AIFloats: Unsigned formats require `(1 <= precision <= bitwidth <= 15).`\n
                    AIFloat was called using (bitwidth = $bitwidth, precision = $sigbits)."),

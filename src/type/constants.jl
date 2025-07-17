@@ -2,12 +2,23 @@
 const BitsSmallMin, BitsSmallMax =  2, 8
 # 7 large bitwidths (UInt16 encoded)
 const BitsMidMin, BitsMidMax =  9, 10
-const BitsLargerMin, BitsLargreMax =  11, 12
+const BitsLargerMin, BitsLargerMax =  11, 12
 const BitsLargeMin, BitsLargeMax =  13, 15
 const BitsTop = 16
 
 # internal assurances
 setprecision(BigFloat, 1024)
+
+wider(::Type{Float16}) = Float32
+wider(::Type{Float32}) = Float64
+wider(::Type{Float64}) = Float128
+wider(::Type{Float128}) = BigFloat
+function wider(::Type{BigFloat})
+    p = precision(BigFloat)
+    p += 256
+    setprecision(BigFloat, p)
+    BigFloat
+end
 
 """
     safe_max(x)
@@ -64,8 +75,72 @@ const SafeFloat64max_exp = safe_max2exp(Float64max)
 const SafeFloat128min_exp = safe_min2exp(Float128min)
 const SafeFloat128max_exp = safe_max2exp(Float128max)
 
+function typefitexp(x::T) where{T}
+    if SafeFloat32min_exp <= x <= SafeFloat32max_exp
+        Float32
+    elseif SafeFloat64min_exp <= x <= SafeFloat64max_exp
+        Float64
+    elseif SafeFloat128min_exp <= x <= SafeFloat128max_exp
+        Float128
+    elseif isa(T, BigFloat)
+        widen(BigFloat)
+    else
+        BigFloat
+    end
+end
+function typefit(x::T) where{T}
+    if SafeFloat32min <= x <= SafeFloat32max
+        Float32
+    elseif SafeFloat64min <= x <= SafeFloat64max
+        Float64
+    elseif SafeFloat128min <= x <= SafeFloat128max
+        Float128
+    elseif isa(T, BigFloat)
+        widen(BigFloat)
+    else
+        BigFloat
+    end
+end
+
+function typfit(lo,hi)
+    Tlo = typefit(lo)
+    Thi = typefit(hi)
+    promote_type(Tlo, Thi)
+end
+
+function typfitexp(lo,hi)
+    Tlo = typefitexp(lo)
+    Thi = typefitexp(hi)
+    promote_type(Tlo, Thi)
+end
+
+#=
+
+binary(k,1)
+typefit
+
+ (1, Float32)
+ (2, Float32)
+ (3, Float32)
+ (4, Float32)
+ (5, Float32)
+ (6, Float32)
+ (7, Float64)
+ (8, Float64)
+ (9, Float64)
+ (10, Float128)
+ (11, Float128)
+ (12, Float128)
+ (13, Float128)
+ (14, BigFloat)
+ (15, BigFloat)
+ (16, BigFloat)
+
+=#
 two(::Type{T}) where {T<:AbstractAIFloat} = two(typeforfloat(nbits(T)))
 two(::Type{T}) where {T<:AbstractFloat} =  2*one(T) 
+
+typeforkp(k,p) = typfitexp(extrema(exp_unbiased_seq(AkoUnsignedFinite{k,p}))...)
 
 """
     CODE
@@ -119,8 +194,8 @@ The bitstype to be used for storing values of `bitwidth`
 It is an *unchecked error* to set bitwidth outside BitsMin..BitsMax
 """ typeforfloat
 
-typeforfloat(bits) = FLOAT_TYPES[(0 < bits) + (BitsMidMax < bits) + (BitsLargeMax <= bits)]
-type4float(bits) = FLOAT_TYPES[(0 < bits) + (BitsSmallMax < bits) + (BitsMidMax <= bits) + (BitsLargerMax < bits)]
+typeforfloat(bits) = FLOAT_TYPES[(0 < bits) + (BitsMidMax < bits) + (BitsLargerMax <= bits) + (BitsLargeMin <= bits)]
+type4float(bits) = FLOAT_TYPES[(0 < bits) + (BitsSmallMax < bits) + (BitsMidMax <= bits) + (BitsLargerMax < bits) + (BitsLargeMin <= bits)]
 typeforfloat(Bits::StaticInt{N}) where {N} =
     ifelse(Bits <= static(BitsSmallMax), FLOAT_TYPES[1], ifelse(Bits < BitsLargeMin, FLOAT_TYPES[2], FLOAT_TYPES[3]))
 
