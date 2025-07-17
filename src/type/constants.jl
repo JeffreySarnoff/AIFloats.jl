@@ -49,8 +49,6 @@ It is an *unchecked error* to set bitwidth outside BitsMin..BitsMax
 """ typeforcode
 
 typeforcode(Bits) = CODE_TYPES[1 + (Bits > BitsSmallMax)]
-typeforcode(Bits::StaticInt{N}) where {N} =
-    ifelse(Bits <= static(BitsSmallMax), CODE_TYPES[1], CODE_TYPES[2])
 
 typeforcode(T::Type{<:AbstractAIFloat}) = typeforcode(nbits(T))
 
@@ -62,9 +60,17 @@ The bitstype to be used for storing values of `bitwidth`
 It is an *unchecked error* to set bitwidth outside BitsMin..BitsMax
 """ typeforfloat
 
+@inline function typeforfloat(Bits::Int)
+    if Bits <= BitsSmallMax
+        return Float64
+        elseif Bits < BitsLargeMin
+        return FLOAT_TYPES[2]
+    else
+        return FLOAT_TYPES[3]
+    end
+end
+
 typeforfloat(Bits) = FLOAT_TYPES[1 + (Bits > BitsSmallMax) + (Bits >= BitsLargeMin)]
-typeforfloat(Bits::StaticInt{N}) where {N} =
-    ifelse(Bits <= static(BitsSmallMax), FLOAT_TYPES[1], ifelse(Bits < BitsLargeMin, FLOAT_TYPES[2], FLOAT_TYPES[3]))
 
 typeforfloat(T::Type{<:AbstractAIFloat}) = typeforfloat(nbits(T))
 
