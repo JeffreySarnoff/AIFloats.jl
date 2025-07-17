@@ -1,5 +1,5 @@
 using Test
-using AIFloats, AlignedAllocs, Quadmath, Static
+using AIFloats, Quadmath, Static
 
 using AIFloats:
     AIFloat, AbstractAIFloat, AbstractSigned, AbstractUnsigned,

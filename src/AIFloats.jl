@@ -56,7 +56,6 @@ export AbstractAIFloat,
     isindex_zero, isindex_one, isindex_negone,
     isindex_nan, isindex_inf, isindex_posinf, isindex_neginf    
 
-using AlignedAllocs: memalign_clear, alignment
 using Static: static, dynamic, StaticInt, StaticBool
 using Quadmath: Float128
 

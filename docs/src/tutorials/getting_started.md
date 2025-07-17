@@ -293,10 +293,11 @@ println("Codes array: $(sizeof(codes(format))) bytes")
 println("Total overhead: $(sizeof(floats(format)) + sizeof(codes(format))) bytes")
 println("Entries: $(length(floats(format)))")
 
-# Verify cache alignment (requires AlignedAllocs.jl)
+#= Verify cache alignment (requires AlignedAllocs.jl)
 using AlignedAllocs
 println("Values alignment: $(alignment(floats(format))) bytes")
 println("Codes alignment: $(alignment(codes(format))) bytes")
+=@
 ```
 
 ## Next Steps

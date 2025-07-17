@@ -29,6 +29,7 @@ The built-in floating-point types available for valuations.
 - `Float32` for bitwidths  <= 7
 - `Float64` for bitwidths  > 8
 - `Float128` for bitwidths > 11
+- `BigFloat` for bitwidths > 13
 
 see also [`CODE`](@ref)
 """ FLOAT, FLOAT_TYPES
@@ -36,7 +37,7 @@ see also [`CODE`](@ref)
 # const FLOAT_TYPES = (Float32, Float64)
 # const FLOAT = Union{FLOAT_TYPES...}
 
-const FLOAT_TYPES = (Float64, Float64, Float128)
+const FLOAT_TYPES = (Float64, Float128, BigFloat)
 const FLOAT = Union{FLOAT_TYPES...}
 
 """
