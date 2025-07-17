@@ -1,6 +1,7 @@
 
 # support for foundation magnitude sequence generation
 
+#=
 function magnitude_foundation_seq(::Type{T}) where {T<:AbstractAIFloat}
     significands = significand_magnitudes(T)
 
@@ -18,6 +19,25 @@ function magnitude_foundation_seq(::Type{T}) where {T<:AbstractAIFloat}
     magnitudes[:] = map(typ, significands)
     magnitudes
 end
+=#
+function magnitude_foundation_seq(::Type{T}) where {T<:AbstractAIFloat}
+    significands = significand_magnitudes(T)
+
+    exp_values = map(two_pow, exp_unbiased_magnitude_strides(T))
+    if iszero(exp_values[1])  
+        exp_values = map(x->Float128(2)^x, map(Float128,exp_unbiased_magnitude_strides(T)))
+        if iszero(exp_values[1])
+            exp_values = map(x->BigFloat(2)^x, map(BigFloat,exp_unbiased_magnitude_strides(T)))
+        end
+    end
+    significands .*= exp_values
+
+    typ = ArbReal # typeforfloat(nbits(T))
+    magnitudes = zeros(typ, length(significands))
+    magnitudes[:] = map(typ, significands)
+    magnitudes
+end
+
 
 function normal_exp_stride(T::Type{<:AbstractAIFloat})
     cld(nmagnitudes(T), nvalues_exp(T))

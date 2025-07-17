@@ -6,7 +6,7 @@ function significand_magnitudes(T::Type{<:AbstractAIFloat})
     normals = Iterators.flatten(fill(normal_magnitude_steps(T), normal_cycles))
     append!(significands, normals)
 
-    significands
+    map(ArbReal, significands)
 end
 
 @inline function prenormal_magnitude_steps(T::Type{<:AbstractAIFloat})
