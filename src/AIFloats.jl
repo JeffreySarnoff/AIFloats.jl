@@ -56,11 +56,27 @@ export AbstractAIFloat,
     isindex_zero, isindex_one, isindex_negone,
     isindex_nan, isindex_inf, isindex_posinf, isindex_neginf    
 
-using Quadmath: Float128
+setprecision(BigFloat, 768)
 using ArbNumerics
+import ArbNumerics: ArbReal
 
 setworkingprecision(ArbReal, 768)
 
+using Quadmath: Float128
+
+ArbReal128(x) = ArbReal{128}(BigFloat(x))
+
+function ArbNumerics.ArbReal{128}(x::Float128)
+    ArbReal{128}(BigFloat(x))
+end
+
+function ArbNumerics.ArbReal(x::Float128)
+    ArbReal(string(x))
+end
+
+function memalign_clear(T, n)
+    zeros(T, n)
+end
 
 include("type/abstract.jl")
 include("type/constants.jl")

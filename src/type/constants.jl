@@ -5,7 +5,7 @@ const BitsLargeMin, BitsLargeMax =  11, 15
 const BitsTop = 16
 
 # internal assurances
-setprecision(BigFloat, 1024)
+setprecision(BigFloat, 768)
 
 two(T) = typeforfloat(nbits(T))(2)
 
@@ -37,7 +37,8 @@ see also [`CODE`](@ref)
 # const FLOAT_TYPES = (Float32, Float64)
 # const FLOAT = Union{FLOAT_TYPES...}
 
-const FLOAT_TYPES = (Float64, Float128, BigFloat)
+# const FLOAT_TYPES = (Float64, Float128, BigFloat)
+const FLOAT_TYPES = (Float64, Float128, ArbReal)
 const FLOAT = Union{FLOAT_TYPES...}
 
 """
