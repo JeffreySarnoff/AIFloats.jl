@@ -202,7 +202,7 @@ index_neginf(T::Type{<:AbstractUnsigned}) = nothing # throw(DomainError(T, "ofs_
            :index_zero, :index_one, :index_negone, :index_nan, :index_posinf, :index_neginf)
     @eval begin
         $F(aif::T) where {T<:AbstractAIFloat} = $F(T)
-        # $F(xs::Vector{T}, x::U) where {T<:AbstractFloat, U<:Unsigned} = $F(T)
+        # $F(xs::Vector{T}, x::U) where {T<:AbstractFP, U<:Unsigned} = $F(T)
     end
  end
 

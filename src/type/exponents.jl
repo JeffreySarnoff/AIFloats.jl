@@ -18,7 +18,7 @@ exp_unbiased_seq(T::Type{<:AbstractAIFloat}) = [exp_unbiased_subnormal(T), exp_u
 # exp_normal_value_seq(T::Type{<:AbstractAIFloat}) = two(T) .^ (exp_unbiased_normal_min(T):exp_unbiased_normal_max(T))
 # exp_value_seq(T::Type{<:AbstractAIFloat}) = [exp_subnormal_value(T), exp_normal_value_seq(T)...]
 
-exp_normal_value_seq(T::Type{<:AbstractAIFloat}) = ArbReal(2) .^ (exp_unbiased_normal_min(T):exp_unbiased_normal_max(T))
+exp_normal_value_seq(T::Type{<:AbstractAIFloat}) = (2) .^ (exp_unbiased_normal_min(T):exp_unbiased_normal_max(T))
 exp_value_seq(T::Type{<:AbstractAIFloat}) = [exp_subnormal_value(T), exp_normal_value_seq(T)...]
 
 exp_unbiased_min(T::Type{<:AbstractAIFloat}) = exp_unbiased_normal_min(T)

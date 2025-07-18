@@ -25,7 +25,7 @@ has_subnormals(::Type{T}) where {Bits, T<:AbstractAIFloat{Bits, 1}} = false
 has_subnormals(T::Type{<:AbstractAIFloat}) = true
 
 # cover instantiations
-is_aifloat(@nospecialize(x::T)) where {T<:AbstractFloat} = false
+is_aifloat(@nospecialize(x::T)) where {T<:AbstractFP} = false
 is_aifloat(@nospecialize(x::T)) where {T<:AbstractAIFloat} = true
 
 for F in (:is_extended, :is_finite, :is_signed, :is_unsigned, :has_subnormals) 

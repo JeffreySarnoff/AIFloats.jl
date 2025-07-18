@@ -28,7 +28,7 @@ codes = memalign_clear(UInt8, nvalues)
 The fundamental design stores both floating-point values and integer encodings:
 
 ```julia
-struct SignedFinite{bits, sigbits, T<:AbstractFloat, S<:Unsigned}
+struct SignedFinite{bits, sigbits, T<:AbstractFP, S<:Unsigned}
     floats::Vector{T}  # Canonical value sequence
     codes::Vector{S}   # Corresponding encodings
 end

@@ -58,7 +58,7 @@ These constraints prevent degenerate configurations while maximizing the useful 
 Concrete implementations store both floating-point values and their integer encodings:
 
 ```julia
-struct SignedFinite{bits, sigbits, T<:AbstractFloat, S<:Unsigned} <: AkoSignedFinite{bits, sigbits}
+struct SignedFinite{bits, sigbits, T<:AbstractFP, S<:Unsigned} <: AkoSignedFinite{bits, sigbits}
     floats::Vector{T}  # Canonical value sequence
     codes::Vector{S}   # Corresponding bit encodings
 end

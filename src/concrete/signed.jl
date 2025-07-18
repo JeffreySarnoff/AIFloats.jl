@@ -1,4 +1,4 @@
-struct SignedFinite{bits, sigbits, T<:AbstractFloat, S<:Unsigned} <: AkoSignedFinite{bits, sigbits}
+struct SignedFinite{bits, sigbits, T<:AbstractFP, S<:Unsigned} <: AkoSignedFinite{bits, sigbits}
     floats::Vector{T} # memory for the floats
     codes::Vector{S} # memory for the codes
 end
@@ -6,7 +6,7 @@ end
 floats(x::SignedFinite) = x.floats
 codes(x::SignedFinite) = x.codes
 
-struct SignedExtended{bits, sigbits, T<:AbstractFloat, S<:Unsigned} <: AkoSignedExtended{bits, sigbits}
+struct SignedExtended{bits, sigbits, T<:AbstractFP, S<:Unsigned} <: AkoSignedExtended{bits, sigbits}
     floats::Vector{T} # memory for the floats
     codes::Vector{S} # memory for the codes
 end

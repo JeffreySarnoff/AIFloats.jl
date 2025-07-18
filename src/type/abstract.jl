@@ -8,3 +8,9 @@ abstract type AkoSignedExtended{Bits, SigBits} <: AbstractSigned{Bits, SigBits} 
 
 abstract type AkoUnsignedFinite{Bits, SigBits} <: AbstractUnsigned{Bits, SigBits} end
 abstract type AkoUnsignedExtended{Bits, SigBits} <: AbstractUnsigned{Bits, SigBits} end
+
+# a broader view of appropriate float types
+# UnsignedFinite{bits, sigbits, T<:AbstractFP, S<:Unsigned} <: AkoUnsignedFinite{bits, sigbits}
+# 
+const AbstractFP = Union{AbstractFloat, AbstractAIFloat, ArbReal}
+
