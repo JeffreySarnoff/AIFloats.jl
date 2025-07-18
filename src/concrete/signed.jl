@@ -29,19 +29,6 @@ function SignedFinite(bits::Int, sigbits::Int)
     SignedFinite{bits, sigbits, T, S}(floats, codes)
 end
 
-function value_seq(T::Type{<:AkoSignedFinite})
-    bits = nbits(T)
-    sigbits = nbits_sig(T)
-    F = typeforfloat(bits)
-    nonnegmagnitudes = magnitude_foundation_seq(AkoSignedFinite{bits, sigbits})
-    negmagnitudes = -1 .* nonnegmagnitudes
-    negmagnitudes[1] = convert(F, NaN)
-    magnitudes = vcat(nonnegmagnitudes, negmagnitudes)
-    floats = memalign_clear(F, length(magnitudes))
-    floats[:] = magnitudes
-    floats
-end
-
 function SignedExtended(T::Type{<:AbstractSigned})
     bits = nbits(T)
     sigbits = nbits_sig(T)
@@ -57,18 +44,22 @@ function SignedExtended(bits::Int, sigbits::Int)
     SignedExtended{bits, sigbits, T, S}(floats, codes)
 end
 
-function value_seq(T::Type{<:AkoSignedExtended})
-    bits = nbits(T)
-    sigbits = nbits_sig(T)
-    F = typeforfloat(bits)
-    
-    nonnegmagnitudes = magnitude_foundation_seq(AkoSignedExtended{bits, sigbits})
-    nonnegmagnitudes[end] = convert(F, Inf)  # last value is Inf
-    negmagnitudes = -1 .* nonnegmagnitudes
-    negmagnitudes[1] = convert(F, NaN)
-    magnitudes = vcat(nonnegmagnitudes, negmagnitudes)
-
-    floats = memalign_clear(F, length(magnitudes))
-    floats[:] = magnitudes
-    floats
+function value_seq(T::Type{<:AkoSignedFinite})
+   bits = nbits(T)
+   sigbits = nbits_sig(T)
+   F = typeforfloat(bits)
+   values = magnitude_foundation_seq(AkoSignedFinite{bits, sigbits})
+   values[end] = (F)(NaN)
+   values
 end
+
+function value_seq(T::Type{<:AkoSignedExtended})
+   bits = nbits(T)
+   sigbits = nbits_sig(T)
+   F = typeforfloat(bits)
+   values = magnitude_foundation_seq(AkoSignedExtended{bits, sigbits})
+   values[end-1] = eltype(floats)(Inf)
+   values[end] = eltype(floats)(NaN)
+   values
+end
+

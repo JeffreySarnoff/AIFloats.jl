@@ -39,6 +39,8 @@ function clean_frexp(xs::AbstractVector{T}) where {T}
            ys2 = xs[(idxnan+1):end]
            append!(ys, ys2)
         end
+    else
+        ys = xs
     end
     frxp = frexp(ys)
     fr = map(Float64, first.(frxp))
@@ -55,6 +57,7 @@ function clean_frexp(xs::Vector{Float128})
            ys2 = xs[(idxnan+1):end]
            append!(ys, ys2)
         end
+    else
     end
     frxp = frexp(ys)
     fr = map(Float64, first.(frxp))
@@ -105,15 +108,6 @@ import Base: frexp, ldexp
 # ldexp( x, n ) == x * 2^n
 
 adjust(arbreal_precision) = arbreal_precision + 4
-
-function Base.ldexp(x::X, y::Y) where {X<:AbstractFP, Y::AbstractFP}
-    if isinteger(Y)
-    	return ldexp(x, round(Int, y))
-    end
-
-    z = Y(2)^y
-    x * z
-end
 
 function Base.ldexp(x::X, y::I) where {X<:AbstractFP, I<:Integer}
 	z = (X(2))^y
