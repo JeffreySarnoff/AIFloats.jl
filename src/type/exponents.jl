@@ -1,6 +1,6 @@
 
-exp_bias(::Type{T}) where {Bits, SigBits, T<:AbstractSigned{Bits, SigBits}}   = 2^(Bits - SigBits - 1) # 1 << (Bits - SigBits - 1) 
-exp_bias(::Type{T}) where {Bits, SigBits, T<:AbstractUnsigned{Bits, SigBits}} = 2^(Bits - SigBits )    # 1 << (Bits - SigBits)
+exp_bias(::Type{T}) where {Bits, SigBits, T<:AbstractSigned{Bits, SigBits}}   = two(T)^(Bits - SigBits - 1) # 1 << (Bits - SigBits - 1) 
+exp_bias(::Type{T}) where {Bits, SigBits, T<:AbstractUnsigned{Bits, SigBits}} = two(T)^(Bits - SigBits )    # 1 << (Bits - SigBits)
 
 # exponent field characterizations
 exp_field_min(T::Type{<:AbstractAIFloat}) = 0
@@ -18,7 +18,7 @@ exp_unbiased_seq(T::Type{<:AbstractAIFloat}) = [exp_unbiased_subnormal(T), exp_u
 # exp_normal_value_seq(T::Type{<:AbstractAIFloat}) = two(T) .^ (exp_unbiased_normal_min(T):exp_unbiased_normal_max(T))
 # exp_value_seq(T::Type{<:AbstractAIFloat}) = [exp_subnormal_value(T), exp_normal_value_seq(T)...]
 
-exp_normal_value_seq(T::Type{<:AbstractAIFloat}) = (2) .^ (exp_unbiased_normal_min(T):exp_unbiased_normal_max(T))
+exp_normal_value_seq(T::Type{<:AbstractAIFloat}) = two(T) .^ (exp_unbiased_normal_min(T):exp_unbiased_normal_max(T))
 exp_value_seq(T::Type{<:AbstractAIFloat}) = [exp_subnormal_value(T), exp_normal_value_seq(T)...]
 
 exp_unbiased_min(T::Type{<:AbstractAIFloat}) = exp_unbiased_normal_min(T)

@@ -23,8 +23,8 @@ export AbstractAIFloat,
     nInfs, nPosInfs, nNegInfs,
     # counts predicated on abstract [sub]type
     nbits, nbits_sig, nbits_frac, nbits_sign, nbits_exp,  
-    nmagnitudes, nmagnitudes_nonzero, nmagnitudes_finite, nmagnitudes_finite_nonzero,
-    nmagnitudes_prenormal, nmagnitudes_subnormal, nmagnitudes_normal,
+    nmags, nmags_nonzero, nmags_finite, nmags_finite_nonzero,
+    nmags_prenormal, nmags_subnormal, nmags_normal,
     nvalues, nvalues_numeric, nvalues_numeric_nonzero, nvalues_finite, nvalues_finite_nonzero,
     nvalues_prenormal, nvalues_subnormal, nvalues_normal,
     nvalues_exp, nvalues_exp_nonzero,
@@ -35,10 +35,10 @@ export AbstractAIFloat,
     exp_subnormal_value, exp_normal_value_seq,
     exp_unbiased_subnormal, exp_unbiased_normal_max, exp_unbiased_normal_min, exp_unbiased_normal_seq,
     # extrema
-    magnitude_subnormal_min, magnitude_subnormal_max,
-    magnitude_normal_min, magnitude_normal_max,
+    mag_subnormal_min, mag_subnormal_max,
+    mag_normal_min, mag_normal_max,
     # functions over types
-    encoding_seq, value_seq, magnitude_foundation_seq,
+    encoding_seq, value_seq, mag_foundation_seq,
     # code <-> index  
     validate_code, validate_index,
     code_to_index, index_to_code,
@@ -56,23 +56,15 @@ export AbstractAIFloat,
     isindex_zero, isindex_one, isindex_negone,
     isindex_nan, isindex_inf, isindex_posinf, isindex_neginf    
 
-setprecision(BigFloat, 768)
-using ArbNumerics
-import ArbNumerics: ArbReal
-
-setworkingprecision(ArbReal, 768)
-
+using Quadmath
 using Quadmath: Float128
 
-ArbReal128(x) = ArbReal{128}(BigFloat(x))
+setprecision(BigFloat, 512)
 
-function ArbNumerics.ArbReal{128}(x::Float128)
-    ArbReal{128}(BigFloat(x))
-end
+using ArbNumerics
+import ArbNumerics: ArbReal
+setworkingprecision(ArbReal, 768)
 
-function ArbNumerics.ArbReal(x::Float128)
-    ArbReal(string(x))
-end
 
 function memalign_clear(T, n)
     zeros(T, n)
@@ -110,6 +102,7 @@ include("concrete/signed.jl")
 
 include("support/indices.jl")
 include("support/julialang.jl")
+include("support/convert.jl")
 include("support/parts.jl")
 include("support/aqua.jl")
 
@@ -165,19 +158,7 @@ function AIFloat(bitwidth::Int, sigbits::Int, kinds...)
     elseif !xor(extended, finite)
         error("AIFloats: specify one of `:extended` or `:finite`.")
     end
-
-    # are these arg values conformant?
-    params_ok = (sigbits >= 1) && 
-                (plusminus ? bitwidth > sigbits : bitwidth >= sigbits)
-    
-    if !params_ok
-        ifelse(nonnegative, 
-            error("AIFloats: Unsigned formats require `(1 <= precision <= bitwidth <= 15).`\n
-                   AIFloat was called using (bitwidth = $bitwidth, precision = $sigbits)."),
-            error("AIFloats: Signed formats require `(1 <= precision < bitwidth <= 15).\n
-                   AIFloat was called using (bitwidth = $bitwidth, precision = $sigbits)."))
-    end
-
+ 
     ConstructAIFloat(bitwidth, sigbits; plusminus, extended)
 end
 
