@@ -4,6 +4,15 @@ nan_codepoint(x::T) where {T<:AbstractAIFloat} = nan_codepoint(T)
 nonan(xs::AbstractVector) = filter(!isnan, xs)
 finite(xs::AbstractVector) = filter(isfinite, xs)
 
+function Base.frexp(x::ArbReal{P}) where {P}
+   arb_precision = workingprecision(x)
+   bf_precision = precision(BigFloat)
+   setprecision(BigFloat, arb_precision)
+   fr, xp = frexp(BigFloat(x))
+   setprecision(BigFloat, bf_precision)
+   fr, xp
+end
+
 Base.frexp(xs::AbstractVector{T}) where {T} = 
     map(Base.frexp, xs)
 
@@ -90,16 +99,13 @@ function clean_ldexp(xs::AbstractVector{T}) where {T}
 end
 
 function clean_frexp(x::T) where {T<:AbstractFP}
-	
 	try
 		fr, xp = frexp(x)
+        return (fr, xp)
 	catch
-		fr1, xp1 = frexp(BigFloat(x))
-		fr = T(fr1)
-		xp = round(Int, xp1)
-	finally
-   	    (fr, xp)
-   	end
+		fr, xp = frexp(BigFloat(x))
+        return (T(fr), xp)
+    end
 end
 
 using ArbNumerics
@@ -113,4 +119,3 @@ function Base.ldexp(x::X, y::I) where {X<:AbstractFP, I<:Integer}
 	z = (X(2))^y
 	x * z
 end
-

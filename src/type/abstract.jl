@@ -12,5 +12,6 @@ abstract type AkoUnsignedExtended{Bits, SigBits} <: AbstractUnsigned{Bits, SigBi
 # a broader view of appropriate float types
 # UnsignedFinite{bits, sigbits, T<:AbstractFP, S<:Unsigned} <: AkoUnsignedFinite{bits, sigbits}
 # 
+abstract type AbstractAIFloat{Bits, SigBits, IsSigned} <: AbstractFloat end
 const AbstractFP = Union{AbstractFloat, AbstractAIFloat, ArbReal}
 

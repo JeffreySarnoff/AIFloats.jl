@@ -56,23 +56,15 @@ export AbstractAIFloat,
     isindex_zero, isindex_one, isindex_negone,
     isindex_nan, isindex_inf, isindex_posinf, isindex_neginf    
 
-setprecision(BigFloat, 768)
-using ArbNumerics
-import ArbNumerics: ArbReal
-
-setworkingprecision(ArbReal, 768)
-
+using Quadmath
 using Quadmath: Float128
 
-ArbReal128(x) = ArbReal{128}(BigFloat(x))
+setprecision(BigFloat, 512)
 
-function ArbNumerics.ArbReal{128}(x::Float128)
-    ArbReal{128}(BigFloat(x))
-end
+using ArbNumerics
+import ArbNumerics: ArbReal
+setworkingprecision(ArbReal, 768)
 
-function ArbNumerics.ArbReal(x::Float128)
-    ArbReal(string(x))
-end
 
 function memalign_clear(T, n)
     zeros(T, n)
@@ -110,6 +102,7 @@ include("concrete/signed.jl")
 
 include("support/indices.jl")
 include("support/julialang.jl")
+include("support/convert.jl")
 include("support/parts.jl")
 include("support/aqua.jl")
 

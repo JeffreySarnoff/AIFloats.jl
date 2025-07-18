@@ -19,7 +19,7 @@ The built-in Unsigned Integer types available for encodings.
 see also [`FLOAT`](@ref)
 """ CODE, CODE_TYPES
 
-const CODE_TYPES = (UInt8, UInt16)
+const CODE_TYPES = (UInt8, UInt16, UInt32)
 const CODE = Union{CODE_TYPES...}
 
 """
@@ -38,7 +38,7 @@ see also [`CODE`](@ref)
 # const FLOAT = Union{FLOAT_TYPES...}
 
 # const FLOAT_TYPES = (Float64, Float128, BigFloat)
-const FLOAT_TYPES = (Float64, Float128, ArbReal)
+const FLOAT_TYPES = (Float64, Float128, BigFloat, ArbReal)
 const FLOAT = Union{FLOAT_TYPES...}
 
 """
@@ -49,7 +49,7 @@ The bitstype to be used for encoding values of `bitwidth`
 It is an *unchecked error* to set bitwidth outside BitsMin..BitsMax
 """ typeforcode
 
-typeforcode(Bits) = CODE_TYPES[1 + (Bits > BitsSmallMax)]
+typeforcode(Bits) = CODE_TYPES[1 + (Bits > BitsSmallMax) + (Bits >= BitsTop)]
 
 typeforcode(T::Type{<:AbstractAIFloat}) = typeforcode(nbits(T))
 
