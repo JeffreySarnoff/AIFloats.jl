@@ -68,8 +68,8 @@ using AIFloats
         
         # Basic counts
         @test nvalues(sf43) == 16  # 2^4
-        @test nmagnitudes(sf43) == 8   # 2^(4-1) for signed
-        @test nmagnitudes(ue52) == 31  # 2^5 - 1 for unsigned
+        @test nmags(sf43) == 8   # 2^(4-1) for signed
+        @test nmags(ue52) == 31  # 2^5 - 1 for unsigned
         
         # NaN and infinity counts
         @test nNaNs(sf43) == 1
@@ -80,8 +80,8 @@ using AIFloats
         @test nNegInfs(ue52) == 0  # unsigned has no -Inf
         
         # Subnormal counts
-        @test nmagnitudes_prenormal(sf43) == 4  # 2^(3-1)
-        @test nmagnitudes_subnormal(sf43) == 3  # prenormal - 1
+        @test nmags_prenormal(sf43) == 4  # 2^(3-1)
+        @test nmags_subnormal(sf43) == 3  # prenormal - 1
         @test nvalues_prenormal(sf43) == 7      # 2*prenormal - 1 for signed
         @test nvalues_subnormal(sf43) == 6      # prenormal - 1
     end
@@ -229,7 +229,7 @@ using AIFloats
         zeros = filter(iszero, vals)
         @test length(zeros) == 1
         
-        # Test that finite values are properly ordered in magnitude
+        # Test that finite values are properly ordered in mag
         finite_vals = filter(isfinite, vals)
         finite_positive = filter(x -> isfinite(x) && x > 0, vals)
         

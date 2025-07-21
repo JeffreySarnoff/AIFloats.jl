@@ -14,12 +14,12 @@ function Base.convert(::Type{ArbReal{128}}, x::Float128)
 end
 
 
-function Float128(s::String)
-    Float128(BigFloat(s))
+function Quadmath.Float128(s::String)
+    Quadmath.Float128(BigFloat(s))
 end
 
-function Float128(x::ArbReal{P}) where {P}
-    Float128(string(x))
+function Quadmath.Float128(x::ArbReal{P}) where {P}
+    Quadmath.Float128(string(x))
 end
 
 function Base.convert(::Type{ArbReal{P}}, x::Float128) where {P}
@@ -29,5 +29,5 @@ end
 
 function Base.convert(::Type{Float128}, x::ArbReal{P}) where {P}
     xx = round(BigFloat(x); base=2, sigdigits=128)
-    Float128(xx)
+    Quadmath.Float128(xx)
 end

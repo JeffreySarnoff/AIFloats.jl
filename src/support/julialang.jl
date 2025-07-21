@@ -134,7 +134,7 @@ Base.zero(x::T) where {T<:AbstractAIFloat} = floats(x)[1]
 Base.one(x::T) where {T<:AbstractAIFloat} = floats(x)[AIFloats.index_one(x)]
 
 function Base.floatmin(x::T) where {T<:AbstractAIFloat}
-    nprenormals = nmagnitudes_prenormal(T)
+    nprenormals = nmags_prenormal(T)
     floats(x)[nprenormals+0x01]
 end
 

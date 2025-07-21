@@ -33,7 +33,7 @@ function value_seq(T::Type{<:AkoUnsignedFinite})
    bits = nbits(T)
    sigbits = nbits_sig(T)
    F = typeforfloat(bits)
-   values = magnitude_foundation_seq(AkoUnsignedFinite{bits, sigbits})
+   values = mag_foundation_seq(AkoUnsignedFinite{bits, sigbits})
    values[end] = (F)(NaN)
    values
 end
@@ -57,7 +57,7 @@ function value_seq(T::Type{<:AkoUnsignedExtended})
    bits = nbits(T)
    sigbits = nbits_sig(T)
    F = typeforfloat(bits)
-   values = magnitude_foundation_seq(AkoUnsignedExtended{bits, sigbits})
+   values = mag_foundation_seq(AkoUnsignedExtended{bits, sigbits})
    values[end-1] = eltype(values)(Inf)
    values[end] = eltype(values)(NaN)
    values

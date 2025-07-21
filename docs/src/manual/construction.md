@@ -17,7 +17,7 @@ AIFloat(bitwidth::Int, precision::Int, signedness::Symbol, domain::Symbol)
 ```julia
 # Signed format constraints: sign bit reduces available width
 signedness == :signed && bitwidth > precision  # Minimum: 3 bits
-# Unsigned format constraints: full width available for magnitude
+# Unsigned format constraints: full width available for mag
 signedness == :unsigned && bitwidth >= precision  # Minimum: 2 bits
 ```
 
@@ -81,30 +81,30 @@ The constructor synthesizes mathematically precise value sequences through multi
 
 #### Stage 1: Magnitude Foundation
 ```julia
-function magnitude_foundation_seq(::Type{T}) where {T<:AbstractAIFloat}
+function mag_foundation_seq(::Type{T}) where {T<:AbstractAIFloat}
     # Generate normalized significand sequence
-    significands = significand_magnitudes(T)
+    significands = significand_mags(T)
     
     # Compute scaled exponent values with extended precision
-    exp_values = map(x -> Float128(2)^x, exp_unbiased_magnitude_strides(T))
+    exp_values = map(x -> Float128(2)^x, exp_unbiased_mag_strides(T))
     
     # Element-wise scaling: significand × 2^exponent
-    scaled_magnitudes = significands .* exp_values
+    scaled_mags = significands .* exp_values
     
-    return convert_to_working_precision(scaled_magnitudes, T)
+    return convert_to_working_precision(scaled_mags, T)
 end
 ```
 
 #### Stage 2: Sign and Special Value Integration
 ```julia
 function value_seq(::Type{T}) where {T<:AkoSignedFinite}
-    nonneg_magnitudes = magnitude_foundation_seq(T)
+    nonneg_mags = mag_foundation_seq(T)
     
     # Generate negative counterparts with sign symmetry
-    neg_magnitudes = -nonneg_magnitudes
-    neg_magnitudes[1] = convert(working_type, NaN)  # NaN at symmetric position
+    neg_mags = -nonneg_mags
+    neg_mags[1] = convert(working_type, NaN)  # NaN at symmetric position
     
-    return vcat(nonneg_magnitudes, neg_magnitudes)
+    return vcat(nonneg_mags, neg_mags)
 end
 ```
 
@@ -131,11 +131,11 @@ This asymmetric bias allocation maximizes dynamic range utilization within bit b
 The prenormal/normal boundary is established through precision-dependent scaling:
 
 ```julia
-# Smallest normal magnitude: 2^(exp_min) where implicit bit = 1
-magnitude_normal_min(T) = exp_value_min(T)
+# Smallest normal mag: 2^(exp_min) where implicit bit = 1
+mag_normal_min(T) = exp_value_min(T)
 
-# Largest subnormal magnitude: (1 - ε) × 2^(exp_min) where ε = ULP
-magnitude_subnormal_max(T) = (1 - 1/nmagnitudes_prenormal(T)) * exp_subnormal_value(T)
+# Largest subnormal mag: (1 - ε) × 2^(exp_min) where ε = ULP
+mag_subnormal_max(T) = (1 - 1/nmags_prenormal(T)) * exp_subnormal_value(T)
 ```
 
 This boundary placement ensures maximal precision utilization in the critical near-zero region.
@@ -171,7 +171,7 @@ Post-construction verification ensures mathematical consistency:
 function verify_construction_invariants(aifloat::AbstractAIFloat)
     @assert length(floats(aifloat)) == nvalues(typeof(aifloat))
     @assert length(codes(aifloat)) == nvalues(typeof(aifloat))
-    @assert issorted(floats(aifloat)[1:nmagnitudes(typeof(aifloat))])  # Magnitude ordering
+    @assert issorted(floats(aifloat)[1:nmags(typeof(aifloat))])  # Magnitude ordering
     @assert codes(aifloat)[1] == 0x00  # Zero encoding
     @assert isnan(floats(aifloat)[end])  # NaN placement
 end

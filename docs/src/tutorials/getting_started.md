@@ -92,7 +92,7 @@ Finite values:   [0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, NaN]
 Extended values: [0.0, 0.25, 0.5, 0.75, 1.0, 1.25, Inf, NaN]
 ```
 
-The extended format replaces the largest finite magnitude with positive infinity, providing overflow handling at the cost of reduced finite precision.
+The extended format replaces the largest finite mag with positive infinity, providing overflow handling at the cost of reduced finite precision.
 
 ## Understanding Value Organization
 
@@ -105,13 +105,13 @@ AIFloat formats partition values into distinct mathematical regimes:
 se6p3 = AIFloat(6, 3, :signed, :extended)
 
 # Examine regime boundaries
-println("Prenormal count: ", nmagnitudes_prenormal(se6p3))
-println("Subnormal count: ", nmagnitudes_subnormal(se6p3))  
-println("Normal count: ", nmagnitudes_normal(se6p3))
+println("Prenormal count: ", nmags_prenormal(se6p3))
+println("Subnormal count: ", nmags_subnormal(se6p3))  
+println("Normal count: ", nmags_normal(se6p3))
 
 # Extract subnormal and normal value ranges
 values = floats(se6p3)
-prenormal_end = nmagnitudes_prenormal(se6p3)
+prenormal_end = nmags_prenormal(se6p3)
 
 println("Prenormal values: ", values[1:prenormal_end])
 println("First few normals: ", values[prenormal_end+1:prenormal_end+4])

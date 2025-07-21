@@ -61,16 +61,16 @@ typeforcode(bits) = bits ≤ 8 ? UInt8 : UInt16
 Value sequence generation employs extended precision to ensure bit-exact reproducibility:
 
 ```julia
-function magnitude_foundation_seq(::Type{T}) where {T<:AbstractAIFloat}
+function mag_foundation_seq(::Type{T}) where {T<:AbstractAIFloat}
     # Stage 1: Compute in extended precision
-    significands = significand_magnitudes(T)
-    exp_values = map(x -> Float128(2)^x, exp_unbiased_magnitude_strides(T))
+    significands = significand_mags(T)
+    exp_values = map(x -> Float128(2)^x, exp_unbiased_mag_strides(T))
     
     # Stage 2: Scale with maximum precision
-    scaled_magnitudes = significands .* exp_values
+    scaled_mags = significands .* exp_values
     
     # Stage 3: Convert to working precision
-    return map(typeforfloat(nbits(T)), scaled_magnitudes)
+    return map(typeforfloat(nbits(T)), scaled_mags)
 end
 ```
 
@@ -84,14 +84,14 @@ end
 The significand generation follows IEEE-style quantization:
 
 ```julia
-function prenormal_magnitude_steps(::Type{T}) where {T<:AbstractAIFloat}
-    nprenormal = nmagnitudes_prenormal(T)
+function prenormal_mag_steps(::Type{T}) where {T<:AbstractAIFloat}
+    nprenormal = nmags_prenormal(T)
     step_size = 1 / typeforfloat(T)(nprenormal)
     return (0:(nprenormal-1)) * step_size
 end
 
-function normal_magnitude_steps(::Type{T}) where {T<:AbstractAIFloat}
-    nprenormal = nmagnitudes_prenormal(T)
+function normal_mag_steps(::Type{T}) where {T<:AbstractAIFloat}
+    nprenormal = nmags_prenormal(T)
     # Normal values: [1.0, 2.0) in significand space
     return (nprenormal:(2*nprenormal-1)) / typeforfloat(T)(nprenormal)
 end

@@ -1,50 +1,50 @@
 
-# support for foundation magnitude sequence generation
+# support for foundation mag sequence generation
 
 #=
-function magnitude_foundation_seq(::Type{T}) where {T<:AbstractAIFloat}
-    significands = significand_magnitudes(T)
+function mag_foundation_seq(::Type{T}) where {T<:AbstractAIFloat}
+    significands = significand_mags(T)
 
-    exp_values = map(two_pow, exp_unbiased_magnitude_strides(T))
+    exp_values = map(two_pow, exp_unbiased_mag_strides(T))
     if iszero(exp_values[1])  
-        exp_values = map(x->Float128(2)^x, map(Float128,exp_unbiased_magnitude_strides(T)))
+        exp_values = map(x->Float128(2)^x, map(Float128,exp_unbiased_mag_strides(T)))
         if iszero(exp_values[1])
-            exp_values = map(x->BigFloat(2)^x, map(BigFloat,exp_unbiased_magnitude_strides(T)))
+            exp_values = map(x->BigFloat(2)^x, map(BigFloat,exp_unbiased_mag_strides(T)))
         end
     end
     significands .*= exp_values
 
     typ = typeforfloat(nbits(T))
-    magnitudes = memalign_clear(typ, length(significands))
-    magnitudes[:] = map(typ, significands)
-    magnitudes
+    mags = memalign_clear(typ, length(significands))
+    mags[:] = map(typ, significands)
+    mags
 end
 =#
-function magnitude_foundation_seq(::Type{T}) where {T<:AbstractAIFloat}
-    significands = significand_magnitudes(T)
+function mag_foundation_seq(::Type{T}) where {T<:AbstractAIFloat}
+    significands = significand_mags(T)
 
-    exp_values = map(two_pow, exp_unbiased_magnitude_strides(T))
+    exp_values = map(two_pow, exp_unbiased_mag_strides(T))
     if iszero(exp_values[1])  
-        exp_values = map(x->Float128(2)^x, map(Float128,exp_unbiased_magnitude_strides(T)))
+        exp_values = map(x->Float128(2)^x, map(Float128,exp_unbiased_mag_strides(T)))
         if iszero(exp_values[1])
-            exp_values = map(x->BigFloat(2)^x, map(BigFloat,exp_unbiased_magnitude_strides(T)))
+            exp_values = map(x->BigFloat(2)^x, map(BigFloat,exp_unbiased_mag_strides(T)))
         end
     end
     significands .*= exp_values
 
     typ = ArbReal # typeforfloat(nbits(T))
-    magnitudes = zeros(typ, length(significands))
-    magnitudes[:] = map(typ, significands)
-    magnitudes
+    mags = zeros(typ, length(significands))
+    mags[:] = map(typ, significands)
+    mags
 end
 
 
 function normal_exp_stride(T::Type{<:AbstractAIFloat})
-    cld(nmagnitudes(T), nvalues_exp(T))
+    cld(nmags(T), nvalues_exp(T))
 end
 
 @inline function foundation_extremal_exps(T::Type{<:AbstractAIFloat})
-    exp_max = fld(nmagnitudes_nonzero(T), nmagnitudes_prenormal(T))
+    exp_max = fld(nmags_nonzero(T), nmags_prenormal(T))
     exp_min = -exp_max
     exp_min, exp_max
 end
@@ -66,13 +66,13 @@ function pow2_foundation_exps(T,res::Vector{Float32})
     map(two_pow, expres)
 end
 
-function exp_unbiased_magnitude_strides(T::Type{<:AbstractAIFloat})
+function exp_unbiased_mag_strides(T::Type{<:AbstractAIFloat})
     append!(fill(exp_unbiased_subnormal(T), normal_exp_stride(T)), collect(Iterators.flatten((fill.(exp_unbiased_normal_seq(T), normal_exp_stride(T)))[:,1])))
 end
 
 # cover instantiations for value sequence generation
-for F in (:prenormal_magnitude_steps, :normal_magnitude_steps, :normal_exp_stride,
-          :foundation_extremal_exps, :foundation_exps, :exp_unbiased_magnitude_strides, :pow2_foundation_exps,
-          :magnitude_foundation_seq, :foundation_values, :value_seq)
+for F in (:prenormal_mag_steps, :normal_mag_steps, :normal_exp_stride,
+          :foundation_extremal_exps, :foundation_exps, :exp_unbiased_mag_strides, :pow2_foundation_exps,
+          :mag_foundation_seq, :foundation_values, :value_seq)
     @eval $F(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = $F(T)
 end
