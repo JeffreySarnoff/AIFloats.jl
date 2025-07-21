@@ -6,7 +6,7 @@ function significand_mags(T::Type{<:AbstractAIFloat})
     normals = Iterators.flatten(fill(normal_mag_steps(T), normal_cycles))
     append!(significands, normals)
 
-    map(ArbReal, significands)
+    map(BigFloat, significands)
 end
 
 @inline function prenormal_mag_steps(T::Type{<:AbstractAIFloat})

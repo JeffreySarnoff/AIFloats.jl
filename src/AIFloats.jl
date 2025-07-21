@@ -59,7 +59,7 @@ export AbstractAIFloat,
 using Quadmath
 using Quadmath: Float128
 
-setprecision(BigFloat, 512)
+setprecision(BigFloat, 64)
 
 using ArbNumerics
 import ArbNumerics: ArbReal

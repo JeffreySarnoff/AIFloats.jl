@@ -1,3 +1,4 @@
+#=
 Base.exponent(x::ArbFloat{P}) where {P} = 
     round(Int, Float64(log2(x)))
 Base.exponent(x::ArbReal{P}) where {P} = 
@@ -12,8 +13,7 @@ function Base.frexp(x::ArbFloat{P}) where {P}
     sig = Base.significand(x) * 0.5
     return (sig, ex)
 end
-
-
+=#
 nan_codepoint(T::Type{<:AbstractAIFloat}) = nmagitudes(T) + 0x01
 nan_codepoint(x::T) where {T<:AbstractAIFloat} = nan_codepoint(T)
 
@@ -40,10 +40,12 @@ Base.ldexp(frs::AbstractVector{T}, xps::AbstractVector{I}) where {T, I} =
 Base.ldexp(frxps::AbstractVector{<:Tuple{T,I}}) where {T, I} = 
     map(Base.ldexp, first.(frxps), last.(frxps))
 
+#=
 function Base.ldexp(ld::Float64, xp::ArbReal{P}) where {P}
 	px = round(Int, xp)
 	ldexp(ld, px)
 end
+=#
 
 function Base.ldexp(ld::F1, xp::F2) where {F1<:AbstractFP, F2<:AbstractFP}
 	px = round(Int, xp)

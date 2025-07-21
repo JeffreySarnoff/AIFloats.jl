@@ -32,7 +32,7 @@ function mag_foundation_seq(::Type{T}) where {T<:AbstractAIFloat}
     end
     significands .*= exp_values
 
-    typ = ArbReal # typeforfloat(nbits(T))
+    typ = BigFloat # ArbReal # typeforfloat(nbits(T))
     mags = zeros(typ, length(significands))
     mags[:] = map(typ, significands)
     mags

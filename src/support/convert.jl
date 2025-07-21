@@ -1,3 +1,4 @@
+#=
 Base.promote_rule(x::ArbReal{P}, y::BigFloat) where {P} = 
     precision(BigFloat) > P ? BigFloat : ArbReal{P}
 
@@ -12,12 +13,13 @@ function Base.convert(::Type{ArbReal{128}}, x::Float128)
     xx = round(BigFloat(x); base=2, sigdigits=128)
     ArbReal{128}(xx)
 end
-
+=#
 
 function Quadmath.Float128(s::String)
     Quadmath.Float128(BigFloat(s))
 end
 
+#=
 function Quadmath.Float128(x::ArbReal{P}) where {P}
     Quadmath.Float128(string(x))
 end
@@ -31,3 +33,4 @@ function Base.convert(::Type{Float128}, x::ArbReal{P}) where {P}
     xx = round(BigFloat(x); base=2, sigdigits=128)
     Quadmath.Float128(xx)
 end
+=#
