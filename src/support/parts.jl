@@ -51,9 +51,25 @@ function Base.ldexp(ld::F1, xp::F2) where {F1<:AbstractFP, F2<:AbstractFP}
 	px = round(Int, xp)
 	ldexp(ld, px)
 end
+function safe_rationalize(x)
+    isnan(x) &&return x
+    rationalize(x)
+end
+
+function clean_qrexp(xs::AbstractVector{T}) where {T}
+    function rewrap(fxp)
+        q = safe_rationalize.(first.(fxp))
+        xp = last.(fxp)
+        collect(zip(q,xp))
+    end
+
+    frxps = clean_frexp(xs)
+    qrxp = rewrap(frxps)
+    qrxp
+end
 
 """
-clean_frexp(xs) -> (fr, xp)
+    clean_frexp(xs) -> (fr, xp)
 
 Returns a tuple of vectors containing the significands and exponents
 of the input vector `xs`, significands cleaned-up.
