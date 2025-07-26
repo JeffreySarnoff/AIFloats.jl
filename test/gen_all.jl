@@ -42,7 +42,7 @@ frexp_uevals = map(clean_frexp, uevals);
 frexp_sfvals = map(clean_frexp, sfvals);
 frexp_sevals = map(clean_frexp, sevals);
 
-clean_ufvals = map(safe_ldexp, frexp_ufvals);
+clean_ufvals = map(v->safe_ldexp, frexp_ufvals);
 clean_uevals = map(safe_ldexp, frexp_uevals);
 clean_sfvals = map(safe_ldexp, frexp_sfvals);
 clean_sevals = map(safe_ldexp, frexp_sevals);

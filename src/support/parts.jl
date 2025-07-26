@@ -20,15 +20,6 @@ nan_codepoint(x::T) where {T<:AbstractAIFloat} = nan_codepoint(T)
 nonan(xs::AbstractVector) = filter(!isnan, xs)
 finite(xs::AbstractVector) = filter(isfinite, xs)
 
-function Base.frexp(x::ArbReal{P}) where {P}
-   arb_precision = workingprecision(x)
-   bf_precision = precision(BigFloat)
-   setprecision(BigFloat, arb_precision)
-   fr, xp = frexp(BigFloat(x))
-   setprecision(BigFloat, bf_precision)
-   fr, xp
-end
-
 Base.frexp(xs::AbstractVector{T}) where {T} = 
     map(Base.frexp, xs)
 
@@ -51,8 +42,9 @@ function Base.ldexp(ld::F1, xp::F2) where {F1<:AbstractFP, F2<:AbstractFP}
 	px = round(Int, xp)
 	ldexp(ld, px)
 end
+
 function safe_rationalize(x)
-    isnan(x) &&return x
+    isnan(x) && return x
     rationalize(x)
 end
 
