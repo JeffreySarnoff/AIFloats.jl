@@ -100,7 +100,7 @@ ue_15 = (ue1x8_32..., ue9x11_64..., ue12x15_128...);
 using Tables, CSV, Printf, PrettyTables, JLD2, Latexify
 
 holdprecision = precision(BigFloat)
-setprecision(BigFloat, 64)
+setprecision(BigFloat, 128)
 
 sf_13to15_BigFloat = map(x->map(y->BigFloat.(y),x), sf1x15)[13:15];
 sf_13to15_Float128 = map(x->map(y->Float128.(y),x), sf1x15)[13:15];

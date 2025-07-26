@@ -5,7 +5,7 @@ const BitsLargeMin, BitsLargeMax =  11, 15
 const BitsTop = 16
 
 # internal assurances
-setprecision(BigFloat, 768)
+setprecision(BigFloat, 128)
 
 two(T) = typeforfloat(nbits(T))(2)
 

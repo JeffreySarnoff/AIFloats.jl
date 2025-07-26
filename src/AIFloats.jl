@@ -56,15 +56,7 @@ export AbstractAIFloat,
     isindex_zero, isindex_one, isindex_negone,
     isindex_nan, isindex_inf, isindex_posinf, isindex_neginf    
 
-using Quadmath
-using Quadmath: Float128
-
-setprecision(BigFloat, 64)
-
-using ArbNumerics
-import ArbNumerics: ArbReal
-setworkingprecision(ArbReal, 768)
-
+setprecision(BigFloat, 128)
 
 function memalign_clear(T, n)
     zeros(T, n)
