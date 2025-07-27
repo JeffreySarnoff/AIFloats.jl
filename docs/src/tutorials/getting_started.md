@@ -105,13 +105,13 @@ AIFloat formats partition values into distinct mathematical regimes:
 se6p3 = AIFloat(6, 3, :signed, :extended)
 
 # Examine regime boundaries
-println("Prenormal count: ", nmags_prenormal(se6p3))
-println("Subnormal count: ", nmags_subnormal(se6p3))  
-println("Normal count: ", nmags_normal(se6p3))
+println("Prenormal count: ", n_prenormal_mags(se6p3))
+println("Subnormal count: ", n_subnormal_mags(se6p3))  
+println("Normal count: ", n_normal_mags(se6p3))
 
 # Extract subnormal and normal value ranges
 values = floats(se6p3)
-prenormal_end = nmags_prenormal(se6p3)
+prenormal_end = n_prenormal_mags(se6p3)
 
 println("Prenormal values: ", values[1:prenormal_end])
 println("First few normals: ", values[prenormal_end+1:prenormal_end+4])

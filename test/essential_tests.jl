@@ -68,8 +68,8 @@ using AIFloats
         
         # Basic counts
         @test n_values(sf43) == 16  # 2^4
-        @test nmags(sf43) == 8   # 2^(4-1) for signed
-        @test nmags(ue52) == 31  # 2^5 - 1 for unsigned
+        @test n_mags(sf43) == 8   # 2^(4-1) for signed
+        @test n_mags(ue52) == 31  # 2^5 - 1 for unsigned
         
         # NaN and infinity counts
         @test n_nans(sf43) == 1
@@ -80,8 +80,8 @@ using AIFloats
         @test n_neg_inf(ue52) == 0  # unsigned has no -Inf
         
         # Subnormal counts
-        @test nmags_prenormal(sf43) == 4  # 2^(3-1)
-        @test nmags_subnormal(sf43) == 3  # prenormal - 1
+        @test n_prenormal_mags(sf43) == 4  # 2^(3-1)
+        @test n_subnormal_mags(sf43) == 3  # prenormal - 1
         @test n_prenormal_nums(sf43) == 7      # 2*prenormal - 1 for signed
         @test n_subnormal_nums(sf43) == 6      # prenormal - 1
     end

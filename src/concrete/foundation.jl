@@ -40,11 +40,11 @@ end
 
 
 function normal_exp_stride(T::Type{<:AbstractAIFloat})
-    cld(nmags(T), n_exp_nums(T))
+    cld(n_mags(T), n_exp_nums(T))
 end
 
 @inline function foundation_extremal_exps(T::Type{<:AbstractAIFloat})
-    exp_max = fld(nmags_nonzero(T), nmags_prenormal(T))
+    exp_max = fld(n_nonzero_mags(T), n_prenormal_mags(T))
     exp_min = -exp_max
     exp_min, exp_max
 end

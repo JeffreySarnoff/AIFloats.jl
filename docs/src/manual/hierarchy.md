@@ -103,8 +103,8 @@ code_negone(::Type{T}) where {T<:AbstractSigned} = ...
 code_negone(::Type{T}) where {T<:AbstractUnsigned} = nothing
 
 # Universal operations with signedness-dependent implementation
-nmags(T::Type{<:AbstractUnsigned}) = 2^n_bits(T) - 1
-nmags(T::Type{<:AbstractSigned}) = 2^(n_bits(T) - 1)
+n_mags(T::Type{<:AbstractUnsigned}) = 2^n_bits(T) - 1
+n_mags(T::Type{<:AbstractSigned}) = 2^(n_bits(T) - 1)
 ```
 
 ### Domain-Specific Specialization
@@ -135,7 +135,7 @@ n_exp_bits(::Type{<:AbstractUnsigned{Bits, SigBits}}) where {Bits, SigBits} = Bi
 ```julia
 # Value counts resolved during compilation
 n_values(::Type{<:AbstractAIFloat{Bits}}) where {Bits} = 2^Bits
-nmags_prenormal(::Type{<:AbstractAIFloat{Bits, SigBits}}) where {Bits, SigBits} = 2^(SigBits - 1)
+n_prenormal_mags(::Type{<:AbstractAIFloat{Bits, SigBits}}) where {Bits, SigBits} = 2^(SigBits - 1)
 ```
 
 This compile-time resolution eliminates computational overhead for format introspection operations.

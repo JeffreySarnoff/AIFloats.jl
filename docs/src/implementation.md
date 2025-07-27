@@ -85,13 +85,13 @@ The significand generation follows IEEE-style quantization:
 
 ```julia
 function prenormal_mag_steps(::Type{T}) where {T<:AbstractAIFloat}
-    nprenormal = nmags_prenormal(T)
+    nprenormal = n_prenormal_mags(T)
     step_size = 1 / typeforfloat(T)(nprenormal)
     return (0:(nprenormal-1)) * step_size
 end
 
 function normal_mag_steps(::Type{T}) where {T<:AbstractAIFloat}
-    nprenormal = nmags_prenormal(T)
+    nprenormal = n_prenormal_mags(T)
     # Normal values: [1.0, 2.0) in significand space
     return (nprenormal:(2*nprenormal-1)) / typeforfloat(T)(nprenormal)
 end

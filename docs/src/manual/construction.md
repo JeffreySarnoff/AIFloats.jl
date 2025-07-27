@@ -135,7 +135,7 @@ The prenormal/normal boundary is established through precision-dependent scaling
 mag_normal_min(T) = exp_value_min(T)
 
 # Largest subnormal mag: (1 - ε) × 2^(exp_min) where ε = ULP
-mag_subnormal_max(T) = (1 - 1/nmags_prenormal(T)) * exp_subnormal_value(T)
+mag_subnormal_max(T) = (1 - 1/n_prenormal_mags(T)) * exp_subnormal_value(T)
 ```
 
 This boundary placement ensures maximal precision utilization in the critical near-zero region.
@@ -171,7 +171,7 @@ Post-construction verification ensures mathematical consistency:
 function verify_construction_invariants(aifloat::AbstractAIFloat)
     @assert length(floats(aifloat)) == n_values(typeof(aifloat))
     @assert length(codes(aifloat)) == n_values(typeof(aifloat))
-    @assert issorted(floats(aifloat)[1:nmags(typeof(aifloat))])  # Magnitude ordering
+    @assert issorted(floats(aifloat)[1:n_mags(typeof(aifloat))])  # Magnitude ordering
     @assert codes(aifloat)[1] == 0x00  # Zero encoding
     @assert isnan(floats(aifloat)[end])  # NaN placement
 end
