@@ -25,10 +25,7 @@ function mag_foundation_seq(::Type{T}) where {T<:AbstractAIFloat}
 
     exp_vals = map(two_pow, exp_unbiased_mag_strides(T))
     if iszero(exp_vals[1])  
-        exp_vals = map(x->Float128(2)^x, map(Float128,exp_unbiased_mag_strides(T)))
-        if iszero(exp_vals[1])
-            exp_vals = map(x->BigFloat(2)^x, map(BigFloat,exp_unbiased_mag_strides(T)))
-        end
+       exp_vals = map(x->BigFloat(2)^x, map(BigFloat,exp_unbiased_mag_strides(T)))
     end
     significands .*= exp_vals
 
