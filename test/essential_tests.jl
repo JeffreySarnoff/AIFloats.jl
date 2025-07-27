@@ -67,7 +67,7 @@ using AIFloats
         ue52 = AIFloat(5, 2, :unsigned, :extended)
         
         # Basic counts
-        @test nvalues(sf43) == 16  # 2^4
+        @test n_values(sf43) == 16  # 2^4
         @test nmags(sf43) == 8   # 2^(4-1) for signed
         @test nmags(ue52) == 31  # 2^5 - 1 for unsigned
         
@@ -82,8 +82,8 @@ using AIFloats
         # Subnormal counts
         @test nmags_prenormal(sf43) == 4  # 2^(3-1)
         @test nmags_subnormal(sf43) == 3  # prenormal - 1
-        @test nvalues_prenormal(sf43) == 7      # 2*prenormal - 1 for signed
-        @test nvalues_subnormal(sf43) == 6      # prenormal - 1
+        @test n_values_prenormal(sf43) == 7      # 2*prenormal - 1 for signed
+        @test n_values_subnormal(sf43) == 6      # prenormal - 1
     end
     
     @testset "Exponent Characteristics" begin
@@ -173,7 +173,7 @@ using AIFloats
         # Test that instance methods match type methods
         @test n_bits(sf32) == n_bits(T)
         @test n_sig_bits(sf32) == n_sig_bits(T)
-        @test nvalues(sf32) == nvalues(T)
+        @test n_values(sf32) == n_values(T)
         @test is_signed(sf32) == is_signed(T)
         @test is_finite(sf32) == is_finite(T)
         @test exp_bias(sf32) == exp_bias(T)

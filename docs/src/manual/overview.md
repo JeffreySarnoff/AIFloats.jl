@@ -61,8 +61,8 @@ AIFloats employs cache-aligned allocation patterns to maximize throughput:
 
 ```julia
 # Values and codes use aligned allocation for L1 cache efficiency
-floats = memalign_clear(Float64, nvalues)  # Cache-line aligned
-codes = memalign_clear(UInt8, nvalues)     # Corresponding encodings
+floats = memalign_clear(Float64, n_values)  # Cache-line aligned
+codes = memalign_clear(UInt8, n_values)     # Corresponding encodings
 ```
 
 The dual-array structure (values, encodings) enables both:

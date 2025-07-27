@@ -10,8 +10,8 @@ AIFloats employs cache-aligned memory allocation to optimize memory access patte
 
 ```julia
 # From AlignedAllocs.jl integration
-floats = memalign_clear(Float64, nvalues)
-codes = memalign_clear(UInt8, nvalues)
+floats = memalign_clear(Float64, n_values)
+codes = memalign_clear(UInt8, n_values)
 
 # Ensures alignment to L1 cache boundaries (typically 64 bytes)
 @assert alignment(floats) >= 64
@@ -108,12 +108,12 @@ The parametric type system enables aggressive compile-time optimization:
 ```julia
 # These resolve to constants during compilation
 @inline n_bits(::Type{<:AbstractAIFloat{Bits}}) where {Bits} = Bits
-@inline nvalues(::Type{<:AbstractAIFloat{Bits}}) where {Bits} = 2^Bits
+@inline n_values(::Type{<:AbstractAIFloat{Bits}}) where {Bits} = 2^Bits
 
 # Enables loop unrolling and constant propagation
 function process_all_values(::Type{T}) where {T<:AbstractAIFloat}
     # Loop bound known at compile time
-    for i in 1:nvalues(T)
+    for i in 1:n_values(T)
         # Compiler can fully unroll for small formats
     end
 end
@@ -152,13 +152,13 @@ Different computational strategies optimal for different format sizes:
 
 ```julia
 # Small formats: Complete lookup tables
-is_table_friendly(::Type{T}) where {T<:AbstractAIFloat} = nvalues(T) ≤ 64
+is_table_friendly(::Type{T}) where {T<:AbstractAIFloat} = n_values(T) ≤ 64
 
 # Medium formats: Selective table acceleration
-is_hybrid_optimal(::Type{T}) where {T<:AbstractAIFloat} = 64 < nvalues(T) ≤ 256
+is_hybrid_optimal(::Type{T}) where {T<:AbstractAIFloat} = 64 < n_values(T) ≤ 256
 
 # Large formats: Direct computation preferred
-is_direct_optimal(::Type{T}) where {T<:AbstractAIFloat} = nvalues(T) > 256
+is_direct_optimal(::Type{T}) where {T<:AbstractAIFloat} = n_values(T) > 256
 ```
 
 ## Numerical Precision Considerations

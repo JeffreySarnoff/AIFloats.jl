@@ -169,8 +169,8 @@ Post-construction verification ensures mathematical consistency:
 
 ```julia
 function verify_construction_invariants(aifloat::AbstractAIFloat)
-    @assert length(floats(aifloat)) == nvalues(typeof(aifloat))
-    @assert length(codes(aifloat)) == nvalues(typeof(aifloat))
+    @assert length(floats(aifloat)) == n_values(typeof(aifloat))
+    @assert length(codes(aifloat)) == n_values(typeof(aifloat))
     @assert issorted(floats(aifloat)[1:nmags(typeof(aifloat))])  # Magnitude ordering
     @assert codes(aifloat)[1] == 0x00  # Zero encoding
     @assert isnan(floats(aifloat)[end])  # NaN placement

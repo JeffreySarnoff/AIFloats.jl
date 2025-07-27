@@ -4,7 +4,7 @@ exp_bias(::Type{T}) where {Bits, SigBits, T<:AbstractUnsigned{Bits, SigBits}} = 
 
 # exponent field characterizations
 exp_field_min(T::Type{<:AbstractAIFloat}) = 0
-exp_field_max(T::Type{<:AbstractAIFloat}) = nvalues_exp(T) - 1
+exp_field_max(T::Type{<:AbstractAIFloat}) = n_values_exp(T) - 1
 
 exp_unbiased_normal_max(T::Type{<:AbstractAIFloat}) = exp_field_max(T) - exp_bias(T)
 exp_unbiased_normal_min(T::Type{<:AbstractAIFloat}) = -exp_unbiased_normal_max(T)

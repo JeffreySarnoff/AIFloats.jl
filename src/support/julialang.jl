@@ -91,7 +91,7 @@ function Base.eps(xs::T, x::F) where {T<:AkoUnsignedExtended, F<:AbstractFloat}
     if idx1 === nothing
         return eps(xs)
     end
-    idx1 = min(nvalues(T)-4, idx1)
+    idx1 = min(n_values(T)-4, idx1)
     floats(xs)[idx1 + 0x01] - floats(xs)[idx1]
 end
 
@@ -102,7 +102,7 @@ function Base.eps(xs::T, x::F) where {T<:AkoSignedFinite, F<:AbstractFloat}
     if idx1 === nothing
         return eps(xs)
     end
-    idx1 = min((nvalues(T)>>1)-1, idx1)
+    idx1 = min((n_values(T)>>1)-1, idx1)
     floats(xs)[idx1 + 0x01] - floats(xs)[idx1]
 end
 
@@ -112,7 +112,7 @@ function Base.eps(xs::T, x::F) where {T<:AkoSignedExtended, F<:AbstractFloat}
     if idx1 === nothing
         return eps(xs)
     end
-    idx1 = min(nvalues(T)>>1-2, idx1)
+    idx1 = min(n_values(T)>>1-2, idx1)
     floats(xs)[idx1 + 0x01] - floats(xs)[idx1]
 end
 
@@ -123,7 +123,7 @@ function Base.eps(xs::T, x::F) where {T<:AbstractSigned, F<:AbstractFloat}
         return eps(xs)
     end
     idx1next = idx1 + 0x01
-    if idx1next > nvalues(T)
+    if idx1next > n_values(T)
         floats(xs)[idx1] - floats(xs)[idx1 - 1]
     else
         floats(xs)[idx1 + 1] - floats(xs)[idx1]
@@ -139,18 +139,18 @@ function Base.floatmin(x::T) where {T<:AbstractAIFloat}
 end
 
 function Base.floatmax(x::T) where {T<:AbstractUnsigned}
-    floats(x)[nvalues(T) - 0x01 - is_extended(T)]
+    floats(x)[n_values(T) - 0x01 - is_extended(T)]
 end
 
 function Base.floatmax(x::T) where {T<:AbstractSigned}
-    floats(x)[(nvalues(T) >> 1) - is_extended(T)]
+    floats(x)[(n_values(T) >> 1) - is_extended(T)]
 end
 
 Base.typemin(x::T) where {T<:AbstractUnsigned} = floats(x)[0x01]
 Base.typemin(x::T) where {T<:AbstractSigned} = floats(x)[end]
 
 Base.typemax(x::T) where {T<:AbstractUnsigned} = floats(x)[end-1]
-Base.typemax(x::T) where {T<:AbstractSigned} = floats(x)[(nvalues(T) >> 1)]
+Base.typemax(x::T) where {T<:AbstractSigned} = floats(x)[(n_values(T) >> 1)]
 
 """
     floatleast(x::T) where {T<:AbstractAIFloat}

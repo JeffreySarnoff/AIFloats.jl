@@ -40,7 +40,7 @@ end
 
 
 function normal_exp_stride(T::Type{<:AbstractAIFloat})
-    cld(nmags(T), nvalues_exp(T))
+    cld(nmags(T), n_values_exp(T))
 end
 
 @inline function foundation_extremal_exps(T::Type{<:AbstractAIFloat})

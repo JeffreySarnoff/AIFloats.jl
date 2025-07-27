@@ -1,8 +1,8 @@
 
 function significand_mags(T::Type{<:AbstractAIFloat})
     significands = collect(prenormal_mag_steps(T))
-    n_mags = nmags(T) - (is_signed(T) * nmags_prenormal(T))
-    normal_cycles = fld(n_mags, nmags_prenormal(T))
+    n_magnitudes = nmags(T) - (is_signed(T) * nmags_prenormal(T))
+    normal_cycles = fld(n_magnitudes, nmags_prenormal(T))
     normals = Iterators.flatten(fill(normal_mag_steps(T), normal_cycles))
     append!(significands, normals)
 

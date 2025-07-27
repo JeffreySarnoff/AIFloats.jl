@@ -134,7 +134,7 @@ n_exp_bits(::Type{<:AbstractUnsigned{Bits, SigBits}}) where {Bits, SigBits} = Bi
 ### Count Computations
 ```julia
 # Value counts resolved during compilation
-nvalues(::Type{<:AbstractAIFloat{Bits}}) where {Bits} = 2^Bits
+n_values(::Type{<:AbstractAIFloat{Bits}}) where {Bits} = 2^Bits
 nmags_prenormal(::Type{<:AbstractAIFloat{Bits, SigBits}}) where {Bits, SigBits} = 2^(SigBits - 1)
 ```
 

@@ -35,12 +35,12 @@ nmags_finite(T::Type{<:AbstractAIFloat}) = nmags(T) - n_inf(T)
 nmags_nonzero(T::Type{<:AbstractAIFloat}) = nmags(T) - n_zeros(T)
 nmags_finite_nonzero(T::Type{<:AbstractAIFloat}) = nmags_finite(T) - n_zeros(T)
 
-nvalues(T::Type{<:AbstractAIFloat}) = 2^n_bits(T)
+n_values(T::Type{<:AbstractAIFloat}) = 2^n_bits(T)
 
-nvalues_numeric(T::Type{<:AbstractAIFloat}) = nvalues(T) - n_nans(T)
-nvalues_numeric_nonzero(T::Type{<:AbstractAIFloat}) = nvalues_numeric(T) - n_zeros(T)
-nvalues_finite(T::Type{<:AbstractAIFloat}) = nvalues_numeric(T) - n_inf(T)
-nvalues_finite_nonzero(T::Type{<:AbstractAIFloat}) = nvalues_finite(T) - n_zeros(T)
+n_nums(T::Type{<:AbstractAIFloat}) = n_values(T) - n_nans(T)
+n_nonzero_nums(T::Type{<:AbstractAIFloat}) = n_nums(T) - n_zeros(T)
+n_finite_nums(T::Type{<:AbstractAIFloat}) = n_nums(T) - n_inf(T)
+n_nonzero_finite_nums(T::Type{<:AbstractAIFloat}) = n_finite_nums(T) - n_zeros(T)
 
 #--->
 
@@ -50,44 +50,44 @@ nmags_sig_nonzero(T::Type{<:AbstractAIFloat}) = nmags_sig(T) - 1
 nmags_frac(T::Type{<:AbstractAIFloat}) = 1 << n_frac_bits(T)
 nmags_frac_nonzero(T::Type{<:AbstractAIFloat}) = nmags_frac(T) - 1
 
-nvalues_exp(T::Type{<:AbstractAIFloat}) = 1 << n_exp_bits(T)
-nvalues_exp_nonzero(T::Type{<:AbstractAIFloat}) = nvalues_exp(T) - 1
+n_values_exp(T::Type{<:AbstractAIFloat}) = 1 << n_exp_bits(T)
+n_values_exp_nonzero(T::Type{<:AbstractAIFloat}) = n_values_exp(T) - 1
 
-nvalues_nonneg(T::Type{<:AbstractAIFloat}) = nmags(T)
-nvalues_positive(T::Type{<:AbstractAIFloat}) = nvalues_nonneg(T) - 1
-nvalues_negative(T::Type{<:AbstractAIFloat}) = nvalues_numeric(T) - nvalues_nonneg(T)
+n_values_nonneg(T::Type{<:AbstractAIFloat}) = nmags(T)
+n_values_positive(T::Type{<:AbstractAIFloat}) = n_values_nonneg(T) - 1
+n_values_negative(T::Type{<:AbstractAIFloat}) = n_nums(T) - n_values_nonneg(T)
 
-nvalues_finite_nonneg(T::Type{<:AbstractAIFloat}) = nvalues_nonneg(T) - n_pos_inf(T)
-nvalues_finite_positive(T::Type{<:AbstractAIFloat}) = nvalues_positive(T) - n_pos_inf(T)
-nvalues_finite_negative(T::Type{<:AbstractAIFloat}) = nvalues_negative(T) - n_neg_inf(T)
+n_finite_nums_nonneg(T::Type{<:AbstractAIFloat}) = n_values_nonneg(T) - n_pos_inf(T)
+n_finite_nums_positive(T::Type{<:AbstractAIFloat}) = n_values_positive(T) - n_pos_inf(T)
+n_finite_nums_negative(T::Type{<:AbstractAIFloat}) = n_values_negative(T) - n_neg_inf(T)
 
 nmags_prenormal(T::Type{<:AbstractAIFloat}) = 2^(n_sig_bits(T)-1) # 1 << (SigBits - 1)
 nmags_subnormal(T::Type{<:AbstractAIFloat}) = nmags_prenormal(T) - 1
 
-nvalues_prenormal(::Type{T}) where {Bits, SigBits, T<:AbstractSigned{Bits, SigBits}} = 2 * nmags_prenormal(T) - 1
-nvalues_prenormal(::Type{T}) where {Bits, SigBits, T<:AbstractUnsigned{Bits, SigBits}} = nmags_prenormal(T)
+n_values_prenormal(::Type{T}) where {Bits, SigBits, T<:AbstractSigned{Bits, SigBits}} = 2 * nmags_prenormal(T) - 1
+n_values_prenormal(::Type{T}) where {Bits, SigBits, T<:AbstractUnsigned{Bits, SigBits}} = nmags_prenormal(T)
 
-nvalues_subnormal(T::Type{<:AbstractAIFloat}) = nvalues_prenormal(T) - 1
+n_values_subnormal(T::Type{<:AbstractAIFloat}) = n_values_prenormal(T) - 1
 
 nmags_normal(T::Type{<:AbstractAIFloat}) = nmags_finite(T) - nmags_prenormal(T)
-nvalues_normal(T::Type{<:AbstractAIFloat}) = nvalues_finite(T) - nvalues_prenormal(T)
+n_values_normal(T::Type{<:AbstractAIFloat}) = n_finite_nums(T) - n_values_prenormal(T)
 
 nmags_normal_extended(T::Type{<:AbstractAIFloat}) =
     nmags_normal(T) + n_pos_inf(T)
 
-nvalues_normal_extended(T::Type{<:AbstractAIFloat}) =
+n_values_normal_extended(T::Type{<:AbstractAIFloat}) =
     nmags_normal(T) + n_inf(T)
 
 # support for instantiations
 for F in (:nbits, :n_sig_bits, :n_frac_bits, :n_exp_bits, :n_sign_bits,
           :n_nans, :n_zeros, :n_inf, :n_pos_inf, :n_neg_inf,
-          :nvalues, :nvalues_numeric, :nvalues_numeric_nonzero,
+          :n_values, :n_nums, :n_nonzero_nums,
           :nmags_sig, :nmags_sig_nonzero, :nmags_frac, :nmags_frac_nonzero,
           :nmags, :nmags_nonzero,
-          :nvalues_finite, :nvalues_finite_nonzero, :nmags_finite, :nmags_finite_nonzero,
-          :nvalues_nonneg, :nvalues_positive, :nvalues_negative,
-          :nvalues_finite_nonneg, :nvalues_finite_positive, :nvalues_finite_negative,
-          :nmags_prenormal, :nmags_subnormal, :nvalues_prenormal, :nvalues_subnormal,
-          :nmags_normal, :nvalues_normal, :nmags_normal_extended, :nvalues_normal_extended) 
+          :n_finite_nums, :n_nonzero_finite_nums, :nmags_finite, :nmags_finite_nonzero,
+          :n_values_nonneg, :n_values_positive, :n_values_negative,
+          :n_finite_nums_nonneg, :n_finite_nums_positive, :n_finite_nums_negative,
+          :nmags_prenormal, :nmags_subnormal, :n_values_prenormal, :n_values_subnormal,
+          :nmags_normal, :n_values_normal, :nmags_normal_extended, :n_values_normal_extended) 
     @eval $F(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = $F(T)
 end

@@ -29,7 +29,7 @@ Trans. Comp., Vol. 57, no. 4, pp. 462-471, April 2008
 
 function round_up(xs::T, x::F) where {T<:AbstractUnsigned, F<:AbstractFloat}
     isnan(x) && return x
-    n = nvalues(xs)
+    n = n_values(xs)
     idx = searchsortedfirst(floats(xs), x)  # floats(xs)[idx] >= x
     idx > n && return floats(xs)[end]
     floats(xs)[idx]
@@ -37,7 +37,7 @@ end
 
 function round_down(xs::T, x::F) where {T<:AbstractUnsigned, F<:AbstractFloat}
     isnan(x) && return x
-    n = nvalues(xs)
+    n = n_values(xs)
     idx = searchsortedlast(floats(xs), x)  # floats(xs)[idx] >= x
     iszero(idx) && return floats(xs)[end]
     floats(xs)[idx]
@@ -53,7 +53,7 @@ end
  
 function round_nearesteven(xs::T, x::F) where {T<:AbstractUnsigned, F<:AbstractFloat}
     isnan(x) && return x
-    n = nvalues(xs)
+    n = n_values(xs)
     idx1 = searchsortedfirst(floats(xs), x)  # floats(xs)[idx] >= x
     val1 = floats(xs)[idx1]
     (x == val1 || idx1 === 1) && floats(xs)[idx1]
@@ -83,7 +83,7 @@ end
 
 function round_nearestodd(xs::T, x::F) where {T<:AbstractUnsigned, F<:AbstractFloat}
     isnan(x) && return x
-    n = nvalues(xs)
+    n = n_values(xs)
     idx1 = searchsortedfirst(floats(xs), x)  # floats(xs)[idx] >= x
     val1 = floats(xs)[idx1]
     (x == val1 || idx1 === 1) && floats(xs)[idx1]
@@ -113,7 +113,7 @@ end
 
 function round_nearesttozero(xs::T, x::F) where {T<:AbstractUnsigned, F<:AbstractFloat}
     isnan(x) && return x
-    n = nvalues(xs)
+    n = n_values(xs)
     idx1 = searchsortedfirst(floats(xs), x)  # floats(xs)[idx] >= x
     val1 = floats(xs)[idx1]
     (x == val1 || idx1 === 1) && floats(xs)[idx1]
@@ -128,7 +128,7 @@ end
 
 function round_nearestfromzero(xs::T, x::F) where {T<:AbstractUnsigned, F<:AbstractFloat}
     isnan(x) && return x
-    n = nvalues(xs)
+    n = n_values(xs)
     idx1 = searchsortedfirst(floats(xs), x)  # floats(xs)[idx] >= x
     val1 = floats(xs)[idx1]
     (x == val1 || idx1 === 1) && floats(xs)[idx1]
