@@ -72,17 +72,17 @@ function round_up_saturate(xs::T, x::F) where {T<:AbstractUnsigned, F<:AbstractF
         idx -= 1
         val = floats(xs)[idx]   
     end
-    (idx % typeforcode(nbits(T)), val)
+    (idx % typeforcode(n_bits(T)), val)
 end
 
 function round_down_saturate(xs::T, x::F) where {T<:AbstractUnsigned, F<:AbstractFloat}
     idx = searchsortedfirst(floats(xs), x)
     if x == floats(xs)[idx]
-        return (idx % typeforcode(nbits(T)), floats(xs)[idx])
+        return (idx % typeforcode(n_bits(T)), floats(xs)[idx])
     end
     idx = max(1, idx - 1)
     val = floats(xs)[idx]
-    (idx % typeforcode(nbits(T)), val)
+    (idx % typeforcode(n_bits(T)), val)
 end
 
 function round_tozero_saturate(xs::T, x::F) where {T<:AbstractUnsigned, F<:AbstractFloat}

@@ -15,8 +15,8 @@ floats(x::SignedExtended) = x.floats
 codes(x::SignedExtended) = x.codes
 
 function SignedFinite(T::Type{<:AbstractSigned})
-    bits = nbits(T)
-    sigbits = nbits_sig(T)
+    bits = n_bits(T)
+    sigbits = n_sig_bits(T)
     SignedFinite(bits, sigbits)
 end
 
@@ -30,8 +30,8 @@ function SignedFinite(bits::Int, sigbits::Int)
 end
 
 function SignedExtended(T::Type{<:AbstractSigned})
-    bits = nbits(T)
-    sigbits = nbits_sig(T)
+    bits = n_bits(T)
+    sigbits = n_sig_bits(T)
     SignedExtended(bits, sigbits)
 end
 
@@ -45,8 +45,8 @@ function SignedExtended(bits::Int, sigbits::Int)
 end
 
 function value_seq(T::Type{<:AkoSignedFinite})
-   bits = nbits(T)
-   sigbits = nbits_sig(T)
+   bits = n_bits(T)
+   sigbits = n_sig_bits(T)
    F = typeforfloat(bits)
    values = mag_foundation_seq(AkoSignedFinite{bits, sigbits})
    negvalues = map(-, values)
@@ -56,8 +56,8 @@ function value_seq(T::Type{<:AkoSignedFinite})
 end
 
 function value_seq(T::Type{<:AkoSignedExtended})
-   bits = nbits(T)
-   sigbits = nbits_sig(T)
+   bits = n_bits(T)
+   sigbits = n_sig_bits(T)
    F = typeforfloat(bits)
    values = mag_foundation_seq(AkoSignedExtended{bits, sigbits})
    values[end] = eltype(values)(Inf)

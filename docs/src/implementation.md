@@ -70,7 +70,7 @@ function mag_foundation_seq(::Type{T}) where {T<:AbstractAIFloat}
     scaled_mags = significands .* exp_values
     
     # Stage 3: Convert to working precision
-    return map(typeforfloat(nbits(T)), scaled_mags)
+    return map(typeforfloat(n_bits(T)), scaled_mags)
 end
 ```
 
@@ -107,7 +107,7 @@ The parametric type system enables aggressive compile-time optimization:
 
 ```julia
 # These resolve to constants during compilation
-@inline nbits(::Type{<:AbstractAIFloat{Bits}}) where {Bits} = Bits
+@inline n_bits(::Type{<:AbstractAIFloat{Bits}}) where {Bits} = Bits
 @inline nvalues(::Type{<:AbstractAIFloat{Bits}}) where {Bits} = 2^Bits
 
 # Enables loop unrolling and constant propagation
@@ -131,8 +131,8 @@ exp_bias(::Type{<:AbstractUnsigned{Bits, SigBits}}) where {Bits, SigBits} =
     2^(Bits - SigBits)
 
 # Domain dispatch handles special values efficiently
-nInfs(::Type{<:AkoSignedFinite}) = 0
-nInfs(::Type{<:AkoSignedExtended}) = 2
+n_inf(::Type{<:AkoSignedFinite}) = 0
+n_inf(::Type{<:AkoSignedExtended}) = 2
 ```
 
 ## Performance Characteristics

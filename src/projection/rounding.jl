@@ -71,8 +71,8 @@ function round_nearesteven(xs::T, x::F) where {T<:AbstractUnsigned, F<:AbstractF
     elseif dval0 > dval1
         return val1
     else # dval0 == dval1
-        evenbits0 = trailing_zeros((idx0-1) % typeforcode(nbits(T)))
-        evenbits1 = trailing_zeros((idx1-1) % typeforcode(nbits(T)))
+        evenbits0 = trailing_zeros((idx0-1) % typeforcode(n_bits(T)))
+        evenbits1 = trailing_zeros((idx1-1) % typeforcode(n_bits(T)))
         if evenbits0 > evenbits1
             return val0  # round to even
         else
@@ -101,8 +101,8 @@ function round_nearestodd(xs::T, x::F) where {T<:AbstractUnsigned, F<:AbstractFl
     elseif dval0 > dval1
         return val1
     else # dval0 == dval1
-        evenbits0 = trailing_zeros((idx0-1) % typeforcode(nbits(T)))
-        evenbits1 = trailing_zeros((idx1-1) % typeforcode(nbits(T)))
+        evenbits0 = trailing_zeros((idx0-1) % typeforcode(n_bits(T)))
+        evenbits1 = trailing_zeros((idx1-1) % typeforcode(n_bits(T)))
         if evenbits1 > evenbits0
             return val0  # round to even
         else

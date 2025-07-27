@@ -48,7 +48,7 @@ The type system enforces mathematical consistency through compile-time parameter
 ### Unsigned Format Constraints  
 ```julia
 # Require: 3 ≤ Bits ≤ 15, 1 ≤ SigBits ≤ Bits
-# Additional exponent bit available: nbits_exp = Bits - SigBits + 1
+# Additional exponent bit available: n_exp_bits = Bits - SigBits + 1
 ```
 
 These constraints prevent degenerate configurations while maximizing the useful parameter space.
@@ -85,10 +85,10 @@ Every method supports both type-level and instance-level invocation:
 
 ```julia
 # Type-level dispatch (compile-time resolution)
-nbits(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = Bits
+n_bits(::Type{T}) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = Bits
 
 # Instance-level dispatch (automatic forwarding)
-nbits(x::T) where {T<:AbstractAIFloat} = nbits(T)
+n_bits(x::T) where {T<:AbstractAIFloat} = n_bits(T)
 ```
 
 This pattern eliminates redundant implementations while preserving both programming paradigms.
@@ -103,8 +103,8 @@ code_negone(::Type{T}) where {T<:AbstractSigned} = ...
 code_negone(::Type{T}) where {T<:AbstractUnsigned} = nothing
 
 # Universal operations with signedness-dependent implementation
-nmags(T::Type{<:AbstractUnsigned}) = 2^nbits(T) - 1
-nmags(T::Type{<:AbstractSigned}) = 2^(nbits(T) - 1)
+nmags(T::Type{<:AbstractUnsigned}) = 2^n_bits(T) - 1
+nmags(T::Type{<:AbstractSigned}) = 2^(n_bits(T) - 1)
 ```
 
 ### Domain-Specific Specialization
@@ -112,10 +112,10 @@ nmags(T::Type{<:AbstractSigned}) = 2^(nbits(T) - 1)
 Extended vs. finite domain differences require specialized handling:
 
 ```julia
-nInfs(::Type{<:AkoSignedFinite}) = 0
-nInfs(::Type{<:AkoSignedExtended}) = 2
-nInfs(::Type{<:AkoUnsignedFinite}) = 0  
-nInfs(::Type{<:AkoUnsignedExtended}) = 1
+n_inf(::Type{<:AkoSignedFinite}) = 0
+n_inf(::Type{<:AkoSignedExtended}) = 2
+n_inf(::Type{<:AkoUnsignedFinite}) = 0  
+n_inf(::Type{<:AkoUnsignedExtended}) = 1
 ```
 
 This approach ensures that domain-specific properties compile to optimal code without runtime conditionals.
@@ -127,8 +127,8 @@ The parametric design enables extensive compile-time precomputation:
 ### Bit Field Calculations
 ```julia
 # Exponent field width computed at compile time
-nbits_exp(::Type{<:AbstractSigned{Bits, SigBits}}) where {Bits, SigBits} = Bits - SigBits
-nbits_exp(::Type{<:AbstractUnsigned{Bits, SigBits}}) where {Bits, SigBits} = Bits - SigBits + 1
+n_exp_bits(::Type{<:AbstractSigned{Bits, SigBits}}) where {Bits, SigBits} = Bits - SigBits
+n_exp_bits(::Type{<:AbstractUnsigned{Bits, SigBits}}) where {Bits, SigBits} = Bits - SigBits + 1
 ```
 
 ### Count Computations

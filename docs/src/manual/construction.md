@@ -50,7 +50,7 @@ T = AkoSignedFinite{5, 3}
 sf5p3 = AIFloat(T)
 
 # Extract parameters for algorithmic construction
-bits, precision = nbits(T), nbits_sig(T)
+bits, precision = n_bits(T), n_sig_bits(T)
 family_member = AIFloat(bits, precision, :signed, :finite)
 ```
 

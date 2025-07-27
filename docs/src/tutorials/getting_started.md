@@ -40,10 +40,10 @@ The 4-bit unsigned format allocates bits as follows:
 
 ```julia
 # Verify bit allocation
-println("Total bits: ", nbits(uf4p2))           # 4
-println("Significand bits: ", nbits_sig(uf4p2)) # 2  
-println("Exponent bits: ", nbits_exp(uf4p2))    # 3
-println("Sign bits: ", nbits_sign(uf4p2))       # 0
+println("Total bits: ", n_bits(uf4p2))           # 4
+println("Significand bits: ", n_sig_bits(uf4p2)) # 2  
+println("Exponent bits: ", n_exp_bits(uf4p2))    # 3
+println("Sign bits: ", n_sign_bits(uf4p2))       # 0
 ```
 
 ## Exploring Format Variants
@@ -138,7 +138,7 @@ println("Total values: ", nvalues(se8p4))
 println("Finite values: ", nvalues_finite(se8p4))
 println("Positive values: ", nvalues_positive(se8p4))
 println("Normal values: ", nvalues_normal(se8p4))
-println("Infinity count: ", nInfs(se8p4))
+println("Infinity count: ", n_inf(se8p4))
 ```
 
 ### Examining Exponent Structure

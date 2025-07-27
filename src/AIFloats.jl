@@ -18,11 +18,11 @@ export AbstractAIFloat,
     # subtype characterization predicate
     has_subnormals,
     # counts by fiat
-    nNaNs, nZeros,
+    n_nans, n_zeros,
     # counts by format definitions 
-    nInfs, nPosInfs, nNegInfs,
+    n_inf, n_pos_inf, n_neg_inf,
     # counts predicated on abstract [sub]type
-    nbits, nbits_sig, nbits_frac, nbits_sign, nbits_exp,  
+    nbits, n_sig_bits, n_frac_bits, n_sign_bits, n_exp_bits,  
     nmags, nmags_nonzero, nmags_finite, nmags_finite_nonzero,
     nmags_prenormal, nmags_subnormal, nmags_normal,
     nvalues, nvalues_numeric, nvalues_numeric_nonzero, nvalues_finite, nvalues_finite_nonzero,
@@ -169,7 +169,7 @@ function ConstructAIFloat(bitwidth::Int, sigbits::Int;
 end
 
 function AIFloat(T::Type{<:AbstractAIFloat})
-    ConstructAIFloat(nbits(T), nbits_sig(T); plusminus=is_signed(T), extended=is_extended(T)) 
+    ConstructAIFloat(n_bits(T), n_sig_bits(T); plusminus=is_signed(T), extended=is_extended(T)) 
 end
 
 end  # AIFloats

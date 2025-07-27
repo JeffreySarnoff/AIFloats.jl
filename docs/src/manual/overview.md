@@ -21,8 +21,8 @@ This constraint ensures sufficient exponent range while maximizing significand p
 The exponent field width follows the relation:
 
 ```julia
-nbits_exp(T::Type{<:AbstractSigned}) = nbits(T) - nbits_sig(T)
-nbits_exp(T::Type{<:AbstractUnsigned}) = nbits(T) - nbits_sig(T) + 1
+n_exp_bits(T::Type{<:AbstractSigned}) = n_bits(T) - n_sig_bits(T)
+n_exp_bits(T::Type{<:AbstractUnsigned}) = n_bits(T) - n_sig_bits(T) + 1
 ```
 
 Unsigned formats gain an additional exponent bit by eliminating the sign bit, providing extended dynamic range for magnitude-only representations.

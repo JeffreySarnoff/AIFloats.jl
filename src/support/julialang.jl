@@ -38,18 +38,18 @@ end
 
 # Julia Base primitive attributes
 
-Base.sign_mask(T::Type{<:AbstractUnsigned}) = zero(typeforcode(nbits(T)))
-Base.sign_mask(T::Type{<:AbstractSigned}) = one(typeforcode(nbits(T))) << (nbits(T) - 1)
+Base.sign_mask(T::Type{<:AbstractUnsigned}) = zero(typeforcode(n_bits(T)))
+Base.sign_mask(T::Type{<:AbstractSigned}) = one(typeforcode(n_bits(T))) << (n_bits(T) - 1)
 
 function Base.exponent_mask(T::Type{<:AbstractAIFloat})
-    unit = one(typeforcode(nbits(T)))
-    mask = (unit << nbits_exp(T)) - unit
-    mask << nbits_frac(T)
+    unit = one(typeforcode(n_bits(T)))
+    mask = (unit << n_exp_bits(T)) - unit
+    mask << n_frac_bits(T)
 end
 
 function trailing_significand_mask(T::Type{<:AbstractAIFloat})
-    unit = one(typeforcode(nbits(T)))
-    (unit << nbits_frac(T)) - unit
+    unit = one(typeforcode(n_bits(T)))
+    (unit << n_frac_bits(T)) - unit
 end
 
 function unmask(T<:Type{AbstractSigned})
