@@ -56,6 +56,7 @@ export AbstractAIFloat,
     isindex_zero, isindex_one, isindex_negone,
     isindex_nan, isindex_inf, isindex_posinf, isindex_neginf    
 
+
 setprecision(BigFloat, 128)
 
 function memalign_clear(T, n)
@@ -86,7 +87,6 @@ include("concrete/signed.jl")
 
 include("support/indices.jl")
 include("support/julialang.jl")
-include("support/convert.jl")
 include("support/parts.jl")
 include("support/aqua.jl")
 

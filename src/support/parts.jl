@@ -61,24 +61,6 @@ function clean_frexp(xs::AbstractVector{T}) where {T}
     zz = collect(z)
 end
 
-function clean_frexp(xs::Vector{Float128})
-    idxnan  = findfirst(isnan , xs)
-    if !isnothing(idxnan)
-        ys = xs[1:(idxnan-1)]
-        if idxnan < length(xs)
-           ys2 = xs[(idxnan+1):end]
-           append!(ys, ys2)
-        end
-    else
-    end
-    frxp = frexp(ys)
-    fr = map(Float64, first.(frxp))
-    xp = last.(frxp)
-    z = zip(fr, xp)
-    zz = collect(z)
-end
-
-
 function clean_ldexp(xs::AbstractVector{T}) where {T}
     idxnan  = findfirst(isnan , xs)
     if !isnothing(idxnan)
