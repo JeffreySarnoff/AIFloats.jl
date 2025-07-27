@@ -29,11 +29,11 @@ n_exp_bits(@nospecialize(T::Type{<:AbstractSigned})) = n_bits(T) - n_sig_bits(T)
 n_exp_bits(@nospecialize(T::Type{<:AbstractUnsigned})) = n_bits(T) - n_sig_bits(T) + 1
 
 # a "mag" is a magnitude, a nonnegative value (aka a poz [positive or zero] value)
-n_mags(T::Type{<:AbstractUnsigned}) = 2^(n_bits(T)) - 1
+n_mags(T::Type{<:AbstractUnsigned})   = 2^(n_bits(T)  - 1)
 n_mags(T::Type{<:AbstractSigned})   = 2^(n_bits(T)  - 1)
 
 n_finite_mags(T::Type{<:AbstractAIFloat}) = n_mags(T) - n_infs(T)
-n_nonzero_mags(T::Typ0e{<:AbstractAIFloat}) = n_mags(T) - n_zeros(T)
+n_nonzero_mags(T::Type{<:AbstractAIFloat}) = n_mags(T) - n_zeros(T)
 n_finite_nonzero_mags(T::Type{<:AbstractAIFloat}) = n_finite_mags(T) - n_zeros(T)
 
 # a value is either numeric or non-numeric (NaN)

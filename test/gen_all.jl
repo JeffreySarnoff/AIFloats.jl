@@ -1,5 +1,5 @@
 
-using AIFloats, ArbNumerics, Quadmath
+using AIFloats, Quadmath
 using AIFloats: clean_frexp
 
 kmin = 2

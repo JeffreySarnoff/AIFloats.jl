@@ -64,7 +64,7 @@ end
 
 
 abstract type AbstractAIFloat{Bits, SigBits} <: AbstractFloat end
-const AbstractFP = Union{AbstractFloat, AbstractAIFloat, ArbReal}
+const AbstractFP = Union{AbstractFloat, AbstractAIFloat}
 
 include("type/abstract.jl")
 include("type/constants.jl")
