@@ -69,11 +69,7 @@ end
 using Quadmath, ArbNumerics
 
 abstract type AbstractAIFloat{Bits, SigBits} <: AbstractFloat end
-const AbstractFP = Union{AbstractFloat, AbstractAIFloat, ArbReal}
-#=
-const AbstractFP = Union{AbstractFloat,AbstractFP,AbstractAIFloat, ArbNumerics.ArbReal}
-Union{AbstractFloat, ArbReal}
-=#
+const AbstractFP = Union{AbstractFloat, AbstractAIFloat}
 
 include("type/abstract.jl")
 include("type/constants.jl")

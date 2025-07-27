@@ -38,7 +38,7 @@ see also [`CODE`](@ref)
 # const FLOAT = Union{FLOAT_TYPES...}
 
 # const FLOAT_TYPES = (Float64, Float128, BigFloat)
-const FLOAT_TYPES = (Float64, Float128, BigFloat) # , ArbReal)
+const FLOAT_TYPES = (Float64, BigFloat, BigFloat)
 const FLOAT = Union{FLOAT_TYPES...}
 
 """
