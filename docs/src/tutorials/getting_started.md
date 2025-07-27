@@ -136,8 +136,8 @@ println("Format family: ", is_signed(se8p4) ? "Signed" : "Unsigned",
 # Count various value categories
 println("Total values: ", n_values(se8p4))
 println("Finite values: ", n_finite_nums(se8p4))
-println("Positive values: ", n_values_positive(se8p4))
-println("Normal values: ", n_values_normal(se8p4))
+println("Positive values: ", n_pos_nums(se8p4))
+println("Normal values: ", n_normal_nums(se8p4))
 println("Infinity count: ", n_inf(se8p4))
 ```
 

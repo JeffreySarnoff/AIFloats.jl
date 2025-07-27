@@ -82,8 +82,8 @@ using AIFloats
         # Subnormal counts
         @test nmags_prenormal(sf43) == 4  # 2^(3-1)
         @test nmags_subnormal(sf43) == 3  # prenormal - 1
-        @test n_values_prenormal(sf43) == 7      # 2*prenormal - 1 for signed
-        @test n_values_subnormal(sf43) == 6      # prenormal - 1
+        @test n_prenormal_nums(sf43) == 7      # 2*prenormal - 1 for signed
+        @test n_subnormal_nums(sf43) == 6      # prenormal - 1
     end
     
     @testset "Exponent Characteristics" begin
