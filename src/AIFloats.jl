@@ -66,13 +66,14 @@ end
 # a broader view of appropriate float types
 # UnsignedFinite{bits, sigbits, T<:AbstractFP, S<:Unsigned} <: AkoUnsignedFinite{bits, sigbits}
 # 
-abstract type AbstractAIFloat{Bits, SigBits, IsSigned} <: AbstractFloat end
+using Quadmath, ArbNumerics
+
+abstract type AbstractAIFloat{Bits, SigBits} <: AbstractFloat end
 const AbstractFP = Union{AbstractFloat, AbstractAIFloat, ArbReal}
 #=
 const AbstractFP = Union{AbstractFloat,AbstractFP,AbstractAIFloat, ArbNumerics.ArbReal}
 Union{AbstractFloat, ArbReal}
 =#
-
 
 include("type/abstract.jl")
 include("type/constants.jl")
