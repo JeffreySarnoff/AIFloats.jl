@@ -50,7 +50,7 @@ T = AkoSignedFinite{5, 3}
 sf5p3 = AIFloat(T)
 
 # Extract parameters for algorithmic construction
-bits, precision = nbits(T), nbits_sig(T)
+bits, precision = n_bits(T), n_sig_bits(T)
 family_member = AIFloat(bits, precision, :signed, :finite)
 ```
 
@@ -86,10 +86,10 @@ function mag_foundation_seq(::Type{T}) where {T<:AbstractAIFloat}
     significands = significand_mags(T)
     
     # Compute scaled exponent values with extended precision
-    exp_values = map(x -> Float128(2)^x, exp_unbiased_mag_strides(T))
+    exp_vals = map(x -> Float128(2)^x, exp_unbiased_mag_strides(T))
     
     # Element-wise scaling: significand × 2^exponent
-    scaled_mags = significands .* exp_values
+    scaled_mags = significands .* exp_vals
     
     return convert_to_working_precision(scaled_mags, T)
 end
@@ -98,13 +98,13 @@ end
 #### Stage 2: Sign and Special Value Integration
 ```julia
 function value_seq(::Type{T}) where {T<:AkoSignedFinite}
-    nonneg_mags = mag_foundation_seq(T)
+    poz_mags = mag_foundation_seq(T)
     
     # Generate negative counterparts with sign symmetry
-    neg_mags = -nonneg_mags
+    neg_mags = -poz_mags
     neg_mags[1] = convert(working_type, NaN)  # NaN at symmetric position
     
-    return vcat(nonneg_mags, neg_mags)
+    return vcat(poz_mags, neg_mags)
 end
 ```
 
@@ -132,10 +132,10 @@ The prenormal/normal boundary is established through precision-dependent scaling
 
 ```julia
 # Smallest normal mag: 2^(exp_min) where implicit bit = 1
-mag_normal_min(T) = exp_value_min(T)
+normal_mag_min(T) = exp_value_min(T)
 
 # Largest subnormal mag: (1 - ε) × 2^(exp_min) where ε = ULP
-mag_subnormal_max(T) = (1 - 1/nmags_prenormal(T)) * exp_subnormal_value(T)
+subnormal_mag_max(T) = (1 - 1/n_prenormal_mags(T)) * exp_subnormal_value(T)
 ```
 
 This boundary placement ensures maximal precision utilization in the critical near-zero region.
@@ -169,9 +169,9 @@ Post-construction verification ensures mathematical consistency:
 
 ```julia
 function verify_construction_invariants(aifloat::AbstractAIFloat)
-    @assert length(floats(aifloat)) == nvalues(typeof(aifloat))
-    @assert length(codes(aifloat)) == nvalues(typeof(aifloat))
-    @assert issorted(floats(aifloat)[1:nmags(typeof(aifloat))])  # Magnitude ordering
+    @assert length(floats(aifloat)) == n_vals(typeof(aifloat))
+    @assert length(codes(aifloat)) == n_vals(typeof(aifloat))
+    @assert issorted(floats(aifloat)[1:n_mags(typeof(aifloat))])  # Magnitude ordering
     @assert codes(aifloat)[1] == 0x00  # Zero encoding
     @assert isnan(floats(aifloat)[end])  # NaN placement
 end

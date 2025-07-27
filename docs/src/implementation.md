@@ -10,8 +10,8 @@ AIFloats employs cache-aligned memory allocation to optimize memory access patte
 
 ```julia
 # From AlignedAllocs.jl integration
-floats = memalign_clear(Float64, nvalues)
-codes = memalign_clear(UInt8, nvalues)
+floats = memalign_clear(Float64, n_vals)
+codes = memalign_clear(UInt8, n_vals)
 
 # Ensures alignment to L1 cache boundaries (typically 64 bytes)
 @assert alignment(floats) >= 64
@@ -64,13 +64,13 @@ Value sequence generation employs extended precision to ensure bit-exact reprodu
 function mag_foundation_seq(::Type{T}) where {T<:AbstractAIFloat}
     # Stage 1: Compute in extended precision
     significands = significand_mags(T)
-    exp_values = map(x -> Float128(2)^x, exp_unbiased_mag_strides(T))
+    exp_vals = map(x -> Float128(2)^x, exp_unbiased_mag_strides(T))
     
     # Stage 2: Scale with maximum precision
-    scaled_mags = significands .* exp_values
+    scaled_mags = significands .* exp_vals
     
     # Stage 3: Convert to working precision
-    return map(typeforfloat(nbits(T)), scaled_mags)
+    return map(typeforfloat(n_bits(T)), scaled_mags)
 end
 ```
 
@@ -85,13 +85,13 @@ The significand generation follows IEEE-style quantization:
 
 ```julia
 function prenormal_mag_steps(::Type{T}) where {T<:AbstractAIFloat}
-    nprenormal = nmags_prenormal(T)
+    nprenormal = n_prenormal_mags(T)
     step_size = 1 / typeforfloat(T)(nprenormal)
     return (0:(nprenormal-1)) * step_size
 end
 
 function normal_mag_steps(::Type{T}) where {T<:AbstractAIFloat}
-    nprenormal = nmags_prenormal(T)
+    nprenormal = n_prenormal_mags(T)
     # Normal values: [1.0, 2.0) in significand space
     return (nprenormal:(2*nprenormal-1)) / typeforfloat(T)(nprenormal)
 end
@@ -107,13 +107,13 @@ The parametric type system enables aggressive compile-time optimization:
 
 ```julia
 # These resolve to constants during compilation
-@inline nbits(::Type{<:AbstractAIFloat{Bits}}) where {Bits} = Bits
-@inline nvalues(::Type{<:AbstractAIFloat{Bits}}) where {Bits} = 2^Bits
+@inline n_bits(::Type{<:AbstractAIFloat{Bits}}) where {Bits} = Bits
+@inline n_vals(::Type{<:AbstractAIFloat{Bits}}) where {Bits} = 2^Bits
 
 # Enables loop unrolling and constant propagation
-function process_all_values(::Type{T}) where {T<:AbstractAIFloat}
+function process_all_vals(::Type{T}) where {T<:AbstractAIFloat}
     # Loop bound known at compile time
-    for i in 1:nvalues(T)
+    for i in 1:n_vals(T)
         # Compiler can fully unroll for small formats
     end
 end
@@ -131,8 +131,8 @@ exp_bias(::Type{<:AbstractUnsigned{Bits, SigBits}}) where {Bits, SigBits} =
     2^(Bits - SigBits)
 
 # Domain dispatch handles special values efficiently
-nInfs(::Type{<:AkoSignedFinite}) = 0
-nInfs(::Type{<:AkoSignedExtended}) = 2
+n_infs(::Type{<:AkoSignedFinite}) = 0
+n_infs(::Type{<:AkoSignedExtended}) = 2
 ```
 
 ## Performance Characteristics
@@ -152,13 +152,13 @@ Different computational strategies optimal for different format sizes:
 
 ```julia
 # Small formats: Complete lookup tables
-is_table_friendly(::Type{T}) where {T<:AbstractAIFloat} = nvalues(T) ≤ 64
+is_table_friendly(::Type{T}) where {T<:AbstractAIFloat} = n_vals(T) ≤ 64
 
 # Medium formats: Selective table acceleration
-is_hybrid_optimal(::Type{T}) where {T<:AbstractAIFloat} = 64 < nvalues(T) ≤ 256
+is_hybrid_optimal(::Type{T}) where {T<:AbstractAIFloat} = 64 < n_vals(T) ≤ 256
 
 # Large formats: Direct computation preferred
-is_direct_optimal(::Type{T}) where {T<:AbstractAIFloat} = nvalues(T) > 256
+is_direct_optimal(::Type{T}) where {T<:AbstractAIFloat} = n_vals(T) > 256
 ```
 
 ## Numerical Precision Considerations
@@ -191,11 +191,11 @@ function verify_ulp_accuracy(format::AbstractAIFloat)
     
     # Check monotonicity (excluding NaN/Inf)
     finite_indices = findall(isfinite, values)
-    finite_values = values[finite_indices]
-    @assert issorted(finite_values)
+    finite_vals = values[finite_indices]
+    @assert issorted(finite_vals)
     
     # Verify no duplicate finite values
-    @assert allunique(finite_values)
+    @assert allunique(finite_vals)
     
     # Check special value placement
     @assert iszero(values[1])  # Zero at position 1

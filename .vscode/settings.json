@@ -5,7 +5,7 @@
         "floattype",
         "fpmem",
         "fpvals",
-        "Nonneg",
+        "Non_neg",
         "twopow",
         "typeforcode",
         "typeforfloat",

@@ -5,16 +5,16 @@
 function mag_foundation_seq(::Type{T}) where {T<:AbstractAIFloat}
     significands = significand_mags(T)
 
-    exp_values = map(two_pow, exp_unbiased_mag_strides(T))
-    if iszero(exp_values[1])  
-        exp_values = map(x->Float128(2)^x, map(Float128,exp_unbiased_mag_strides(T)))
-        if iszero(exp_values[1])
-            exp_values = map(x->BigFloat(2)^x, map(BigFloat,exp_unbiased_mag_strides(T)))
+    exp_vals = map(two_pow, exp_unbiased_mag_strides(T))
+    if iszero(exp_vals[1])  
+        exp_vals = map(x->Float128(2)^x, map(Float128,exp_unbiased_mag_strides(T)))
+        if iszero(exp_vals[1])
+            exp_vals = map(x->BigFloat(2)^x, map(BigFloat,exp_unbiased_mag_strides(T)))
         end
     end
-    significands .*= exp_values
+    significands .*= exp_vals
 
-    typ = typeforfloat(nbits(T))
+    typ = typeforfloat(n_bits(T))
     mags = memalign_clear(typ, length(significands))
     mags[:] = map(typ, significands)
     mags
@@ -23,16 +23,16 @@ end
 function mag_foundation_seq(::Type{T}) where {T<:AbstractAIFloat}
     significands = significand_mags(T)
 
-    exp_values = map(two_pow, exp_unbiased_mag_strides(T))
-    if iszero(exp_values[1])  
-        exp_values = map(x->Float128(2)^x, map(Float128,exp_unbiased_mag_strides(T)))
-        if iszero(exp_values[1])
-            exp_values = map(x->BigFloat(2)^x, map(BigFloat,exp_unbiased_mag_strides(T)))
+    exp_vals = map(two_pow, exp_unbiased_mag_strides(T))
+    if iszero(exp_vals[1])  
+        exp_vals = map(x->Float128(2)^x, map(Float128,exp_unbiased_mag_strides(T)))
+        if iszero(exp_vals[1])
+            exp_vals = map(x->BigFloat(2)^x, map(BigFloat,exp_unbiased_mag_strides(T)))
         end
     end
-    significands .*= exp_values
+    significands .*= exp_vals
 
-    typ = BigFloat # ArbReal # typeforfloat(nbits(T))
+    typ = BigFloat # ArbReal # typeforfloat(n_bits(T))
     mags = zeros(typ, length(significands))
     mags[:] = map(typ, significands)
     mags
@@ -40,11 +40,11 @@ end
 
 
 function normal_exp_stride(T::Type{<:AbstractAIFloat})
-    cld(nmags(T), nvalues_exp(T))
+    cld(n_mags(T), n_exp_nums(T))
 end
 
 @inline function foundation_extremal_exps(T::Type{<:AbstractAIFloat})
-    exp_max = fld(nmags_nonzero(T), nmags_prenormal(T))
+    exp_max = fld(n_nonzero_mags(T), n_prenormal_mags(T))
     exp_min = -exp_max
     exp_min, exp_max
 end
@@ -73,6 +73,6 @@ end
 # cover instantiations for value sequence generation
 for F in (:prenormal_mag_steps, :normal_mag_steps, :normal_exp_stride,
           :foundation_extremal_exps, :foundation_exps, :exp_unbiased_mag_strides, :pow2_foundation_exps,
-          :mag_foundation_seq, :foundation_values, :value_seq)
+          :mag_foundation_seq, :foundation_vals, :value_seq)
     @eval $F(x::T) where {Bits, SigBits, T<:AbstractAIFloat{Bits, SigBits}} = $F(T)
 end

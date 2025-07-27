@@ -40,10 +40,10 @@ The 4-bit unsigned format allocates bits as follows:
 
 ```julia
 # Verify bit allocation
-println("Total bits: ", nbits(uf4p2))           # 4
-println("Significand bits: ", nbits_sig(uf4p2)) # 2  
-println("Exponent bits: ", nbits_exp(uf4p2))    # 3
-println("Sign bits: ", nbits_sign(uf4p2))       # 0
+println("Total bits: ", n_bits(uf4p2))           # 4
+println("Significand bits: ", n_sig_bits(uf4p2)) # 2  
+println("Exponent bits: ", n_exp_bits(uf4p2))    # 3
+println("Sign bits: ", n_sign_bits(uf4p2))       # 0
 ```
 
 ## Exploring Format Variants
@@ -105,13 +105,13 @@ AIFloat formats partition values into distinct mathematical regimes:
 se6p3 = AIFloat(6, 3, :signed, :extended)
 
 # Examine regime boundaries
-println("Prenormal count: ", nmags_prenormal(se6p3))
-println("Subnormal count: ", nmags_subnormal(se6p3))  
-println("Normal count: ", nmags_normal(se6p3))
+println("Prenormal count: ", n_prenormal_mags(se6p3))
+println("Subnormal count: ", n_subnormal_mags(se6p3))  
+println("Normal count: ", n_normal_mags(se6p3))
 
 # Extract subnormal and normal value ranges
 values = floats(se6p3)
-prenormal_end = nmags_prenormal(se6p3)
+prenormal_end = n_prenormal_mags(se6p3)
 
 println("Prenormal values: ", values[1:prenormal_end])
 println("First few normals: ", values[prenormal_end+1:prenormal_end+4])
@@ -134,11 +134,11 @@ println("Format family: ", is_signed(se8p4) ? "Signed" : "Unsigned",
         ", ", is_extended(se8p4) ? "Extended" : "Finite")
 
 # Count various value categories
-println("Total values: ", nvalues(se8p4))
-println("Finite values: ", nvalues_finite(se8p4))
-println("Positive values: ", nvalues_positive(se8p4))
-println("Normal values: ", nvalues_normal(se8p4))
-println("Infinity count: ", nInfs(se8p4))
+println("Total values: ", n_vals(se8p4))
+println("Finite values: ", n_finite_nums(se8p4))
+println("Positive values: ", n_pos_vals(se8p4))
+println("Normal values: ", n_normal_vals(se8p4))
+println("Infinity count: ", n_infs(se8p4))
 ```
 
 ### Examining Exponent Structure

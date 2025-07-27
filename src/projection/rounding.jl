@@ -29,7 +29,7 @@ Trans. Comp., Vol. 57, no. 4, pp. 462-471, April 2008
 
 function round_up(xs::T, x::F) where {T<:AbstractUnsigned, F<:AbstractFloat}
     isnan(x) && return x
-    n = nvalues(xs)
+    n = n_vals(xs)
     idx = searchsortedfirst(floats(xs), x)  # floats(xs)[idx] >= x
     idx > n && return floats(xs)[end]
     floats(xs)[idx]
@@ -37,7 +37,7 @@ end
 
 function round_down(xs::T, x::F) where {T<:AbstractUnsigned, F<:AbstractFloat}
     isnan(x) && return x
-    n = nvalues(xs)
+    n = n_vals(xs)
     idx = searchsortedlast(floats(xs), x)  # floats(xs)[idx] >= x
     iszero(idx) && return floats(xs)[end]
     floats(xs)[idx]
@@ -53,7 +53,7 @@ end
  
 function round_nearesteven(xs::T, x::F) where {T<:AbstractUnsigned, F<:AbstractFloat}
     isnan(x) && return x
-    n = nvalues(xs)
+    n = n_vals(xs)
     idx1 = searchsortedfirst(floats(xs), x)  # floats(xs)[idx] >= x
     val1 = floats(xs)[idx1]
     (x == val1 || idx1 === 1) && floats(xs)[idx1]
@@ -71,9 +71,9 @@ function round_nearesteven(xs::T, x::F) where {T<:AbstractUnsigned, F<:AbstractF
     elseif dval0 > dval1
         return val1
     else # dval0 == dval1
-        evenbits0 = trailing_zeros((idx0-1) % typeforcode(nbits(T)))
-        evenbits1 = trailing_zeros((idx1-1) % typeforcode(nbits(T)))
-        if evenbits0 > evenbits1
+        even_bits0 = trailing_zeros((idx0-1) % typeforcode(n_bits(T)))
+        even_bits1 = trailing_zeros((idx1-1) % typeforcode(n_bits(T)))
+        if even_bits0 > even_bits1
             return val0  # round to even
         else
             return val1  # round to odd
@@ -83,7 +83,7 @@ end
 
 function round_nearestodd(xs::T, x::F) where {T<:AbstractUnsigned, F<:AbstractFloat}
     isnan(x) && return x
-    n = nvalues(xs)
+    n = n_vals(xs)
     idx1 = searchsortedfirst(floats(xs), x)  # floats(xs)[idx] >= x
     val1 = floats(xs)[idx1]
     (x == val1 || idx1 === 1) && floats(xs)[idx1]
@@ -101,9 +101,9 @@ function round_nearestodd(xs::T, x::F) where {T<:AbstractUnsigned, F<:AbstractFl
     elseif dval0 > dval1
         return val1
     else # dval0 == dval1
-        evenbits0 = trailing_zeros((idx0-1) % typeforcode(nbits(T)))
-        evenbits1 = trailing_zeros((idx1-1) % typeforcode(nbits(T)))
-        if evenbits1 > evenbits0
+        even_bits0 = trailing_zeros((idx0-1) % typeforcode(n_bits(T)))
+        even_bits1 = trailing_zeros((idx1-1) % typeforcode(n_bits(T)))
+        if even_bits1 > even_bits0
             return val0  # round to even
         else
             return val1  # round to odd
@@ -113,7 +113,7 @@ end
 
 function round_nearesttozero(xs::T, x::F) where {T<:AbstractUnsigned, F<:AbstractFloat}
     isnan(x) && return x
-    n = nvalues(xs)
+    n = n_vals(xs)
     idx1 = searchsortedfirst(floats(xs), x)  # floats(xs)[idx] >= x
     val1 = floats(xs)[idx1]
     (x == val1 || idx1 === 1) && floats(xs)[idx1]
@@ -128,7 +128,7 @@ end
 
 function round_nearestfromzero(xs::T, x::F) where {T<:AbstractUnsigned, F<:AbstractFloat}
     isnan(x) && return x
-    n = nvalues(xs)
+    n = n_vals(xs)
     idx1 = searchsortedfirst(floats(xs), x)  # floats(xs)[idx] >= x
     val1 = floats(xs)[idx1]
     (x == val1 || idx1 === 1) && floats(xs)[idx1]

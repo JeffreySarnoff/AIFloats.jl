@@ -7,7 +7,7 @@ const BitsTop = 16
 # internal assurances
 setprecision(BigFloat, 128)
 
-two(T) = typeforfloat(nbits(T))(2)
+two(T) = typeforfloat(n_bits(T))(2)
 
 """
     CODE
@@ -38,7 +38,7 @@ see also [`CODE`](@ref)
 # const FLOAT = Union{FLOAT_TYPES...}
 
 # const FLOAT_TYPES = (Float64, Float128, BigFloat)
-const FLOAT_TYPES = (Float64, Float128, BigFloat) # , ArbReal)
+const FLOAT_TYPES = (Float64, Float64, BigFloat) # , ArbReal)
 const FLOAT = Union{FLOAT_TYPES...}
 
 """
@@ -51,7 +51,7 @@ It is an *unchecked error* to set bitwidth outside BitsMin..BitsMax
 
 typeforcode(Bits) = CODE_TYPES[1 + (Bits > BitsSmallMax) + (Bits >= BitsTop)]
 
-typeforcode(T::Type{<:AbstractAIFloat}) = typeforcode(nbits(T))
+typeforcode(T::Type{<:AbstractAIFloat}) = typeforcode(n_bits(T))
 
 """
     typeforfloat(bitwidth)
@@ -73,5 +73,5 @@ end
 
 typeforfloat(Bits) = FLOAT_TYPES[1 + (Bits > BitsSmallMax) + (Bits >= BitsLargeMin)]
 
-typeforfloat(T::Type{<:AbstractAIFloat}) = typeforfloat(nbits(T))
+typeforfloat(T::Type{<:AbstractAIFloat}) = typeforfloat(n_bits(T))
 

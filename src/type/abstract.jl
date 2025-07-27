@@ -1,7 +1,5 @@
-abstract type AbstractAIFloat{Bits, SigBits} <: AbstractFloat end
-
-abstract type AbstractSigned{Bits, SigBits} <: AbstractAIFloat{Bits, SigBits, true} end
-abstract type AbstractUnsigned{Bits, SigBits} <: AbstractAIFloat{Bits, SigBits, false} end
+abstract type AbstractSigned{Bits, SigBits} <: AbstractAIFloat{Bits, SigBits} end
+abstract type AbstractUnsigned{Bits, SigBits} <: AbstractAIFloat{Bits, SigBits} end
 
 abstract type AkoSignedFinite{Bits, SigBits} <: AbstractSigned{Bits, SigBits} end
 abstract type AkoSignedExtended{Bits, SigBits} <: AbstractSigned{Bits, SigBits} end

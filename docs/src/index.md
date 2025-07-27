@@ -26,9 +26,9 @@ floats(uf4p2)  # [0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, NaN]
 codes(uf4p2)   # [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07]
 
 # Query format properties
-nbits(uf4p2)        # 4
-nbits_sig(uf4p2)    # 2
-nvalues(uf4p2)      # 8
+n_bits(uf4p2)        # 4
+n_sig_bits(uf4p2)    # 2
+n_vals(uf4p2)      # 8
 is_finite(uf4p2)    # true
 is_unsigned(uf4p2)  # true
 ```

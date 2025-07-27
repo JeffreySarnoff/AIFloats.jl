@@ -1,7 +1,7 @@
 @inline function encoding_seq(T::Type{<:AbstractAIFloat})
-    nbits = nbits(T)
-    n = 1 << nbits
-    typ = typeforcode(nbits)
+    n_bits = n_bits(T)
+    n = 1 << n_bits
+    typ = typeforcode(n_bits)
     codes = memalign_clear(typ, n)
     codes[:] = map(typ, 0:(n-1))
     codes

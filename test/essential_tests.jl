@@ -49,17 +49,17 @@ using AIFloats
         sf43 = AIFloat(4, 3, :signed, :finite)
         uf32 = AIFloat(3, 2, :unsigned, :finite)
         
-        @test nbits(sf43) == 4
-        @test nbits_sig(sf43) == 3
-        @test nbits_frac(sf43) == 2
-        @test nbits_sign(sf43) == 1
-        @test nbits_exp(sf43) == 1  # 4 - 3 = 1 for signed
+        @test n_bits(sf43) == 4
+        @test n_sig_bits(sf43) == 3
+        @test n_frac_bits(sf43) == 2
+        @test n_sign_bits(sf43) == 1
+        @test n_exp_bits(sf43) == 1  # 4 - 3 = 1 for signed
         
-        @test nbits(uf32) == 3
-        @test nbits_sig(uf32) == 2
-        @test nbits_frac(uf32) == 1
-        @test nbits_sign(uf32) == 0
-        @test nbits_exp(uf32) == 2  # 3 - 2 + 1 = 2 for unsigned
+        @test n_bits(uf32) == 3
+        @test n_sig_bits(uf32) == 2
+        @test n_frac_bits(uf32) == 1
+        @test n_sign_bits(uf32) == 0
+        @test n_exp_bits(uf32) == 2  # 3 - 2 + 1 = 2 for unsigned
     end
     
     @testset "Value and Magnitude Counts" begin
@@ -67,23 +67,23 @@ using AIFloats
         ue52 = AIFloat(5, 2, :unsigned, :extended)
         
         # Basic counts
-        @test nvalues(sf43) == 16  # 2^4
-        @test nmags(sf43) == 8   # 2^(4-1) for signed
-        @test nmags(ue52) == 31  # 2^5 - 1 for unsigned
+        @test n_vals(sf43) == 16  # 2^4
+        @test n_mags(sf43) == 8   # 2^(4-1) for signed
+        @test n_mags(ue52) == 31  # 2^5 - 1 for unsigned
         
         # NaN and infinity counts
-        @test nNaNs(sf43) == 1
-        @test nZeros(sf43) == 1
-        @test nInfs(sf43) == 0  # finite type
-        @test nInfs(ue52) == 1  # extended unsigned has +Inf
-        @test nPosInfs(ue52) == 1
-        @test nNegInfs(ue52) == 0  # unsigned has no -Inf
+        @test n_nans(sf43) == 1
+        @test n_zeros(sf43) == 1
+        @test n_infs(sf43) == 0  # finite type
+        @test n_infs(ue52) == 1  # extended unsigned has +Inf
+        @test n_pos_infs(ue52) == 1
+        @test n_neg_infs(ue52) == 0  # unsigned has no -Inf
         
         # Subnormal counts
-        @test nmags_prenormal(sf43) == 4  # 2^(3-1)
-        @test nmags_subnormal(sf43) == 3  # prenormal - 1
-        @test nvalues_prenormal(sf43) == 7      # 2*prenormal - 1 for signed
-        @test nvalues_subnormal(sf43) == 6      # prenormal - 1
+        @test n_prenormal_mags(sf43) == 4  # 2^(3-1)
+        @test n_subnormal_mags(sf43) == 3  # prenormal - 1
+        @test n_prenormal_vals(sf43) == 7      # 2*prenormal - 1 for signed
+        @test n_subnormal_vals(sf43) == 6      # prenormal - 1
     end
     
     @testset "Exponent Characteristics" begin
@@ -171,9 +171,9 @@ using AIFloats
         T = typeof(sf32)
         
         # Test that instance methods match type methods
-        @test nbits(sf32) == nbits(T)
-        @test nbits_sig(sf32) == nbits_sig(T)
-        @test nvalues(sf32) == nvalues(T)
+        @test n_bits(sf32) == n_bits(T)
+        @test n_sig_bits(sf32) == n_sig_bits(T)
+        @test n_vals(sf32) == n_vals(T)
         @test is_signed(sf32) == is_signed(T)
         @test is_finite(sf32) == is_finite(T)
         @test exp_bias(sf32) == exp_bias(T)
@@ -184,12 +184,12 @@ using AIFloats
     @testset "Edge Cases and Boundary Conditions" begin
         # Test minimum valid configurations
         min_signed = AIFloat(3, 1, :signed, :finite)
-        @test nbits(min_signed) == 3
-        @test nbits_sig(min_signed) == 1
+        @test n_bits(min_signed) == 3
+        @test n_sig_bits(min_signed) == 1
         
         min_unsigned = AIFloat(2, 1, :unsigned, :finite)  
-        @test nbits(min_unsigned) == 2
-        @test nbits_sig(min_unsigned) == 1
+        @test n_bits(min_unsigned) == 2
+        @test n_sig_bits(min_unsigned) == 1
         
         # Test that has_subnormals works correctly
         precision_1 = AIFloat(4, 1, :signed, :finite)

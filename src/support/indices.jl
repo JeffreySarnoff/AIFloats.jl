@@ -167,20 +167,20 @@ end
 
 code_zero(T::Type{<:AbstractAIFloat}) = zero(typeforcode(T))
 
-code_one(T::Type{<:AbstractUnsigned}) = ((nvalues(T) % UInt16) >> 0x0001)
-code_one(T::Type{<:AbstractSigned}) = ((nvalues(T) % UInt16) >> 0x0002)
-code_negone(T::Type{<:AbstractSigned}) = (((nvalues(T) % UInt16) >> 0x0002) + nvalues(T)>>1)
+code_one(T::Type{<:AbstractUnsigned}) = ((n_vals(T) % UInt16) >> 0x0001)
+code_one(T::Type{<:AbstractSigned}) = ((n_vals(T) % UInt16) >> 0x0002)
+code_negone(T::Type{<:AbstractSigned}) = (((n_vals(T) % UInt16) >> 0x0002) + n_vals(T)>>1)
 code_negone(T::Type{<:AbstractUnsigned}) = nothing # throw(DomainError(T, "index_negone: T must be an AbstractSigned type, not $T"))
 
-code_nan(T::Type{<:AbstractUnsigned}) = ((nvalues(T) % UInt16) - 0x0001)
-code_nan(T::Type{<:AbstractSigned}) = ((nvalues(T) % UInt16) >> 0x0001)
+code_nan(T::Type{<:AbstractUnsigned}) = ((n_vals(T) % UInt16) - 0x0001)
+code_nan(T::Type{<:AbstractSigned}) = ((n_vals(T) % UInt16) >> 0x0001)
  
-code_posinf(T::Type{<:AkoUnsignedExtended}) = ((nvalues(T) - 1) % UInt16)
-code_posinf(T::Type{<:AkoSignedExtended}) = ((nvalues(T) % UInt16) >> 0x0001)
+code_posinf(T::Type{<:AkoUnsignedExtended}) = ((n_vals(T) - 1) % UInt16)
+code_posinf(T::Type{<:AkoSignedExtended}) = ((n_vals(T) % UInt16) >> 0x0001)
 code_posinf(T::Type{<:AkoUnsignedFinite}) = nothing
 code_posinf(T::Type{<:AkoSignedFinite}) = nothing
 
-code_neginf(T::Type{<:AkoSignedExtended}) = (nvalues(T) % UInt16)
+code_neginf(T::Type{<:AkoSignedExtended}) = (n_vals(T) % UInt16)
 code_neginf(T::Type{<:AkoSignedFinite}) = nothing # throw(DomainError(T, "code_neginf: T must be an AkoSignedExtended type, not $T"))
 code_neginf(T::Type{<:AbstractUnsigned}) = nothing # throw(DomainError(T, "code_neginf: T must be an AkoSignedExtended type, not $T"))
 

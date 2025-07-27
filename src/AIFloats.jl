@@ -18,16 +18,16 @@ export AbstractAIFloat,
     # subtype characterization predicate
     has_subnormals,
     # counts by fiat
-    nNaNs, nZeros,
+    n_nans, n_zeros,
     # counts by format definitions 
-    nInfs, nPosInfs, nNegInfs,
+    n_infs, n_pos_infs, n_neg_infs,
     # counts predicated on abstract [sub]type
-    nbits, nbits_sig, nbits_frac, nbits_sign, nbits_exp,  
-    nmags, nmags_nonzero, nmags_finite, nmags_finite_nonzero,
-    nmags_prenormal, nmags_subnormal, nmags_normal,
-    nvalues, nvalues_numeric, nvalues_numeric_nonzero, nvalues_finite, nvalues_finite_nonzero,
-    nvalues_prenormal, nvalues_subnormal, nvalues_normal,
-    nvalues_exp, nvalues_exp_nonzero,
+    n_bits, n_sig_bits, n_frac_bits, n_sign_bits, n_exp_bits,  
+    n_mags, n_nonzero_mags, n_finite_mags, n_finite_nonzero_mags,
+    n_prenormal_mags, n_subnormal_mags, n_normal_mags,
+    n_vals, n_nums, n_nonzero_nums, n_finite_nums, n_finite_nonzero_nums,
+    n_prenormal_vals, n_subnormal_vals, n_normal_vals,
+    n_exp_nums, n_nonzero_exp_nums,
     # exponent
     exp_bias,
     exp_unbiased_min, exp_unbiased_max, exp_unbiased_seq,
@@ -35,8 +35,8 @@ export AbstractAIFloat,
     exp_subnormal_value, exp_normal_value_seq,
     exp_unbiased_subnormal, exp_unbiased_normal_max, exp_unbiased_normal_min, exp_unbiased_normal_seq,
     # extrema
-    mag_subnormal_min, mag_subnormal_max,
-    mag_normal_min, mag_normal_max,
+    subnormal_mag_min, subnormal_mag_max,
+    normal_mag_min, normal_mag_max,
     # functions over types
     encoding_seq, value_seq, mag_foundation_seq,
     # code <-> index  
@@ -63,16 +63,8 @@ function memalign_clear(T, n)
 end
 
 
-# a broader view of appropriate float types
-# UnsignedFinite{bits, sigbits, T<:AbstractFP, S<:Unsigned} <: AkoUnsignedFinite{bits, sigbits}
-# 
-abstract type AbstractAIFloat{Bits, SigBits, IsSigned} <: AbstractFloat end
+abstract type AbstractAIFloat{Bits, SigBits} <: AbstractFloat end
 const AbstractFP = Union{AbstractFloat, AbstractAIFloat, ArbReal}
-#=
-const AbstractFP = Union{AbstractFloat,AbstractFP,AbstractAIFloat, ArbNumerics.ArbReal}
-Union{AbstractFloat, ArbReal}
-=#
-
 
 include("type/abstract.jl")
 include("type/constants.jl")
@@ -141,11 +133,11 @@ see [`AIFloat`](@ref), [`floats`](@ref), [`x_or_T`](@ref)
 x_or_T() = true  # placeholder for x_or_T so docs work
 
 function AIFloat(bitwidth::Int, sigbits::Int, kinds...)
-    plusminus, nonnegative, extended, finite = 
+    plusminus, pozative, extended, finite = 
         map(kw->kw in kinds, (:signed, :unsigned, :extended, :finite))
      
     # are the keyword arguments consistent?
-    if !xor(plusminus, nonnegative)
+    if !xor(plusminus, pozative)
         error("AIFloats: specify one of `:signed` or `:unsigned`.")
     elseif !xor(extended, finite)
         error("AIFloats: specify one of `:extended` or `:finite`.")
@@ -162,7 +154,7 @@ function ConstructAIFloat(bitwidth::Int, sigbits::Int;
         else # finite
             SignedFinite(bitwidth, sigbits)
         end
-    else # nonnegative
+    else # pozative
         if extended
             UnsignedExtended(bitwidth, sigbits)
         else # finite
@@ -172,7 +164,7 @@ function ConstructAIFloat(bitwidth::Int, sigbits::Int;
 end
 
 function AIFloat(T::Type{<:AbstractAIFloat})
-    ConstructAIFloat(nbits(T), nbits_sig(T); plusminus=is_signed(T), extended=is_extended(T)) 
+    ConstructAIFloat(n_bits(T), n_sig_bits(T); plusminus=is_signed(T), extended=is_extended(T)) 
 end
 
 end  # AIFloats

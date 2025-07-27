@@ -52,16 +52,16 @@ Generate optimized lookup tables for common activation functions:
 ```julia
 # Create lookup tables for small formats
 activation_format = AIFloat(5, 3, :signed, :finite)
-input_values = floats(activation_format)
+input_vals = floats(activation_format)
 
 # ReLU lookup table
-relu_table = max.(0.0, input_values)
+relu_table = max.(0.0, input_vals)
 
 # Sigmoid approximation lookup table  
-sigmoid_table = 1.0 ./ (1.0 .+ exp.(-input_values))
+sigmoid_table = 1.0 ./ (1.0 .+ exp.(-input_vals))
 
 # Tanh lookup table
-tanh_table = tanh.(input_values)
+tanh_table = tanh.(input_vals)
 
 # Demonstrate table-based computation
 function table_relu(code::UInt8, format::AbstractAIFloat, table::Vector)
@@ -95,20 +95,20 @@ function stochastic_quantize(value::T, format::AbstractAIFloat) where T
     values = floats(format)
     
     # Find bracketing values
-    finite_values = values[.!isnan.(values) .&& .!isinf.(values)]
+    finite_vals = values[.!isnan.(values) .&& .!isinf.(values)]
     
-    if value <= minimum(finite_values)
-        return minimum(finite_values)
-    elseif value >= maximum(finite_values)
-        return maximum(finite_values)
+    if value <= minimum(finite_vals)
+        return minimum(finite_vals)
+    elseif value >= maximum(finite_vals)
+        return maximum(finite_vals)
     end
     
     # Find upper and lower bounds
-    upper_idx = findfirst(v -> v >= value, finite_values)
+    upper_idx = findfirst(v -> v >= value, finite_vals)
     lower_idx = upper_idx - 1
     
-    upper_val = finite_values[upper_idx]
-    lower_val = finite_values[lower_idx]
+    upper_val = finite_vals[upper_idx]
+    lower_val = finite_vals[lower_idx]
     
     # Stochastic rounding based on distance
     distance_to_lower = abs(value - lower_val)
