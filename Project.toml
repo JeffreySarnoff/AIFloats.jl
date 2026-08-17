@@ -1,0 +1,4 @@
+name = "AIFloats"
+uuid = "021c5541-574e-4699-a644-4e7fe83e8672"
+authors = ["Jeffrey Sarnoff <jeffrey.sarnoff@ieee.org>"] 
+version = "0.1.0"
