@@ -1,0 +1,44 @@
+# Changes here will be overwritten by Copier
+AddAgentsMd: true
+AddAllcontributors: true
+AddChangelog: true
+AddCitationCFF: true
+AddCodeOfConduct: true
+AddContributionDocs: true
+AddCopierCI: true
+AddDocs: true
+AddDocsCI: true
+AddFormatterAndLinterConfigFiles: true
+AddGitHubPRTemplate: true
+AddGitHubTemplates: true
+AddLintCI: true
+AddLychee: true
+AddMacToCI: false
+AddPrecommit: true
+AddPrecommitUpdateCI: true
+AddTagBotCI: true
+AddTestCI: true
+AddVSCodeRecommendations: true
+AddWinToCI: false
+Authors: Jeffrey Sarnoff <jeffrey.sarnoff@ieee.org>
+CheckExplicitImports: true
+CodeOfConductContact: jeffrey.sarnoff@ieee.org
+ConfigIndentation: 2
+ExplicitImportsChecklist: exclude_all_qualified_accesses_are_public
+GitHubActionVersionAutoUpdate: dependabot
+JuliaCompatAutoUpdate: compathelper
+JuliaIndentation: 4
+JuliaMinCIVersion: '1.12'
+JuliaMinVersion: '1.12'
+License: MIT
+LicenseCopyrightHolders: Jeffrey Sarnoff
+MarkdownIndentation: 2
+PackageName: AIFloats
+PackageOwner: JeffreySarnoff
+PackageUUID: 021c5541-574e-4699-a644-4e7fe83e8672
+RunJuliaNightlyOnCI: true
+StrategyConfirmIncluded: true
+StrategyLevel: 1
+StrategyReviewExcluded: false
+TestingStrategy: basic_auto_discover
+_src_path: C:\Users\MrJSa\.julia\packages\BestieTemplate\MPEqY
