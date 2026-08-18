@@ -27,6 +27,8 @@ include("types/external.jl")
 include("types/singletons.jl")
 include("types/formats.jl")
 
+include("rules/constraints.jl")
+
 include("content/gentables.jl")
 
 end  
