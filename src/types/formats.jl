@@ -76,4 +76,13 @@ end
 function Base.show(io::IO, ::MIME"text/plain", f::Format)
     print(io, "Format(", f.K, ", ", f.P, ", ", f.S, ", ", f.D, ")")
 end
- 
+
+is_unsigned(format::Format) = format.S === false
+is_signed(format::Format) = format.S === true
+is_finite(format::Format) = format.D === false
+is_extended(format::Format) = format.D === true
+
+is_unsigned(b::Binary{K,P,S,D}) where {K,P,S,D} = S === false
+is_signed(b::Binary{K,P,S,D}) where {K,P,S,D} = S === true
+is_finite(b::Binary{K,P,S,D}) where {K,P,S,D} = D === false
+is_extended(b::Binary{K,P,S,D}) where {K,P,S,D} = D === true
