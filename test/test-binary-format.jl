@@ -2,9 +2,8 @@ using AIFloats
 using Test
 
 @testset "Binary format" begin
-    f = AIFloats.format(16, 10, SIGNED, FINITE)
-    b = AIFloats.binary(16, 10, UNSIGNED, EXTENDED)
-      
+    f = AIFloats.Format(16, 10, true, false)
+    b = AIFloats.Binary{16, 10, false, true}()
     @testset "Format" begin
         @test f isa AIFloats.Format
         @test f.K == Int8(16)
@@ -12,8 +11,8 @@ using Test
         @test f.S == true
         @test f.D == false
 
-        @test AIFloats.format_fields(16, 10, SIGNED, FINITE) == (Int8(16), Int8(10), true, false)
-        @test AIFloats.format_fields(16, 10, true, false) == (Int8(16), Int8(10), true, false)
+        @test AIFloats.resolve_fields(16, 10, SIGNED, FINITE) == (Int8(16), Int8(10), true, false)
+        @test AIFloats.resolve_fields(16, 10, true, false) == (Int8(16), Int8(10), true, false)
     end
 
     @testset "Binary" begin

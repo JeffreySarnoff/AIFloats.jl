@@ -12,7 +12,6 @@ struct Binary{K,P,S,D} end
 
 function Binary(K::I, P::I, S::Union{Signedness,Bool}, D::Union{Domain,Bool}) where {I<:Integer}
     fields = resolve_fields(K, P, S, D)
-    validformat(fields...)
     Binary{fields...}
 end
 
@@ -33,8 +32,9 @@ struct Format
     D::Bool
 end
 
-function format(K::I, P::I, S::Union{Signedness,Bool}, D::Union{Domain,Bool}) where {I<:Integer}
-    Format(resolve_fields(K, P, S, D)...)
+function Format(K::I, P::I, S::Union{Signedness,Bool}, D::Union{Domain,Bool}) where {I<:Integer}
+    fields = resolve_fields(K, P, S, D)
+    Format(fields...)
 end
 
 """
