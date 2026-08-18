@@ -15,6 +15,8 @@ Base.convert(::Type{Bool}, x::Signedness) =
 Base.convert(::Type{Signedness}, x::Bool) =
    x ? SIGNED : UNSIGNED
 
+Signedness(x::Bool) = Base.convert(Signedness, x)
+
 Base.convert(::Type{Bool}, ::Type{ΣUNSIGNED}) = false
 Base.convert(::Type{Bool}, ::Type{ΣSIGNED}) = true
 
@@ -35,11 +37,12 @@ function Base.convert(::Type{Bool}, x::Domain)
     x === EXTENDED ? true : false
 end
 
-Base.convert(::Type{Domain}, x::Bool) =
-   x ? EXTENDED : FINITE
+Base.convert(::Type{Domain}, x::Bool) = x ? EXTENDED : FINITE
 
 Base.convert(::Type{Bool}, ::Type{ΔFINITE}) = false
 Base.convert(::Type{Bool}, ::Type{ΔEXTENDED}) = true
+
+Domain(x::Bool) = convert(Domain, x)
 
 is_finite(x::Domain) = x === FINITE
 is_finite(x::Bool) = !x

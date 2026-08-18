@@ -12,7 +12,7 @@ RTE, RTA, RUP, RDN, RTZ, RTO, RSA, RSB, RSC,
 # saturation modes
 SF, SP, SN,
 # format API
-Format, Binary, BinaryFormat,
+Format, Binary,
 format, binary, format_fields, FormatOf, BinaryOf,
 BitwidthOf, PrecisionOf, SignednessOf, DomainOf,
 # external types (IEEE 754, bfloat16)
