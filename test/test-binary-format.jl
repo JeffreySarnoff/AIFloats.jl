@@ -27,13 +27,31 @@ using Test
     @testset "Binary Format" begin
         @test AIFloats.FormatOf(b) == AIFloats.Format(Int8(16), Int8(10), false, true)
         @test AIFloats.BinaryOf(f) == AIFloats.Binary{Int(f.K), Int(f.P), f.S, f.D}()
+    end
 
+    @testset "Show Binary" begin
         io = IOBuffer()
         show(io, MIME("text/plain"), b)
         @test String(take!(io)) == "Binary{16, 10, false, true}"
 
+        pipe = Pipe()
+        redirect_stdout(pipe) do
+            show(b)
+        end
+        close(pipe.in)
+        @test String(readavailable(pipe)) == "Binary{16, 10, false, true}"
+    end
+
+    @testset "Show Format" begin
         io = IOBuffer()
         show(io, MIME("text/plain"), f)
         @test String(take!(io)) == "Format(16, 10, true, false)"
+
+        pipe = Pipe()
+        redirect_stdout(pipe) do
+            show(f)
+        end
+        close(pipe.in)
+        @test String(readavailable(pipe)) == "Format(16, 10, true, false)"
     end
 end
