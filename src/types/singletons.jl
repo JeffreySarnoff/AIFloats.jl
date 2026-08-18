@@ -50,6 +50,29 @@ is_finite(x::Bool) = !x
 is_extended(x::Domain) = x === EXTENDED
 is_extended(x::Bool) = x
 
+@inline Base.string(x::Signedness) = x === SIGNED ? "SIGNED" : "UNSIGNED"
+@inline Base.string(x::Domain) = x === EXTENDED ? "EXTENDED" : "FINITE"
+
+function Base.show(io::IO, ::MIME"text/plain", S::Signedness)
+    str = string(S)
+    print(io, str)
+end
+
+function Base.show(io::IO, S::Signedness)
+    str = string(S)
+    print(io, str)
+end
+
+function Base.show(io::IO, ::MIME"text/plain", D::Domain)
+    str = string(D)
+    print(io, str)
+end
+
+function Base.show(io::IO, D::Domain)
+    d = string(D)
+    print(io, d)
+end
+
 # Projection Components (Rounding, Saturation)
 
 abstract type ProjectionComponent end

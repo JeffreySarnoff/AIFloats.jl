@@ -26,4 +26,6 @@ include("types/formats.jl")
 
 hello_world() = "Hello, World!"
 
-end  # AIFloats.jl
+end  
+
+# AIFloats.jl

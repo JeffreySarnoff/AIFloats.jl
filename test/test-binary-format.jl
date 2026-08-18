@@ -34,12 +34,9 @@ using Test
         show(io, MIME("text/plain"), b)
         @test String(take!(io)) == "Binary{16, 10, false, true}"
 
-        pipe = Pipe()
-        redirect_stdout(pipe) do
-            show(b)
-        end
-        close(pipe.in)
-        @test String(readavailable(pipe)) == "Binary{16, 10, false, true}"
+        io = IOBuffer()
+        show(io, b)
+        @test String(take!(io)) == "Binary{16, 10, false, true}"
     end
 
     @testset "Show Format" begin
@@ -47,11 +44,8 @@ using Test
         show(io, MIME("text/plain"), f)
         @test String(take!(io)) == "Format(16, 10, true, false)"
 
-        pipe = Pipe()
-        redirect_stdout(pipe) do
-            show(f)
-        end
-        close(pipe.in)
-        @test String(readavailable(pipe)) == "Format(16, 10, true, false)"
+        io = IOBuffer()
+        show(io, f)
+        @test String(take!(io)) == "Format(16, 10, true, false)"
     end
 end

@@ -64,6 +64,52 @@ using Test
         end
     end
 
+    @testset "Signedness show functions" begin
+        @test string(UNSIGNED) == "UNSIGNED"
+        @test string(SIGNED) == "SIGNED"
+
+        # Test MIME"text/plain" show
+        io = IOBuffer()
+        show(io, MIME"text/plain"(), UNSIGNED)
+        @test String(take!(io)) == "UNSIGNED"
+
+        io = IOBuffer()
+        show(io, MIME"text/plain"(), SIGNED)
+        @test String(take!(io)) == "SIGNED"
+
+        # Test plain show
+        io = IOBuffer()
+        show(io, UNSIGNED)
+        @test String(take!(io)) == "UNSIGNED"
+
+        io = IOBuffer()
+        show(io, SIGNED)
+        @test String(take!(io)) == "SIGNED"
+    end
+
+    @testset "Domain show functions" begin
+        @test string(FINITE) == "FINITE"
+        @test string(EXTENDED) == "EXTENDED"
+
+        # Test MIME"text/plain" show
+        io = IOBuffer()
+        show(io, MIME"text/plain"(), FINITE)
+        @test String(take!(io)) == "FINITE"
+
+        io = IOBuffer()
+        show(io, MIME"text/plain"(), EXTENDED)
+        @test String(take!(io)) == "EXTENDED"
+
+        # Test plain show
+        io = IOBuffer()
+        show(io, FINITE)
+        @test String(take!(io)) == "FINITE"
+
+        io = IOBuffer()
+        show(io, EXTENDED)
+        @test String(take!(io)) == "EXTENDED"
+    end
+
     @testset "Projection singletons" begin
         rounding = (RTE(), RTA(), RUP(), RDN(), RTZ(), RTO(), RSA(), RSB(), RSC())
         saturation = (SF(), SP(), SN())

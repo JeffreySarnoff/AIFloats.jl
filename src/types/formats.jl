@@ -73,18 +73,18 @@ function Base.show(io::IO, ::MIME"text/plain", b::Binary{K,P,S,D}) where {K,P,S,
     print(io, "Binary{", K, ", ", P, ", ", S, ", ", D, "}")
 end
 
-function Base.show(b::Binary{K,P,S,D}) where {K,P,S,D}
+function Base.show(io::IO, b::Binary{K,P,S,D}) where {K,P,S,D}
     s = string("Binary{", K, ", ", P, ", ", S, ", ", D, "}")
-    print(s)
+    print(io, s)
 end
 
 function Base.show(io::IO, ::MIME"text/plain", f::Format)
     print(io, "Format(", f.K, ", ", f.P, ", ", f.S, ", ", f.D, ")")
 end
 
-function Base.show(f::Format)
+function Base.show(io::IO, f::Format)
     s = string("Format(", f.K, ", ", f.P, ", ", f.S, ", ", f.D, ")")
-    print(s)
+    print(io, s)
 end
 
 is_unsigned(format::Format) = format.S === false
