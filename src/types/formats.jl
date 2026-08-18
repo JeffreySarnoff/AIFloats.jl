@@ -61,6 +61,11 @@ function BinaryOf(format::Format)
     Binary{fields...}
 end
 
+BitwidthOf(::Type{Binary{K,P,S,D}}) where {K,P,S,D} = K
+PrecisionOf(::Type{Binary{K,P,S,D}}) where {K,P,S,D} = P
+SignednessOf(::Type{Binary{K,P,S,D}}) where {K,P,S,D} = S
+DomainOf(::Type{Binary{K,P,S,D}}) where {K,P,S,D} = D
+
 BitwidthOf(::Binary{K,P,S,D}) where {K,P,S,D} = K
 PrecisionOf(::Binary{K,P,S,D}) where {K,P,S,D} = P
 SignednessOf(::Binary{K,P,S,D}) where {K,P,S,D} = S
@@ -101,7 +106,7 @@ is_extended(b::Binary{K,P,S,D}) where {K,P,S,D} = D === true
 
 # validation of format and binary specifiers
 validformat(K::I, P::I, S::Union{Signedness,Bool}, D::Union{Domain,Bool}) where {I<:Integer} =
-     ((K > 2) && (P > 0) && (P <= K - Bool(S)) && (S isa Signedness || S isa Bool) && (D isa Domain || D isa Bool)) ? nothing : throw(ArgumentError("Invalid format: K=$K, P=$P, S=$S, D=$D"))
+     ((K > 2) && (P > 0) && (P <= K - convert(Bool, S)) && (S isa Signedness || S isa Bool) && (D isa Domain || D isa Bool)) ? nothing : throw(ArgumentError("Invalid format: K=$K, P=$P, S=$S, D=$D"))
 
 validformat(f::Format) = validformat(f.K, f.P, f.S, f.D)
 validformat(b::Binary{K,P,S,D}) where {K,P,S,D} = validformat(K, P, S, D)  
