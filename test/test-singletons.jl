@@ -64,64 +64,105 @@ using Test
         end
     end
 
+    # helpers exercising both show methods defined for each singleton
+    showstr(x) = sprint(show, x)
+    showplain(x) = sprint(show, MIME"text/plain"(), x)
+
     @testset "Signedness show functions" begin
-        @test string(UNSIGNED) == "UNSIGNED"
-        @test string(SIGNED) == "SIGNED"
-
-        # Test MIME"text/plain" show
-        io = IOBuffer()
-        show(io, MIME"text/plain"(), UNSIGNED)
-        @test String(take!(io)) == "UNSIGNED"
-
-        io = IOBuffer()
-        show(io, MIME"text/plain"(), SIGNED)
-        @test String(take!(io)) == "SIGNED"
-
-        # Test plain show
-        io = IOBuffer()
-        show(io, UNSIGNED)
-        @test String(take!(io)) == "UNSIGNED"
-
-        io = IOBuffer()
-        show(io, SIGNED)
-        @test String(take!(io)) == "SIGNED"
+        for (value, expected) in [(UNSIGNED, "UNSIGNED"), (SIGNED, "SIGNED")]
+            @test string(value) == expected
+            @test showplain(value) == expected
+            @test showstr(value) == expected
+            @test repr(value) == expected
+            @test repr(MIME"text/plain"(), value) == expected
+        end
     end
 
     @testset "Domain show functions" begin
-        @test string(FINITE) == "FINITE"
-        @test string(EXTENDED) == "EXTENDED"
-
-        # Test MIME"text/plain" show
-        io = IOBuffer()
-        show(io, MIME"text/plain"(), FINITE)
-        @test String(take!(io)) == "FINITE"
-
-        io = IOBuffer()
-        show(io, MIME"text/plain"(), EXTENDED)
-        @test String(take!(io)) == "EXTENDED"
-
-        # Test plain show
-        io = IOBuffer()
-        show(io, FINITE)
-        @test String(take!(io)) == "FINITE"
-
-        io = IOBuffer()
-        show(io, EXTENDED)
-        @test String(take!(io)) == "EXTENDED"
+        for (value, expected) in [(FINITE, "FINITE"), (EXTENDED, "EXTENDED")]
+            @test string(value) == expected
+            @test showplain(value) == expected
+            @test showstr(value) == expected
+            @test repr(value) == expected
+            @test repr(MIME"text/plain"(), value) == expected
+        end
     end
 
-    @testset "Projection singletons" begin
-        rounding = (RTE(), RTA(), RUP(), RDN(), RTZ(), RTO(), RSA(), RSB(), RSC())
-        saturation = (SF(), SP(), SN())
+    @testset "RoundingMode show functions" begin
+        rounding = [(RTE, "RTE", "RoundToEven"),
+                    (RTA, "RTA", "RoundToAway"),
+                    (RUP, "RUP", "RoundUp"),
+                    (RDN, "RDN", "RoundDown"),
+                    (RTZ, "RTZ", "RoundToZero"),
+                    (RTO, "RTO", "RoundToOdd"),
+                    (RSA, "RSA", "StochasticA"),
+                    (RSB, "RSB", "StochasticB"),
+                    (RSC, "RSC", "StochasticC")]
 
         @test length(rounding) == 9
+
+        for (value, short, long) in rounding
+            @test value isa AIFloats.RoundingMode
+            @test string(value) == short
+            @test String(value) == long
+            # both show methods print the short form
+            @test showstr(value) == short
+            @test showplain(value) == short
+            @test repr(value) == short
+            @test repr(MIME"text/plain"(), value) == short
+        end
+    end
+
+    @testset "SaturationMode show functions" begin
+        saturation = [(SF, "SF", "SatFinite"),
+                      (SP, "SP", "SatPropagate"),
+                      (SN, "SN", "SatNone")]
+
         @test length(saturation) == 3
 
-        for x in rounding
-            @test x isa AIFloats.RoundingMode
+        for (value, short, long) in saturation
+            @test value isa AIFloats.SaturationMode
+            @test string(value) == short
+            @test String(value) == long
+            # both show methods print the short form
+            @test showstr(value) == short
+            @test showplain(value) == short
+            @test repr(value) == short
+            @test repr(MIME"text/plain"(), value) == short
         end
-        for x in saturation
-            @test x isa AIFloats.SaturationMode
+    end
+
+    @testset "Projection show functions" begin
+        rounding = (RTE, RTA, RUP, RDN, RTZ, RTO, RSA, RSB, RSC)
+        saturation = (SF, SP, SN)
+
+        for r in rounding, s in saturation
+            p = AIFloats.Projection(r, s)
+
+            @test AIFloats.RoundOf(p) === r
+            @test AIFloats.SatOf(p) === s
+
+            # MIME"text/plain" show uses the short (string) names
+            @test showplain(p) == "ρ($(string(r)), $(string(s)))"
+            @test repr(MIME"text/plain"(), p) == "ρ($(string(r)), $(string(s)))"
+
+            # plain show uses the long (String) names
+            @test showstr(p) == "ρ($(String(r)), $(String(s)))"
+            @test repr(p) == "ρ($(String(r)), $(String(s)))"
+        end
+
+        # the exported Projection constants show the same as freshly built ones
+        for (p, r, s) in [(AIFloats.RTE_SF, RTE, SF),
+                          (AIFloats.RTA_SP, RTA, SP),
+                          (AIFloats.RUP_SN, RUP, SN),
+                          (AIFloats.RDN_SF, RDN, SF),
+                          (AIFloats.RTZ_SP, RTZ, SP),
+                          (AIFloats.RTO_SN, RTO, SN),
+                          (AIFloats.RSA_SF, RSA, SF),
+                          (AIFloats.RSB_SP, RSB, SP),
+                          (AIFloats.RSC_SN, RSC, SN)]
+            @test showplain(p) == "ρ($(string(r)), $(string(s)))"
+            @test showstr(p) == "ρ($(String(r)), $(String(s)))"
         end
     end
 end

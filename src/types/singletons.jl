@@ -89,17 +89,120 @@ abstract type SaturatingSaturationMode <: SaturationMode end
 abstract type NonsaturatingSaturationMode <: SaturationMode end
 
 # rounding modes
-struct RTE <: ToNearestRoundingMode end
-struct RTA <: ToNearestRoundingMode end
-struct RUP <: UnidirectionalRoundingMode end
-struct RDN <: UnidirectionalRoundingMode end
-struct RTZ <: UnidirectionalRoundingMode end
-struct RTO <: ParityRoundingMode end
-struct RSA <: StochasticRoundingMode end
-struct RSB <: StochasticRoundingMode end
-struct RSC <: StochasticRoundingMode end
+struct ρRTE <: ToNearestRoundingMode end
+struct ρRTA <: ToNearestRoundingMode end
+struct ρRUP <: UnidirectionalRoundingMode end
+struct ρRDN <: UnidirectionalRoundingMode end
+struct ρRTZ <: UnidirectionalRoundingMode end
+struct ρRTO <: ParityRoundingMode end
+struct ρRSA <: StochasticRoundingMode end
+struct ρRSB <: StochasticRoundingMode end
+struct ρRSC <: StochasticRoundingMode end
+
+const RTE = ρRTE()
+const RTA = ρRTA()
+const RUP = ρRUP()
+const RDN = ρRDN()
+const RTZ = ρRTZ()
+const RTO = ρRTO()
+const RSA = ρRSA()
+const RSB = ρRSB()
+const RSC = ρRSC()
+
+Base.string(x::ρRTE) = "RTE"
+Base.string(x::ρRTA) = "RTA"
+Base.string(x::ρRUP) = "RUP"
+Base.string(x::ρRDN) = "RDN"
+Base.string(x::ρRTZ) = "RTZ"
+Base.string(x::ρRTO) = "RTO"
+Base.string(x::ρRSA) = "RSA"
+Base.string(x::ρRSB) = "RSB"
+Base.string(x::ρRSC) = "RSC"
+
+Base.String(x::ρRTE) = "RoundToEven"
+Base.String(x::ρRTA) = "RoundToAway"
+Base.String(x::ρRUP) = "RoundUp"
+Base.String(x::ρRDN) = "RoundDown"
+Base.String(x::ρRTZ) = "RoundToZero"
+Base.String(x::ρRTO) = "RoundToOdd"
+Base.String(x::ρRSA) = "StochasticA"
+Base.String(x::ρRSB) = "StochasticB"
+Base.String(x::ρRSC) = "StochasticC"
 
 # saturation modes
-struct SF <: SaturatingSaturationMode end
-struct SP <: SaturatingSaturationMode end
-struct SN <: NonsaturatingSaturationMode end
+struct ρSF <: SaturatingSaturationMode end
+struct ρSP <: SaturatingSaturationMode end
+struct ρSN <: NonsaturatingSaturationMode end
+
+const SF = ρSF()
+const SP = ρSP()
+const SN = ρSN()
+
+Base.string(x::ρSF) = "SF"
+Base.string(x::ρSP) = "SP"
+Base.string(x::ρSN) = "SN"
+
+Base.String(x::ρSF) = "SatFinite"
+Base.String(x::ρSP) = "SatPropagate"
+Base.String(x::ρSN) = "SatNone"
+
+# show projection components
+
+Base.show(io::IO, ::MIME"text/plain", r::RoundingMode) = print(io, string(r))
+Base.show(io::IO, r::RoundingMode) = print(io, string(r))
+
+Base.show(io::IO, ::MIME"text/plain", s::SaturationMode) = print(io, string(s))
+Base.show(io::IO, s::SaturationMode) = print(io, string(s))
+
+# projections
+struct Projection{R<:RoundingMode, S<:SaturationMode}
+    rho::Tuple{R, S}
+end
+
+Projection(r::R, s::S) where {R<:RoundingMode, S<:SaturationMode} =
+    Projection{R,S}((r,s))
+
+const RTE_SF = Projection(RTE, SF)
+const RTE_SP = Projection(RTE, SP)
+const RTE_SN = Projection(RTE, SN)
+
+const RTA_SF = Projection(RTA, SF)
+const RTA_SP = Projection(RTA, SP)
+const RTA_SN = Projection(RTA, SN)
+
+const RUP_SF = Projection(RUP, SF)
+const RUP_SP = Projection(RUP, SP)
+const RUP_SN = Projection(RUP, SN)
+
+const RDN_SF = Projection(RDN, SF)
+const RDN_SP = Projection(RDN, SP)
+const RDN_SN = Projection(RDN, SN)
+
+const RTZ_SF = Projection(RTZ, SF)
+const RTZ_SP = Projection(RTZ, SP)
+const RTZ_SN = Projection(RTZ, SN)
+
+const RTO_SF = Projection(RTO, SF)
+const RTO_SP = Projection(RTO, SP)
+const RTO_SN = Projection(RTO, SN)
+
+const RSA_SF = Projection(RSA, SF)
+const RSA_SP = Projection(RSA, SP)
+const RSA_SN = Projection(RSA, SN)
+
+const RSB_SF = Projection(RSB, SF)
+const RSB_SP = Projection(RSB, SP)
+const RSB_SN = Projection(RSB, SN)
+
+const RSC_SF = Projection(RSC, SF)
+const RSC_SP = Projection(RSC, SP)
+const RSC_SN = Projection(RSC, SN)
+
+RoundOf(p::Projection{R,S}) where {R<:RoundingMode, S<:SaturationMode} = p.rho[1]
+SatOf(p::Projection{R,S}) where {R<:RoundingMode, S<:SaturationMode} = p.rho[2]
+
+Base.show(io::IO, ::MIME"text/plain", p::Projection{R,S}) where {R<:RoundingMode, S<:SaturationMode} =
+    print(io, "ρ(", string(RoundOf(p)), ", ", string(SatOf(p)), ")"    )
+
+Base.show(io::IO, p::Projection{R,S}) where {R<:RoundingMode, S<:SaturationMode} =
+    print(io, "ρ(", String(RoundOf(p)), ", ", String(SatOf(p)), ")")
