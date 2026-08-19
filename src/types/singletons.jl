@@ -99,8 +99,8 @@ abstract type NonsaturatingSaturationMode <: SaturationMode end
 # rounding modes
 struct ρRTE <: ToNearestRoundingMode end
 struct ρRTA <: ToNearestRoundingMode end
-struct ρRUP <: UnidirectionalRoundingMode end
-struct ρRDN <: UnidirectionalRoundingMode end
+struct ρRTP <: UnidirectionalRoundingMode end
+struct ρRTN <: UnidirectionalRoundingMode end
 struct ρRTZ <: UnidirectionalRoundingMode end
 struct ρRTO <: ParityRoundingMode end
 struct ρRSA <: StochasticRoundingMode end
@@ -109,8 +109,8 @@ struct ρRSC <: StochasticRoundingMode end
 
 const RTE = ρRTE()
 const RTA = ρRTA()
-const RUP = ρRUP()
-const RDN = ρRDN()
+const RTP = ρRTP()
+const RTN = ρRTN()
 const RTZ = ρRTZ()
 const RTO = ρRTO()
 const RSA = ρRSA()
@@ -119,8 +119,7 @@ const RSC = ρRSC()
 
 Base.string(x::ρRTE) = "RTE"
 Base.string(x::ρRTA) = "RTA"
-Base.string(x::ρRUP) = "RUP"
-Base.string(x::ρRDN) = "RDN"
+Base.string(x::ρRTN) = "RTN"
 Base.string(x::ρRTZ) = "RTZ"
 Base.string(x::ρRTO) = "RTO"
 Base.string(x::ρRSA) = "RSA"
@@ -129,9 +128,9 @@ Base.string(x::ρRSC) = "RSC"
 
 Base.String(x::ρRTE) = "RoundToEven"
 Base.String(x::ρRTA) = "RoundToAway"
-Base.String(x::ρRUP) = "RoundUp"
-Base.String(x::ρRDN) = "RoundDown"
-Base.String(x::ρRTZ) = "RoundToZero"
+Base.String(x::ρRTP) = "RoundTowardPositive"
+Base.String(x::ρRTN) = "RoundTowardNegative"
+Base.String(x::ρRTZ) = "RoundTowardZero"
 Base.String(x::ρRTO) = "RoundToOdd"
 Base.String(x::ρRSA) = "StochasticA"
 Base.String(x::ρRSB) = "StochasticB"
@@ -178,13 +177,13 @@ const RTA_SF = Projection(RTA, SF)
 const RTA_SP = Projection(RTA, SP)
 const RTA_SN = Projection(RTA, SN)
 
-const RUP_SF = Projection(RUP, SF)
-const RUP_SP = Projection(RUP, SP)
-const RUP_SN = Projection(RUP, SN)
+const RTP_SF = Projection(RTP, SF)
+const RTP_SP = Projection(RTP, SP)
+const RTP_SN = Projection(RTP, SN)
 
-const RDN_SF = Projection(RDN, SF)
-const RDN_SP = Projection(RDN, SP)
-const RDN_SN = Projection(RDN, SN)
+const RTN_SF = Projection(RTN, SF)
+const RTN_SP = Projection(RTN, SP)
+const RTN_SN = Projection(RTN, SN)
 
 const RTZ_SF = Projection(RTZ, SF)
 const RTZ_SP = Projection(RTZ, SP)

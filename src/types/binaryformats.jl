@@ -35,6 +35,7 @@ end
 
 is_unsigned(b::Binary{K,P,S,D}) where {K,P,S,D} = S === false
 is_signed(b::Binary{K,P,S,D}) where {K,P,S,D} = S === true
+
 is_finite(b::Binary{K,P,S,D}) where {K,P,S,D} = D === false
 is_extended(b::Binary{K,P,S,D}) where {K,P,S,D} = D === true
 
@@ -54,6 +55,8 @@ BitwidthOf(::Binary{K,P,S,D}) where {K,P,S,D} = K
 PrecisionOf(::Binary{K,P,S,D}) where {K,P,S,D} = P
 SignednessOf(::Binary{K,P,S,D}) where {K,P,S,D} = S
 DomainOf(::Binary{K,P,S,D}) where {K,P,S,D} = D
+
+TrailingSignificantBitsOf(::Type{Binary{K,P,S,D}}) where {K,P,S,D} = P - one(IntParam)
 
 function Base.show(io::IO, ::MIME"text/plain", b::Binary{K,P,S,D}) where {K,P,S,D}
     print(io, "Binary{", K, ", ", P, ", ", S, ", ", D, "}")
