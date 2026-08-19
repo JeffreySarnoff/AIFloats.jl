@@ -58,11 +58,32 @@ DomainOf(::Binary{K,P,S,D}) where {K,P,S,D} = D
 
 TrailingSignificantBitsOf(::Type{Binary{K,P,S,D}}) where {K,P,S,D} = P - one(IntParam)
 
-function Base.show(io::IO, ::MIME"text/plain", b::Binary{K,P,S,D}) where {K,P,S,D}
-    print(io, "Binary{", K, ", ", P, ", ", S, ", ", D, "}")
+function Base.string(x::Type{Binary{K,P,S,D}}) where {K,P,S,D}
+    s = S ? "SIGNED" : "UNSIGNED"
+    d = D ? "EXTENDED" : "FINITE"
+    string("Binary{", K, ", ", P, ", ", s, ", ", d, "}")
 end
 
-function Base.show(io::IO, b::Binary{K,P,S,D}) where {K,P,S,D}
-    s = string("Binary{", K, ", ", P, ", ", S, ", ", D, "}")
-    print(io, s)
+function Base.string(x::Binary{K,P,S,D}) where {K,P,S,D}
+    string(typeof(x))
+end
+
+function Base.String(x::Type{Binary{K,P,S,D}}) where {K,P,S,D}
+    s = S ? "±" : "+"
+    d = D ? "∞" : "⏥"
+    string("Binary{", K, ", ", P, ", ", s, ", ", d, "}")
+end
+
+function Base.String(x::Binary{K,P,S,D}) where {K,P,S,D}
+    string(typeof(x))
+end
+
+function Base.show(io::IO, ::MIME"text/plain", b::Type{Binary{K,P,S,D}}) where {K,P,S,D} 
+    str = string(b)
+    print(io, str)
+end
+
+function Base.show(io::IO, b::Type{Binary{K,P,S,D}}) where {K,P,S,D}
+    str = String(b)
+    print(io, str)
 end

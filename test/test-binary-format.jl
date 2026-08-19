@@ -2,7 +2,6 @@ using AIFloats
 using Test
 
 @testset "Binary format" begin
-    f = AIFloats.Format(16, 10, true, false)
     b = AIFloats.Binary(16, 10, false, true)()
 
     @testset "resolve_fields" begin
@@ -28,32 +27,8 @@ using Test
         @test_throws ArgumentError AIFloats.resolve_fields(8, 8, SIGNED, FINITE)
     end
 
-    @testset "Format" begin
-        @test f isa AIFloats.Format
-        @test f.K == Int8(16)
-        @test f.P == Int8(10)
-        @test f.S == true
-        @test f.D == false
-
-        @test AIFloats.resolve_fields(16, 10, SIGNED, FINITE) == (Int8(16), Int8(10), true, false)
-        @test AIFloats.resolve_fields(16, 10, true, false) == (Int8(16), Int8(10), true, false)
-
-        # the outer constructor takes singletons or Bools, and any Integer width
-        @test AIFloats.Format(16, 10, SIGNED, FINITE) == f
-        @test AIFloats.Format(Int8(16), Int8(10), true, false) == f
-        @test AIFloats.Format(Int32(16), Int32(10), SIGNED, FINITE) == f
-        @test AIFloats.Format(16, 10, UNSIGNED, EXTENDED) == AIFloats.Format(Int8(16), Int8(10), false, true)
-
-        @test_throws ArgumentError AIFloats.Format(2, 1, SIGNED, FINITE)
-        @test_throws ArgumentError AIFloats.Format(8, 8, SIGNED, FINITE)
-    end
-
     @testset "Binary" begin
         @test b isa AIFloats.Binary{Int8(16), Int8(10), false, true}
-        @test AIFloats.BitwidthOf(b) == 16
-        @test AIFloats.PrecisionOf(b) == 10
-        @test AIFloats.SignednessOf(b) == false
-        @test AIFloats.DomainOf(b) == true
 
         # Binary(K,P,S,D) returns the parameterized *type*, with Int8 K and P
         @test AIFloats.Binary(16, 10, UNSIGNED, EXTENDED) === AIFloats.Binary{Int8(16), Int8(10), false, true}
@@ -70,17 +45,11 @@ using Test
         @test AIFloats.SignednessOf(b) == false
         @test AIFloats.DomainOf(b) == true
 
-        @test AIFloats.BitwidthOf(f) == 16
-        @test AIFloats.PrecisionOf(f) == 10
-        @test AIFloats.SignednessOf(f) == true
-        @test AIFloats.DomainOf(f) == false
-
-        # a Format and the Binary built from it report identical fields
-        fb = AIFloats.BinaryOf(f)()
-        @test AIFloats.BitwidthOf(fb) == AIFloats.BitwidthOf(f)
-        @test AIFloats.PrecisionOf(fb) == AIFloats.PrecisionOf(f)
-        @test AIFloats.SignednessOf(fb) == AIFloats.SignednessOf(f)
-        @test AIFloats.DomainOf(fb) == AIFloats.DomainOf(f)
+        sb = AIFloats.Binary(16, 10, SIGNED, FINITE)()
+        @test AIFloats.BitwidthOf(sb) == 16
+        @test AIFloats.PrecisionOf(sb) == 10
+        @test AIFloats.SignednessOf(sb) == true
+        @test AIFloats.DomainOf(sb) == false
     end
 
     @testset "Field accessors on Binary types" begin
@@ -98,16 +67,11 @@ using Test
         @test AIFloats.SignednessOf(AIFloats.Binary{8, 4, true, false}) == true
         @test AIFloats.DomainOf(AIFloats.Binary{8, 4, true, false}) == false
 
-        # the type and its instance agree, and BinaryOf feeds the type methods directly
+        # the type and its instance agree
         @test AIFloats.BitwidthOf(B) == AIFloats.BitwidthOf(B())
         @test AIFloats.PrecisionOf(B) == AIFloats.PrecisionOf(B())
         @test AIFloats.SignednessOf(B) == AIFloats.SignednessOf(B())
         @test AIFloats.DomainOf(B) == AIFloats.DomainOf(B())
-
-        @test AIFloats.BitwidthOf(AIFloats.BinaryOf(f)) == AIFloats.BitwidthOf(f)
-        @test AIFloats.PrecisionOf(AIFloats.BinaryOf(f)) == AIFloats.PrecisionOf(f)
-        @test AIFloats.SignednessOf(AIFloats.BinaryOf(f)) == AIFloats.SignednessOf(f)
-        @test AIFloats.DomainOf(AIFloats.BinaryOf(f)) == AIFloats.DomainOf(f)
 
         for (K, P, S, D) in [(16, 10, SIGNED, FINITE), (8, 4, UNSIGNED, EXTENDED),
                              (3, 1, SIGNED, EXTENDED), (32, 24, UNSIGNED, FINITE)]
@@ -119,25 +83,9 @@ using Test
         end
     end
 
-    @testset "Binary Format" begin
-        @test AIFloats.FormatOf(b) == AIFloats.Format(Int8(16), Int8(10), false, true)
-        # BinaryOf yields the type itself, parameterized by the Int8 fields
-        @test AIFloats.BinaryOf(f) === AIFloats.Binary{f.K, f.P, f.S, f.D}
-
-        # the two conversions round-trip in both directions
-        for (K, P, S, D) in [(16, 10, SIGNED, FINITE), (8, 4, UNSIGNED, EXTENDED),
-                             (3, 1, SIGNED, EXTENDED), (32, 24, UNSIGNED, FINITE)]
-            fmt = AIFloats.Format(K, P, S, D)
-            @test AIFloats.FormatOf(AIFloats.BinaryOf(fmt)()) == fmt
-
-            bin = AIFloats.Binary(K, P, S, D)
-            @test AIFloats.BinaryOf(AIFloats.FormatOf(bin())) === bin
-        end
-    end
-
     @testset "Predicates" begin
-        signed_finite = AIFloats.Format(16, 10, SIGNED, FINITE)
-        unsigned_extended = AIFloats.Format(16, 10, UNSIGNED, EXTENDED)
+        signed_finite = AIFloats.Binary(16, 10, SIGNED, FINITE)()
+        unsigned_extended = AIFloats.Binary(16, 10, UNSIGNED, EXTENDED)()
 
         @test is_signed(signed_finite)
         @test !is_unsigned(signed_finite)
@@ -149,16 +97,10 @@ using Test
         @test !is_finite(unsigned_extended)
         @test is_extended(unsigned_extended)
 
-        # all four corners, checked on both the Format and the Binary
+        # all four corners
         for (S, D) in [(SIGNED, FINITE), (SIGNED, EXTENDED),
                        (UNSIGNED, FINITE), (UNSIGNED, EXTENDED)]
-            fmt = AIFloats.Format(16, 10, S, D)
             bin = AIFloats.Binary(16, 10, S, D)()
-
-            @test is_signed(fmt) == is_signed(S)
-            @test is_unsigned(fmt) == is_unsigned(S)
-            @test is_finite(fmt) == is_finite(D)
-            @test is_extended(fmt) == is_extended(D)
 
             @test is_signed(bin) == is_signed(S)
             @test is_unsigned(bin) == is_unsigned(S)
@@ -171,7 +113,6 @@ using Test
         # accepted formats return nothing
         @test AIFloats.validformat(16, 10, SIGNED, FINITE) === nothing
         @test AIFloats.validformat(16, 10, true, false) === nothing
-        @test AIFloats.validformat(f) === nothing
         @test AIFloats.validformat(b) === nothing
 
         # P may run all the way up to K - S, but no further
@@ -203,22 +144,5 @@ using Test
         sb = AIFloats.Binary{8, 4, true, false}()
         @test sprint(show, sb) == "Binary{8, 4, true, false}"
         @test sprint(show, MIME("text/plain"), sb) == "Binary{8, 4, true, false}"
-    end
-
-    @testset "Show Format" begin
-        io = IOBuffer()
-        show(io, MIME("text/plain"), f)
-        @test String(take!(io)) == "Format(16, 10, true, false)"
-
-        io = IOBuffer()
-        show(io, f)
-        @test String(take!(io)) == "Format(16, 10, true, false)"
-
-        @test repr(f) == "Format(16, 10, true, false)"
-        @test repr(MIME("text/plain"), f) == "Format(16, 10, true, false)"
-
-        uf = AIFloats.Format(8, 4, UNSIGNED, EXTENDED)
-        @test sprint(show, uf) == "Format(8, 4, false, true)"
-        @test sprint(show, MIME("text/plain"), uf) == "Format(8, 4, false, true)"
     end
 end

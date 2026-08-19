@@ -21,12 +21,13 @@ RTE_SF, RTE_SP, RTE_SN, RTA_SF, RTA_SP, RTA_SN, RTP_SF, RTP_SP, RTP_SN, RTN_SF, 
 BitwidthOf, PrecisionOf, SignednessOf, DomainOf,
 # external types (IEEE 754, bfloat16)
 
-IntParam, ByteAsCode, WordAsCode,
+IntParam, ByteCode, WordCode,
 DWordFloat, QWordFloat, OWordFloat
 
 public resolve_fields, validformat
 
 # internal organization
+include("types/constants.jl")
 include("types/external.jl")
 include("types/singletons.jl")
 include("types/binaryformats.jl")

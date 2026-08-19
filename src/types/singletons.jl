@@ -21,8 +21,8 @@ Base.convert(::Type{Signedness}, x::Bool) =
 
 Signedness(x::Bool) = Base.convert(Signedness, x)
 
-Base.convert(::Type{Bool}, ::Type{ΣUNSIGNED}) = false
-Base.convert(::Type{Bool}, ::Type{ΣSIGNED}) = true
+Base.convert(::Type{Bool}, ::Type{ΣUNSIGNED}) = ΣUnsigned
+Base.convert(::Type{Bool}, ::Type{ΣSIGNED}) = ΣSigned
 
 is_unsigned(x::Signedness) = x === UNSIGNED
 is_unsigned(x::Bool) = !x
@@ -47,8 +47,8 @@ end
 
 Base.convert(::Type{Domain}, x::Bool) = x ? EXTENDED : FINITE
 
-Base.convert(::Type{Bool}, ::Type{ΔFINITE}) = false
-Base.convert(::Type{Bool}, ::Type{ΔEXTENDED}) = true
+Base.convert(::Type{Bool}, ::Type{ΔFINITE}) = ΔFinite
+Base.convert(::Type{Bool}, ::Type{ΔEXTENDED}) = ΔExtended
 
 Domain(x::Bool) = convert(Domain, x)
 
@@ -119,6 +119,7 @@ const RSC = ρRSC()
 
 Base.string(x::ρRTE) = "RTE"
 Base.string(x::ρRTA) = "RTA"
+Base.string(x::ρRTP) = "RTP"
 Base.string(x::ρRTN) = "RTN"
 Base.string(x::ρRTZ) = "RTZ"
 Base.string(x::ρRTO) = "RTO"

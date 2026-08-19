@@ -91,9 +91,9 @@ using Test
     @testset "RoundingMode show functions" begin
         rounding = [(RTE, "RTE", "RoundToEven"),
                     (RTA, "RTA", "RoundToAway"),
-                    (RUP, "RUP", "RoundUp"),
-                    (RDN, "RDN", "RoundDown"),
-                    (RTZ, "RTZ", "RoundToZero"),
+                    (RTP, "RTP", "RoundTowardPositive"),
+                    (RTN, "RTN", "RoundTowardNegative"),
+                    (RTZ, "RTZ", "RoundTowardZero"),
                     (RTO, "RTO", "RoundToOdd"),
                     (RSA, "RSA", "StochasticA"),
                     (RSB, "RSB", "StochasticB"),
@@ -133,7 +133,7 @@ using Test
     end
 
     @testset "Projection show functions" begin
-        rounding = (RTE, RTA, RUP, RDN, RTZ, RTO, RSA, RSB, RSC)
+        rounding = (RTE, RTA, RTP, RTN, RTZ, RTO, RSA, RSB, RSC)
         saturation = (SF, SP, SN)
 
         for r in rounding, s in saturation
@@ -154,8 +154,8 @@ using Test
         # the exported Projection constants show the same as freshly built ones
         for (p, r, s) in [(AIFloats.RTE_SF, RTE, SF),
                           (AIFloats.RTA_SP, RTA, SP),
-                          (AIFloats.RUP_SN, RUP, SN),
-                          (AIFloats.RDN_SF, RDN, SF),
+                          (AIFloats.RTP_SN, RTP, SN),
+                          (AIFloats.RTN_SF, RTN, SF),
                           (AIFloats.RTZ_SP, RTZ, SP),
                           (AIFloats.RTO_SN, RTO, SN),
                           (AIFloats.RSA_SF, RSA, SF),
