@@ -14,7 +14,7 @@ const ΣUBool = Union{ΣUNSIGNED, Bool}
 const ΣSBool = Union{ΣSIGNED, Bool}
 
 Base.convert(::Type{Bool}, x::Signedness) =
-    x === SIGNED ? true : false
+    x === SIGNED
 
 Base.convert(::Type{Signedness}, x::Bool) =
    x ? SIGNED : UNSIGNED
@@ -24,11 +24,14 @@ Signedness(x::Bool) = Base.convert(Signedness, x)
 Base.convert(::Type{Bool}, ::Type{ΣUNSIGNED}) = ΣUnsigned
 Base.convert(::Type{Bool}, ::Type{ΣSIGNED}) = ΣSigned
 
+Base.Bool(x::ΣUNSIGNED) = onvert(Bool, ΣUNSIGNED)
+Base.Bool(x::ΣSIGNED) = onvert(Bool, ΣSIGNED)
+
 is_unsigned(x::Signedness) = x === UNSIGNED
-is_unsigned(x::Bool) = !x
+is_unsigned(x::Bool) = x === ΣUnsigned
 
 is_signed(x::Signedness) = x === SIGNED
-is_signed(x::Bool) = x
+is_signed(x::Bool) = x === ΣSigned
 
 # format domain
 struct ΔFINITE <: Domain end
@@ -42,7 +45,7 @@ const ΔFBool = Union{ΔFINITE, Bool}
 const ΔEBool = Union{ΔEXTENDED, Bool}
 
 function Base.convert(::Type{Bool}, x::Domain)
-    x === EXTENDED ? true : false
+    x === EXTENDED
 end
 
 Base.convert(::Type{Domain}, x::Bool) = x ? EXTENDED : FINITE
@@ -50,13 +53,16 @@ Base.convert(::Type{Domain}, x::Bool) = x ? EXTENDED : FINITE
 Base.convert(::Type{Bool}, ::Type{ΔFINITE}) = ΔFinite
 Base.convert(::Type{Bool}, ::Type{ΔEXTENDED}) = ΔExtended
 
+Base.Bool(x::ΔFINITE) = convert(Bool, ΔFINITE)
+Base.Bool(x::ΔEXTENDED) = convert(Bool, ΔEXTENDED)
+
 Domain(x::Bool) = convert(Domain, x)
 
 is_finite(x::Domain) = x === FINITE
-is_finite(x::Bool) = !x
+is_finite(x::Bool) = x === ΔFinite
 
 is_extended(x::Domain) = x === EXTENDED
-is_extended(x::Bool) = x
+is_extended(x::Bool) = x === ΔExtended
 
 @inline Base.string(x::Signedness) = x === SIGNED ? "SIGNED" : "UNSIGNED"
 @inline Base.string(x::Domain) = x === EXTENDED ? "EXTENDED" : "FINITE"

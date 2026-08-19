@@ -1,7 +1,5 @@
 module AIFloats
 
-using Quadmath
-
 export AIFloat, BinaryFloat, Binary,
 # Binary format signedness
 ΣBool, UNSIGNED, SIGNED, is_unsigned, is_signed,
@@ -20,11 +18,12 @@ RTE_SF, RTE_SP, RTE_SN, RTA_SF, RTA_SP, RTA_SN, RTP_SF, RTP_SP, RTP_SN, RTN_SF, 
 # Binary format API
 BitwidthOf, PrecisionOf, SignednessOf, DomainOf,
 # external types (IEEE 754, bfloat16)
-
 IntParam, ByteCode, WordCode,
 DWordFloat, QWordFloat, OWordFloat
 
 public resolve_fields, validformat
+
+using Quadmath
 
 # internal organization
 include("types/constants.jl")
