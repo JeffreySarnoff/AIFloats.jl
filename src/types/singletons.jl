@@ -9,6 +9,10 @@ struct ΣSIGNED <: Signedness end
 const UNSIGNED = ΣUNSIGNED()
 const SIGNED = ΣSIGNED()
 
+const ΣBool = Union{ΣUNSIGNED, ΣSIGNED, Bool}
+const ΣUBool = Union{ΣUNSIGNED, Bool}
+const ΣSBool = Union{ΣSIGNED, Bool}
+
 Base.convert(::Type{Bool}, x::Signedness) =
     x === SIGNED ? true : false
 
@@ -32,6 +36,10 @@ struct ΔEXTENDED <: Domain end
 
 const FINITE = ΔFINITE()
 const EXTENDED = ΔEXTENDED()
+
+const ΔBool = Union{ΔFINITE, ΔEXTENDED, Bool}
+const ΔFBool = Union{ΔFINITE, Bool}
+const ΔEBool = Union{ΔEXTENDED, Bool}
 
 function Base.convert(::Type{Bool}, x::Domain)
     x === EXTENDED ? true : false
