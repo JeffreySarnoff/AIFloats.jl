@@ -18,12 +18,17 @@ RTE_SF, RTE_SP, RTE_SN, RTA_SF, RTA_SP, RTA_SN, RTP_SF, RTP_SP, RTP_SN, RTN_SF, 
 # Binary format API
 BitwidthOf, PrecisionOf, SignednessOf, DomainOf,
 # external types (IEEE 754, bfloat16)
-IntParam, ByteCode, WordCode,
-DWordFloat, QWordFloat, OWordFloat
+binary16, binary32, binary64, binary128, bfloat16,
+# dual use constants: both implementation-facing and user-facing
+IntParam, 
+CodeType, ValueType
 
-public resolve_fields, validformat
+# published, must be imported explicitly
+public resolve_fields
 
+# working with other Julia packages
 using Quadmath
+using BFloat16s
 
 # internal organization
 include("types/constants.jl")

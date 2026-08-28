@@ -17,6 +17,15 @@ function Binary(K::I, P::I, S::ΣBool, D::ΔBool) where {I<:Integer}
     Binary{fields...}
 end
 
+CodeType(K::IntParam) = K <= IntParam(8) ? UInt8 : UInt16
+CodeType(K::Integer) = CodeType(K % IntParam)
+CodeType(::Type{Binary{K,P,S,D}}) where {K,P,S,D} = CodeType(K)
+CodeType(B::Binary) = Code(typeof(B))
+
+ValueType(K::IntParam) = K <= IntParam(8) ? Float32 : K <= IntParam(10) : Float64 : Float128
+Valueype(K::Integer) = ValueType(K % IntParam)
+ValueType(::Type{Binary{K,P,S,D}}) where {K,P,S,D} = ValueType(K)
+ValueType(B::Binary) = ValueTypw(typeof(B))
 
 """
     resolve_fields

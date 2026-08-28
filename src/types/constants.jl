@@ -24,7 +24,9 @@ const IntParam = Int8
 
 const ByteCode = UInt8
 const WordCode = UInt16
-
-const DWordFloat = Float32
-const QWordFloat = Float64
-const OWordFloat = Float128
+const CodePoint = Union{ByteCode, WordCode
+}
+const ByteValue = Float32
+const WordValue = Float64
+const TwoWordValue = Float128
+const FloatValue = Union{ByteValue, WordValue, BFloat16}
