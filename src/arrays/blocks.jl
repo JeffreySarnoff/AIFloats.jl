@@ -67,9 +67,34 @@ end
 # else lifts EXACTLY to BigFloat.
 @inline _samecarrier(x) = (x,)
 @inline _samecarrier(x::C, y::C) where {C} = (x, y)
-@inline _samecarrier(x, y) = (_exactbig(x), _exactbig(y))
 @inline _samecarrier(x::C, y::C, z::C) where {C} = (x, y, z)
+# float128use.md §4 proposed adding exact Float64/Float128 mixed methods here.
+# TRIED AND REJECTED ON MEASUREMENT: a Float64 does widen to Float128 exactly,
+# but the eight extra methods widened `_samecarrier`'s inferred return at the
+# generated call sites, and ScaledAdd went 192 -> 312 ns and 7 -> 15
+# allocations for no measurable gain anywhere. The plan's own warning ("avoid a
+# broad implementation until inference has been measured") applies to a spray
+# of narrow methods too. The mixed block reduction it hoped to fix does not
+# even route through here — it uses `_reduce_add_value`/`_exactbig`.
+@inline _samecarrier(x, y) = (_exactbig(x), _exactbig(y))
 @inline _samecarrier(x, y, z) = (_exactbig(x), _exactbig(y), _exactbig(z))
+
+# The fold carrier for ConvertToBlockMaxAbsFinite: the lanes' own when they
+# agree, Float128 for the one mixture that widens exactly, BigFloat otherwise.
+# Each branch seeds with ITS carrier's NaN so the draft's "NaN loses to any
+# finite operand" contract is unchanged.
+@inline _maxfold(M, ::Type{C}) where {C} =
+    foldl((a, m) -> ωeval(Val(:MaximumFinite), a, m), M; init = _cnan(C))
+# `Block` guarantees B ≥ 1, so an empty tuple never reaches here — but it
+# matches every NTuple method below at B = 0, and an unreachable ambiguity is
+# still an ambiguity (Aqua fails on it). Resolved explicitly rather than left.
+@inline _maxabs_fold(M::Tuple{}) = _maxfold(M, BigFloat)
+@inline _maxabs_fold(M::NTuple{B,Float64}) where {B}  = _maxfold(M, Float64)
+@inline _maxabs_fold(M::NTuple{B,Float128}) where {B} = _maxfold(M, Float128)
+@inline function _maxabs_fold(M::NTuple{B,Union{Float64,Float128}}) where {B}
+    _maxfold(map(Float128, M), Float128)          # exact widening
+end
+@inline _maxabs_fold(M) = _maxfold(map(_exactbig, M), BigFloat)
 
 # ---- ωBlockDecode (draft §5.1.1) --------------------------------------------
 # Is this block's arithmetic entirely Float64? Both `datumcarrier` calls depend
@@ -462,9 +487,17 @@ function ConvertToBlockMaxAbsFinite(fs::Type{<:Binary}, fr::Type{<:Binary},
                                     rng::MaybeRNG = nothing) where {B}
     X = map(decode, xs)
     # the fold runs on one carrier, seeded with THAT carrier's NaN: MaximumFinite's
-    # whole contract is that a NaN seed loses to any finite operand
-    M = map(x -> _exactbig(ωeval(Val(:Abs), x)), X)
-    S = foldl((a, m) -> ωeval(Val(:MaximumFinite), a, m), M; init = _cnan(BigFloat))
+    # whole contract is that a NaN seed loses to any finite operand.
+    #
+    # The carrier is the DECODED one, not BigFloat. `MaximumFinite` selects an
+    # operand rather than combining significands, so the fold consumes no
+    # precision and needs none added: lifting every lane through `_exactbig`
+    # first cost 17.1 µs and 1067 allocations at B = 16 for a comparison chain
+    # (float128use.md §6). A homogeneous decode folds in its own carrier; a
+    # mixed Float64/Float128 tuple joins at Float128, which is exact; anything
+    # else keeps the BigFloat fallback.
+    M = map(x -> ωeval(Val(:Abs), x), X)
+    S = _maxabs_fold(M)
     rr = isstochastic(ρs) || isstochastic(ρ) ? _resolve_rng(rng) : nothing
     s = project(fs, ρs, S; R = _drawR(ρs, rr, nothing))
     blockproject(fr, ρ, s, X; rng = rr)

@@ -44,7 +44,7 @@ Each row pairs the affected call with a control that does *not* take the
 
 | Call | Now | Control (same op, no BigFloat) | Gap |
 |---|---:|---:|---:|
-| `ConvertToBlockMaxAbsFinite`, B=16 | 17,069 ns / 1067 allocs | — | — |
+| `ConvertToBlockMaxAbsFinite`, B=16, **P=3 scale** | 17,069 ns / 1067 allocs | **141 ns / 0** with a P=1 scale | **121x** |
 | `BlockReduceAdd`, mixed rung-1/rung-2 lanes | 7,724 ns / 645 allocs | 269 ns / 0 homogeneous | **29x** |
 | `RSqrt`, rung 2 | 1,535 ns / 69 allocs | 8.5 ns rung-1 `Divide` | — |
 | `Divide`, rung 2, exact quotient | 1,149 ns / 75 allocs | 1,602 ns inexact | 1.4x |
@@ -72,6 +72,26 @@ go first regardless of their small absolute times. They are also the easiest
 proofs in this document: `C(exponent(x))` and `ldexp(one(C), n)` are exact by
 construction, with no residual argument needed at all.
 
+### Two of these numbers do not mean what they look like
+
+Both were chased and the result is recorded here so they are not chased again.
+
+**`ConvertToBlockMaxAbsFinite`'s 17 µs is a non-MX scale.** With a `P = 1`
+power-of-two scale — the MX/E8M0 case the format exists for — the same call is
+**141 ns and allocation-free**. The 17 µs figure uses a `P = 3` scale, where
+every lane quotient is a non-terminating binary fraction and `project_interval`
+is doing genuinely required work for a correctly-rounded division. Attribution
+inside the call: the `_exactbig` fold is 1,006 ns of it and `blockproject` is
+14,776 ns. Fixing the fold (§6, done) is right on its own terms — 1,006 → 7.5 ns
+and 113 allocations → 0 — but moves the public operation only 9%, and **no
+Float128 quotient filter can help the rest**, because `1/96` is not exactly
+representable in any binary format. The P3 `_bp_element` item is therefore worth
+much less than its share of this number suggests.
+
+**The mixed-carrier `BlockReduceAdd` does not route through `_samecarrier`.**
+It uses `_reduce_add_value`/`_exactbig`. The §4 change was implemented against
+this number and it did nothing here — see the rejection below.
+
 ## Findings and decisions
 
 ### Replace with `Float128` or a narrower exact carrier
@@ -86,7 +106,7 @@ residual proof; P3 items each need one.
 | 1 | `carriers/heads.jl:120` — `Float128(::Dyadic)` | `Float128(BigFloat(x))` | Delegate to `DyadicNumbers._dyadic_to(Float128, x)`, already written and already used by the `Float64`/`Float32` methods |
 | 1 | `ops/scalar.jl` — `Convert(::Integer)` | Above 2^53 always `BigFloat` | Add a Float128 rung between the existing Float64 gate and the `BigFloat` route, using the significant-bit predicate of §2 |
 | 2 | `arrays/blocks.jl` — `ConvertToBlockMaxAbsFinite` | `map(x -> _exactbig(...))` lifts every lane, seed is `_cnan(BigFloat)` | Fold in the homogeneous decoded carrier; join mixed Float64/Float128 at Float128; seed with that carrier's NaN. `MaximumFinite` *selects* an operand, so the fold consumes no precision |
-| 2 | `arrays/blocks.jl` — `_samecarrier` | A mixed Float64/Float128 lane pair is lifted to `BigFloat` | Explicit mixed methods widening only the Float64 operand; keep the catch-all |
+| ~~2~~ | `arrays/blocks.jl` — `_samecarrier` | A mixed Float64/Float128 lane pair is lifted to `BigFloat` | **Tried and rejected on measurement** — see below |
 | 3 | `ops/oracle.jl` — `Divide`/`Recip`/`Sqrt`/`RSqrt` on `Float128` | Straight to an MPFR enclosure after the special rows | Accept a `Float128` result only after an exact residual proof; otherwise the current ladder |
 | 3 | `arrays/blocks.jl` — `_bp_element` | Only a Float64 exact quotient avoids a directed MPFR interval | The same proof-certified Float128 quotient filter before `_encl_div_scale` |
 | 3 | block reduction special rows | NaN/∞/zero manufactured as `BigFloat` | Carrier-native specials, or canonical `Float64` where only classification and sign are consumed |
@@ -107,6 +127,17 @@ residual proof; P3 items each need one.
 - Projection of a `BigFloat` not first proved exactly representable as
   `Float128`.
 - Integral `Exp2` when the exact power lies outside the Float128 finite range.
+
+### Rejected on measurement
+
+**§4, the mixed `_samecarrier` join.** A Float64 does widen to Float128 exactly,
+so the eight added methods were sound. They were also a net loss: they widened
+`_samecarrier`'s inferred return at the generated `Block*`/`Scaled*` call sites,
+and `ScaledAdd` went **192 → 312 ns and 7 → 15 allocations** with no measurable
+gain anywhere — the mixed reduction that motivated the item does not call
+`_samecarrier` at all. This plan's own warning ("avoid a broad implementation
+until inference has been measured") turns out to apply just as well to a spray
+of narrow methods. The rejection is recorded at the call site in `blocks.jl`.
 
 ### Deferred — a proof and a benchmark would have to come first
 

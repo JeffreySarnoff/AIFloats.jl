@@ -338,3 +338,57 @@ end
         @test (@allocated BlockDotProduct(E, RTE_SN, b, bx2)) == 0
     end
 end
+
+@testset "max-abs fold runs in the decoded carrier" begin
+    # float128use.md §6: `MaximumFinite` SELECTS an operand rather than
+    # combining significands, so the fold consumes no precision and needs none
+    # added. Lifting every lane through `_exactbig` first cost 1,006 ns and 113
+    # allocations for what is a comparison chain; in the lanes' own carrier it
+    # is 7.5 ns and none. The reference is that BigFloat fold.
+    A = AIFloats
+    function reffold(fs, fr, ρs, ρ, xs::NTuple{B,BinaryValue}) where {B}
+        X = map(decode, xs)
+        M = map(x -> A._exactbig(A.ωeval(Val(:Abs), x)), X)
+        S = foldl((a, m) -> A.ωeval(Val(:MaximumFinite), a, m), M; init = A._cnan(BigFloat))
+        A.blockproject(fr, ρ, project(fs, ρs, S), X)
+    end
+    rng = MersenneTwister(77)
+    elems = (binary8p4se, binary5p2se, binary6p1uf,
+             BinaryValue(Binary(16, 5, SIGNED, EXTENDED)),   # rung 2: Float128 lanes
+             BinaryValue(Binary(16, 1, SIGNED, EXTENDED)))   # rung 3: exact carrier
+    for Ef in elems, Sf in (binary8p1uf, binary8p3se), B in (1, 4, 16)
+        KE = Int(BitwidthOf(Ef)); UE = CodeType(BinaryFormatOf(Ef))
+        for _ in 1:6, ρ in (RTE_SN, RTZ_SF, RTP_SN)
+            xs = ntuple(i -> Ef(UE(rand(rng, 0:2^min(KE, 16) - 1))), B)
+            got = ConvertToBlockMaxAbsFinite(BinaryFormatOf(Sf), BinaryFormatOf(Ef), ρ, ρ, xs)
+            want = reffold(BinaryFormatOf(Sf), BinaryFormatOf(Ef), ρ, ρ, xs)
+            @test codepoint(got.s) == codepoint(want.s)
+            @test codepoint.(got.x) == codepoint.(want.x)
+        end
+    end
+    # every special-value shape the fold algebra has to preserve
+    let E = binary8p4se, FE = BinaryFormatOf(E), Sf = binary8p3se
+        nan  = AIFloats.rawvalue(FE, AIFloats.nan_code(FE))
+        pinf = AIFloats.rawvalue(FE, AIFloats.posinf_code(FE))
+        ninf = AIFloats.rawvalue(FE, AIFloats.neginf_code(FE))
+        pats = (ntuple(_ -> nan, 8), ntuple(_ -> pinf, 8), ntuple(_ -> ninf, 8),
+                ntuple(i -> i == 1 ? nan  : E(1.0), 8),
+                ntuple(i -> i == 1 ? pinf : E(1.0), 8),
+                ntuple(i -> i == 1 ? ninf : (i == 2 ? nan : E(1.0)), 8),
+                ntuple(_ -> E(0.0), 8),
+                ntuple(i -> isodd(i) ? MaxFiniteOf(E) : MinFiniteOf(E), 8))
+        for xs in pats, ρ in (RTE_SN, RTZ_SF, RTP_SN, RTN_SF)
+            got  = ConvertToBlockMaxAbsFinite(BinaryFormatOf(Sf), FE, ρ, ρ, xs)
+            want = reffold(BinaryFormatOf(Sf), FE, ρ, ρ, xs)
+            @test codepoint(got.s) == codepoint(want.s)
+            @test codepoint.(got.x) == codepoint.(want.x)
+        end
+    end
+    # the MX shape (P = 1 power-of-two scale) is exact end to end and allocates nothing
+    let E = binary8p4se, S1 = binary8p1uf
+        xs = ntuple(i -> E(UInt8((7i + 3) & 0x7f)), 16)
+        ConvertToBlockMaxAbsFinite(BinaryFormatOf(S1), BinaryFormatOf(E), RTE_SN, RTE_SN, xs)
+        @test (@allocated ConvertToBlockMaxAbsFinite(BinaryFormatOf(S1), BinaryFormatOf(E),
+                                                     RTE_SN, RTE_SN, xs)) == 0
+    end
+end
