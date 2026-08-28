@@ -26,6 +26,9 @@ _smname(ρ::Projection) = nameof(typeof(SatOf(ρ)))
 
 const TABLE_CACHE8  = Dict{TableKey,Memory{UInt8}}()
 const TABLE_CACHE16 = Dict{TableKey,Memory{UInt16}}()
+# cumulative elements seen per binary signature, for the adaptive band (the
+# unary band needs none: ΣK = K ≤ KMAX = 16 is always inside the eager band)
+const TABLE_USE  = Dict{TableKey,Int}()
 const TABLE_LOCK = ReentrantLock()
 
 """The unary/binary table cache holding results coded in this unit."""
@@ -64,6 +67,16 @@ const TERNARY_TICK = Ref(0)
 @inline ternarycache(::Type{UInt8})  = TERNARY_CACHE8
 @inline ternarycache(::Type{UInt16}) = TERNARY_CACHE16
 @inline ternarycache(::Type{F}) where {F<:Binary} = ternarycache(CodeType(F))
+
+"""The unary/binary cache key. Spelled once; `get_table` and the adaptive
+gate must agree on it exactly or the counter would track a key nothing looks
+up."""
+_bkey(op::Symbol, ::Type{fr}, ::Type{f1}, ::Type{f2},
+      ρ::Projection) where {fr<:Binary,f1<:Binary,f2<:Binary} =
+    TableKey(op, _fkey(fr), _fkey(f1), _fkey(f2), _rmname(ρ), _smname(ρ))
+_bkey(op::Symbol, ::Type{fr}, ::Type{f1},
+      ρ::Projection) where {fr<:Binary,f1<:Binary} =
+    TableKey(op, _fkey(fr), _fkey(f1), (0, 0, 0, 0), _rmname(ρ), _smname(ρ))
 
 _tkey(op::Symbol, ::Type{fr}, ::Type{f1}, ::Type{f2}, ::Type{f3},
       ρ::Projection) where {fr<:Binary,f1<:Binary,f2<:Binary,f3<:Binary} =
@@ -141,7 +154,7 @@ table_keys() = lock(() -> vcat(collect(keys(TABLE_CACHE8)), collect(keys(TABLE_C
 
 """Drop every cached table and adaptive counter (they rebuild lazily on next use)."""
 empty_tables!() = lock(TABLE_LOCK) do
-    empty!(TABLE_CACHE8); empty!(TABLE_CACHE16)
+    empty!(TABLE_CACHE8); empty!(TABLE_CACHE16); empty!(TABLE_USE)
     empty!(TERNARY_CACHE8); empty!(TERNARY_CACHE16); empty!(TERNARY_USE)
     nothing
 end

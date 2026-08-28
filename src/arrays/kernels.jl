@@ -97,7 +97,7 @@ function vmap!(dest::AbstractArray{BinaryValue{FR,UR}}, v::Val{op}, ρ::Projecti
     axes(dest) == axes(A) == axes(B) ||
         throw(DimensionMismatch("dest, A, B must share axes"))
     isstochastic(ρ) && return _vmap_scalar!(dest, v, FR, ρ, A, B; rng)
-    tbl = table_for(op, FR, F1, F2, ρ)
+    tbl = table_for(op, FR, F1, F2, ρ, length(dest))     # hoisted; @noinline
     tbl === nothing && return _vmap_compute!(dest, v, FR, ρ, A, B)
     K2 = Int(BitwidthOf(F2))
     @inbounds for i in eachindex(dest, A, B)

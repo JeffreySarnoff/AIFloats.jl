@@ -51,6 +51,18 @@ end
         cs = allcodes(F)
         @test both(FAST_ARITH, () -> [FMA(F, RTE_SN, x, y, z) for x in cs, y in cs, z in cs])
     end
+    # FAA's Float64-first peel (the same shape, and cheaper to justify: Knuth's
+    # two-sum is exact for every finite input, so there is no residual that can
+    # underflow and no magnitude floor is needed)
+    for F in (Binary(5, 2, SIGNED, EXTENDED), Binary(4, 2, SIGNED, FINITE),
+              Binary(6, 3, UNSIGNED, FINITE), Binary(5, 4, SIGNED, EXTENDED))
+        cs = allcodes(F)
+        @test both(FAST_ARITH, () -> [FAA(F, RTE_SN, x, y, z) for x in cs, y in cs, z in cs])
+    end
+    @test AIFloats.ωeval(Val(:FAA), 1.5, 0.25, 0.75) isa Float64            # exact in Float64
+    @test AIFloats.ωeval(Val(:FAA), 2.0^100, 1.0, 2.0^-100) isa Sticky      # sticky escape still reached
+    @test AIFloats.ωeval(Val(:FAA), 2.0^100, 1.0, -2.0^100) isa Float128    # cancellation distills
+
     # the directed cases the peel has to get right
     @test AIFloats.ωeval(Val(:FMA), 1.5, 0.25, 0.75) isa Float64            # product exact, sum exact
     @test AIFloats.ωeval(Val(:FMA), 1.5, 0.25, -0.375) isa Float64          # exact cancellation

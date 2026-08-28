@@ -57,6 +57,34 @@ stays where a first call can afford it.
 """
 const TABLE_EAGER_BITS = Ref(16)
 
+"""
+ΣK up to which a **binary** table may build *adaptively*, once the signature has
+earned it (default 18 bits = 256 Ki entries, at most 512 KiB per table).
+
+The eager band (`TABLE_EAGER_BITS`) is what a *first* call can afford, because
+that gate cannot see how long the call is. This band covers signatures that are
+worth a table but too expensive to build speculatively — measured at ΣK = 18
+(K = 9 binary), the build costs 542 µs for `Add` and 8.5 ms for `ArcTan2`, which
+a single small call must never pay, while the warm gather is ~22 µs per 65,536
+elements whatever the operation, against 238 µs (`Add`) to 2,082 µs (`ArcTan2`)
+of computation.
+
+Unary signatures never reach this band: ΣK = K ≤ `KMAX` = 16 is already eager.
+"""
+const TABLE_ADAPTIVE_BITS = Ref(18)
+
+"""
+Cumulative elements a binary signature must process before its table is built.
+
+Break-even against the compute kernel at ΣK = 18 is 160 Ki elements for `Add`
+and 270 Ki for `ArcTan2` (build cost divided by the per-element saving). The
+default is ~4x the slower of those: a signature that has already processed a
+million elements has spent far more on computation than the build will cost,
+and everything after it is 10–95x faster. Deliberately conservative, and the
+same shape of choice as `TERNARY_BUILD_ELEMS`.
+"""
+const TABLE_BUILD_ELEMS = Ref(1_000_000)
+
 """ΣK up to which a ternary table builds eagerly on first array call
 (default 18 bits = 256 Ki entries — covers every all-K≤6 signature)."""
 const TERNARY_EAGER_BITS = Ref(18)
@@ -156,15 +184,13 @@ end
                              ρ::Projection)::Memory{CodeType(fr)} where {fr<:Binary,f1<:Binary}
     _check_tabulable(ρ)
     within_byte_budget(fr, f1) || _refuse_over_budget(op, fr, f1)
-    key = TableKey(op, _fkey(fr), _fkey(f1), (0, 0, 0, 0), _rmname(ρ), _smname(ρ))
-    _cached_table(fr, key, () -> _build_unary(op, fr, f1, ρ))
+    _cached_table(fr, _bkey(op, fr, f1, ρ), () -> _build_unary(op, fr, f1, ρ))
 end
 @noinline function get_table(op::Symbol, ::Type{fr}, ::Type{f1}, ::Type{f2},
                              ρ::Projection)::Memory{CodeType(fr)} where {fr<:Binary,f1<:Binary,f2<:Binary}
     _check_tabulable(ρ)
     within_byte_budget(fr, f1, f2) || _refuse_over_budget(op, fr, f1, f2)
-    key = TableKey(op, _fkey(fr), _fkey(f1), _fkey(f2), _rmname(ρ), _smname(ρ))
-    _cached_table(fr, key, () -> _build_binary(op, fr, f1, f2, ρ))
+    _cached_table(fr, _bkey(op, fr, f1, f2, ρ), () -> _build_binary(op, fr, f1, f2, ρ))
 end
 @noinline function get_table(op::Symbol, ::Type{fr}, ::Type{f1}, ::Type{f2}, ::Type{f3},
                              ρ::Projection)::Memory{CodeType(fr)} where {fr<:Binary,f1<:Binary,f2<:Binary,f3<:Binary}
@@ -200,6 +226,48 @@ end
     isstochastic(ρ) && return nothing
     (_sumK(f1, f2) <= TABLE_EAGER_BITS[] && within_byte_budget(fr, f1, f2)) || return nothing
     get_table(op, fr, f1, f2, ρ)
+end
+
+"""
+    table_for(op, fr, f1, f2, ρ, nelems) -> Union{Nothing, Memory}
+
+The kernel-facing binary policy gate, called once per array operation with the
+call's element count — the same shape as [`_ternary_table_for`](@ref), and for
+the same reason.
+
+Eager band (ΣK ≤ `TABLE_EAGER_BITS[]`): fetch or build now. Adaptive band
+(≤ `TABLE_ADAPTIVE_BITS[]`): return the cached table if one exists, otherwise
+accumulate `nelems` against the signature and build only once it has earned
+`TABLE_BUILD_ELEMS[]`. Beyond the adaptive band: always `nothing`.
+
+The element count is the whole point. The five-argument method above decides
+from the formats alone, so it must stay where a first call can afford the
+build; this one knows how much work the caller is actually bringing, so it can
+admit signatures whose tables cost milliseconds.
+
+!!! note "Aggregate cache size"
+    Like the eager cache, the adaptive band is bounded per table (by
+    `within_byte_budget`) but not in aggregate — the binary caches have no LRU.
+    In practice `TABLE_BUILD_ELEMS` is the bound that matters: filling the cache
+    with adaptive tables requires processing a million elements *per distinct
+    signature*. An aggregate byte cap belongs to the eager and adaptive bands
+    together, and is deliberately left to a separate change.
+"""
+@noinline function table_for(op::Symbol, ::Type{fr}, ::Type{f1}, ::Type{f2},
+                             ρ::Projection,
+                             nelems::Int)::Union{Nothing,Memory{CodeType(fr)}} where {fr<:Binary,f1<:Binary,f2<:Binary}
+    isstochastic(ρ) && return nothing
+    within_byte_budget(fr, f1, f2) || return nothing
+    ΣK = _sumK(f1, f2)
+    ΣK <= TABLE_EAGER_BITS[] && return get_table(op, fr, f1, f2, ρ)
+    ΣK <= TABLE_ADAPTIVE_BITS[] || return nothing
+    key = _bkey(op, fr, f1, f2, ρ)
+    cache = tablecache(fr)
+    hit = lock(() -> get(cache, key, nothing), TABLE_LOCK)
+    hit === nothing || return hit
+    n = lock(() -> (TABLE_USE[key] = get(TABLE_USE, key, 0) + nelems), TABLE_LOCK)
+    n >= TABLE_BUILD_ELEMS[] || return nothing
+    get_table(op, fr, f1, f2, ρ)                  # builds and caches under the lock
 end
 
 """

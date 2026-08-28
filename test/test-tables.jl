@@ -1,5 +1,6 @@
 using AIFloats
 using Test
+using Random
 
 # Phase 4 gate, tables side: a table entry IS the scalar result; the budgets
 # refuse loudly; policy introspection agrees with the kernels' predicates;
@@ -172,6 +173,76 @@ end
         @test AIFloats.table_bytes() <= AIFloats.TERNARY_CACHE_BYTES[]
     finally
         AIFloats.TERNARY_CACHE_BYTES[] = old
+        AIFloats.empty_tables!()
+    end
+end
+
+@testset "adaptive binary band" begin
+    # A binary signature above the eager band is not tabled on sight — the eager
+    # gate cannot see how long a call is, and at ΣK = 18 the build costs
+    # hundreds of µs to milliseconds. It is tabled once the signature has
+    # actually processed TABLE_BUILD_ELEMS elements.
+    F9 = Binary(9, 4, SIGNED, EXTENDED); T9 = BinaryValue(F9)
+    mk(n) = ([T9(UInt16(i & 0x1ff)) for i in 0:n-1],
+             [T9(UInt16((3i + 1) & 0x1ff)) for i in 0:n-1])
+    oldelems = AIFloats.TABLE_BUILD_ELEMS[]
+    oldbits  = AIFloats.TABLE_ADAPTIVE_BITS[]
+    try
+        # ΣK = 18 is above the eager band and inside the adaptive one
+        @test AIFloats._sumK(F9, F9) > AIFloats.TABLE_EAGER_BITS[]
+        @test AIFloats._sumK(F9, F9) <= AIFloats.TABLE_ADAPTIVE_BITS[]
+
+        # a one-shot small call must not build
+        AIFloats.empty_tables!()
+        X, Y = mk(100); D = similar(X)
+        vmap!(D, Val(:ArcTan2), RTE_SN, X, Y)
+        @test AIFloats.table_count() == 0
+
+        # results are identical whether the table exists or not
+        AIFloats.empty_tables!()
+        AIFloats.TABLE_ADAPTIVE_BITS[] = -1                   # force compute
+        Xb, Yb = mk(4096); ref = similar(Xb); got = similar(Xb)
+        vmap!(ref, Val(:ArcTan2), RTE_SN, Xb, Yb)
+        @test AIFloats.table_count() == 0
+        AIFloats.TABLE_ADAPTIVE_BITS[] = oldbits
+        AIFloats.TABLE_BUILD_ELEMS[] = 8192                   # earn it in two calls
+        AIFloats.empty_tables!()
+        vmap!(got, Val(:ArcTan2), RTE_SN, Xb, Yb)
+        @test AIFloats.table_count() == 0                     # 4096 < 8192
+        vmap!(got, Val(:ArcTan2), RTE_SN, Xb, Yb)             # 8192 ≥ 8192: builds
+        @test AIFloats.table_count() == 1
+        vmap!(got, Val(:ArcTan2), RTE_SN, Xb, Yb)             # now a gather
+        @test codepoint.(got) == codepoint.(ref)
+
+        # the counter accumulates across calls rather than per call
+        AIFloats.empty_tables!()
+        Xs, Ys = mk(1024); Ds = similar(Xs)
+        for _ in 1:7; vmap!(Ds, Val(:Add), RTE_SN, Xs, Ys); end
+        @test AIFloats.table_count() == 0                     # 7168 < 8192
+        vmap!(Ds, Val(:Add), RTE_SN, Xs, Ys)
+        @test AIFloats.table_count() == 1                     # 8192 ≥ 8192
+
+        # stochastic ρ is never tabled, however hot
+        AIFloats.empty_tables!()
+        for _ in 1:8; vmap!(Ds, Val(:Add), RSA_SN, Xs, Ys; rng = MersenneTwister(1)); end
+        @test AIFloats.table_count() == 0
+
+        # above the adaptive band nothing is ever built
+        AIFloats.TABLE_ADAPTIVE_BITS[] = 16
+        AIFloats.empty_tables!()
+        for _ in 1:8; vmap!(Ds, Val(:Add), RTE_SN, Xs, Ys); end
+        @test AIFloats.table_count() == 0
+
+        # empty_tables! clears the counters too, or a signature would stay hot
+        AIFloats.TABLE_ADAPTIVE_BITS[] = oldbits
+        AIFloats.empty_tables!()
+        for _ in 1:7; vmap!(Ds, Val(:Add), RTE_SN, Xs, Ys); end
+        AIFloats.empty_tables!()
+        vmap!(Ds, Val(:Add), RTE_SN, Xs, Ys)
+        @test AIFloats.table_count() == 0                     # counter was reset
+    finally
+        AIFloats.TABLE_BUILD_ELEMS[] = oldelems
+        AIFloats.TABLE_ADAPTIVE_BITS[] = oldbits
         AIFloats.empty_tables!()
     end
 end

@@ -365,6 +365,27 @@ function ωeval(::Val{:FAA}, x, y, z)
     end
     _exact_sum3(x, y, z)
 end
+# The same peel as FMA's, and cheaper to justify. Knuth's two-sum is EXACT for
+# all finite inputs — the error term of a sum is always representable,
+# subnormals included — so unlike the two-product in FMA there is no residual
+# that can underflow and no magnitude floor is needed. Both error terms zero ⇒
+# x+y == s1 and s1+z == s2, hence x+y+z == s2 exactly. Overflow poisons e1/e2
+# with NaN and `iszero` is false there, so the guard covers it too.
+#
+# Written as a DISPATCHED pair rather than an `F === Float64` test inside the
+# shared method: a runtime type test does not narrow the argument types, so the
+# Float128 instantiation would still appear to call the Float64-only `_twosum`
+# and JET reports the unreachable MethodError (it did — this is why the shape
+# differs from the FMA peel, whose helpers all have Float128 methods).
+@inline function _faa_exact_f64(x::Float64, y::Float64, z::Float64)
+    s1, e1 = _twosum(x, y)
+    iszero(e1) || return nothing
+    s2, e2 = _twosum(s1, z)
+    (iszero(e2) && isfinite(s2)) || return nothing
+    iszero(s2) ? 0.0 : s2                       # the draft's single zero
+end
+@inline _faa_exact_f64(::Any, ::Any, ::Any) = nothing
+
 function ωeval(::Val{:FAA}, x::F, y::F, z::F) where {F<:Union{Float64, Float128}}
     (isnan(x) | isnan(y) | isnan(z)) && return _cnan(F)
     infs = count(isinf, (x, y, z))
@@ -375,6 +396,9 @@ function ωeval(::Val{:FAA}, x::F, y::F, z::F) where {F<:Union{Float64, Float128
         return pos ? _cinf(F) : _cninf(F)
     end
     FAST_ARITH[] || return _exact_sum3(x, y, z)
+    let e = _faa_exact_f64(x, y, z)
+        e === nothing || return e
+    end
     x128, y128, z128 = Float128(x), Float128(y), Float128(z)
     s1, e1 = _twosum128(x128, y128)
     s2, e2 = _twosum128(s1, z128)
