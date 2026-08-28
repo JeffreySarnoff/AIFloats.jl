@@ -324,6 +324,29 @@ function _exact_lane_products(X::NTuple{B,Float64}, Y::NTuple{B,Float64}) where 
     ok ? p : nothing
 end
 
+# The exact PRODUCT of finite nonzero Float64 lanes, or nothing. Mirrors
+# `_dyadic_sum`, guarding `mul_dy`'s own precondition rather than throwing.
+#
+# float128use.md deferred this on the reasoning that "successive products
+# consume the 113-bit significand quickly". THAT REASONING WAS WRONG, and
+# instrumenting it (as the plan required) showed why: `Dyadic(v)` for a datum
+# carries only that datum's SIGNIFICANT bits — at most P of them, not 53 — so
+# sixteen P = 4 lanes reach 64 bits, comfortably inside `mul_dy`'s 96-bit
+# precondition. Measured acceptance among blocks that actually reach here
+# (all lanes finite and nonzero; the fold above peels the rest) is ~100% at
+# B ≤ 16 for every scale/element pair tried, and still 99.6% at B = 32 with a
+# P = 1 scale. The one configuration that falls off is a P = 3 scale times
+# P = 4 elements at B = 32, at 24.1% — which the refusal below handles.
+function _dyadic_prod(X::NTuple{B,Float64}) where {B}
+    acc = DYADIC_ONE
+    @inbounds for i in 1:B
+        d = Dyadic(X[i])                               # exact for a finite Float64
+        nbits_dy(acc.S) + nbits_dy(d.S) <= 96 || return nothing
+        acc = mul_dy(acc, d)
+    end
+    acc
+end
+
 function _reduce_add_value(X, prec::Int)
     any(isnan, X) && return _cnan(BigFloat)
     hasp = any(_isposinf, X); hasn = any(_isneginf, X)
@@ -371,6 +394,18 @@ exactly, then projected once. `0 · ∞` anywhere in the fold is NaN.
 """
 function BlockReduceMultiply(fr::Type{<:Binary}, ρ::Projection, b::Block{B,S,E};
                              rng::MaybeRNG = nothing, R::MaybeR = nothing) where {B,S,E}
+    # `_f64_lanes` rather than `blockdecode`, for the reason BlockReduceAdd does
+    # the same: crossing blockdecode's union return boxes the tuple. `ok` means
+    # every lane is finite, so neither NaN nor ±∞ can be present and only the
+    # zero row of the fold below can still apply.
+    if _f64_block(S, E)
+        lanes, ok = _f64_lanes(b)
+        if ok
+            any(iszero, lanes) && return _finish(fr, ρ, _drawR(ρ, rng, R), _czero(BigFloat))
+            d = _dyadic_prod(lanes)
+            d === nothing || return _finish(fr, ρ, _drawR(ρ, rng, R), d)
+        end
+    end
     X = blockdecode(b)
     res = if any(isnan, X) || (any(iszero, X) && any(isinf, X))
         _cnan(BigFloat)

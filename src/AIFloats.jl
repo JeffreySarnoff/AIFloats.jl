@@ -94,7 +94,7 @@ include("carriers/fma128.jl")
 include("carriers/faa128.jl")
 using .DyadicNumbers: Dyadic, DyadicNumbers,
                       # the exact accumulator used by the block reductions
-                      add_dy, nbits_dy, DYADIC_ZERO, DYADIC_ALIGN_MAX
+                      add_dy, mul_dy, nbits_dy, DYADIC_ZERO, DYADIC_ONE, DYADIC_ALIGN_MAX
 using .Float128FMA: fma128
 using .Float128FAA: faa128
 include("types/constants.jl")

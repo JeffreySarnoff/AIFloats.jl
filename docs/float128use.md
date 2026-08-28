@@ -151,9 +151,17 @@ of narrow methods. The rejection is recorded at the call site in `blocks.jl`.
   arithmetic that keeps it on `BigFloat` after step 8, where `mul_dy`'s
   `nbits ≤ 96` precondition fails almost immediately at B = 16. Revisit only
   behind hit-rate instrumentation.
-- **No general `BigFloat -> Float128 -> project` shortcut** until the
-  exact-representability check is itself measured. Scanning a wide MPFR
-  significand can cost more than the projection it avoids.
+- **No general `BigFloat -> Float128 -> project` shortcut.** Now measured, and
+  still declined. `project(::BigFloat)` is 485 ns / 28 allocs; the
+  representability check is 89 ns / 3; check-then-project-as-Float128 is 203 ns
+  when it hits. Break-even is therefore a 24% hit rate. Actual rates: **70% for
+  the exact-arithmetic fallbacks** (narrow BigFloats from small datums) but only
+  **36.5% for interval endpoints**, which are the hot population. Expected value
+  is about +35% on a path that is now rare and only +9.5% on the hot one, while
+  the refusal path regresses 18% — over this document's own 5% allowance — and
+  it would add proof-shaped surface to `project`, the most correctness-critical
+  function in the package. The ladder-start change above already took 20–25% off
+  the same rung-2 paths with no new surface at all.
 - **Not combined with a `BigExactF` result protocol.** That is an architectural
   change and would blur the attribution of every number above.
 

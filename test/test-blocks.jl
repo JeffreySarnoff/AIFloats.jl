@@ -392,3 +392,66 @@ end
                                                      RTE_SN, RTE_SN, xs)) == 0
     end
 end
+
+@testset "BlockReduceMultiply: exact Dyadic product" begin
+    # float128use.md deferred this on the reasoning that successive products
+    # consume the 113-bit significand quickly. Instrumenting it (which the plan
+    # required before implementing) showed the reasoning was wrong: Dyadic(v)
+    # for a datum carries only that datum's SIGNIFICANT bits, at most P of them,
+    # so sixteen P=4 lanes reach 64 bits against mul_dy's 96-bit precondition.
+    # Acceptance among blocks that actually reach the accumulator is ~100% at
+    # B <= 16. The BigFloat fold stays as fallback and as the reference here.
+    A = AIFloats
+    function refmul(fr, ρ, b::Block{B,S,E}) where {B,S,E}
+        X = A.blockdecode(b)
+        res = if any(isnan, X) || (any(iszero, X) && any(isinf, X)); A._cnan(BigFloat)
+        elseif any(isinf, X); isodd(count(signbit, X)) ? A._cninf(BigFloat) : A._cinf(BigFloat)
+        elseif any(iszero, X); A._czero(BigFloat)
+        else
+            setprecision(BigFloat, A._lane_prod_prec(BinaryFormatOf(S), BinaryFormatOf(E), B)) do
+                acc = BigFloat(1); for v in X; acc *= A._exactbig(v); end; acc
+            end
+        end
+        A._finish(fr, ρ, 0, res)
+    end
+    rng = MersenneTwister(31)
+    for Sf in (binary8p1uf, binary8p3se, binary5p2se),
+        Ef in (binary8p4se, binary5p2se, BinaryValue(Binary(16, 5, SIGNED, EXTENDED))),
+        B in (1, 2, 4, 16, 32)
+        KS = Int(BitwidthOf(Sf)); KE = Int(BitwidthOf(Ef))
+        US = CodeType(BinaryFormatOf(Sf)); UE = CodeType(BinaryFormatOf(Ef))
+        for _ in 1:6, ρ in (RTE_SN, RTZ_SF, RTP_SN, RTN_SF)
+            b = Block(Sf(US(rand(rng, 0:2^KS - 1))),
+                      ntuple(i -> Ef(UE(rand(rng, 0:2^min(KE, 16) - 1))), B))
+            @test codepoint(BlockReduceMultiply(BinaryFormatOf(Ef), ρ, b)) ==
+                  codepoint(refmul(BinaryFormatOf(Ef), ρ, b))
+        end
+    end
+    # every shape of the fold algebra: NaN, 0·∞, sign parity over infinities,
+    # a zero lane, and the extremes
+    let E = binary8p4se, FE = BinaryFormatOf(E), Sf = binary8p3se
+        nan  = AIFloats.rawvalue(FE, AIFloats.nan_code(FE))
+        pinf = AIFloats.rawvalue(FE, AIFloats.posinf_code(FE))
+        ninf = AIFloats.rawvalue(FE, AIFloats.neginf_code(FE))
+        pats = (ntuple(_ -> E(0.0), 8),
+                ntuple(i -> i == 1 ? nan  : E(1.5), 8),
+                ntuple(i -> i == 1 ? pinf : E(1.5), 8),
+                ntuple(i -> i == 1 ? ninf : E(1.5), 8),
+                ntuple(i -> i == 1 ? pinf : (i == 2 ? E(0.0) : E(1.5)), 8),   # 0·∞
+                ntuple(i -> i <= 2 ? ninf : E(1.5), 8),                       # even # of ∞
+                ntuple(i -> isodd(i) ? E(-1.5) : E(1.5), 8),                  # sign parity
+                ntuple(_ -> MaxFiniteOf(E), 8), ntuple(_ -> MinPositiveOf(E), 8))
+        for xs in pats, sd in (one(Sf), Sf(0.0), MaxFiniteOf(Sf)), ρ in (RTE_SN, RTZ_SF, RTP_SN)
+            b = Block(sd, xs)
+            @test codepoint(BlockReduceMultiply(FE, ρ, b)) == codepoint(refmul(FE, ρ, b))
+        end
+    end
+    # the accumulator must decline rather than round when the band is exceeded
+    @test AIFloats._dyadic_prod(ntuple(_ -> 1.0 + 2.0^-40, 32)) === nothing
+    # and the common shape is allocation-free
+    let E = binary8p4se, S = binary8p3se
+        b = Block(one(S), ntuple(i -> E(UInt8((7i + 3) & 0x7f)), 16))
+        BlockReduceMultiply(BinaryFormatOf(E), RTE_SN, b)
+        @test (@allocated BlockReduceMultiply(BinaryFormatOf(E), RTE_SN, b)) == 0
+    end
+end
