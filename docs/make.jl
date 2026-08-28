@@ -63,7 +63,14 @@ makedocs(;
     authors = "Jeffrey Sarnoff <jeffrey.sarnoff@ieee.org>",
     repo = "https://github.com/JeffreySarnoff/AIFloats.jl/blob/{commit}{path}#{line}",
     sitename = "AIFloats.jl",
-    format = Documenter.HTML(; canonical = "https://JeffreySarnoff.github.io/AIFloats.jl"),
+    format = Documenter.HTML(;
+        canonical = "https://JeffreySarnoff.github.io/AIFloats.jl",
+        # 95-reference.md is one page holding every docstring in the package,
+        # several of which carry the measurement tables that justify a policy
+        # constant. It exceeds Documenter's 200 KiB default on its own.
+        size_threshold = 500 * 1024,
+        size_threshold_warn = 400 * 1024,
+    ),
     pages = list_pages(),
 )
 

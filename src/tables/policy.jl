@@ -29,6 +29,31 @@ Largest unary/binary table the package will *build*, as `log2(entries)`.
 and exactly a unary table for a K = 16 format.
 
 A bound on **time**, not memory: each entry is one scalar-engine trip.
+
+# Why not 18
+
+Raising this to 18 would admit the K = 9 binary band (2^18 entries, 512 KiB,
+comfortably inside `TABLE_MAX_BITS`), and at scale it is a large win — measured
+at N = 65,536 the warm gather is ~22 µs whatever the operation, against a
+compute call of 238 µs for Add and 2,082 µs for ArcTan2, with the build paying
+for itself in 3–5 such calls.
+
+It was measured and **declined** (implmentplan.md Step 9), because this gate
+sees no element count. It decides from the format alone, so a single small call
+pays the whole build:
+
+| ArcTan2, K = 9 | band 16 | band 18 |
+|---|---|---|
+| N = 100 | 9.8 µs | 8,506 µs (864x slower) |
+| N = 1,000 | 118 µs | 8,874 µs (75x slower) |
+| N = 10,000 | 1,215 µs | 8,589 µs (7.1x slower) |
+
+Trading a 864x regression on a one-shot call for a 95x win on a large one is
+not a threshold decision, it is a missing mechanism. The mechanism already
+exists for ternary signatures — `_ternary_table_for` takes `nelems` and has an
+adaptive band gated on `TERNARY_BUILD_ELEMS` cumulative elements. Extending the
+binary gate the same way is the way to claim this win; until then the band
+stays where a first call can afford it.
 """
 const TABLE_EAGER_BITS = Ref(16)
 

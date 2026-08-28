@@ -150,14 +150,34 @@ end
     A = T.(randn(MersenneTwister(1), 4096)); B = T.(randn(MersenneTwister(2), 4096)); D = similar(A)
     AIFloats.empty_tables!()
     old = AIFloats.TABLE_EAGER_BITS[]
+    oldthr = AIFloats.THREADED_KERNELS[]
     AIFloats.TABLE_EAGER_BITS[] = -1                # force the compute path
     try
+        # The SEQUENTIAL compute kernel allocates nothing — that is the claim
+        # about the per-element work, and it is the one that matters.
+        AIFloats.THREADED_KERNELS[] = false
         vmap!(D, Val(:Add), RTE_SN, A, B)
         n1 = @allocated vmap!(D, Val(:Add), RTE_SN, A, B)
         vmap!(D, Val(:Multiply), RTE_SN, A, B)
         n2 = @allocated vmap!(D, Val(:Multiply), RTE_SN, A, B)
         @test n1 == 0 && n2 == 0
+
+        # The THREADED kernel allocates Threads.@threads' scheduler state, and
+        # that cost is O(1) in the element count — it must not scale with N, or
+        # the per-element work is allocating too. (Before Step 9 lowered
+        # THREAD_MIN_ELEMS this branch simply never ran at N = 4096.)
+        AIFloats.THREADED_KERNELS[] = true
+        if Threads.nthreads() > 1
+            vmap!(D, Val(:Add), RTE_SN, A, B)
+            small = @allocated vmap!(D, Val(:Add), RTE_SN, A, B)
+            A2 = T.(randn(MersenneTwister(3), 65536)); B2 = T.(randn(MersenneTwister(4), 65536))
+            D2 = similar(A2)
+            vmap!(D2, Val(:Add), RTE_SN, A2, B2)
+            big = @allocated vmap!(D2, Val(:Add), RTE_SN, A2, B2)
+            @test small == big            # 16x the elements, identical allocation
+        end
     finally
         AIFloats.TABLE_EAGER_BITS[] = old
+        AIFloats.THREADED_KERNELS[] = oldthr
     end
 end

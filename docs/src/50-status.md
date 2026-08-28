@@ -46,12 +46,77 @@ This page says plainly what exists and what the deliberate limits are.
 Every accessor and predicate works on the `Binary` type, a `Binary` instance, the
 `BinaryValue` datum type, and a datum.
 
+## [Performance characteristics](@id performance)
+
+Facts a caller needs in order to predict cost. All are measured; the benchmark
+suite that produces them is `benchmark/runbenchmarks.jl` (an isolated
+environment — Chairmarks is not a dependency of the package).
+
+**Decoding.** `K ≤ 8` decodes through a `@generated` constant table (~1.4 ns);
+wider formats compute the value (~3 ns). Both are allocation-free.
+
+**Tables.** A unary or binary signature whose operand bits sum to
+`AIFloats.TABLE_EAGER_BITS[]` (16) or fewer is memoized on first array use, and
+subsequent calls are a flat indexed gather — for `K = 8` binary `Add` at
+65,536 elements that is ~15 µs against ~240 µs of computation. The band is a
+bound on *build time*: the gate sees only the formats, not the call's length,
+so it is deliberately set where a first call can afford the build. Signatures
+above it always compute. Ternary signatures additionally have an adaptive band
+(`TERNARY_ADAPTIVE_BITS`) that builds only after a signature has processed
+`TERNARY_BUILD_ELEMS` cumulative elements.
+
+**Threading.** Compute kernels thread above `AIFloats.THREAD_MIN_ELEMS[]`
+(1024), giving roughly 2.7–4x on four threads. The measured crossover is near
+256 elements for both cheap and expensive operations. The table gather is never
+threaded: it runs at memory bandwidth already. Threading costs a fixed ~1.6 KB
+of scheduler state per call, independent of length; the sequential kernels
+allocate nothing.
+
+**Broadcasting.** `f.(A, B)` routes through the array kernels when `f` is a
+registered veneer and every operand is a same-format datum array sharing the
+destination's axes — so `A .+ B` costs what `vmap!` costs. Fused chains
+(`(A .+ B) .* C`), scalar operands (`A .+ B[1]`), mixed element types
+(`A .+ 1.0`), predicates (`A .< B`), and shape broadcasts keep Base's
+element-at-a-time loop and are correspondingly slower.
+
+**Stochastic projection.** Array results are produced sequentially in index
+order from a single RNG stream, so a seeded call is reproducible and never
+depends on the scheduler. Stochastic signatures are never tabled.
+
+**Packed storage.** [`PackedVector`](@ref) saves memory only when
+[`packing_saves`](@ref) is `true` (that is, when `K` is not the storage unit's
+width). It trades compute for that memory: a tabled unary `vmap` over packed
+input runs about 3x an unpacked one, because the codes must be extracted from
+the bit stream before they can index the table.
+
+**Blocks.** When a block's scale and elements both decode to `Float64` and
+every lane product is exact, [`BlockReduceAdd`](@ref) and
+[`BlockDotProduct`](@ref) accumulate exactly in the `Dyadic` carrier and
+allocate nothing (~270 ns and ~300 ns at `B = 16`). Wider carriers, non-finite
+lanes, or a lane spread beyond `Dyadic`'s exact alignment band fall back to
+`BigFloat` at a derived precision — always correct, roughly 10x slower.
+`BlockReduceMultiply` always takes the `BigFloat` path: accumulating products
+leaves the exact fixed-point band almost immediately.
+
+**Session defaults.** Reading `DefaultProjection()` is a process-global
+`Ref{Projection}` load. The convenience methods and value constructors
+speculate on the untouched default (`RTE_SN`) so the common case is a static,
+allocation-free call; setting a different default costs one dynamic dispatch
+per call.
+
+**First call.** `using AIFloats` is ~57 ms. The precompile workload covers the
+standard profile's hot entries, so first calls to constructors, arithmetic,
+broadcasting, and `B ∈ {4, 16, 32}` block reductions are sub-millisecond.
+A block size outside that set, or an operation outside the workload, compiles
+on first use.
+
 ## Deliberate limits
 
 - **Cross-format arithmetic.** `binary8p4se(1) + binary8p3se(1)` does not promote
   — mixing formats is an explicit [`Convert`](@ref).
 - **In-place packed arithmetic.** Packed vectors are storage; computation
-  unpacks tile by tile.
+  reads codes out of the bit stream, and the result is an ordinary vector.
+  A packed operand is supported for unary operations only.
 - **K > 16.** The grid stops at `UInt16` code units.
 
 ## Consequences

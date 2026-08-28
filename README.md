@@ -31,6 +31,23 @@ julia> CodeType(B), ValueType(B)          # how to store a code, and a value
 > surface, array kernels, shared-scale blocks, packed storage, and a live conformance
 > declaration. See [Implementation status](https://JeffreySarnoff.github.io/AIFloats.jl/dev/50-status/).
 
+## Performance
+
+Small formats are only worth having if working with them is cheap, so the cost
+of every layer is measured rather than asserted. On a current x86 core: a datum
+decodes in ~1.4 ns, `Add` and the other exactly-evaluated operations project in
+~9 ns, and the enclosure-based rows (`Exp`, `Log`, `Sin`, …) in ~25 ns — all
+allocation-free. Array work goes through memoized tables where the format grid
+is small enough to afford one, reaching ~4.4 Gelem/s for a warm binary gather,
+and threads above 1024 elements otherwise. Broadcasting a supported operator
+over same-format arrays (`A .+ B`, `exp.(A)`) routes through those kernels, so
+it costs what the kernel costs.
+
+`benchmark/runbenchmarks.jl` reproduces all of it in an isolated environment;
+[Performance characteristics](https://JeffreySarnoff.github.io/AIFloats.jl/dev/50-status/#performance)
+documents the thresholds and the cases that deliberately stay on a slower,
+always-correct path.
+
 ## Installation
 
 ```julia

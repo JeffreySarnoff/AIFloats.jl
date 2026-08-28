@@ -62,7 +62,7 @@ end
 
 section(name) = println("\n── ", name, " ", "─"^max(0, 60 - length(name)))
 
-const SUITES = ("scalar", "arrays")
+const SUITES = ("scalar", "arrays", "latency")
 
 function main(args)
     header()

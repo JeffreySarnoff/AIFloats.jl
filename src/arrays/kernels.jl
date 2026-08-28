@@ -20,8 +20,34 @@
 @inline _kernel_result(::Val{:Convert}, ::Type{FR}, ρ::Projection, R::Int,
                        x) where {FR<:Binary} = project(FR, ρ, x; R)
 
-"""Minimum element count before a pure-ρ compute loop threads."""
-const THREAD_MIN_ELEMS = Ref(1 << 15)
+"""
+Minimum element count before a pure-ρ **compute** loop threads.
+
+Only the compute kernels consult this. The Shape-A gather is a flat indexed
+loop over a memoized table and is never threaded: measured at K = 8 it runs at
+memory bandwidth already, and 1 vs 4 threads is 1.00x at every N from 1 Ki to
+64 Ki.
+
+Refit from measurement (implmentplan.md Step 9), 4 threads, K = 12 compute,
+speedup of 4 threads over 1:
+
+| N | Add | Log |
+|---|---|---|
+| 64 | 0.47x | 0.77x |
+| 128 | 0.88x | 1.30x |
+| 256 | 1.41x | 2.23x |
+| 1024 | 2.66x | 3.19x |
+| 4096 | 3.58x | 2.10x |
+| 65536 | 3.83x | 3.98x |
+
+The true crossover is N ≈ 128–256 for both a cheap (Add) and an expensive (Log)
+op — within a factor of two of each other, so ONE threshold serves both and no
+per-op cost class is warranted. 1024 sits comfortably past the crossover,
+leaving margin for machines with fewer cores or slower task spawn than the
+one measured. The previous value, 1 << 15, left 2.7–3.8x unclaimed on every
+array between the crossover and 32 Ki.
+"""
+const THREAD_MIN_ELEMS = Ref(1 << 10)
 """Master switch for threaded compute loops, at every arity."""
 const THREADED_KERNELS = Ref(true)
 

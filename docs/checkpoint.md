@@ -4,6 +4,179 @@
 [structuralplan.md](structuralplan.md) and, for the current work,
 [implmentplan.md](implmentplan.md). Newest entry first.*
 
+## implmentplan.md Step 10 done — documentation close-out (2026-08-28)
+
+Gate: full `Pkg.test()` green, docs build clean.
+
+- `docs/src/50-status.md`: NEW "[Performance characteristics](@id performance)"
+  section — the facts a caller needs to predict cost, all measured, none
+  asserted: the K ≤ 8 decode table; the table band and why it is a build-time
+  bound that ignores call length; the threading threshold, its crossover, and
+  the fixed ~1.6 KB scheduler cost; which broadcasts route through the kernels
+  and which deliberately do not; sequential seed-reproducible stochastic order;
+  what packed storage actually trades; when block reductions are exact in
+  `Dyadic` and when they fall back; the session-default speculation; and
+  first-call latency.
+- `docs/src/50-status.md` deliberate limits: the packed entry said computation
+  "unpacks tile by tile", which stopped being true in Step 6 — it now says a
+  packed operand is read straight out of the bit stream and is supported for
+  unary operations only.
+- `README.md`: NEW short "Performance" section with the headline numbers and a
+  pointer to the harness and the status page.
+- `docs/planreview.md` had already been removed from the tree; `reviewplan.md`
+  and `implmentplan.md` no longer link to it, and `reviewplan.md` records what
+  it was and which of its claims were checked and found stale.
+- `implmentplan.md` status header and summary table updated to reflect that all
+  ten steps are enacted, and to point at this file for what actually happened
+  rather than what was planned.
+
+---
+
+## implmentplan.md — all ten steps complete (2026-08-28)
+
+| # | Step | Outcome |
+|---|---|---|
+| 0 | hygiene | no overwrite warnings; 5 stale docstrings corrected; 2 unused deps dropped |
+| 1 | benchmark harness | `benchmark/`, 3 suites, isolated from package deps |
+| 2 | constructor guard | `T(1.3)` 98.6 → 1.4 ns, 0 allocs |
+| 3 | Integer conversion | `T(3)` 583 → 1.8 ns, 0 allocs |
+| 4 | FMA Float64-first | 452 → 12.7 ns |
+| 5 | `@inline _mpfr*` | `Log` 236 → 27.5 ns, 0 allocs |
+| 6 | packed direct gather | 52.3 → 27.0 µs |
+| 7 | broadcast through kernels | `A .+ B` 632 → 15 µs; `exp.(A)` 1578 → 8.6 µs |
+| 8 | blocks via Dyadic | `BlockReduceAdd` 2899 → 267 ns, `BlockDotProduct` 5312 → 297 ns, both 0 allocs |
+| 9 | thresholds and latency | `THREAD_MIN_ELEMS` 32768 → 1024 (3.6x at N=4096); cold `Log` 103 → 6.5 ms |
+| 10 | documentation | performance characteristics documented from measurement |
+
+### Rejected on measurement — recorded so they are not retried
+
+1. **Packed running-offset walk** (Step 6). Carrying the word index and bit
+   offset across iterations removes a multiply per element but adds a
+   loop-carried dependency: 65.1 µs against 26.9 µs recomputed, 2.4x worse.
+   Reverted, with both numbers in a comment at the loop.
+2. **Int128 fixed-point block accumulator** (Step 8). `Dyadic` already is one,
+   with the preconditions derived and tested. The plan was rewritten before
+   any code was written.
+3. **Raising `TABLE_EAGER_BITS` to 18** (Step 9). A 95x win at N = 65,536 and
+   an 864x regression on a one-shot N = 100 call, because the gate cannot see
+   call length. Declined; the reasoning is in the docstring, and the adaptive
+   band that would capture the win safely is named as the follow-up.
+
+### Bugs the tests caught in work written during this plan
+
+1. **FMA underflow hole** (Step 4). `fma(x, y, -p) == 0` does not prove the
+   product exact when the residual itself underflows. Fixed with a derived
+   magnitude floor, `|p| ≥ 2^-915`.
+2. **Signed zero in the block fast lane** (Step 8). The draft has a single
+   zero; raw multiplication yields `−0.0` on mixed signs. Caught immediately by
+   the existing "blockdecode ≡ lane semantics" testset.
+3. **Threaded kernels allocate** (Step 9). Lowering `THREAD_MIN_ELEMS` made an
+   existing allocation assertion fail, correctly: `Threads.@threads` costs a
+   fixed 1,568 bytes. The test now asserts the true property — sequential
+   allocates nothing, and the threaded cost does not scale with N.
+
+### Follow-ups deliberately not taken
+
+- An adaptive band for **binary** table signatures, mirroring
+  `_ternary_table_for`. This is the one change that would claim a large
+  measured win (up to 95x on expensive binary ops over long arrays) and is
+  blocked only by `table_for` not receiving the call's element count.
+- `FAA` still runs `_exact_sum3` with no Float64/Float128 specialization
+  (166 ns against `Add`'s 9). The same peel as Step 4 probably applies.
+- `BlockReduceMultiply` stays on BigFloat by design.
+- Packed storage supports one unary operand; binary packed operands and packed
+  output were left unbuilt pending a workload that needs them.
+
+## implmentplan.md Step 9 done — thresholds and latency (2026-08-28)
+
+Gate: full `Pkg.test()` green. Measure-then-decide; one threshold moved, one
+deliberately not.
+
+### THREAD_MIN_ELEMS: 32768 → 1024
+
+The old value was far too high. Measured at K = 12 compute, speedup of 4
+threads over 1:
+
+| N | Add | Log |
+|---|---|---|
+| 64 | 0.47x | 0.77x |
+| 128 | 0.88x | 1.30x |
+| 256 | 1.41x | 2.23x |
+| 1024 | 2.66x | 3.19x |
+| 4096 | 3.58x | 2.10x |
+| 65536 | 3.83x | 3.98x |
+
+The crossover is N ≈ 128–256 for both a cheap and an expensive op — within a
+factor of two, so the plan's condition for keeping ONE threshold is met and no
+per-op cost class is needed. 1024 sits past the crossover with margin for
+machines with fewer cores. Effect: `vmap!` Add K=12 at N=4096 went
+57,530 → 16,116 ns (3.57x), and `A .+ B` K=12 at N=4096 58,598 → 16,337 ns.
+
+Also measured and recorded in the docstring: the Shape-A **gather** is never
+threaded (it is a flat indexed loop) and is at memory bandwidth already —
+1 vs 4 threads is 1.00x at every N from 1 Ki to 64 Ki. So this threshold only
+ever governed the compute kernels.
+
+**A pre-existing test caught the consequence.** `test-fastpaths.jl` asserted the
+compute kernel allocates nothing at N = 4096 — true only because 4096 was below
+the old threshold, so that call ran sequentially. Lowering the threshold makes
+it threaded, and `Threads.@threads` allocates scheduler state. Verified that
+cost is **1,568 bytes regardless of N** (2 Ki through 256 Ki) while sequential
+is exactly 0, and rewrote the test to assert what is actually true: sequential
+allocates nothing, and the threaded path's allocation does not scale with N.
+
+### TABLE_EAGER_BITS: left at 16, deliberately
+
+Raising to 18 admits the K = 9 binary band (2^18 entries, 512 KiB, well inside
+`TABLE_MAX_BITS`), and at scale it is a large win — warm gather is ~22 µs
+whatever the operation, against 238 µs (Add) to 2,082 µs (ArcTan2) of compute at
+N = 65,536, with the build repaid in 3–5 calls. Every op measured cleared the
+plan's "build ≤ 20x the compute call" bar (worst: ArcTan2 at 4.1x).
+
+Declined anyway, because this gate sees **no element count** — it decides from
+the format alone, so one small call pays the whole build:
+
+| ArcTan2, K = 9 | band 16 | band 18 |
+|---|---:|---:|
+| N = 100 | 9.8 µs | 8,506 µs (**864x slower**) |
+| N = 1,000 | 118 µs | 8,874 µs (75x slower) |
+| N = 10,000 | 1,215 µs | 8,589 µs (7.1x slower) |
+
+Trading an 864x one-shot regression for a 95x large-array win is not a threshold
+decision, it is a missing mechanism — and the mechanism already exists for
+ternary signatures (`_ternary_table_for` takes `nelems` and gates an adaptive
+band on cumulative elements). Extending the binary gate the same way is the
+right follow-up; the numbers and the reasoning are now in the
+`TABLE_EAGER_BITS` docstring so the next person does not re-derive them.
+
+### Precompile workload and first-call latency
+
+Added to `@compile_workload`: the value constructors (`T(::Float64)`,
+`::Float32`, `::Integer`, `convert`), one Group B ladder row (`Log` — the
+enclosure machinery is shared), the three broadcast `copyto!` methods from
+Step 7, and `BlockReduceAdd` at B ∈ {4, 16, 32}. `Block{B}` specializes on B,
+so precompiling B = 4 does nothing for a B = 16 caller; 16 and 32 are the
+MX-standard sizes, and any other B compiles on first use as it must.
+
+| Fresh process | Before | After |
+|---|---:|---:|
+| `using AIFloats` | 55.6 ms | 57.2 ms |
+| first `Log(x)` | 103.0 ms | **6.5 ms** |
+| first `A .+ B` | 40.5 ms | **0.01 ms** |
+| first `exp.(A)` | 45.0 ms | **0.03 ms** |
+| first `BlockReduceAdd` | 136.4 ms | **0.03 ms** |
+| first `vmap!` Add | 19.3 ms | **0.62 ms** |
+
+Load cost +1.6 ms for ~340 ms of first-call latency removed; the precompile
+cache image stayed at ~0.30 MiB.
+
+A reported 15 ms first `T(1.3)` turned out to be an artifact of the probe
+(a closure over a non-const global); measured directly it is 0.21 ms.
+
+`benchmark/latency.jl` NEW: a third suite that shells out to fresh processes —
+load and first-call timings cannot be Chairmarks samples, since the quantity of
+interest happens exactly once per process.
+
 ## implmentplan.md Step 8 done — blocks: concrete lanes, Dyadic accumulation (2026-08-28)
 
 Gate: full `Pkg.test()` green. `test-blocks` 14,404.

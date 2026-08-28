@@ -1,8 +1,13 @@
 # Review Plan — src/ correctness, consistency, and throughput
 
-Supersedes the wider [planreview.md](planreview.md). That document was a good
-survey; this one is what to *do*, in order, with the evidence that justifies
-each step. Anything not listed here is deliberately out of scope for this pass.
+Supersedes an earlier survey, `docs/planreview.md`, since removed. That document
+was a good map of the territory; this one is what to *do*, in order, with the
+evidence that justifies each step. References to it below are kept because they
+record which of its claims were checked and found stale. Anything not listed
+here is deliberately out of scope for this pass.
+
+**Enacted.** See [implmentplan.md](implmentplan.md) for the realization and
+[checkpoint.md](checkpoint.md) for what each step actually changed and measured.
 
 Evidence was gathered on the dirty worktree at `2a48515`, Julia 1.12.6,
 Chairmarks 1.3.1, i9-14900K, `-t 4`, from a throwaway environment
@@ -36,13 +41,13 @@ Scalar, K=8 (`binary8p4se`), explicit projection unless noted:
 | Call | Result | Reading |
 |---|---:|---|
 | `Add(T,RTE_SN,x,y)` | 8.6 ns, 0 alloc | Good; the Float64-exact path works. |
-| `Add(x,y)` (session default) | 9.0 ns, 0 alloc | Good — the `ρ === RTE_SN` speculation guard in `scalar.jl:101` works. The 108 ns / 3-alloc figure in planreview.md is **stale**. |
+| `Add(x,y)` (session default) | 9.0 ns, 0 alloc | Good — the `ρ === RTE_SN` speculation guard in `scalar.jl:101` works. The 108 ns / 3-alloc figure in the earlier survey was **stale**. |
 | `T(1.3)`, `convert(T, 1.3)`, `T(1.3f0)` | **82 ns, 2 allocs** | Bad. `Convert(T,RTE_SN,1.3)` is 0.7 ns. Cause: `scalar.jl:169` keyword `projection::Projection = DefaultProjection()` — abstract `Ref` read, no speculation guard. Same for `base.jl:368`. |
 | `T(3)` (Integer) | **586 ns, 28 allocs** | Bad. Integer goes through a BigFloat-ish route. |
 | `FMA(T,RTE_SN,x,y,z)` at Float64 rung | **451 ns, 0 alloc** | Bad. `oracle.jl:305` always widens to Float128 before checking whether the Float64 product/sum are exact. `Add`/`Multiply` are 9 ns. |
 | `Exp`, `Exp2`, `Sqrt` | 18–22 ns, 0 alloc | Good; the eager Float64 envelope decides. |
 | `Log`, `Log2`, `Sin`, `Cos`, `ScaledAdd` | **250–310 ns, 7 allocs, 128 B** | Bad. The stage-1 envelope decides here too (yd is finite), yet `_mpfr1(log, x)` itself costs 280 ns / 7 allocs where `_mpfr1(exp, x)` costs 2.5 ns / 0 allocs. Each component (`_ladder1`, `_fq1`, `_f64guard`) is cheap in isolation; the composite is not, so this is an inlining/closure-boxing failure specific to `f`s that can throw (`log`, `sin`, `cos`, `log2`, …), plausibly the `try/catch` in `_f64guard` blocking inlining. Hypothesis, not yet confirmed. |
-| `ArcTan2Pi` | 36 ns | Fine. `Pkg.test()` on this tree passes all 16 test sets (exit 0), so the `ArcTan2Pi` interval failures in planreview.md §3.2.1 are **stale**. |
+| `ArcTan2Pi` | 36 ns | Fine. `Pkg.test()` on this tree passes all 16 test sets (exit 0), so the `ArcTan2Pi` interval failures the earlier survey reported were **stale**. |
 | `decode` K=8 / K=9 / K=12 | 1.8 / 3.1 / 3.1 ns | Good. |
 | `project(F, RTE_SN, 1.3)` K=8, K=12 | 1.05 ns | Good; the Float64 bit path is the hot path. |
 | `x < y`, `Float64(x)` | 1.8 ns | Good. |
@@ -74,7 +79,7 @@ Consistency and documentation findings (confirmed by reading):
 - `arrays/kernels.jl:227` — external-float `Convert` loop draws `R` with `_drawR(ρ, rng, nothing)` per element without resolving `rng` once first, unlike `_vmap_scalar!` at line 158. Same result, extra work; also a consistency smell.
 - `arrays/packed.jl:29` — `>>` already bound tighter than `+` (no bug); parentheses added for clarity.
 - `test/test-compat.jl:20` and `test/test-fastpaths.jl:14` both define `allcodes` in `Main` (overwrite warning under `Pkg.test`).
-- The mixed UInt8/UInt16 ternary LRU budget defect in planreview.md §3.2.3 is **already fixed**: `cache.jl:84–118` evicts the globally oldest entry across both caches (its comment records the old bug). Only a test is missing.
+- The mixed UInt8/UInt16 ternary LRU budget defect the earlier survey reported is **already fixed**: `cache.jl:84–118` evicts the globally oldest entry across both caches (its comment records the old bug). Only a test is missing.
 
 ## 3. Phase 0 — correctness baseline (no performance work until green)
 

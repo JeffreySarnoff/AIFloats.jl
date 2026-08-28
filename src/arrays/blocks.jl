@@ -72,14 +72,6 @@ end
 @inline _samecarrier(x, y, z) = (_exactbig(x), _exactbig(y), _exactbig(z))
 
 # ---- ωBlockDecode (draft §5.1.1) --------------------------------------------
-"""
-    blockdecode(b::Block) -> NTuple{B}
-
-The values the block denotes: per lane `ωMultiply(decode(s), decode(xᵢ))`,
-exact on a carrier (Float64 when the product is exactly representable there,
-BigFloat otherwise). The draft's fold algebra applies: `0 · ∞` and NaN lanes
-are NaN. Not exported.
-"""
 # Is this block's arithmetic entirely Float64? Both `datumcarrier` calls depend
 # only on the type parameters, so this folds at compile time and the fast lane
 # below costs nothing for a block whose carriers are wider.
@@ -108,6 +100,14 @@ to the generic path, which is where the draft's ∞/NaN fold algebra lives.
     (lanes, ok)
 end
 
+"""
+    blockdecode(b::Block) -> NTuple{B}
+
+The values the block denotes: per lane `ωMultiply(decode(s), decode(xᵢ))`,
+exact on a carrier (Float64 when the product is exactly representable there,
+BigFloat otherwise). The draft's fold algebra applies: `0 · ∞` and NaN lanes
+are NaN. Not exported.
+"""
 @inline function blockdecode(b::Block{B,S,E}) where {B,S,E}
     # The values here are the SAME ones the generic path produces — the point is
     # inference. `ωeval`'s return is a carrier union, so `ntuple` boxes every

@@ -1,4 +1,4 @@
-# Implementation Plan — realizing docs/reviewplan.md
+# Implementation Plan — realizing [reviewplan.md](reviewplan.md)
 
 Ready-to-apply steps. Each step: files, exact change, test, benchmark line,
 gate. Steps are independent commits in this order; a later step never depends
@@ -18,9 +18,14 @@ residual can underflow, so `fma(x, y, -p) == 0` is only a proof of exactness
 above `|p| ≥ 2^-915`), and the Step 5 culprit was the missing `@inline`, not
 the `try`/`catch` in `_f64guard`, which is load-bearing and was kept.
 
-**Steps 6–10 remain.** Section text below is as planned, not as built; treat
-its "before" numbers as the Step 1 baseline. Steps 6, 7, 8 were reordered
-after Steps 0–5 landed — see *What actually makes a step expensive* at the end.
+**Steps 6–10 are also enacted.** Section text below is as *planned*, not as
+built — read [checkpoint.md](checkpoint.md) for what actually happened. Steps
+6, 7, 8 were reordered after Steps 0–5 landed (see *What actually makes a step
+expensive* at the end), and Step 8 was rewritten before enactment once a
+prototype showed `Dyadic` already provided the accumulator it proposed to
+build. Three further plan claims were corrected by measurement: the packed
+running-offset walk is slower, not faster; `arrays/broadcast.jl` cannot load
+where the plan placed it; and raising `TABLE_EAGER_BITS` was declined.
 
 Conventions used below:
 
@@ -606,7 +611,8 @@ change or nothing.
   `packing_saves(T)`.
 - `docs/checkpoint.md`: append an entry listing the ten steps, the accepted
   benchmark ratios, and anything rejected (with its number).
-- Delete `docs/planreview.md` or mark it superseded at the top.
+- `docs/planreview.md` is gone; `reviewplan.md` notes what it was and which
+  of its claims were checked and found stale.
 
 ---
 
@@ -623,10 +629,11 @@ change or nothing.
 | 6 packed | low | 46 µs → < 13 µs |
 | 7 broadcast | medium (dispatch surface) | `A .+ B` 631 µs → ~15 µs |
 | 8 blocks | medium (reuses Dyadic; revised after prototype) | 2.9–5.3 µs → ~0.2 µs, 0 allocs |
-| 9 thresholds | low | measured only |
-| 10 docs | none | — |
+| 9 thresholds | low | ✅ `THREAD_MIN_ELEMS` 32768 → 1024 (3.6x at N=4096); `Log` cold 103 → **6.5 ms** |
+| 10 docs | none | ✅ performance characteristics documented |
 
-Rows 0–5 are done and measured; 6–10 are targets.
+**All ten steps enacted.** See [checkpoint.md](checkpoint.md) for what each one
+changed, what it measured, and the two proposals that measurement rejected.
 
 Nothing here changes public names, parameter order, projection semantics, or
 the rigorous reference paths.
