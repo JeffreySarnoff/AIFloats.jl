@@ -1,14 +1,72 @@
+"""
+    FormatKind
+
+Supertype of the singleton tags that name a format's axes: [`Signedness`](@ref) and
+[`Domain`](@ref).
+
+Not exported; refer to it as `AIFloats.FormatKind`.
+"""
 abstract type FormatKind end
+
+"""
+    Signedness
+
+Whether a format represents negative values. Its two instances are [`SIGNED`](@ref) and
+[`UNSIGNED`](@ref).
+
+`convert` moves between the singletons and `Bool` in both directions, with `true` meaning
+signed, so `Signedness(true) === SIGNED` and `Bool(SIGNED) === true`.
+
+Not exported; refer to it as `AIFloats.Signedness`.
+"""
 abstract type Signedness <: FormatKind end
+
+"""
+    Domain
+
+Which values a format admits beyond the reals. Its two instances are [`FINITE`](@ref) and
+[`EXTENDED`](@ref).
+
+`convert` moves between the singletons and `Bool` in both directions, with `true` meaning
+extended, so `Domain(true) === EXTENDED` and `Bool(EXTENDED) === true`.
+
+Not exported; refer to it as `AIFloats.Domain`.
+"""
 abstract type Domain <: FormatKind end
 
 # format signedness
 struct ΣUNSIGNED <: Signedness end
 struct ΣSIGNED <: Signedness end
 
+"""
+    UNSIGNED
+
+The unsigned [`Signedness`](@ref): the format represents magnitudes only.
+
+Having no sign bit leaves one more bit for the exponent, so an unsigned format admits
+`P <= K` where a signed one admits only `P <= K - 1`.
+
+Interchangeable with `false` wherever a signedness is expected.
+"""
 const UNSIGNED = ΣUNSIGNED()
+
+"""
+    SIGNED
+
+The signed [`Signedness`](@ref): negative values are representable, at the cost of one bit.
+
+Interchangeable with `true` wherever a signedness is expected.
+"""
 const SIGNED = ΣSIGNED()
 
+"""
+    ΣBool
+
+`Union{ΣUNSIGNED, ΣSIGNED, Bool}` — what a signedness argument accepts.
+
+This is why [`Binary`](@ref) takes either [`SIGNED`](@ref)/[`UNSIGNED`](@ref) or a plain
+`Bool`; both spellings canonicalize to the same `Bool` parameter.
+"""
 const ΣBool = Union{ΣUNSIGNED, ΣSIGNED, Bool}
 const ΣUBool = Union{ΣUNSIGNED, Bool}
 const ΣSBool = Union{ΣSIGNED, Bool}
@@ -19,13 +77,13 @@ Base.convert(::Type{Bool}, x::Signedness) =
 Base.convert(::Type{Signedness}, x::Bool) =
    x ? SIGNED : UNSIGNED
 
-Signedness(x::Bool) = Base.convert(Signedness, x)
-
 Base.convert(::Type{Bool}, ::Type{ΣUNSIGNED}) = ΣUnsigned
 Base.convert(::Type{Bool}, ::Type{ΣSIGNED}) = ΣSigned
 
-Base.Bool(x::ΣUNSIGNED) = onvert(Bool, ΣUNSIGNED)
-Base.Bool(x::ΣSIGNED) = onvert(Bool, ΣSIGNED)
+Base.Bool(x::ΣUNSIGNED) = convert(Bool, ΣUNSIGNED)
+Base.Bool(x::ΣSIGNED) = convert(Bool, ΣSIGNED)
+
+Signedness(x::Bool) = convert(Signedness, x)
 
 is_unsigned(x::Signedness) = x === UNSIGNED
 is_unsigned(x::Bool) = x === ΣUnsigned
@@ -37,9 +95,33 @@ is_signed(x::Bool) = x === ΣSigned
 struct ΔFINITE <: Domain end
 struct ΔEXTENDED <: Domain end
 
+"""
+    FINITE
+
+The finite [`Domain`](@ref): the format holds reals and NaN, and no infinities.
+
+Interchangeable with `false` wherever a domain is expected. Displayed as `⏥`.
+"""
 const FINITE = ΔFINITE()
+
+"""
+    EXTENDED
+
+The extended [`Domain`](@ref): the format's values are extended with the infinities.
+
+"Extended" refers to the value domain, not to the bitwidth and not to the number of exponent
+bits. Interchangeable with `true` wherever a domain is expected. Displayed as `∞`.
+"""
 const EXTENDED = ΔEXTENDED()
 
+"""
+    ΔBool
+
+`Union{ΔFINITE, ΔEXTENDED, Bool}` — what a domain argument accepts.
+
+This is why [`Binary`](@ref) takes either [`FINITE`](@ref)/[`EXTENDED`](@ref) or a plain
+`Bool`; both spellings canonicalize to the same `Bool` parameter.
+"""
 const ΔBool = Union{ΔFINITE, ΔEXTENDED, Bool}
 const ΔFBool = Union{ΔFINITE, Bool}
 const ΔEBool = Union{ΔEXTENDED, Bool}
@@ -89,8 +171,45 @@ end
 
 # Projection Components (Rounding, Saturation)
 
+"""
+    ProjectionComponent
+
+Supertype of the two halves of a [`Projection`](@ref): [`RoundingMode`](@ref) and
+[`SaturationMode`](@ref).
+
+Not exported; refer to it as `AIFloats.ProjectionComponent`.
+"""
 abstract type ProjectionComponent end
+
+"""
+    RoundingMode
+
+How a value that falls between two representable values is resolved to one of them.
+
+Nine modes exist, in four families:
+
+| Family | Modes |
+|:--|:--|
+| `ToNearestRoundingMode` | [`RTE`](@ref), [`RTA`](@ref) |
+| `UnidirectionalRoundingMode` | [`RTP`](@ref), [`RTN`](@ref), [`RTZ`](@ref) |
+| `ParityRoundingMode` | [`RTO`](@ref) |
+| `StochasticRoundingMode` | [`RSA`](@ref), [`RSB`](@ref), [`RSC`](@ref) |
+
+The first three families are `DeterministicRoundingMode`s. Not exported; refer to it as
+`AIFloats.RoundingMode` — and note it is distinct from `Base.RoundingMode`.
+"""
 abstract type RoundingMode <: ProjectionComponent end
+
+"""
+    SaturationMode
+
+What becomes of a value too large in magnitude for the format.
+
+[`SF`](@ref) and [`SP`](@ref) are `SaturatingSaturationMode`s; [`SN`](@ref) is the one
+`NonsaturatingSaturationMode`.
+
+Not exported; refer to it as `AIFloats.SaturationMode`.
+"""
 abstract type SaturationMode <: ProjectionComponent end
 
 abstract type DeterministicRoundingMode <: RoundingMode end
@@ -109,19 +228,116 @@ struct ρRTP <: UnidirectionalRoundingMode end
 struct ρRTN <: UnidirectionalRoundingMode end
 struct ρRTZ <: UnidirectionalRoundingMode end
 struct ρRTO <: ParityRoundingMode end
-struct ρRSA <: StochasticRoundingMode end
-struct ρRSB <: StochasticRoundingMode end
-struct ρRSC <: StochasticRoundingMode end
+# The stochastic modes carry their random-bit budget N in the type, so a
+# projection's randomness consumption is a compile-time fact and the
+# pure-vs-stochastic split is static (pure ⇒ tabulable, stochastic ⇒ never).
+# N is validated in the inner constructor: an out-of-range N cannot exist as a
+# value. The cap 60 keeps every rounding predicate in Int64 arithmetic
+# (StochasticB shifts by N + 1).
+function _check_nrandbits(N)
+    (N isa Int && 1 <= N <= 60) ||
+        throw(ArgumentError("stochastic random-bit budget N must be an Int in 1:60, got $N"))
+    nothing
+end
 
+struct ρRSA{N} <: StochasticRoundingMode
+    ρRSA{N}() where {N} = (_check_nrandbits(N); new{N}())
+end
+struct ρRSB{N} <: StochasticRoundingMode
+    ρRSB{N}() where {N} = (_check_nrandbits(N); new{N}())
+end
+struct ρRSC{N} <: StochasticRoundingMode
+    ρRSC{N}() where {N} = (_check_nrandbits(N); new{N}())
+end
+
+ρRSA(N::Integer) = ρRSA{Int(N)}()
+ρRSB(N::Integer) = ρRSB{Int(N)}()
+ρRSC(N::Integer) = ρRSC{Int(N)}()
+
+"""
+    RTE
+
+RoundToEven — to the nearest representable value; ties go to the one with an even last bit.
+
+The unbiased default, and the same rule as IEEE 754's round-to-nearest-ties-to-even.
+A `ToNearestRoundingMode`.
+"""
 const RTE = ρRTE()
+
+"""
+    RTA
+
+RoundToAway — to the nearest representable value; ties go away from zero.
+
+A `ToNearestRoundingMode`.
+"""
 const RTA = ρRTA()
+
+"""
+    RTP
+
+RoundTowardPositive — to the nearest representable value at or above the exact one.
+
+A `UnidirectionalRoundingMode`.
+"""
 const RTP = ρRTP()
+
+"""
+    RTN
+
+RoundTowardNegative — to the nearest representable value at or below the exact one.
+
+A `UnidirectionalRoundingMode`.
+"""
 const RTN = ρRTN()
+
+"""
+    RTZ
+
+RoundTowardZero — truncation; magnitude never increases.
+
+A `UnidirectionalRoundingMode`.
+"""
 const RTZ = ρRTZ()
+
+"""
+    RTO
+
+RoundToOdd — inexact results get a `1` in the last bit; exact results are left alone.
+
+Like [`RTE`](@ref) it is unbiased, and it is cheaper in hardware, but it roughly doubles the
+rounding error. Its value is in avoiding double-rounding when a wide intermediate is later
+narrowed. The one `ParityRoundingMode`.
+"""
 const RTO = ρRTO()
-const RSA = ρRSA()
-const RSB = ρRSB()
-const RSC = ρRSC()
+
+"""
+    RSA
+
+StochasticA — a `StochasticRoundingMode`, rounding up or down at random.
+
+Stochastic rounding is unbiased in expectation, which lets very low-precision training
+accumulate small updates that deterministic rounding would discard.
+
+The mode carries its random-bit budget `N` in the type; this constant is the
+default budget, `ρRSA{8}()`. Other budgets via `AIFloats.ρRSA(N)` with
+`1 <= N <= 60`. Query with [`nrandbits`](@ref).
+"""
+const RSA = ρRSA{DEFAULT_RBITS}()
+
+"""
+    RSB
+
+StochasticB — a `StochasticRoundingMode` at the default budget `N = 8`. See [`RSA`](@ref).
+"""
+const RSB = ρRSB{DEFAULT_RBITS}()
+
+"""
+    RSC
+
+StochasticC — a `StochasticRoundingMode` at the default budget `N = 8`. See [`RSA`](@ref).
+"""
+const RSC = ρRSC{DEFAULT_RBITS}()
 
 Base.string(x::ρRTE) = "RTE"
 Base.string(x::ρRTA) = "RTA"
@@ -143,13 +359,85 @@ Base.String(x::ρRSA) = "StochasticA"
 Base.String(x::ρRSB) = "StochasticB"
 Base.String(x::ρRSC) = "StochasticC"
 
+"""
+    isstochastic(x)
+
+Whether a rounding mode (or the rounding half of a [`Projection`](@ref)) is stochastic.
+
+A compile-time constant: stochastic projections are never tabulable and consume
+random bits; pure ones never touch RNG state.
+
+# Examples
+
+```jldoctest
+julia> isstochastic(RSA), isstochastic(RTE)
+(true, false)
+
+julia> isstochastic(RSB_SF), isstochastic(RTE_SF)
+(true, false)
+```
+"""
+isstochastic(::Type{<:RoundingMode}) = false
+isstochastic(::Type{<:StochasticRoundingMode}) = true
+isstochastic(x::RoundingMode) = isstochastic(typeof(x))
+
+"""
+    nrandbits(x)
+
+The random-bit budget `N` of a stochastic rounding mode (or of the rounding half
+of a [`Projection`](@ref)); `0` for a deterministic mode.
+
+# Examples
+
+```jldoctest
+julia> nrandbits(RSA), nrandbits(RTE)
+(8, 0)
+
+julia> nrandbits(AIFloats.ρRSA(12))
+12
+```
+"""
+nrandbits(::Type{<:RoundingMode}) = 0
+nrandbits(::Type{ρRSA{N}}) where {N} = N
+nrandbits(::Type{ρRSB{N}}) where {N} = N
+nrandbits(::Type{ρRSC{N}}) where {N} = N
+nrandbits(x::RoundingMode) = nrandbits(typeof(x))
+
 # saturation modes
 struct ρSF <: SaturatingSaturationMode end
 struct ρSP <: SaturatingSaturationMode end
 struct ρSN <: NonsaturatingSaturationMode end
 
+"""
+    SF
+
+SatFinite — a saturating [`SaturationMode`](@ref).
+
+A `SaturatingSaturationMode`: [`project`](@ref) clamps everything past the largest finite
+value — a genuine infinity too — to that value. See `AIFloats.saturate`.
+"""
 const SF = ρSF()
+
+"""
+    SP
+
+SatPropagate — a saturating [`SaturationMode`](@ref).
+
+A `SaturatingSaturationMode`: [`project`](@ref) keeps a representable infinity and clamps
+the rest to the largest finite value. See `AIFloats.saturate`.
+"""
 const SP = ρSP()
+
+"""
+    SN
+
+SatNone — the non-saturating [`SaturationMode`](@ref).
+
+The one `NonsaturatingSaturationMode`: past the largest finite value, [`project`](@ref)
+follows the draft's direction/signedness/domain rows — a directed rounding pointing back
+into range gives the extremal finite, an extended domain spends its infinity, otherwise NaN.
+See `AIFloats.saturate`.
+"""
 const SN = ρSN()
 
 Base.string(x::ρSF) = "SF"
@@ -169,13 +457,59 @@ Base.show(io::IO, ::MIME"text/plain", s::SaturationMode) = print(io, string(s))
 Base.show(io::IO, s::SaturationMode) = print(io, string(s))
 
 # projections
+"""
+    Projection{R,S}
+
+A rounding mode paired with a saturation mode — together, how a real number is mapped onto a
+format's representable values.
+
+Rounding settles what happens between neighbouring values; saturation settles what happens
+past the largest. Build one with [`Projection(r, s)`](@ref), or use one of the 27 preset
+constants named `<rounding>_<saturation>`, such as [`RTE_SF`](@ref). Read the halves back with
+[`RoundOf`](@ref) and [`SatOf`](@ref).
+
+A projection is applied to a number by [`project`](@ref).
+
+# Examples
+
+```jldoctest
+julia> p = Projection(RTE, SF)
+ρ(RTE, SF)
+
+julia> p === RTE_SF
+true
+
+julia> RoundOf(p), SatOf(p)
+(RTE, SF)
+```
+"""
 struct Projection{R<:RoundingMode, S<:SaturationMode}
     rho::Tuple{R, S}
 end
 
+"""
+    Projection(r, s)
+
+Pair rounding mode `r` with saturation mode `s`.
+
+All 27 combinations already exist as constants (`RTE_SF` through `RSC_SN`), and building one
+returns a value identical to its constant.
+"""
 Projection(r::R, s::S) where {R<:RoundingMode, S<:SaturationMode} =
     Projection{R,S}((r,s))
 
+"""
+    RTE_SF
+
+The [`Projection`](@ref) pairing [`RTE`](@ref) with [`SF`](@ref).
+
+One of the 27 presets, named `<rounding>_<saturation>` over the 9 rounding modes
+([`RTE`](@ref), [`RTA`](@ref), [`RTP`](@ref), [`RTN`](@ref), [`RTZ`](@ref), [`RTO`](@ref),
+[`RSA`](@ref), [`RSB`](@ref), [`RSC`](@ref)) and the 3 saturation modes ([`SF`](@ref),
+[`SP`](@ref), [`SN`](@ref)): `RTE_SF`, `RTE_SP`, `RTE_SN`, `RTA_SF`, … , `RSC_SN`.
+
+`RTE_SF` is the conventional default — round to nearest, ties to even, saturating.
+"""
 const RTE_SF = Projection(RTE, SF)
 const RTE_SP = Projection(RTE, SP)
 const RTE_SN = Projection(RTE, SN)
@@ -212,8 +546,53 @@ const RSC_SF = Projection(RSC, SF)
 const RSC_SP = Projection(RSC, SP)
 const RSC_SN = Projection(RSC, SN)
 
+# RTE_SF carries the full explanation; its 26 siblings differ only in which modes they pair,
+# so their docstrings are generated rather than spelled out one at a time.
+for r in (RTE, RTA, RTP, RTN, RTZ, RTO, RSA, RSB, RSC), s in (SF, SP, SN)
+    name = Symbol(string(r), "_", string(s))
+    name === :RTE_SF && continue
+    @eval @doc $("""
+             $name
+
+         The [`Projection`](@ref) pairing [`$(string(r))`](@ref) (`$(String(r))`) with
+         [`$(string(s))`](@ref) (`$(String(s))`).
+
+         One of the 27 presets; see [`RTE_SF`](@ref) for the naming scheme.
+         """) $name
+end
+
+"""
+    RoundOf(p)
+
+The [`RoundingMode`](@ref) half of a [`Projection`](@ref).
+
+# Examples
+
+```jldoctest
+julia> RoundOf(RTA_SN)
+RTA
+```
+"""
 RoundOf(p::Projection{R,S}) where {R<:RoundingMode, S<:SaturationMode} = p.rho[1]
+
+"""
+    SatOf(p)
+
+The [`SaturationMode`](@ref) half of a [`Projection`](@ref).
+
+# Examples
+
+```jldoctest
+julia> SatOf(RTA_SN)
+SN
+```
+"""
 SatOf(p::Projection{R,S}) where {R<:RoundingMode, S<:SaturationMode} = p.rho[2]
+
+isstochastic(::Type{Projection{R,S}}) where {R<:RoundingMode, S<:SaturationMode} = isstochastic(R)
+isstochastic(p::Projection) = isstochastic(typeof(p))
+nrandbits(::Type{Projection{R,S}}) where {R<:RoundingMode, S<:SaturationMode} = nrandbits(R)
+nrandbits(p::Projection) = nrandbits(typeof(p))
 
 Base.show(io::IO, ::MIME"text/plain", p::Projection{R,S}) where {R<:RoundingMode, S<:SaturationMode} =
     print(io, "ρ(", string(RoundOf(p)), ", ", string(SatOf(p)), ")"    )

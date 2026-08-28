@@ -15,3 +15,7 @@ Pages = ["95-reference.md"]
 ```@autodocs
 Modules = [AIFloats]
 ```
+
+```@docs
+AIFloats.Formats
+```

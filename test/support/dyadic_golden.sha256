@@ -1,0 +1,6 @@
+# AIFloats.jl — Dyadic differential golden digests (plan §9.9)
+# captured from SmallFloats.jl DyadicNumbers, git 7f864f08dbe8a31de60d0b4e9a1d826871186bd2 on Julia 1.12.6
+# Each line: <sha256> <section>. See test/support/dyadic_digest.jl.
+32a5045ff4e19500369ec39caf621cfb4ad1c36620284b6817248826d464151e  unary
+5027cb72a47b0198d12b4074cbd4ec3b66d3a71091840304a881abfd86979228  binary
+c4ab56aaf50973f92a500193a51ec1781d1e99727addfaee8e59da8249e676e0  convert

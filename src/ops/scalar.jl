@@ -1,0 +1,190 @@
+# the scalar flow: decode operands → ωeval → _finish → a datum
+#
+# Draft parameter order is Op(F, ρ, operands...). The registry generates every
+# method; nothing per-op is written by hand.
+
+# ---- RNG plumbing -----------------------------------------------------------
+# The default is nothing, NOT default_rng(): a pure-ρ call must never touch
+# RNG state.
+const MaybeRNG = Union{Nothing, Random.AbstractRNG}
+const MaybeR = Union{Nothing, Int}
+
+@inline _resolve_rng(rng::MaybeRNG) = rng === nothing ? Random.default_rng() : rng
+
+@inline function _drawR(ρ::Projection, rng::MaybeRNG, R::MaybeR)
+    isstochastic(ρ) || return 0
+    N = nrandbits(ρ)::Int
+    if R === nothing
+        return Int(rand(_resolve_rng(rng), UInt64) & ((UInt64(1) << N) - 1))
+    end
+    0 <= R < (1 << N) ||
+        throw(ArgumentError("explicit R=$R outside 0:$(2^N - 1) for N=$N random bits"))
+    R
+end
+
+# ---- result resolution ------------------------------------------------------
+# exact carrier values project directly; an Enclosure goes to the interval
+# oracle (sound for every mode at fixed R)
+@inline _finish(::Type{F}, ρ::Projection, R::Int, res::AbstractFloat) where {F<:Binary} =
+    project(F, ρ, res; R)
+function _finish(::Type{F}, ρ::Projection, R::Int, e::Enclosure) where {F<:Binary}
+    if FAST_ENCLOSURE[]
+        # stage 1: the eager Float64 estimate inside its 2^-45 envelope
+        yd = e.yd
+        if isfinite(yd) && abs(yd) >= _F64_MINNORMISH
+            Ed = ldexp(abs(yd), _F64_RELEXP)
+            dd = project(F, ρ, yd - Ed; R, sticky = +1)
+            du = project(F, ρ, yd + Ed; R, sticky = -1)
+            codepoint(dd) == codepoint(du) && return dd
+        end
+        # stage 2: the Float128 estimate inside its 2^-90 envelope
+        if e.fq !== nothing
+            y = _try128(e.fq)
+            if isfinite(y) && !iszero(y)
+                E = ldexp(abs(y), _F128_RELEXP)
+                cd = project(F, ρ, y - E; R, sticky = +1)
+                cu = project(F, ρ, y + E; R, sticky = -1)
+                codepoint(cd) == codepoint(cu) && return cd
+            end
+        end
+    end
+    project_interval(F, ρ, e.f; R)                 # stage 3 always decides
+end
+@inline _finish(::Type{F}, ρ::Projection, R::Int, res::Dyadic) where {F<:Binary} =
+    project(F, ρ, res; R)
+# the sticky-directed projection: the universal correct-rounding decision for
+# a value with one neglected tail of known direction
+@inline _finish(::Type{F}, ρ::Projection, R::Int, s::Sticky) where {F<:Binary} =
+    project(F, ρ, s.v; R, sticky = s.sgn)
+
+# ---- apply_op ---------------------------------------------------------------
+# the explicit Float64 union split keeps the widened result union off the hot
+# path (measured in SmallFloats: 399 → 269 ns/element); everything else goes
+# through the @noinline finisher. Vararg carries a LENGTH parameter so the
+# splat compiles to a static call rather than a boxing dynamic apply.
+@inline function apply_op(op::Val, ::Type{F}, ρ::Projection, R::Int,
+                          x, xs::Vararg{Any, N}) where {F<:Binary, N}
+    res = ωeval(op, x, xs...)
+    res isa Float64 && return project(F, ρ, res; R)
+    _finish_slow(F, ρ, R, res)
+end
+@noinline _finish_slow(::Type{F}, ρ::Projection, R::Int, res) where {F<:Binary} =
+    _finish(F, ρ, R, res)
+
+# ---- the generated spec register --------------------------------------------
+# For each registry op:
+#   Op(F, ρ, x::BinaryValue...; rng, R)   — the draft form (F a format or a
+#                                           datum type/alias)
+#   Op(x::T...; ...) same-format          — under the session default ρ
+for op in OP_REGISTRY
+    op.name === :Convert && continue
+    name = op.name
+    V = Val{name}
+    xs = [Symbol(:x, i) for i in 1:op.arity]
+    spec = [:($(x)::BinaryValue) for x in xs]
+    same = [:($(x)::T) for x in xs]
+    dec = [:(decode($x)) for x in xs]
+    @eval begin
+        @inline function $name(fr::Type{<:Binary}, ρ::Projection, $(spec...);
+                               rng::MaybeRNG = nothing, R::MaybeR = nothing)
+            apply_op($V(), fr, ρ, _drawR(ρ, rng, R), $(dec...))
+        end
+        @inline $name(fr::Type{<:BinaryValue}, ρ::Projection, $(spec...); kw...) =
+            $name(BinaryFormatOf(fr), ρ, $(xs...); kw...)
+        # same-format convenience under the session default projection. The
+        # SPECULATION GUARD: the default is read from a Ref{Projection} (an
+        # abstract slot, so the call through it is dynamic and boxes); the
+        # untouched default RTE_SN is tested by identity and called with the
+        # literal constant, so the common case is a static, allocation-free
+        # call. Spelled inline — a closure would defeat the split.
+        @inline function $name($(same...); kw...) where {T<:BinaryValue}
+            ρ = DefaultProjection()
+            ρ === RTE_SN && return $name(BinaryFormatOf(T), RTE_SN, $(xs...); kw...)
+            $name(BinaryFormatOf(T), ρ, $(xs...); kw...)
+        end
+        export $name
+    end
+end
+
+# ---- Convert ----------------------------------------------------------------
+# the one op accepting external operands: each method is a bare projection
+# after an EXACT widening. Rational and Irrational inputs are rejected rather
+# than double-rounded silently.
+
+"""
+    Convert(F, ρ, x; rng, R) -> BinaryValue
+
+Project `x` into format `F` under projection `ρ` — the draft's Convert.
+Accepts a `BinaryValue` (any format), `Float64`/`Float32`/`Float16`/`BFloat16`
+(exact widening), `Float128`, `BigFloat`, or an `Integer` (widened exactly).
+
+`Rational` and `Irrational` inputs are refused: their exact projection is not
+representable as a single rounding of a float, and silently double-rounding
+would be a lie.
+
+# Examples
+
+```jldoctest
+julia> Convert(Binary(8, 4, SIGNED, EXTENDED), RTE_SF, 1.6)
+1.625
+```
+"""
+@inline function Convert(fr::Type{<:Binary}, ρ::Projection, x::BinaryValue;
+                         rng::MaybeRNG = nothing, R::MaybeR = nothing)
+    project(fr, ρ, decode(x); R = _drawR(ρ, rng, R))
+end
+@inline function Convert(fr::Type{<:Binary}, ρ::Projection, x::Float64;
+                         rng::MaybeRNG = nothing, R::MaybeR = nothing)
+    project(fr, ρ, x; R = _drawR(ρ, rng, R))
+end
+@inline Convert(fr::Type{<:Binary}, ρ::Projection, x::Union{Float32, Float16, BFloat16}; kw...) =
+    Convert(fr, ρ, Float64(x); kw...)           # exact widening
+@inline function Convert(fr::Type{<:Binary}, ρ::Projection, x::Float128;
+                         rng::MaybeRNG = nothing, R::MaybeR = nothing)
+    project(fr, ρ, x; R = _drawR(ρ, rng, R))
+end
+@inline function Convert(fr::Type{<:Binary}, ρ::Projection, x::BigFloat;
+                         rng::MaybeRNG = nothing, R::MaybeR = nothing)
+    project(fr, ρ, x; R = _drawR(ρ, rng, R))
+end
+# an Integer with |x| ≤ 2^53 is EXACT in Float64, so the widening is not a
+# rounding and the projection below is still the one and only rounding. The
+# BigFloat route stays for everything wider (BigInt, the top of Int64/UInt64).
+# The comparisons are exact for every Integer type: Julia compares mixed
+# integer types by value, never by a lossy promotion.
+const _F64_EXACT_INT = Int64(1) << 53
+@inline function Convert(fr::Type{<:Binary}, ρ::Projection, x::Integer;
+                         rng::MaybeRNG = nothing, R::MaybeR = nothing)
+    -_F64_EXACT_INT <= x <= _F64_EXACT_INT && return Convert(fr, ρ, Float64(x); rng, R)
+    b = setprecision(BigFloat, max(64, ndigits(x, base = 2) + 8)) do
+        BigFloat(x)                             # exact at this width
+    end
+    project(fr, ρ, b; R = _drawR(ρ, rng, R))
+end
+@noinline Convert(fr::Type{<:Binary}, ρ::Projection, x::Rational; kw...) =
+    throw(ArgumentError("Convert does not accept Rational: its exact projection is not a single float rounding — convert explicitly and own the double rounding"))
+@noinline Convert(fr::Type{<:Binary}, ρ::Projection, x::Irrational; kw...) =
+    throw(ArgumentError("Convert does not accept Irrational: supply a rounded float, or use the interval route"))
+@inline Convert(fr::Type{<:BinaryValue}, ρ::Projection, x; kw...) =
+    Convert(BinaryFormatOf(fr), ρ, x; kw...)
+export Convert
+
+# ---- construction from a value ----------------------------------------------
+# the BinaryValue value constructor: an Unsigned is a code point (defined with
+# the struct); every other Real is a value and goes through Convert — under an
+# explicit projection keyword, defaulting to the session projection.
+#
+# `projection` defaults to `nothing`, not to `DefaultProjection()`: an eagerly
+# evaluated default would read the abstract Ref on EVERY call and force the
+# dynamic, boxing call through it. `nothing` means "ask the session", and the
+# ask carries the same SPECULATION GUARD the generated op methods use — the
+# untouched default RTE_SN is tested by identity and passed as the literal
+# constant, so the common construction is a static, allocation-free call.
+@inline function (::Type{BinaryValue{F,U}})(x::Real;
+        projection::Union{Nothing, Projection} = nothing,
+        rng::MaybeRNG = nothing, R::MaybeR = nothing) where {F<:Binary, U<:Unsigned}
+    projection === nothing || return Convert(F, projection, x; rng, R)::BinaryValue{F,U}
+    ρ = DefaultProjection()
+    ρ === RTE_SN && return Convert(F, RTE_SN, x; rng, R)::BinaryValue{F,U}
+    Convert(F, ρ, x; rng, R)::BinaryValue{F,U}
+end

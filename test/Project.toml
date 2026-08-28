@@ -1,7 +1,13 @@
 [deps]
 AIFloats = "021c5541-574e-4699-a644-4e7fe83e8672"
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
+BFloat16s = "ab4f0b2a-ad5b-11e8-123f-65d77653426b"
+JET = "c3a54625-cd67-489e-a8e7-0a5a0ff4e31b"
+Quadmath = "be4d8f0f-7fa4-5f49-b795-2f01399ab2dd"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"
 TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [sources]
 AIFloats = {path = ".."}

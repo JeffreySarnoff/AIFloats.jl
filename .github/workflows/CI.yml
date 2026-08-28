@@ -67,6 +67,6 @@ jobs:
         shell: julia --project=docs --color=yes {0}
         run: |
           using Documenter: DocMeta, doctest
-          using FloatBytes
-          DocMeta.setdocmeta!(FloatBytes, :DocTestSetup, :(using FloatBytes); recursive=true)
-          doctest(FloatBytes)
+          using AIFloats
+          DocMeta.setdocmeta!(AIFloats, :DocTestSetup, :(using AIFloats); recursive=true)
+          doctest(AIFloats)

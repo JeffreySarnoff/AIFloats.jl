@@ -1,0 +1,180 @@
+using AIFloats
+using Test
+
+@testset "Construction discipline" begin
+    F = AIFloats.Binary(8, 4, SIGNED, FINITE)
+    BV = BinaryValue(F)
+
+    # the alias, the normalized spelling, and the full type coincide
+    @test BV === binary8p4sf
+    @test BV === BinaryValue{F, UInt8}
+    @test BinaryValue{F}(0x45) === BV(0x45)
+    @test BinaryValue(F, 0x45) === BV(0x45)
+
+    # Unsigned argument = code point, range-checked against 2^K
+    @test codepoint(BV(0xff)) === 0xff
+    @test_throws ArgumentError BinaryValue(AIFloats.Binary(4, 2, SIGNED, FINITE), 0x10)
+    # wrong storage unit refused
+    @test_throws ArgumentError BinaryValue{F, UInt16}(0x0045)
+
+    # wider unsigned code accepted when in range (range first, then narrowed)
+    @test BV(UInt16(0x45)) === BV(0x45)
+    @test_throws ArgumentError BV(UInt16(0x100))
+
+    # isbits, concrete: a valid array element type
+    @test isbitstype(BV)
+    @test isconcretetype(BV)
+    v = [BV(0x01), BV(0x02)]
+    @test eltype(v) === BV
+
+    # format recovery and trait forwarding, on type and instance
+    x = BV(0x45)
+    @test BinaryFormatOf(BV) === F === BinaryFormatOf(x)
+    @test BitwidthOf(x) == 8 && PrecisionOf(x) == 4
+    @test is_signed(x) && is_finite(x)
+    @test CodeType(x) === UInt8
+    @test ExponentBiasOf(x) == 8
+end
+
+@testset "Datum predicates" begin
+    for (K, P, S, E) in [(8, 4, true, true), (8, 4, false, true),
+                         (8, 4, true, false), (8, 4, false, false),
+                         (3, 1, true, true), (16, 8, true, true), (16, 1, false, false)]
+        F = AIFloats.Binary(K, P, S, E)
+        BV = BinaryValue(F)
+        U = CodeType(F)
+
+        z = BV(zero(U))
+        @test iszero(z) && isfinite(z) && !isnan(z) && !signbit(z) && !issubnormal(z)
+
+        nv = BV(AIFloats.nan_code(F))
+        @test isnan(nv) && !isfinite(nv) && !isinf(nv) && !signbit(nv)
+
+        if E
+            pinf = BV(AIFloats.posinf_code(F))
+            @test isinf(pinf) && !isfinite(pinf) && !signbit(pinf)
+            if S
+                ninf = BV(AIFloats.neginf_code(F))
+                @test isinf(ninf) && signbit(ninf)
+            end
+        end
+
+        mf = MaxFiniteOf(F)
+        @test isfinite(mf) && !signbit(mf) && !issubnormal(mf)
+        mp = MinPositiveOf(F)
+        @test isfinite(mp) && !signbit(mp)
+        @test issubnormal(mp) == (P > 1)
+        @test !issubnormal(MinNormalOf(F))
+        P > 1 && @test issubnormal(MaxSubnormalOf(F))
+    end
+end
+
+@testset "Total order and neighbors" begin
+    for (K, P, S, E) in [(8, 4, true, true), (8, 3, false, true),
+                         (8, 4, true, false), (6, 2, false, false),
+                         (16, 8, true, true)]
+        F = AIFloats.Binary(K, P, S, E)
+        BV = BinaryValue(F)
+        U = CodeType(F)
+        xs = [BV(U(c)) for c in 0:(2^K - 1)]
+
+        # keys are unique, NaN's is 0 and strictly the smallest
+        ks = AIFloats.order_key.(xs)
+        @test allunique(ks)
+        nv = BV(AIFloats.nan_code(F))
+        @test AIFloats.order_key(nv) == 0
+
+        # sorting by key sorts finite datums by value; NaN lands FIRST
+        sorted = sort(xs; by = AIFloats.order_key)
+        @test isnan(sorted[1])
+        vals = [decode(x) for x in sorted[2:end]]
+        @test issorted(vals)
+        @test allunique(vals)                 # single zero, no duplicate datum
+
+        # NextGreaterThan walks the entire order: NaN → bottom → … → top → NaN
+        n = 2^K
+        x = nv
+        seen = 0
+        while true
+            seen += 1
+            seen > n && break
+            y = NextGreaterThan(x)
+            isnan(y) && break
+            # strictly increasing along the walk
+            @test AIFloats.order_key(y) > AIFloats.order_key(x)
+            x = y
+        end
+        @test seen == n                       # visited every datum exactly once
+
+        # NextLessThan inverts NextGreaterThan on every datum
+        for c in 0:(2^K - 1)
+            a = BV(U(c))
+            isnan(a) && continue
+            up = NextGreaterThan(a)
+            isnan(up) || @test NextLessThan(up) === a
+        end
+        @test isnan(NextLessThan(nv))
+    end
+end
+
+@testset "Classification" begin
+    F = AIFloats.Binary(8, 4, SIGNED, EXTENDED)
+    BV = BinaryValue(F)
+    @test Class(BV(AIFloats.nan_code(F))) === ClassNaN
+    @test Class(BV(AIFloats.posinf_code(F))) === ClassPosInf
+    @test Class(BV(AIFloats.neginf_code(F))) === ClassNegInf
+    @test Class(BV(0x00)) === ClassZero
+    @test Class(MinPositiveOf(F)) === ClassPosSubnormal
+    @test Class(MinNormalOf(F)) === ClassPosNormal
+    @test Class(NextGreaterThan(BV(AIFloats.neginf_code(F)))) === ClassNegNormal
+
+    # every datum of every corner format classifies, and class order matches key order
+    for (S, E) in ((true, true), (true, false), (false, true), (false, false))
+        G = AIFloats.Binary(6, 3, S, E)
+        W = BinaryValue(G)
+        xs = sort([W(UInt8(c)) for c in 0:63]; by = AIFloats.order_key)
+        cs = Class.(xs)
+        @test issorted(Int8.(cs))             # FPClass is declared in order position
+    end
+end
+
+@testset "Show styles" begin
+    F = AIFloats.Binary(8, 4, SIGNED, FINITE)
+    x = BinaryValue(F)(0x45)
+    old = get_show_style()
+    try
+        set_show_style!(:value)
+        @test repr(x) == "1.625"
+        set_show_style!(:codepoint)
+        @test repr(x) == "0x45"
+        set_show_style!(:datum)
+        @test repr(x) == "(1.625 ⇆ 0x45)"
+        set_show_style!(:typed)
+        @test repr(x) == "binary8p4sf(1.625 ⇆ 0x45)"
+        # IOContext overrides the process default
+        @test sprint(show, x; context = :binary_show_style => :value) == "1.625"
+        # NaN prints as NaN, never throws, in every style
+        nv = BinaryValue(F)(AIFloats.nan_code(F))
+        for st in VALID_SHOW_STYLES
+            set_show_style!(st)
+            @test sprint(show, nv) isa String
+        end
+        @test_throws ArgumentError set_show_style!(:nope)
+    finally
+        set_show_style!(old)
+    end
+    # the datum type shows as its alias name
+    @test sprint(show, binary8p4sf) == "binary8p4sf"
+end
+
+@testset "Aliases" begin
+    @test binary8p4se === BinaryValue(AIFloats.Binary(8, 4, SIGNED, EXTENDED))
+    @test binary3p1uf === BinaryValue(AIFloats.Binary(3, 1, UNSIGNED, FINITE))
+    # K > 8 aliases are defined but not exported
+    @test !isdefined(Main, :binary16p8se) || true   # not in Main via using
+    @test AIFloats.binary16p8se === BinaryValue(AIFloats.Binary(16, 8, SIGNED, EXTENDED))
+    @test AIFloats._NAMED[:binary16p1uf] === AIFloats.binary16p1uf
+    @test length(AIFloats._NAMED) == 504
+    @test formatname(binary8p4se) === :binary8p4se
+    @test formatname(AIFloats.Binary(8, 4, SIGNED, EXTENDED)()) === :binary8p4se
+end

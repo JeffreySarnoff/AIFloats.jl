@@ -74,7 +74,7 @@ using Test
         @test AIFloats.DomainOf(B) == AIFloats.DomainOf(B())
 
         for (K, P, S, D) in [(16, 10, SIGNED, FINITE), (8, 4, UNSIGNED, EXTENDED),
-                             (3, 1, SIGNED, EXTENDED), (32, 24, UNSIGNED, FINITE)]
+                             (3, 1, SIGNED, EXTENDED), (16, 16, UNSIGNED, FINITE)]
             T = AIFloats.Binary(K, P, S, D)
             @test AIFloats.BitwidthOf(T) == K
             @test AIFloats.PrecisionOf(T) == P
@@ -130,19 +130,32 @@ using Test
     end
 
     @testset "Show Binary" begin
+        # plain show spells the fields out; MIME"text/plain" (what the REPL uses) is glyphic
         io = IOBuffer()
         show(io, MIME("text/plain"), b)
-        @test String(take!(io)) == "Binary{16, 10, false, true}"
+        @test String(take!(io)) == "Binary{16, 10, +, ∞}"
 
         io = IOBuffer()
         show(io, b)
-        @test String(take!(io)) == "Binary{16, 10, false, true}"
+        @test String(take!(io)) == "Binary{16, 10, UNSIGNED, EXTENDED}"
 
-        @test repr(b) == "Binary{16, 10, false, true}"
-        @test repr(MIME("text/plain"), b) == "Binary{16, 10, false, true}"
+        @test repr(b) == "Binary{16, 10, UNSIGNED, EXTENDED}"
+        @test repr(MIME("text/plain"), b) == "Binary{16, 10, +, ∞}"
 
         sb = AIFloats.Binary{8, 4, true, false}()
-        @test sprint(show, sb) == "Binary{8, 4, true, false}"
-        @test sprint(show, MIME("text/plain"), sb) == "Binary{8, 4, true, false}"
+        @test sprint(show, sb) == "Binary{8, 4, SIGNED, FINITE}"
+        @test sprint(show, MIME("text/plain"), sb) == "Binary{8, 4, ±, ⏥}"
+
+        # a format and its type display alike
+        @test repr(sb) == repr(typeof(sb))
+        @test repr(MIME("text/plain"), sb) == repr(MIME("text/plain"), typeof(sb))
+
+        # all four corners of the glyph form: ± / + for signedness, ∞ / ⏥ for domain
+        for (S, D, glyphs) in [(SIGNED, FINITE, "±, ⏥"), (SIGNED, EXTENDED, "±, ∞"),
+                               (UNSIGNED, FINITE, "+, ⏥"), (UNSIGNED, EXTENDED, "+, ∞")]
+            T = AIFloats.Binary(8, 4, S, D)
+            @test repr(MIME("text/plain"), T) == "Binary{8, 4, $glyphs}"
+            @test repr(T) == "Binary{8, 4, $(string(S)), $(string(D))}"
+        end
     end
 end
