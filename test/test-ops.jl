@@ -1,5 +1,6 @@
 using AIFloats
 using Test
+using Quadmath: Float128
 using Random
 
 @isdefined(RefImpl) || include(joinpath(@__DIR__, "support", "refimpl.jl"))
@@ -196,4 +197,51 @@ end
     a = Convert(binary8p4se, Projection(AIFloats.ρRSA(8), SF), 1.3; rng = Xoshiro(1))
     b = Convert(binary8p4se, Projection(AIFloats.ρRSA(8), SF), 1.3; rng = Xoshiro(1))
     @test a === b
+end
+
+@testset "exact peels are exact, and stay in their carrier" begin
+    # float128use.md §3. These peels exist so the enclosure does not chase an
+    # interior grid point forever. They were built as BigFloat, which made each
+    # SLOWER than the general path it shortcuts (Log2 499 ns against 29 ns).
+    # Built in the incoming carrier they are both exact and fast. C is Float64,
+    # Float128 or BigFloat here: Dyadic <: Real, not <: AbstractFloat.
+    exact(v) = Rational{BigInt}(setprecision(() -> BigFloat(v), BigFloat, 4096))
+    for C in (Float64, Float128, BigFloat)
+        for k in -40:40
+            p = ldexp(one(C), k)
+            (isfinite(p) && !iszero(p)) || continue
+            @test exact(AIFloats.ωeval(Val(:Log2), p)) == k
+        end
+        for n in -60:60
+            want = n >= 0 ? Rational{BigInt}(big(2)^n) : 1 // Rational{BigInt}(big(2)^(-n))
+            @test exact(AIFloats.ωeval(Val(:Exp2), C(n))) == want
+        end
+        @test exact(AIFloats.ωeval(Val(:ArcSinPi), one(C)))  ==  1//2
+        @test exact(AIFloats.ωeval(Val(:ArcSinPi), -one(C))) == -1//2
+        @test exact(AIFloats.ωeval(Val(:ArcCosPi), -one(C))) ==  1//1
+        @test exact(AIFloats.ωeval(Val(:ArcCosPi), zero(C))) ==  1//2
+        @test exact(AIFloats.ωeval(Val(:ArcTanPi), C(Inf)))  ==  1//2
+        @test exact(AIFloats.ωeval(Val(:ArcTanPi), C(-Inf))) == -1//2
+        @test exact(AIFloats.ωeval(Val(:ArcTanPi), one(C)))  ==  1//4
+        @test exact(AIFloats.ωeval(Val(:ArcTanPi), -one(C))) == -1//4
+        @test exact(AIFloats.ωeval(Val(:ArcTan2Pi),  one(C),  one(C))) ==  1//4
+        @test exact(AIFloats.ωeval(Val(:ArcTan2Pi),  one(C), -one(C))) ==  3//4
+        @test exact(AIFloats.ωeval(Val(:ArcTan2Pi), -one(C),  one(C))) == -1//4
+        @test exact(AIFloats.ωeval(Val(:ArcTan2Pi), -one(C), -one(C))) == -3//4
+    end
+
+    # Exp2's exact answer can leave the input's carrier while still mattering to
+    # a wider result format, so its carrier is chosen by round-trip, never
+    # inferred from C. Verify the ladder and that every rung is exact.
+    @test AIFloats.ωeval(Val(:Exp2), 3.0)      isa Float64
+    @test AIFloats.ωeval(Val(:Exp2), 5000.0)   isa Float128
+    @test AIFloats.ωeval(Val(:Exp2), 20000.0)  isa BigFloat
+    for n in (1023, 1024, 16383, 16384, 20000, -1074, -1075, -16494, -16495, -20000)
+        want = n >= 0 ? Rational{BigInt}(big(2)^n) : 1 // Rational{BigInt}(big(2)^(-n))
+        @test exact(AIFloats.ωeval(Val(:Exp2), Float64(n))) == want
+    end
+    # the peels must not widen a Float64 caller to BigFloat
+    @test AIFloats.ωeval(Val(:Log2), 8.0)      isa Float64
+    @test AIFloats.ωeval(Val(:ArcTanPi), 1.0)  isa Float64
+    @test AIFloats.ωeval(Val(:ArcSinPi), 1.0)  isa Float64
 end

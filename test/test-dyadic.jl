@@ -2,6 +2,7 @@ using AIFloats
 using Test
 using Random
 using Quadmath: Float128
+using BFloat16s: BFloat16
 using AIFloats: DyadicNumbers, Dyadic, lift, rung, HeadF64, HeadF128, HeadExact, fma128, faa128
 
 # The adapted Dyadic carrier is the ORIGINAL: golden digests captured from
@@ -120,4 +121,29 @@ end
         end
     end
     @test faa128(Float128(1), Float128(2)^-113, Float128(2)^-226) == nextfloat(Float128(1))
+end
+
+@testset "Float128/BFloat16 from Dyadic take the exact route" begin
+    # float128use.md §5: heads.jl built these as `T(BigFloat(x))`, skipping
+    # `_dyadic_to`'s exact branch — 196 ns and 13 allocations where the
+    # identical Float64 method already managed 3.3 ns. Delegating must not
+    # change a single value, including at the rounding boundaries where
+    # `_dyadic_to` deliberately falls back through BigFloat.
+    D = AIFloats.DyadicNumbers
+    wide(d) = setprecision(() -> BigFloat(d), BigFloat, 4096)
+    rng = MersenneTwister(3)
+    for _ in 1:20000
+        d = D.Dyadic(Int128(rand(rng, Int64)), rand(rng, -200:200))
+        @test isequal(Float128(d), Float128(wide(d)))
+        @test isequal(BFloat16(d), BFloat16(wide(d)))
+    end
+    for d in (D.DYADIC_ZERO, D.DYADIC_ONE, D.DYADIC_POSINF, D.DYADIC_NEGINF, D.DYADIC_NAN,
+              D.Dyadic(Int128(1), Int64(-16500)),   # below Float128's subnormal floor
+              D.Dyadic(Int128(1), Int64(16380)),    # near its top
+              D.Dyadic(Int128(-1), Int64(-16500)),
+              D.Dyadic(typemax(Int128), Int64(0)),  # 127 significant bits: must round once
+              D.Dyadic(typemin(Int128), Int64(0)))
+        @test isequal(Float128(d), Float128(wide(d)))
+        @test isequal(BFloat16(d), BFloat16(wide(d)))
+    end
 end

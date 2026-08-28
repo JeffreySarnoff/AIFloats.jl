@@ -153,9 +153,33 @@ end
 # The comparisons are exact for every Integer type: Julia compares mixed
 # integer types by value, never by a lossy promotion.
 const _F64_EXACT_INT = Int64(1) << 53
+
+"""
+    _exact_in_float128(x::Integer) -> Bool
+
+Whether `x` is EXACTLY representable as a `Float128`. Not a magnitude test: a
+bound like `|x| ≤ 2^113` is safe but rejects `2^10000`, which is exact. What
+matters is the significant bits left after the trailing zeroes, plus the
+exponent fitting binary128's finite range (float128use.md §2).
+
+Works for every `Integer` — signed, `typemin`, `UInt128`, `BigInt` — without
+narrowing first, which is why the arithmetic below stays in the integer domain.
+"""
+@inline function _exact_in_float128(x::Integer)
+    iszero(x) && return true
+    nbits = ndigits(x, base = 2)                # bit length of |x|
+    sigbits = nbits - trailing_zeros(x)
+    sigbits <= 113 || return false
+    (nbits - 1) <= Int(exponent(floatmax(Float128)))
+end
+
+# The carrier ladder for an integer value, cheapest gate first. Each rung is
+# EXACT, so the projection below it remains the one and only rounding — none of
+# this is a double rounding.
 @inline function Convert(fr::Type{<:Binary}, ρ::Projection, x::Integer;
                          rng::MaybeRNG = nothing, R::MaybeR = nothing)
     -_F64_EXACT_INT <= x <= _F64_EXACT_INT && return Convert(fr, ρ, Float64(x); rng, R)
+    _exact_in_float128(x) && return project(fr, ρ, Float128(x); R = _drawR(ρ, rng, R))
     b = setprecision(BigFloat, max(64, ndigits(x, base = 2) + 8)) do
         BigFloat(x)                             # exact at this width
     end

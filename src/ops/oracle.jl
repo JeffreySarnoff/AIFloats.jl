@@ -602,6 +602,32 @@ end
 # Domain violations are NaN (the flow of learning is unbroken — no exceptional
 # states).
 
+# ---- exact constants in the incoming carrier --------------------------------
+# The exact peels below (Log2 at a power of two, Exp2 at an integer, the
+# π-scaled inverse-trig rows at their rational points) exist so the enclosure
+# does not chase an interior grid point forever. They were built as `BigFloat`,
+# which made each of them SLOWER than the general path it shortcuts — measured
+# 499 ns against 29 ns for Log2, 536 against 23 for Exp2. A half, a quarter and
+# a small integer are exact in every carrier that reaches here (C is Float64,
+# Float128 or BigFloat: `Dyadic <: Real`, not `<: AbstractFloat`), so build them
+# with ldexp and one() and keep the carrier the caller arrived with.
+@inline _chalf(::Type{C}) where {C<:AbstractFloat} = ldexp(one(C), -1)
+@inline _cquarter(::Type{C}) where {C<:AbstractFloat} = ldexp(one(C), -2)
+@inline _csigned(v::C, negative::Bool) where {C<:AbstractFloat} = negative ? -v : v
+
+# 2^n in the narrowest carrier that holds it EXACTLY, else an exact BigFloat.
+# The check is a round-trip rather than a hard-coded exponent bound: an exact
+# power of two is representable iff ldexp gives back a finite nonzero value at
+# the same exponent, subnormals included. Never inferred from C — a narrow
+# input can have an exact result only a wider result format can see.
+@inline function _exact_pow2(n::Int)
+    r64 = ldexp(1.0, n)
+    (isfinite(r64) && !iszero(r64) && exponent(r64) == n) && return r64
+    r128 = ldexp(one(Float128), n)
+    (isfinite(r128) && !iszero(r128) && exponent(r128) == n) && return r128
+    setprecision(() -> ldexp(BigFloat(1), n), BigFloat, 64)
+end
+
 # libm-shaped rows sharing one pattern: (name, bigf, domain predicate on
 # finite x [true = in domain], value rows at specials)
 function ωeval(::Val{:Exp}, x::C) where {C<:AbstractFloat}
@@ -616,9 +642,7 @@ function ωeval(::Val{:Exp2}, x::C) where {C<:AbstractFloat}
     iszero(x) && return one(C)
     # exact at integer x: 2^n is a datum candidate — peel to avoid chasing an
     # interior grid point forever
-    (isinteger(x) && abs(x) <= 2^20) && return setprecision(BigFloat, 64) do
-        ldexp(BigFloat(1), Int(x))
-    end
+    (isinteger(x) && abs(x) <= 2^20) && return _exact_pow2(Int(x))
     _mpfr1(exp2, x)
 end
 function ωeval(::Val{:ExpMinusOne}, x::C) where {C<:AbstractFloat}
@@ -642,7 +666,7 @@ function ωeval(::Val{:Log2}, x::C) where {C<:AbstractFloat}
     isinf(x) && return _cinf(C)
     # exact at powers of two — the enclosure would straddle the integer forever
     if x == ldexp(one(C), exponent(x))
-        return setprecision(() -> BigFloat(exponent(x)), BigFloat, 64)
+        return C(exponent(x))          # a small integer, exact in every carrier
     end
     _mpfr1(log2, x)
 end
@@ -777,24 +801,22 @@ function ωeval(::Val{:ArcSinPi}, x::C) where {C<:AbstractFloat}
     abs(x) > 1 && return _cnan(C)
     iszero(x) && return _czero(C)
     # ArcSinPi(±1) = ±½ — exact, and a datum candidate: peel it [Niven]
-    abs(x) == 1 && return setprecision(BigFloat, 64) do
-        signbit(x) ? BigFloat(-1) / 2 : BigFloat(1) / 2
-    end
+    abs(x) == 1 && return _csigned(_chalf(C), signbit(x))
     _mpfr_divpi(asin, x)
 end
 function ωeval(::Val{:ArcCosPi}, x::C) where {C<:AbstractFloat}
     isnan(x) && return _cnan(C)
     abs(x) > 1 && return _cnan(C)
     isone(x) && return _czero(C)
-    x == -1 && return one(BigFloat)
-    iszero(x) && return setprecision(() -> BigFloat(1) / 2, BigFloat, 64)
+    x == -1 && return one(C)
+    iszero(x) && return _chalf(C)
     _mpfr_divpi(acos, x)
 end
 function ωeval(::Val{:ArcTanPi}, x::C) where {C<:AbstractFloat}
     isnan(x) && return _cnan(C)
     iszero(x) && return _czero(C)
-    isinf(x) && return setprecision(() -> copysign(BigFloat(1) / 2, signbit(x) ? -1 : 1), BigFloat, 64)
-    isone(abs(x)) && return setprecision(() -> copysign(BigFloat(1) / 4, signbit(x) ? -1 : 1), BigFloat, 64)
+    isinf(x) && return _csigned(_chalf(C), signbit(x))
+    isone(abs(x)) && return _csigned(_cquarter(C), signbit(x))
     _mpfr_divpi(atan, x)
 end
 
@@ -845,7 +867,7 @@ function ωeval(::Val{:ArcTan2Pi}, y::C, x::C) where {C<:AbstractFloat}
     (y < 0 && iszero(x)) && return C(-0.5)
     if abs(x) == abs(y)                              # the exact quarter-integer peels
         q = (x > 0 ? (y > 0 ? 1 : -1) : (y > 0 ? 3 : -3))
-        return setprecision(() -> BigFloat(q) / 4, BigFloat, 64)
+        return ldexp(C(q), -2)         # q/4 with q ∈ {±1, ±3}: exact
     end
     _arctan2pi_general(y, x)
 end

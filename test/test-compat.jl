@@ -313,4 +313,42 @@ end
     for n in (-3, 0, 3, 17, 2^53, -2^53)
         @test B8(n) === Convert(F8, DefaultProjection(), n)
     end
+
+    # float128use.md §2: a Float128 rung sits between the Float64 gate and the
+    # BigFloat route. Its predicate is significant bits after the trailing
+    # zeroes, NOT magnitude — 2^10000 is exactly representable and must be
+    # accepted, a 114-bit odd significand must not.
+    @test AIFloats._exact_in_float128(0)
+    @test AIFloats._exact_in_float128(big(2)^113)
+    @test AIFloats._exact_in_float128(big(2)^10000)          # magnitude alone would reject
+    @test AIFloats._exact_in_float128(big(2)^113 - 1)        # exactly 113 significant bits
+    @test !AIFloats._exact_in_float128(big(2)^114 + 1)       # 115 significant bits
+    @test !AIFloats._exact_in_float128(big(2)^20000)         # past the exponent range
+    @test AIFloats._exact_in_float128(typemax(Int64))        # 63 significant bits
+    @test AIFloats._exact_in_float128(typemin(Int64))
+    @test AIFloats._exact_in_float128(typemax(UInt64))
+    # whenever it accepts, the Float128 value must equal the integer exactly
+    let rng = MersenneTwister(11)
+        pool = vcat([big(2)^k for k in 0:400], [big(2)^k + 1 for k in 0:400],
+                    [big(rand(rng, Int64)) * big(2)^rand(rng, 0:300) for _ in 1:400],
+                    [rand(rng, Int128) for _ in 1:400])
+        for x in pool
+            AIFloats._exact_in_float128(x) || continue
+            v = Float128(x)
+            @test isfinite(v)
+            @test Rational{BigInt}(setprecision(() -> BigFloat(v), BigFloat, 20000)) ==
+                  Rational{BigInt}(big(x))
+        end
+    end
+    # and the whole ladder still equals a reference that never leaves MPFR
+    let ref(F, ρ, n) = project(F, ρ, setprecision(() -> BigFloat(n), BigFloat, 20000)),
+        wide = [2^53 + 1, -2^53 - 1, typemax(Int64), typemin(Int64), typemax(UInt64),
+                typemax(Int128), typemin(Int128), big(2)^113, big(2)^113 + 1,
+                big(2)^114 + 1, big(2)^200, big(2)^200 + 1, big(2)^16383,
+                big(2)^20000, -big(2)^200]
+        for F in (F8, F9, Binary(16, 5, SIGNED, EXTENDED)),
+            ρ in (RTE_SN, RTZ_SF, RTP_SN, RTN_SF, RTA_SP), n in wide
+            @test codepoint(Convert(F, ρ, n)) == codepoint(ref(F, ρ, n))
+        end
+    end
 end

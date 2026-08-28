@@ -116,9 +116,15 @@ const CarrierValue = Union{Float64, Float128, BigFloat, Dyadic}
 @inline _isposinf(x) = isinf(x) & !signbit(x)
 @inline _isneginf(x) = isinf(x) & signbit(x)
 
-# conversions out of the exact carrier for the types dyadic.jl cannot see
-(::Type{Float128})(x::Dyadic) = Float128(BigFloat(x))
-(::Type{BFloat16})(x::Dyadic) = BFloat16(BigFloat(x))
+# conversions out of the exact carrier for the types dyadic.jl cannot see.
+# `_dyadic_to` is generic over `T<:AbstractFloat` and already carries the rule
+# these need: take `ldexp` only where NO rounding occurs on either route, and
+# otherwise take a SINGLE rounding through the exact BigFloat. Going straight to
+# `T(BigFloat(x))` here skipped its exact branch and cost 196 ns / 13
+# allocations against the 3.3 ns the identical `Float64` method already
+# achieved (float128use.md §5).
+(::Type{Float128})(x::Dyadic) = DyadicNumbers._dyadic_to(Float128, x)
+(::Type{BFloat16})(x::Dyadic) = DyadicNumbers._dyadic_to(BFloat16, x)
 
 # ---- lift: the carrier join, UPWARD ONLY ------------------------------------
 # Every method is exact by construction. There is deliberately no narrowing
