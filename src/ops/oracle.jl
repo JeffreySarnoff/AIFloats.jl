@@ -524,9 +524,69 @@ for (nm, base) in ((:MaximumFinite, :Maximum), (:MinimumFinite, :Minimum))
 end
 
 # ---- the quotient family: fma exactness proof, else the ladder --------------
-# fma(q, y, -x) == 0 is a proof only where fma is exact (Float64 hardware);
-# elsewhere go straight to the ladder — an MPFR "proof" at ambient precision
-# yields false positives.
+# fma(q, y, -x) == 0 is a proof only where fma is EXACT — Float64 hardware, and
+# `fma128`, which is correctly rounded by construction and bit-compatible with
+# fmaq. An MPFR "proof" at ambient precision yields false positives, so the
+# BigFloat rows go straight to the ladder.
+#
+# The Float128 tier (float128use.md §1). Measured exactness rates over the code
+# space of rung-2 formats: at P = 5, 15.2% of quotients, 6.2% of reciprocals and
+# 9.2% of square roots are exact; at P = 2 it is 75.0%, 49.9% and 24.9%. Low
+# precision is where this package lives, so the proof earns its keep.
+#
+# THE FLOOR IS A PROOF OBLIGATION, not defensive coding — the Float64 twin of
+# this constant was shipped without it and a test caught the bug. For division,
+# the residual d = q·y − x is a difference between an exact product of two
+# Float128s (≤ 226 significant bits) and x (≤ 113), with both terms of magnitude
+# ≈ |x| because q = fl(x/y). So d ≠ 0 ⇒ |d| ≥ |x|·2^-225. `fma128` correctly
+# rounds d and returns zero only below half the minimum subnormal, 2^-16495.
+# The implication "fma128 == 0 ⇒ exact" therefore needs |x|·2^-225 ≥ 2^-16495,
+# i.e. |x| ≥ 2^-16270. The constant below adds ~70 binades of margin. Square
+# root takes the identical bound with s·s in place of q·y.
+#
+# A rung-2 format has 2B ≤ 16384 and P ≤ 16, so its smallest positive datum is
+# about 2^-8206 — clear of the floor by more than 7,900 binades. Like
+# `_FMA_EXACT_FLOOR`, it never fires in practice and makes the proof sound
+# unconditionally.
+const _F128_EXACT_FLOOR = ldexp(one(Float128), -16200)
+
+"""
+    _try_div128(x, y) -> Union{Float128, Nothing}
+
+`x / y` when it is EXACTLY representable in `Float128`, else `nothing` — a
+refusal, not an error: the caller runs the unchanged MPFR ladder. Assumes the
+caller has already peeled NaN, the infinities and the zeros, so both operands
+are finite and nonzero.
+"""
+@inline function _try_div128(x::Float128, y::Float128)
+    q = x / y
+    (isfinite(q) && !iszero(q) && abs(x) >= _F128_EXACT_FLOOR) || return nothing
+    iszero(fma128(q, y, -x)) ? q : nothing
+end
+
+"""
+    _try_recip128(x) -> Union{Float128, Nothing}
+
+`1 / x` when exact in `Float128`, else `nothing`. No magnitude floor: the
+residual `q·x − 1` is measured against ONE, so a nonzero residual is at least
+2^-226 in magnitude and cannot underflow.
+"""
+@inline function _try_recip128(x::Float128)
+    q = one(Float128) / x
+    (isfinite(q) && !iszero(q)) || return nothing
+    iszero(fma128(q, x, -one(Float128))) ? q : nothing
+end
+
+"""
+    _try_sqrt128(x) -> Union{Float128, Nothing}
+
+`√x` when exact in `Float128`, else `nothing`. Assumes `x > 0` and finite.
+"""
+@inline function _try_sqrt128(x::Float128)
+    s = sqrt(x)
+    (isfinite(s) && !iszero(s) && x >= _F128_EXACT_FLOOR) || return nothing
+    iszero(fma128(s, s, -x)) ? s : nothing
+end
 
 function ωeval(::Val{:Divide}, x::Float64, y::Float64)
     (isnan(x) | isnan(y)) && return NaN
@@ -543,6 +603,19 @@ function ωeval(::Val{:Divide}, x::Float64, y::Float64)
     q = x / y
     (isfinite(q) && fma(q, y, -x) == 0.0) && return q
     Enclosure(_ladder2(/, x, y), () -> Float128(x) / Float128(y), isfinite(q) ? q : NaN)
+end
+function ωeval(::Val{:Divide}, x::Float128, y::Float128)
+    (isnan(x) | isnan(y)) && return _cnan(Float128)
+    if isinf(x)
+        isinf(y) && return _cnan(Float128)
+        return (signbit(x) ⊻ signbit(y)) ? _cninf(Float128) : _cinf(Float128)
+    end
+    isinf(y) && return _czero(Float128)
+    iszero(y) && return _cnan(Float128)        # one unsigned zero, as at rung 1
+    iszero(x) && return _czero(Float128)
+    q = _try_div128(x, y)
+    q === nothing || return q
+    _mpfr2(/, x, y)
 end
 function ωeval(::Val{:Divide}, x, y)
     (isnan(x) | isnan(y)) && return _cnan(BigFloat)
@@ -564,6 +637,9 @@ function ωeval(::Val{:Recip}, x::C) where {C<:AbstractFloat}
         q = 1.0 / x
         (isfinite(q) && fma(q, x, -1.0) == 0.0) && return q
         return Enclosure(_ladder1(inv, x), () -> inv(Float128(x)), isfinite(q) ? q : NaN)
+    elseif x isa Float128
+        q = _try_recip128(x)
+        q === nothing || return q
     end
     Enclosure(_ladder1(inv, x))
 end
@@ -577,6 +653,9 @@ function ωeval(::Val{:Sqrt}, x::C) where {C<:AbstractFloat}
         s = sqrt(x)
         fma(s, s, -x) == 0.0 && return s
         return Enclosure(_ladder1(sqrt, x), () -> sqrt(Float128(x)), s)
+    elseif x isa Float128
+        s = _try_sqrt128(x)
+        s === nothing || return s
     end
     Enclosure(_ladder1(sqrt, x))
 end
@@ -593,6 +672,12 @@ function ωeval(::Val{:RSqrt}, x::C) where {C<:AbstractFloat}
             fma(r, s, -1.0) == 0.0 && return r
         end
         return Enclosure(_ladder1(b -> inv(sqrt(b)), x), () -> inv(sqrt(Float128(x))), 1.0 / s)
+    elseif x isa Float128
+        s = _try_sqrt128(x)                     # both stages, as at rung 1
+        if s !== nothing
+            r = _try_recip128(s)
+            r === nothing || return r
+        end
     end
     Enclosure(_ladder1(b -> inv(sqrt(b)), x))
 end

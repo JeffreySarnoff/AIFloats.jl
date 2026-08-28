@@ -245,3 +245,88 @@ end
     @test AIFloats.ωeval(Val(:ArcTanPi), 1.0)  isa Float64
     @test AIFloats.ωeval(Val(:ArcSinPi), 1.0)  isa Float64
 end
+
+@testset "Float128 exactness proofs for the quotient family" begin
+    # float128use.md §1/P3. `fma128` is correctly rounded by construction, so
+    # `fma128(q, y, -x) == 0` is a genuine proof above the magnitude floor —
+    # derived at the constant, not copied from the Float64 one. The MPFR ladder
+    # stays as the refusal path and as the reference here.
+    A = AIFloats
+    exq(v) = Rational{BigInt}(setprecision(() -> BigFloat(v), BigFloat, 20000))
+
+    # whenever a helper ACCEPTS, its value must be exactly right as a rational
+    pool = Float128[]
+    for (K, P) in ((16, 5), (16, 2), (16, 1))
+        F = Binary(K, P, SIGNED, EXTENDED)
+        A.datumcarrier(F) === Float128 || continue
+        T = BinaryValue(F)
+        append!(pool, filter(v -> isfinite(v) && !iszero(v),
+                             [decode(T(CodeType(F)(c))) for c in 0:409:2^K-1]))
+    end
+    append!(pool, Float128[Float128(3), Float128(1)/Float128(3),
+                           Float128(2)^100, Float128(2)^-100,
+                           Float128(2)^4000, Float128(2)^-4000])
+    naccept = 0
+    for a in pool, b in pool
+        q = A._try_div128(a, b)
+        q === nothing && continue
+        naccept += 1
+        @test exq(q) == exq(a) // exq(b)
+    end
+    for a in pool
+        r = A._try_recip128(a)
+        if r !== nothing; naccept += 1; @test exq(r) == 1 // exq(a) end
+        a > 0 || continue
+        s = A._try_sqrt128(a)
+        if s !== nothing; naccept += 1; @test exq(s) * exq(s) == exq(a) end
+    end
+    @test naccept > 0                       # the proofs must actually fire
+
+    # end to end: identical to the ladder, for every projection
+    refdiv(F, ρ, a, b) = A._finish(F, ρ, 0, A._mpfr2(/, decode(a), decode(b)))
+    refrec(F, ρ, a)    = A._finish(F, ρ, 0, A.Enclosure(A._ladder1(inv, decode(a))))
+    refsqrt(F, ρ, a)   = A._finish(F, ρ, 0, A.Enclosure(A._ladder1(sqrt, decode(a))))
+    refrsq(F, ρ, a)    = A._finish(F, ρ, 0, A.Enclosure(A._ladder1(b -> inv(sqrt(b)), decode(a))))
+    for (K, P) in ((16, 5), (16, 2))
+        F = Binary(K, P, SIGNED, EXTENDED)
+        A.datumcarrier(F) === Float128 || continue
+        T = BinaryValue(F)
+        cs = [T(CodeType(F)(c)) for c in 0:1021:2^K-1]
+        for ρ in (RTE_SN, RTZ_SF, RTP_SN, RTN_SF, RTO_SN, RTA_SP), a in cs
+            va = decode(a)
+            (isfinite(va) && !iszero(va)) || continue
+            @test codepoint(Recip(F, ρ, a)) == codepoint(refrec(F, ρ, a))
+            if va > 0
+                @test codepoint(Sqrt(F, ρ, a))  == codepoint(refsqrt(F, ρ, a))
+                @test codepoint(RSqrt(F, ρ, a)) == codepoint(refrsq(F, ρ, a))
+            end
+            for b in cs
+                vb = decode(b)
+                (isfinite(vb) && !iszero(vb)) || continue
+                @test codepoint(Divide(F, ρ, a, b)) == codepoint(refdiv(F, ρ, a, b))
+            end
+        end
+    end
+
+    # the special rows of the new Float128 Divide method match rung 1's
+    let F = Binary(16, 5, SIGNED, EXTENDED), T = BinaryValue(F), q = Float128
+        @test isnan(A.ωeval(Val(:Divide), q(Inf), q(Inf)))
+        @test isnan(A.ωeval(Val(:Divide), q(0), q(0)))
+        @test isnan(A.ωeval(Val(:Divide), q(1), q(0)))       # one unsigned zero
+        @test A.ωeval(Val(:Divide), q(1), q(Inf)) == 0
+        @test A.ωeval(Val(:Divide), q(-1), q(Inf)) == 0
+        @test isinf(A.ωeval(Val(:Divide), q(Inf), q(2)))
+        @test signbit(A.ωeval(Val(:Divide), q(Inf), q(-2)))
+        @test A.ωeval(Val(:Divide), q(0), q(2)) == 0
+        @test isnan(A.ωeval(Val(:Divide), q(NaN), q(1)))
+    end
+
+    # exact rung-2 results are allocation-free
+    let F = Binary(16, 5, SIGNED, EXTENDED), T = BinaryValue(F)
+        a, b = T(3.0), T(2.0)
+        Divide(F, RTE_SN, a, b); Recip(F, RTE_SN, b); Sqrt(F, RTE_SN, T(4.0))
+        @test (@allocated Divide(F, RTE_SN, a, b)) == 0
+        @test (@allocated Recip(F, RTE_SN, b)) == 0
+        @test (@allocated Sqrt(F, RTE_SN, T(4.0))) == 0
+    end
+end

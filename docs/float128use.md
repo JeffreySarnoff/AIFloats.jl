@@ -46,9 +46,10 @@ Each row pairs the affected call with a control that does *not* take the
 |---|---:|---:|---:|
 | `ConvertToBlockMaxAbsFinite`, B=16, **P=3 scale** | 17,069 ns / 1067 allocs | **141 ns / 0** with a P=1 scale | **121x** |
 | `BlockReduceAdd`, mixed rung-1/rung-2 lanes | 7,724 ns / 645 allocs | 269 ns / 0 homogeneous | **29x** |
-| `RSqrt`, rung 2 | 1,535 ns / 69 allocs | 8.5 ns rung-1 `Divide` | — |
-| `Divide`, rung 2, exact quotient | 1,149 ns / 75 allocs | 1,602 ns inexact | 1.4x |
-| `Recip` / `Sqrt`, rung 2 | 1,085 ns / 61 allocs | — | — |
+| `RSqrt`, rung 2 | 1,535 ns / 69 allocs → **162 ns / 0** | 8.5 ns rung-1 `Divide` | 9.5x |
+| `Divide`, rung 2, exact quotient | 1,149 ns / 75 allocs → **105 ns / 0** | 1,602 → 1,654 ns inexact | 11x |
+| `Recip`, rung 2 | 1,085 ns / 61 allocs → **90 ns / 0** | — | 12x |
+| `Sqrt`, rung 2 | 1,085 ns / 61 allocs → **139 ns / 0** | — | 7.8x |
 | `BlockAdd`, B=16 (`_bp_element`) | 589 ns / 22 allocs | — | — |
 | `ArcTanPi` at ±∞ (exact peel) | 583 ns / 32 allocs | — | — |
 | `ArcSinPi` at 1.0 (exact peel) | 544 ns / 30 allocs | — | — |
@@ -107,7 +108,7 @@ residual proof; P3 items each need one.
 | 1 | `ops/scalar.jl` — `Convert(::Integer)` | Above 2^53 always `BigFloat` | Add a Float128 rung between the existing Float64 gate and the `BigFloat` route, using the significant-bit predicate of §2 |
 | 2 | `arrays/blocks.jl` — `ConvertToBlockMaxAbsFinite` | `map(x -> _exactbig(...))` lifts every lane, seed is `_cnan(BigFloat)` | Fold in the homogeneous decoded carrier; join mixed Float64/Float128 at Float128; seed with that carrier's NaN. `MaximumFinite` *selects* an operand, so the fold consumes no precision |
 | ~~2~~ | `arrays/blocks.jl` — `_samecarrier` | A mixed Float64/Float128 lane pair is lifted to `BigFloat` | **Tried and rejected on measurement** — see below |
-| 3 | `ops/oracle.jl` — `Divide`/`Recip`/`Sqrt`/`RSqrt` on `Float128` | Straight to an MPFR enclosure after the special rows | Accept a `Float128` result only after an exact residual proof; otherwise the current ladder |
+| ~~3~~ | `ops/oracle.jl` — `Divide`/`Recip`/`Sqrt`/`RSqrt` on `Float128` | Straight to an MPFR enclosure after the special rows | **Done.** `_try_div128`/`_try_recip128`/`_try_sqrt128` with the derived floor `_F128_EXACT_FLOOR`; the ladder is the refusal path |
 | 3 | `arrays/blocks.jl` — `_bp_element` | Only a Float64 exact quotient avoids a directed MPFR interval | The same proof-certified Float128 quotient filter before `_encl_div_scale` |
 | 3 | block reduction special rows | NaN/∞/zero manufactured as `BigFloat` | Carrier-native specials, or canonical `Float64` where only classification and sign are consumed |
 
@@ -280,6 +281,21 @@ accumulation alone — step 8 already routes the homogeneous case through
 `Dyadic`, and the mixed case is item 2's job. Any later exact-Float128 fold must
 prove *every* multiply and add exact and restart from the original lanes on the
 first refusal; it may never continue from a rounded partial accumulator.
+
+### Measured exactness rates, which decided P3 was worth doing
+
+Over the code space of rung-2 formats, the share of operand pairs whose result
+is exactly representable in Float128:
+
+| Format | Divide | Recip | Sqrt |
+|---|---:|---:|---:|
+| `Binary(16, 5, SIGNED, EXTENDED)` | 15.2% | 6.2% | 9.2% |
+| `Binary(16, 2, SIGNED, EXTENDED)` | 75.0% | 49.9% | 24.9% |
+
+Fewer significand bits means more exact quotients, and low precision is where
+this package lives — which is the argument the plan asked for before spending
+proof surface. The refusal control moved 1,602 → 1,654 ns (3.2%), inside the
+5% allowance.
 
 ## Implementation sequence
 
