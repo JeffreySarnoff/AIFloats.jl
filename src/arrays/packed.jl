@@ -46,6 +46,29 @@ end
     min(n, div((nbytes - 8) * 8 + 7, K) + 1)
 end
 
+# ---- the 8-lane path ---------------------------------------------------------
+# One unaligned load, BROADCAST to eight lanes, shifted by a lane vector of
+# compile-time constants (b, b+K, …, b+7K), then one mask. No gather: every
+# lane reads the same 64 bits, which is what makes this pay. A first attempt
+# gave each lane its own `unsafe_load` — that is a gather, and it measured 120x
+# SLOWER than the scalar loop.
+#
+# The eight lanes span 8K bits, so this applies exactly when 8K ≤ 64, i.e.
+# K ≤ 8. Above that a four-lane variant was tried and did not beat the
+# branch-free scalar path, so K ≥ 9 keeps it.
+#
+# Measured at N = 65,536 against the branch-free path: K=3 19.4 → 6.4 µs,
+# K=5 19.4 → 6.4, K=7 19.3 → 6.4, K=8 7.1 → 5.8. On an i9-14900K, which has
+# AVX-512 disabled — LLVM splits <8 x i64> into AVX2 halves, so this is not
+# relying on exotic hardware.
+const _V8 = NTuple{8,VecElement{UInt64}}
+@inline _v8shr(v::_V8, s::_V8) = Base.llvmcall(
+    """%r = lshr <8 x i64> %0, %1
+       ret <8 x i64> %r""", _V8, Tuple{_V8,_V8}, v, s)
+@inline _v8and(v::_V8, m::_V8) = Base.llvmcall(
+    """%r = and <8 x i64> %0, %1
+       ret <8 x i64> %r""", _V8, Tuple{_V8,_V8}, v, m)
+
 """
     _unpack_codes!(f, pv, n) -> nothing
 
@@ -57,12 +80,31 @@ table gather without materializing anything in between.
 @inline function _unpack_codes!(f::F, pv::PackedVector{T}, n::Int = pv.n) where {F,T}
     K = Int(BitwidthOf(T)); mask = _packmask(K); data = pv.data
     safe = _safe_count(n, K, length(data) * 8)
+    i = 1
     GC.@preserve data begin
         base = pointer(data)
-        @inbounds for i in 1:safe
+        # eight at a time while all eight fit one 64-bit window (K ≤ 8)
+        if 8 * K <= 64
+            mv = ntuple(_ -> VecElement(mask), Val(8))
+            @inbounds while i + 7 <= safe
+                p0 = (i - 1) * K
+                w = unsafe_load(Ptr{UInt64}(base + (p0 >> 3)))
+                b = p0 & 7
+                vv = ntuple(_ -> VecElement(w), Val(8))
+                sv = ntuple(j -> VecElement(UInt64(b + (j - 1) * K)), Val(8))
+                r = _v8and(_v8shr(vv, sv), mv)
+                f(i,     r[1].value); f(i + 1, r[2].value)
+                f(i + 2, r[3].value); f(i + 3, r[4].value)
+                f(i + 4, r[5].value); f(i + 5, r[6].value)
+                f(i + 6, r[7].value); f(i + 7, r[8].value)
+                i += 8
+            end
+        end
+        @inbounds while i <= safe
             p = (i - 1) * K
             v = unsafe_load(Ptr{UInt64}(base + (p >> 3)))
             f(i, (v >> (p & 7)) & mask)
+            i += 1
         end
     end
     @inbounds for i in (safe + 1):n
