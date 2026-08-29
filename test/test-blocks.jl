@@ -241,6 +241,25 @@ end
             end
         end
     end
+    # The branch-free bulk extractor reads an unaligned 64-bit window, which
+    # runs past the last element's own bytes — `_safe_count` bounds it and a
+    # scalar tail finishes the job. Lengths here straddle every byte and word
+    # boundary precisely because that bound is the failure mode.
+    for K in 3:16, (S, D) in ((SIGNED, EXTENDED), (UNSIGNED, FINITE))
+        F = Binary(K, min(2, K - 1), S, D); T = BinaryValue(F); U = CodeType(F); nc = 2^K
+        for len in vcat(0:70, [126, 127, 128, 129, 130, 255, 256, 257, 1000, 4097])
+            xs = [T(U(i % nc)) for i in 0:len-1]
+            pv = PackedVector(xs)
+            @test codepoint.(collect(pv)) == codepoint.(xs)
+            @test codepoint.(Vector(pv)) == codepoint.(xs)
+            # getindex is the scalar reference the bulk path must match
+            @test all(j -> codepoint(pv[j]) == codepoint(xs[j]), 1:len)
+        end
+    end
+    @test AIFloats._safe_count(0, 5, 0) == 0          # empty buffer: no unsafe read
+    @test AIFloats._safe_count(100, 5, 4) == 0        # under one window
+    @test AIFloats._safe_count(10, 8, 8) <= 10        # never claims past the buffer
+
     # stochastic keeps the tiled adapter and must stay stream-identical
     let F = Binary(5, 2, SIGNED, EXTENDED), T = BinaryValue(F)
         A = [T(UInt8(i & 0x1f)) for i in 0:999]; pv = PackedVector(A)
