@@ -188,3 +188,27 @@ end
     m = sum(vals) / length(vals)
     @test isapprox(m, 1.3; atol = 0.51 / 256 + 1e-9)
 end
+
+@testset "ladder endpoints project through Dyadic when they fit" begin
+    # _project_endpoint only changes the CARRIER an endpoint is projected
+    # through, never the result. The 127-bit guard is mandatory: dyadic_from
+    # throws past that rather than truncating.
+    A = AIFloats
+    for K in (5, 8, 16), P in (2, 4)
+        P >= K && continue
+        F = Binary(K, P, SIGNED, EXTENDED)
+        for p in (32, 64, 72, 96, 113, 127, 128, 136, 160, 256)
+            v = setprecision(() -> exp(BigFloat(1.5)) / 3, BigFloat, p)
+            for ρ in (RTE_SN, RTZ_SF, RTP_SN, RTN_SF, RTO_SN), s in (-1, 0, 1)
+                @test codepoint(A._project_endpoint(F, ρ, v, 0, s)) ==
+                      codepoint(project(F, ρ, v; R = 0, sticky = s))
+            end
+        end
+    end
+    # both sides of the guard are actually exercised by the sweep above
+    @test precision(setprecision(() -> BigFloat(1.5), BigFloat, 72)) <= 127
+    @test precision(setprecision(() -> BigFloat(1.5), BigFloat, 136)) > 127
+    # and the conversion the guard protects really does throw beyond it
+    @test_throws InexactError AIFloats.Dyadic(
+        setprecision(() -> exp(BigFloat(1.5)), BigFloat, 256))
+end

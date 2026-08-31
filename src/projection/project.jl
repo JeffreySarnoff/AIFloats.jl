@@ -72,6 +72,35 @@ function project_interval(::Type{F}, ρ::Projection, f; R::Int = 0) where {F<:Bi
     _project_interval(F, ρ, f, R, _intervalcap(F))
 end
 
+"""
+    _project_endpoint(F, ρ, x::BigFloat, R, sticky)
+
+Project one ladder endpoint. Identical in result to `project(F, ρ, x; ...)` —
+it only chooses a cheaper carrier to say it in.
+
+An endpoint narrow enough to be a `Dyadic` becomes one: the conversion is
+exact, `project(::Dyadic)` takes the fixed-point path already pinned
+bit-identical to the generic core, and the pair costs 95 ns against 371 for
+the `BigFloat` route (18 allocations against 9).
+
+The `precision` guard is MANDATORY, not defensive. `dyadic_from` throws
+`InexactError` past 127 significant bits rather than truncating, and a throw
+on this path would be a docs-build-and-tests-wide failure rather than a slow
+answer. `Base.decompose(::BigFloat)` returns the numerator at the value's
+ALLOCATED precision, so `precision(x) ≤ 127` is a sufficient condition and
+costs one field read. It is deliberately conservative: a 136-bit endpoint with
+few significant bits would also fit, and is not worth a normalization pass to
+discover.
+
+Rung-1 ladders run at `_sigfloor + 8 = 72` bits and always take the fast side;
+rung-2 ladders run at 136 and never do.
+"""
+@inline function _project_endpoint(::Type{F}, ρ::Projection, x::BigFloat,
+                                   R::Int, sticky::Int) where {F<:Binary}
+    precision(x) <= 127 && return project(F, ρ, Dyadic(x); R, sticky)
+    project(F, ρ, x; R, sticky)
+end
+
 function _project_interval(::Type{F}, ρ::Projection, f, R::Int, maxprec::Int) where {F<:Binary}
     maxprec >= 2 || throw(ArgumentError("project_interval needs maxprec >= 2"))
     # Ziv's first rung. 64 is not a resolution estimate — `_ladderprec` raises
@@ -91,10 +120,10 @@ function _project_interval(::Type{F}, ρ::Projection, f, R::Int, maxprec::Int) w
     while true
         d, u = f(prec)
         if isequal(d, u)
-            return project(F, ρ, d; R, sticky = 0)          # exact
+            return _project_endpoint(F, ρ, d, R, 0)         # exact
         end
-        cd = project(F, ρ, d; R, sticky = +1)
-        cu = project(F, ρ, u; R, sticky = -1)
+        cd = _project_endpoint(F, ρ, d, R, +1)
+        cu = _project_endpoint(F, ρ, u, R, -1)
         codepoint(cd) == codepoint(cu) && return cd
         prec >= maxprec && error("project_interval: unresolved at $maxprec bits for $(string(F))")
         prec = min(2prec, maxprec)
