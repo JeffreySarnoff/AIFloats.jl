@@ -147,18 +147,19 @@ end
         a, b = T(1.5), T(0.25)
         Add(T, RTE_SN, a, b); Multiply(T, RTE_SF, a, b)
         Exp(T, RTE_SN, a); Convert(S, RTE_SN, a)
+        Add(a, b); Exp(a)
         a + b; exp(b); fma(a, b, a); min(a, b); a < b; round(a); eps(a)
         # the value constructors: T(::Float64) is the single most common entry
         # point and was 15 ms of first-call latency uncompiled
         T(1.3); T(1.3f0); T(3); convert(T, 1.3)
         # one Group B ladder row — the enclosure machinery is shared, and Log
         # alone was ~103 ms cold
-        Log(T, RTE_SN, a); log(a)
+        Log(T, RTE_SN, a); Log(a); log(a)
         get_table(:Exp, BinaryFormatOf(T), BinaryFormatOf(T), RTE_SN)
         A = [a, b, a, b]; B = [b, a, b, a]; d = similar(A)
         vmap!(d, Val(:Add), RTE_SN, A, B)
         vmap!(d, Val(:Exp), RTE_SN, A)
-        sort!(copy(A))
+        sort!(copy(A)); sort(A)
         # the broadcast route (arrays/broadcast.jl): binary, unary, and the
         # in-place form all land in distinct copyto! methods
         A .+ B; exp.(A); d .= A .+ B

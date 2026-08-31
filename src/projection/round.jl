@@ -277,8 +277,8 @@ function _rtp_dyadic(P::Int, B::Int, μ::RoundingMode, X::Dyadic, R::Int, sticky
 end
 
 # per-carrier entry points. Float64: normal inputs take the bit path; specials,
-# zero and subnormals go to the core. Float128 goes straight to the core
-# (every operation it uses is exact there). BigFloat gets 8 guard bits of
+# zero and subnormals go to the core. Float128 is decoded exactly to the same
+# fixed-point Dyadic path; no Quadmath arithmetic function is used. BigFloat gets 8 guard bits of
 # working precision. Dyadic cannot go through the core (its zero row builds
 # zero(float(typeof(X))) and float(Dyadic) does not exist, by design).
 function round_to_precision(P::Int, B::Int, μ::RoundingMode, X::Float64, R::Int, sticky::Int)
@@ -286,8 +286,12 @@ function round_to_precision(P::Int, B::Int, μ::RoundingMode, X::Float64, R::Int
     ((reinterpret(UInt64, X) >> 52) & 0x7ff) == 0x000 && return _rtp_core(P, B, μ, X, R, sticky)
     _rtp_f64(P, B, μ, X, R, sticky)
 end
-round_to_precision(P::Int, B::Int, μ::RoundingMode, X::Float128, R::Int, sticky::Int) =
-    _rtp_core(P, B, μ, X, R, sticky)
+function round_to_precision(P::Int, B::Int, μ::RoundingMode, X::Float128, R::Int, sticky::Int)
+    isnan(X) && return ROUNDED_NAN
+    isinf(X) && return _rtp_core(P, B, μ, X, R, sticky)
+    iszero(X) && return _rtp_zero_sticky(P, B, μ, R, sticky)
+    _rtp_dyadic(P, B, μ, _dyadic128(X), R, sticky)
+end
 function round_to_precision(P::Int, B::Int, μ::RoundingMode, X::Dyadic, R::Int, sticky::Int)
     isnan(X) && return ROUNDED_NAN
     if isinf(X)

@@ -75,7 +75,10 @@ end
     # ternary bands: 3×5 = 15 eager; 3×7 = 21 adaptive; 3×8 = 24 beyond
     F7 = Binary(7, 3, SIGNED, EXTENDED); F8 = Binary(8, 4, SIGNED, EXTENDED)
     @test AIFloats.table_policy(:FMA, F, F, F, F, RTE_SN).shape === :A
-    @test AIFloats.table_policy(:FMA, F7, F7, F7, F7, RTE_SN).shape === :A   # adaptive band grants
+    p7 = AIFloats.table_policy(:FMA, F7, F7, F7, F7, RTE_SN)
+    @test p7.shape === :B && p7.state === :adaptive_pending
+    @test AIFloats.table_policy(:FMA, F7, F7, F7, F7, RTE_SN;
+                                nelems=AIFloats.TERNARY_BUILD_ELEMS[]).state === :adaptive_earned
     @test AIFloats.table_policy(:FMA, F8, F8, F8, F8, RTE_SN).shape === :B
 end
 

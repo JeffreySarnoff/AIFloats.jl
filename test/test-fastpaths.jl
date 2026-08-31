@@ -1,5 +1,40 @@
 using AIFloats
 using Test
+
+@testset "exact Float128-to-Float64 evaluation narrowing" begin
+    F = Binary(16, 4, SIGNED, EXTENDED)
+    T = BinaryValue(F)
+    vals = T[T(UInt16(c)) for c in (0, 1, 2, 3, 0x1234, 0x4000, 0x7ffe, 0x7fff,
+                                     0x8000, 0xfffe, 0xffff)]
+    projections = (RTE_SN, RTA_SF, RTP_SP, RTN_SN, RTZ_SF, RTO_SN)
+    for ρ in projections, x in vals
+        dx = decode(x)
+        for op in (:Abs, :Exp, :Sqrt)
+            v = Val(op)
+            got = AIFloats.apply_op(v, F, ρ, 0, dx)
+            ref = AIFloats._finish(F, ρ, 0, AIFloats.ωeval(v, dx))
+            @test codepoint(got) == codepoint(ref)
+        end
+    end
+    for ρ in projections, x in vals, y in vals
+        dx, dy = decode(x), decode(y)
+        for op in (:Add, :Multiply, :Divide, :MaximumNumber)
+            v = Val(op)
+            got = AIFloats.apply_op(v, F, ρ, 0, dx, dy)
+            ref = AIFloats._finish(F, ρ, 0, AIFloats.ωeval(v, dx, dy))
+            @test codepoint(got) == codepoint(ref)
+        end
+    end
+    for ρ in projections, x in vals[1:6], y in vals[1:6], z in vals[1:6]
+        dx, dy, dz = decode(x), decode(y), decode(z)
+        for op in (:FMA, :FAA, :Clamp)
+            v = Val(op)
+            got = AIFloats.apply_op(v, F, ρ, 0, dx, dy, dz)
+            ref = AIFloats._finish(F, ρ, 0, AIFloats.ωeval(v, dx, dy, dz))
+            @test codepoint(got) == codepoint(ref)
+        end
+    end
+end
 using Random
 using AIFloats: FAST_ARITH, FAST_ENCLOSURE, ρRSA, ρRSC, Sticky, Enclosure
 using Quadmath: Float128

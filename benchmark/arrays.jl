@@ -84,3 +84,10 @@ let S = binary8p3se, E = binary8p4se
     # ScaledAdd is the scalar member of the Scaled* family: one row, no B
     row("ScaledAdd (scalar lanes)",       @b ScaledAdd($E, RTE_SN, one($S), $(E(1.5)), one($S), $(E(0.25))))
 end
+
+let S = binary8p3se, E = BinaryValue(Binary(16, 4, SIGNED, EXTENDED)), B = 16
+    xs = ntuple(i -> E(isodd(i) ? 1.5 : 0.25), B)
+    b = Block(one(S), xs)
+    row("BlockReduceAdd rung 2 B=16",      @b BlockReduceAdd($E, RTE_SN, $b))
+    row("BlockReduceMultiply rung 2 B=16", @b BlockReduceMultiply($E, RTE_SN, $b))
+end

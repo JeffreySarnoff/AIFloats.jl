@@ -62,9 +62,29 @@ end
 # path (measured in SmallFloats: 399 → 269 ns/element); everything else goes
 # through the @noinline finisher. Vararg carries a LENGTH parameter so the
 # splat compiles to a static call rather than a boxing dynamic apply.
+@inline _eval_narrow(op::Val, xs...) = ωeval(op, xs...)
+@inline function _eval_narrow(op::Val, x::Float128)
+    x64 = _try_f64_exact(x)
+    x64 === nothing ? ωeval(op, x) : ωeval(op, x64)
+end
+@inline function _eval_narrow(op::Val, x::Float128, y::Float128)
+    x64 = _try_f64_exact(x)
+    x64 === nothing && return ωeval(op, x, y)
+    y64 = _try_f64_exact(y)
+    y64 === nothing ? ωeval(op, x, y) : ωeval(op, x64, y64)
+end
+@inline function _eval_narrow(op::Val, x::Float128, y::Float128, z::Float128)
+    x64 = _try_f64_exact(x)
+    x64 === nothing && return ωeval(op, x, y, z)
+    y64 = _try_f64_exact(y)
+    y64 === nothing && return ωeval(op, x, y, z)
+    z64 = _try_f64_exact(z)
+    z64 === nothing ? ωeval(op, x, y, z) : ωeval(op, x64, y64, z64)
+end
+
 @inline function apply_op(op::Val, ::Type{F}, ρ::Projection, R::Int,
                           x, xs::Vararg{Any, N}) where {F<:Binary, N}
-    res = ωeval(op, x, xs...)
+    res = _eval_narrow(op, x, xs...)
     res isa Float64 && return project(F, ρ, res; R)
     _finish_slow(F, ρ, R, res)
 end

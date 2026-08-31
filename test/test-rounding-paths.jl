@@ -1,5 +1,6 @@
 using AIFloats
 using Test
+using Random
 using AIFloats: round_to_precision, _rtp_core, _rtp_f64, _rtp_dyadic, _rtp_zero_sticky,
                 Rounded, Dyadic, ρRSA, ρRSB, ρRSC
 
@@ -22,6 +23,47 @@ function cells()
         c in seen || (push!(seen, c); push!(out, c))
     end
     sort!(out)
+end
+
+@testset "binary128 bit adapter and fixed-point projection" begin
+    F128 = AIFloats.Float128
+    samples = UInt128[
+        0, UInt128(1) << 127,                         # signed zero
+        1, (UInt128(1) << 112) - 1,                  # subnormal limits
+        UInt128(1) << 112,                            # minimum normal
+        UInt128(0x3fff) << 112,                       # one
+        (UInt128(0x3fff) << 112) | 1,                 # next above one
+        (UInt128(0x7ffe) << 112) | ((UInt128(1) << 112) - 1),
+        UInt128(0x7fff) << 112,
+        (UInt128(0xffff) << 112),
+        (UInt128(0x7fff) << 112) | 1,
+    ]
+    rng = MersenneTwister(0x128)
+    append!(samples, rand(rng, UInt128, 2_000))
+    accepted = 0
+    for u in samples
+        x = reinterpret(F128, u)
+        d = AIFloats._dyadic128(x)
+        ref = Dyadic(x)
+        if isnan(x)
+            @test isnan(d)
+        else
+            @test d == ref
+        end
+        y = AIFloats._try_f64_exact(x)
+        if y !== nothing
+            @test isfinite(x) && !iszero(x)
+            @test Dyadic(y) == d
+            accepted += 1
+        end
+        for (P, B) in ((4, 8), (5, 4), (2, 8192)), μ in (RTE, RTA, RTP, RTN, RTZ, RTO), sticky in (-1, 0, 1)
+            @test round_to_precision(P, B, μ, x, 0, sticky) ===
+                  _rtp_core(P, B, μ, x, 0, sticky)
+        end
+    end
+    @test AIFloats._try_f64_exact(F128(1.5)) === 1.5
+    @test AIFloats._try_f64_exact(reinterpret(F128, UInt128(1))) === nothing
+    @test accepted > 0
 end
 
 # structured normal Float64 inputs around a grid with precision P and bias B

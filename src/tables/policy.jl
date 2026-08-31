@@ -123,30 +123,64 @@ end
     isstochastic(ρ) && throw(ArgumentError("stochastic ρ $ρ is not tabulable: its result is a distribution, not a value"))
 
 """
-    table_policy(op, fr, f1[, f2[, f3]], ρ) -> (; shape, entries, bytes, reason)
+    table_policy(op, fr, f1[, f2[, f3]], ρ; nelems=0)
+
+Return `shape`, sizes, and the adaptive state the matching kernel policy would
+observe. `nelems` is the size of a prospective array call; introspection reads
+but never increments the cumulative-use counter.
 
 Which shape an array call on this signature will take, and why — `:A` for the
 table gather, `:B` for the per-element scalar path. Reads the same predicates
 the kernels do, so it cannot drift from them.
 """
-function table_policy(op::Symbol, ::Type{fr}, Fs::Vararg{Any}) where {fr<:Binary}
+function table_policy(op::Symbol, ::Type{fr}, Fs::Vararg{Any};
+                      nelems::Int = 0) where {fr<:Binary}
+    nelems >= 0 || throw(ArgumentError("nelems must be nonnegative"))
     ρ = last(Fs)
     fs = Base.front(Fs)
     bits = _sumK(fs...)
     entries = bits >= 63 ? typemax(Int) : 1 << bits
     bytes = tablebits(fr, fs...) >= 63 ? typemax(Int) : 1 << tablebits(fr, fs...)
-    reason =
-        isstochastic(ρ) ? "stochastic ρ is a distribution over R, never a table" :
-        !within_byte_budget(fr, fs...) ? "over the 2^$(TABLE_MAX_BITS[])-byte budget" :
-        length(fs) == 3 ?
-            (bits <= TERNARY_EAGER_BITS[] ? "ternary eager band" :
-             bits <= TERNARY_ADAPTIVE_BITS[] ? "ternary adaptive band: needs $(TERNARY_BUILD_ELEMS[]) elements first" :
-             "beyond the ternary adaptive band") :
-        bits <= TABLE_EAGER_BITS[] ? "within the 2^$(TABLE_EAGER_BITS[])-entry build band" :
-                                     "over the 2^$(TABLE_EAGER_BITS[])-entry build band"
-    granted = !isstochastic(ρ) && within_byte_budget(fr, fs...) &&
-              (length(fs) == 3 ? bits <= TERNARY_ADAPTIVE_BITS[] : bits <= TABLE_EAGER_BITS[])
-    (; shape = granted ? :A : :B, entries, bytes, reason)
+    isstochastic(ρ) && return (; shape=:B, entries, bytes, state=:stochastic,
+        cumulative=0, threshold=0,
+        reason="stochastic ρ is a distribution over R, never a table")
+    !within_byte_budget(fr, fs...) && return (; shape=:B, entries, bytes,
+        state=:over_byte_budget, cumulative=0, threshold=0,
+        reason="over the 2^$(TABLE_MAX_BITS[])-byte budget")
+
+    narg = length(fs)
+    eager = narg == 3 ? TERNARY_EAGER_BITS[] : TABLE_EAGER_BITS[]
+    adaptive = narg == 3 ? TERNARY_ADAPTIVE_BITS[] :
+               narg == 2 ? TABLE_ADAPTIVE_BITS[] : eager
+    bits <= eager && return (; shape=:A, entries, bytes, state=:eager,
+        cumulative=0, threshold=0, reason="eager build band")
+    bits > adaptive && return (; shape=:B, entries, bytes, state=:over_adaptive_band,
+        cumulative=0, threshold=0, reason="beyond the adaptive build band")
+
+    if narg == 2
+        key = _bkey(op, fr, fs[1], fs[2], ρ)
+        cached, used = lock(TABLE_LOCK) do
+            haskey(tablecache(fr), key), get(TABLE_USE, key, 0)
+        end
+        threshold = TABLE_BUILD_ELEMS[]
+    elseif narg == 3
+        key = _tkey(op, fr, fs[1], fs[2], fs[3], ρ)
+        cached, used = lock(TABLE_LOCK) do
+            haskey(ternarycache(fr), key), get(TERNARY_USE, key, 0)
+        end
+        threshold = TERNARY_BUILD_ELEMS[]
+    else
+        return (; shape=:B, entries, bytes, state=:over_adaptive_band,
+            cumulative=0, threshold=0, reason="unary signature beyond eager band")
+    end
+    cached && return (; shape=:A, entries, bytes, state=:adaptive_cached,
+        cumulative=used, threshold, reason="adaptive table is cached")
+    earned = used + nelems >= threshold
+    (; shape=earned ? :A : :B, entries, bytes,
+       state=earned ? :adaptive_earned : :adaptive_pending,
+       cumulative=used, threshold,
+       reason=earned ? "prospective call earns adaptive table" :
+                       "adaptive table needs $(threshold - used) more cumulative elements")
 end
 
 # ---- fetch -------------------------------------------------------------------

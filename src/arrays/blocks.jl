@@ -202,6 +202,11 @@ function _bp_element(::Type{FR}, ρ::Projection, R::Int, res, Sdat) where {FR<:B
         iszero(res) && return project(FR, ρ, 0.0; R)
         q = res / Sdat
         (isfinite(q) && fma(q, Sdat, -res) == 0.0) && return project(FR, ρ, q; R)
+    elseif res isa Float128 && Sdat isa Float128
+        isinf(res) && return project(FR, ρ, (signbit(res) ⊻ signbit(Sdat)) ? -Inf : Inf; R)
+        iszero(res) && return project(FR, ρ, 0.0; R)
+        q = _try_div128(res, Sdat)
+        q === nothing || return project(FR, ρ, q; R)
     elseif res isa CarrierValue
         isinf(res) && return project(FR, ρ, (signbit(res) ⊻ signbit(Sdat)) ? -Inf : Inf; R)
         iszero(res) && return project(FR, ρ, 0.0; R)
@@ -246,9 +251,17 @@ for op in OP_REGISTRY
     Xa = [Symbol(:Xa, i) for i in 1:op.arity]
     scale_products = [:($(Xa[i]) = ωeval(Val(:Multiply), decode($(ss[i])), decode($(xs[i]))))
                       for i in 1:op.arity]
+    unit_blocks = foldl((a, b) -> :($a && $b), [:(isone($(bs[i]).s)) for i in 1:op.arity])
+    unit_scales = foldl((a, b) -> :($a && $b), [:(isone($(ss[i]))) for i in 1:op.arity])
     @eval begin
         function $bname(fr::Type{<:Binary}, ρ::Projection, $(block_params...), sr::BinaryValue;
                         rng::MaybeRNG = nothing) where {B}
+            if isone(sr) && $unit_blocks
+                rr = isstochastic(ρ) ? _resolve_rng(rng) : nothing
+                elems = ntuple(i -> $name(fr, ρ, $((:($(bs[j]).x[i]) for j in 1:op.arity)...);
+                                                  rng=rr), Val(B))
+                return Block(sr, elems)
+            end
             $(decode_lanes...)
             Z = ntuple(i -> _nosticky($V(), _samecarrier($(lane_i...))...), Val(B))
             blockproject(fr, ρ, sr, Z; rng)
@@ -258,6 +271,7 @@ for op in OP_REGISTRY
             $bname(BinaryFormatOf(fr), ρ, $(bs...), sr; kw...)
         function $sname(fr::Type{<:Binary}, ρ::Projection, $(scaled_params...);
                         rng::MaybeRNG = nothing)
+            $unit_scales && return $name(fr, ρ, $(xs...); rng)
             $(scale_products...)
             res = _nosticky($V(), _samecarrier($(Xa...))...)
             _bp_element(fr, ρ, _drawR(ρ, rng, nothing), res, 1.0)
@@ -291,12 +305,48 @@ end
 # preconditions and returns `nothing` instead, letting the caller fall back to
 # the BigFloat path that stays live as the oracle. A wide spread is genuinely
 # reachable — a K = 16, P = 1 element format has B = 32768.
+@inline _dyadic_sum(::Tuple{}) = DYADIC_ZERO
 function _dyadic_sum(X::NTuple{B,Float64}) where {B}
     acc = DYADIC_ZERO
     @inbounds for i in 1:B
         v = X[i]
         iszero(v) && continue
         d = Dyadic(v)                                  # exact for a finite Float64
+        if iszero(acc.S)
+            acc = d
+            continue
+        end
+        hi, lo = acc.Q >= d.Q ? (acc, d) : (d, acc)
+        Δ = Int(hi.Q - lo.Q)
+        (Δ > DYADIC_ALIGN_MAX || nbits_dy(hi.S) + Δ > 126) && return nothing
+        acc = add_dy(acc, d)
+    end
+    acc
+end
+
+@inline _exact_dyadic(x::Float64) = Dyadic(x)
+@inline _exact_dyadic(x::Float128) = _dyadic128(x)
+@inline _exact_dyadic(x::Dyadic) = x
+
+# Exact finite block lanes for every carrier rung. A scale and datum contribute
+# at most 16 significant bits each; the guarded product therefore starts at no
+# more than 32 bits. Specials refuse to the existing fold algebra.
+function _dyadic_lanes(b::Block{B}) where {B}
+    s = decode(b.s)
+    isfinite(s) || return nothing
+    sd = _exact_dyadic(s)
+    xs = ntuple(i -> decode(b.x[i]), Val(B))
+    all(isfinite, xs) || return nothing
+    ds = ntuple(i -> _exact_dyadic(xs[i]), Val(B))
+    all(i -> nbits_dy(sd.S) + nbits_dy(ds[i].S) <= 96, 1:B) || return nothing
+    ntuple(i -> mul_dy(sd, ds[i]), Val(B))
+end
+
+function _dyadic_sum(X::NTuple{B,Dyadic}) where {B}
+    acc = DYADIC_ZERO
+    @inbounds for i in 1:B
+        d = X[i]
+        iszero(d.S) && continue
         if iszero(acc.S)
             acc = d
             continue
@@ -337,10 +387,21 @@ end
 # B ≤ 16 for every scale/element pair tried, and still 99.6% at B = 32 with a
 # P = 1 scale. The one configuration that falls off is a P = 3 scale times
 # P = 4 elements at B = 32, at 24.1% — which the refusal below handles.
+@inline _dyadic_prod(::Tuple{}) = DYADIC_ONE
 function _dyadic_prod(X::NTuple{B,Float64}) where {B}
     acc = DYADIC_ONE
     @inbounds for i in 1:B
         d = Dyadic(X[i])                               # exact for a finite Float64
+        nbits_dy(acc.S) + nbits_dy(d.S) <= 96 || return nothing
+        acc = mul_dy(acc, d)
+    end
+    acc
+end
+
+function _dyadic_prod(X::NTuple{B,Dyadic}) where {B}
+    acc = DYADIC_ONE
+    @inbounds for i in 1:B
+        d = X[i]
         nbits_dy(acc.S) + nbits_dy(d.S) <= 96 || return nothing
         acc = mul_dy(acc, d)
     end
@@ -380,6 +441,12 @@ function BlockReduceAdd(fr::Type{<:Binary}, ρ::Projection, b::Block{B,S,E};
             d = _dyadic_sum(lanes)
             d === nothing || return _finish(fr, ρ, _drawR(ρ, rng, R), d)
         end
+    else
+        lanes = _dyadic_lanes(b)
+        if lanes !== nothing
+            d = _dyadic_sum(lanes)
+            d === nothing || return _finish(fr, ρ, _drawR(ρ, rng, R), d)
+        end
     end
     _finish(fr, ρ, _drawR(ρ, rng, R),
             _reduce_add_value(blockdecode(b),
@@ -402,6 +469,14 @@ function BlockReduceMultiply(fr::Type{<:Binary}, ρ::Projection, b::Block{B,S,E}
         lanes, ok = _f64_lanes(b)
         if ok
             any(iszero, lanes) && return _finish(fr, ρ, _drawR(ρ, rng, R), _czero(BigFloat))
+            d = _dyadic_prod(lanes)
+            d === nothing || return _finish(fr, ρ, _drawR(ρ, rng, R), d)
+        end
+    else
+        lanes = _dyadic_lanes(b)
+        if lanes !== nothing
+            any(d -> iszero(d.S), lanes) &&
+                return _finish(fr, ρ, _drawR(ρ, rng, R), DYADIC_ZERO)
             d = _dyadic_prod(lanes)
             d === nothing || return _finish(fr, ρ, _drawR(ρ, rng, R), d)
         end

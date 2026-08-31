@@ -111,6 +111,46 @@ _czero(::Type{Dyadic}) = DyadicNumbers.DYADIC_ZERO
 # than AbstractFloat are the ones that must also accept Dyadic.
 const CarrierValue = Union{Float64, Float128, BigFloat, Dyadic}
 
+# ---- exact binary128 representation adapter ---------------------------------
+# Quadmath arithmetic functions are not part of this adapter. IEEE binary128
+# layout is decoded directly, so the result is the exact represented value and
+# no rounding assumption is involved. Keeping this knowledge here prevents the
+# sign/exponent/significand rules from leaking into projection and block code.
+@inline function _dyadic128(x::Float128)::Dyadic
+    u = reinterpret(UInt128, x)
+    neg = (u >> 127) != 0
+    be = Int((u >> 112) & UInt128(0x7fff))
+    frac = u & ((UInt128(1) << 112) - 1)
+    if be == 0x7fff
+        frac != 0 && return DyadicNumbers.DYADIC_NAN
+        return neg ? DyadicNumbers.DYADIC_NEGINF : DyadicNumbers.DYADIC_POSINF
+    end
+    be == 0 && frac == 0 && return DyadicNumbers.DYADIC_ZERO
+    sig = be == 0 ? frac : frac | (UInt128(1) << 112)
+    q = be == 0 ? -16494 : be - 16383 - 112
+    tz = trailing_zeros(sig)
+    sig >>= tz
+    q += tz
+    s = Int128(sig)
+    Dyadic(neg ? -s : s, q)
+end
+
+"""Return the identical normal Float64 value, or `nothing` without rounding."""
+@inline function _try_f64_exact(x::Float128)::Union{Float64,Nothing}
+    isfinite(x) && !iszero(x) || return nothing
+    d = _dyadic128(x)
+    a = d.S < 0 ? -d.S : d.S
+    n = 128 - leading_zeros(UInt128(a))
+    n <= 53 || return nothing
+    e = Int(d.Q) + n - 1
+    -1022 <= e <= 1023 || return nothing       # subnormals deliberately refuse
+    m = UInt64(a) << (53 - n)
+    u = (d.S < 0 ? UInt64(1) << 63 : UInt64(0)) |
+        (UInt64(e + 1023) << 52) |
+        (m & ((UInt64(1) << 52) - 1))
+    reinterpret(Float64, u)
+end
+
 # signed-infinity predicates total over the carriers (`x == Inf` would need a
 # promotion Dyadic deliberately lacks)
 @inline _isposinf(x) = isinf(x) & !signbit(x)
@@ -140,7 +180,7 @@ exists, by design. Not exported.
 @inline lift(::HeadF128,  x::Float64)  = Float128(x)
 @inline lift(::HeadF128,  x::Float128) = x
 @inline lift(::HeadExact, x::Float64)  = Dyadic(x)
-@inline lift(::HeadExact, x::Float128) = Dyadic(x)
+@inline lift(::HeadExact, x::Float128) = _dyadic128(x)
 @inline lift(::HeadExact, x::BigFloat) = Dyadic(x)
 @inline lift(::HeadExact, x::Dyadic)   = x
 

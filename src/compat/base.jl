@@ -290,11 +290,22 @@ end
 # carrier and projected once. The saturation mode is the session default's, so
 # these agree with the other verbs about the top of the range; the ROUNDING
 # is the one the verb names.
+@inline function _project_default_sat(::Type{F}, μ::RoundingMode, x) where {F<:Binary}
+    σ = DefaultSaturationMode()
+    if σ === SN
+        μ === RTE && return project(F, RTE_SN, x)
+        μ === RTA && return project(F, RTA_SN, x)
+        μ === RTP && return project(F, RTP_SN, x)
+        μ === RTN && return project(F, RTN_SN, x)
+        μ === RTZ && return project(F, RTZ_SN, x)
+    end
+    project(F, Projection(μ, σ), x)
+end
+
 for (verb, mode) in ((:trunc, :RTZ), (:floor, :RTN), (:ceil, :RTP), (:round, :RTE))
     @eval function Base.$verb(x::T) where {T<:BinaryValue}
         isfinite(x) || return x
-        project(BinaryFormatOf(T), Projection($mode, DefaultSaturationMode()),
-                $verb(decode(x)))
+        _project_default_sat(BinaryFormatOf(T), $mode, $verb(decode(x)))
     end
 end
 
@@ -310,8 +321,7 @@ _projmode(::Base.RoundingMode{:ToZero})          = RTZ
 for R in (:Nearest, :NearestTiesAway, :Up, :Down, :ToZero)
     @eval function Base.round(x::T, r::Base.RoundingMode{$(QuoteNode(R))}) where {T<:BinaryValue}
         isfinite(x) || return x
-        project(BinaryFormatOf(T), Projection(_projmode(r), DefaultSaturationMode()),
-                round(decode(x), r))
+        _project_default_sat(BinaryFormatOf(T), _projmode(r), round(decode(x), r))
     end
 end
 
