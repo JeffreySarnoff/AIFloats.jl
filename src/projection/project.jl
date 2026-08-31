@@ -101,6 +101,13 @@ rung-2 ladders run at 136 and never do.
     project(F, ρ, x; R, sticky)
 end
 
+"""
+Ziv's first rung. Also the precision at which an enclosure may use a cheaper
+construction: see `_ladder1_cr` in `ops/oracle.jl`, which is allowed to return a
+wider interval here and must return the rigorous directed pair above.
+"""
+const IV_FIRST_RUNG = 64
+
 function _project_interval(::Type{F}, ρ::Projection, f, R::Int, maxprec::Int) where {F<:Binary}
     maxprec >= 2 || throw(ArgumentError("project_interval needs maxprec >= 2"))
     # Ziv's first rung. 64 is not a resolution estimate — `_ladderprec` raises
@@ -116,7 +123,7 @@ function _project_interval(::Type{F}, ρ::Projection, f, R::Int, maxprec::Int) w
     # rungs pays one extra doubling and is far outweighed. Correctness does not
     # depend on this value at all — the loop escalates to `maxprec` regardless —
     # only the number of MPFR calls does.
-    prec = min(64, maxprec)
+    prec = min(IV_FIRST_RUNG, maxprec)
     while true
         d, u = f(prec)
         if isequal(d, u)

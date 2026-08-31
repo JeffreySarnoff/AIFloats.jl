@@ -104,7 +104,56 @@ _ladder1(f, x) = prec -> setprecision(BigFloat, _ladderprec(prec, x)) do
      setrounding(() -> f(b), BigFloat, RoundUp))
 end
 
-@inline _mpfr2(f, x, y) = Enclosure(_ladder2(f, x, y), _fq2(f, x, y), _yd2(f, x, y))
+@inline @inline _mpfr2(f, x, y) = Enclosure(_ladder2(f, x, y), _fq2(f, x, y), _yd2(f, x, y))
+
+# ---- the correctly-rounded variants -----------------------------------------
+# MPFR computes every one of its primitives with CORRECT rounding, so a single
+# round-to-nearest evaluation r satisfies |true − r| ≤ ½ulp(r) and
+# [prevfloat(r), nextfloat(r)] strictly contains the true value. One MPFR call
+# and two cheap steps replace two directed calls plus two `setrounding`
+# round-trips: measured on Exp at rung 1, 1614 ns / 47 allocs → 793 / 26; at
+# rung 2, 2205 → 1097. The enclosure is exactly 2 ulps wide instead of 1, which
+# is nothing against a ≤ 16-bit grid — 97.6% of enclosures still resolve on the
+# first rung.
+#
+# THE PRECONDITION IS `f` BEING ONE MPFR PRIMITIVE, AND IT IS NOT CHECKABLE
+# HERE. A composite closure rounds more than once, its error can exceed ½ulp,
+# and a one-ulp widening would then be a guess wearing a proof's clothes. Every
+# use is therefore an explicit opt-in at the call site, and `Softplus`
+# (`b + log1p(exp(-b))`) keeps the directed pair above for exactly this reason.
+# `test-ops.jl` pins the containment property itself — that the nearest-based
+# enclosure contains the directed one — rather than only its usual consequence.
+#
+# This is also precisely the guarantee libquadmath does NOT publish for
+# binary128, which is why the Float128 estimators stay deferred.
+# FIRST RUNG ONLY, and that restriction is load-bearing rather than cautious.
+# [prevfloat(r), nextfloat(r)] is always two ulps wide and NEVER collapses to a
+# point, but `_project_interval` detects an exactly-representable result by the
+# directed pair coming back equal. Take that away and a value landing exactly on
+# a grid point under a directed mode straddles at every precision: the ladder
+# escalates forever and dies at the cap. That is not hypothetical — it is what
+# the end-to-end differential produced for Exp on Binary{16,5,SIGNED,EXTENDED}
+# under RTP_SF, after the containment property alone had tested clean.
+#
+# So the cheap enclosure serves the ~97.6% of cases that resolve on rung one,
+# and every escalation falls back to the rigorous directed pair, which is
+# unchanged and still the reference.
+@inline function _ladder1_cr(f, x)
+    prec -> prec <= IV_FIRST_RUNG ?
+        setprecision(BigFloat, _ladderprec(prec, x)) do
+            r = f(_exactbig(x)); (prevfloat(r), nextfloat(r))
+        end :
+        _ladder1(f, x)(prec)
+end
+@inline function _ladder2_cr(f, x, y)
+    prec -> prec <= IV_FIRST_RUNG ?
+        setprecision(BigFloat, _ladderprec(prec, x, y)) do
+            r = f(_exactbig(x), _exactbig(y)); (prevfloat(r), nextfloat(r))
+        end :
+        _ladder2(f, x, y)(prec)
+end
+@inline _mpfr1_cr(f, x) = Enclosure(_ladder1_cr(f, x), _fq1(f, x), _yd1(f, x))
+@inline _mpfr2_cr(f, x, y) = Enclosure(_ladder2_cr(f, x, y), _fq2(f, x, y), _yd2(f, x, y))
 _ladder2(f, x, y) = prec -> setprecision(BigFloat, _ladderprec(prec, x, y)) do
     bx, by = _exactbig(x), _exactbig(y)
     (setrounding(() -> f(bx, by), BigFloat, RoundDown),
@@ -615,7 +664,7 @@ function ωeval(::Val{:Divide}, x::Float128, y::Float128)
     iszero(x) && return _czero(Float128)
     q = _try_div128(x, y)
     q === nothing || return q
-    _mpfr2(/, x, y)
+    _mpfr2_cr(/, x, y)
 end
 function ωeval(::Val{:Divide}, x, y)
     (isnan(x) | isnan(y)) && return _cnan(BigFloat)
@@ -626,7 +675,7 @@ function ωeval(::Val{:Divide}, x, y)
     isinf(y) && return _czero(BigFloat)
     iszero(y) && return _cnan(BigFloat)
     iszero(x) && return _czero(BigFloat)
-    _mpfr2(/, x, y)
+    _mpfr2_cr(/, x, y)
 end
 
 function ωeval(::Val{:Recip}, x::C) where {C<:AbstractFloat}
@@ -719,7 +768,7 @@ function ωeval(::Val{:Exp}, x::C) where {C<:AbstractFloat}
     isnan(x) && return _cnan(C)
     isinf(x) && return signbit(x) ? _czero(C) : _cinf(C)
     iszero(x) && return one(C)
-    _mpfr1(exp, x)
+    _mpfr1_cr(exp, x)
 end
 function ωeval(::Val{:Exp2}, x::C) where {C<:AbstractFloat}
     isnan(x) && return _cnan(C)
@@ -728,13 +777,13 @@ function ωeval(::Val{:Exp2}, x::C) where {C<:AbstractFloat}
     # exact at integer x: 2^n is a datum candidate — peel to avoid chasing an
     # interior grid point forever
     (isinteger(x) && abs(x) <= 2^20) && return _exact_pow2(Int(x))
-    _mpfr1(exp2, x)
+    _mpfr1_cr(exp2, x)
 end
 function ωeval(::Val{:ExpMinusOne}, x::C) where {C<:AbstractFloat}
     isnan(x) && return _cnan(C)
     isinf(x) && return signbit(x) ? -one(C) : _cinf(C)
     iszero(x) && return _czero(C)
-    _mpfr1(expm1, x)
+    _mpfr1_cr(expm1, x)
 end
 function ωeval(::Val{:Log}, x::C) where {C<:AbstractFloat}
     isnan(x) && return _cnan(C)
@@ -742,7 +791,7 @@ function ωeval(::Val{:Log}, x::C) where {C<:AbstractFloat}
     signbit(x) && return _cnan(C)
     isinf(x) && return _cinf(C)
     isone(x) && return _czero(C)
-    _mpfr1(log, x)
+    _mpfr1_cr(log, x)
 end
 function ωeval(::Val{:Log2}, x::C) where {C<:AbstractFloat}
     isnan(x) && return _cnan(C)
@@ -753,7 +802,7 @@ function ωeval(::Val{:Log2}, x::C) where {C<:AbstractFloat}
     if x == ldexp(one(C), exponent(x))
         return C(exponent(x))          # a small integer, exact in every carrier
     end
-    _mpfr1(log2, x)
+    _mpfr1_cr(log2, x)
 end
 function ωeval(::Val{:LogOnePlus}, x::C) where {C<:AbstractFloat}
     isnan(x) && return _cnan(C)
@@ -761,7 +810,7 @@ function ωeval(::Val{:LogOnePlus}, x::C) where {C<:AbstractFloat}
     isinf(x) && return signbit(x) ? _cnan(C) : _cinf(C)
     x < -1 && return _cnan(C)
     x == -1 && return _cninf(C)
-    _mpfr1(log1p, x)
+    _mpfr1_cr(log1p, x)
 end
 
 for (nm, bf) in ((:Sin, :sin), (:Cos, :cos), (:Tan, :tan))
@@ -769,20 +818,20 @@ for (nm, bf) in ((:Sin, :sin), (:Cos, :cos), (:Tan, :tan))
         isnan(x) && return _cnan(C)
         isinf(x) && return _cnan(C)
         iszero(x) && return $(nm === :Cos ? :(one(C)) : :(_czero(C)))
-        _mpfr1($bf, x)
+        _mpfr1_cr($bf, x)
     end
 end
 function ωeval(::Val{:ArcSin}, x::C) where {C<:AbstractFloat}
     isnan(x) && return _cnan(C)
     abs(x) > 1 && return _cnan(C)
     iszero(x) && return _czero(C)
-    _mpfr1(asin, x)
+    _mpfr1_cr(asin, x)
 end
 function ωeval(::Val{:ArcCos}, x::C) where {C<:AbstractFloat}
     isnan(x) && return _cnan(C)
     abs(x) > 1 && return _cnan(C)
     isone(x) && return _czero(C)
-    _mpfr1(acos, x)
+    _mpfr1_cr(acos, x)
 end
 # directed enclosure of s · π/2
 _mpfr_halfpi(s::Int) = Enclosure(prec -> setprecision(BigFloat, max(prec, 64)) do
@@ -795,7 +844,7 @@ function ωeval(::Val{:ArcTan}, x::C) where {C<:AbstractFloat}
     isnan(x) && return _cnan(C)
     iszero(x) && return _czero(C)
     isinf(x) && return _mpfr_halfpi(signbit(x) ? -1 : 1)
-    _mpfr1(atan, x)
+    _mpfr1_cr(atan, x)
 end
 for (nm, bf, oddzero) in ((:Sinh, :sinh, true), (:Cosh, :cosh, false),
                           (:Tanh, :tanh, true), (:ArcSinh, :asinh, true))
@@ -809,7 +858,7 @@ for (nm, bf, oddzero) in ((:Sinh, :sinh, true), (:Cosh, :cosh, false),
               :(return signbit(x) ? _cninf(C) : _cinf(C)))
         end
         iszero(x) && return $(oddzero ? :(_czero(C)) : :(one(C)))
-        _mpfr1($bf, x)
+        _mpfr1_cr($bf, x)
     end
 end
 function ωeval(::Val{:ArcCosh}, x::C) where {C<:AbstractFloat}
@@ -817,14 +866,14 @@ function ωeval(::Val{:ArcCosh}, x::C) where {C<:AbstractFloat}
     x < 1 && return _cnan(C)
     isone(x) && return _czero(C)
     isinf(x) && return _cinf(C)
-    _mpfr1(acosh, x)
+    _mpfr1_cr(acosh, x)
 end
 function ωeval(::Val{:ArcTanh}, x::C) where {C<:AbstractFloat}
     isnan(x) && return _cnan(C)
     abs(x) > 1 && return _cnan(C)
     iszero(x) && return _czero(C)
     abs(x) == 1 && return signbit(x) ? _cninf(C) : _cinf(C)
-    _mpfr1(atanh, x)
+    _mpfr1_cr(atanh, x)
 end
 
 function ωeval(::Val{:Softplus}, x::C) where {C<:AbstractFloat}
@@ -910,7 +959,7 @@ function ωeval(::Val{:Hypot}, x::C, y::C) where {C<:AbstractFloat}
     (isinf(x) | isinf(y)) && return _cinf(C)
     iszero(x) && return ωeval(Val(:Abs), y)
     iszero(y) && return ωeval(Val(:Abs), x)
-    _mpfr2(hypot, x, y)
+    _mpfr2_cr(hypot, x, y)
 end
 # ±π as a directed enclosure (the (Y, −∞) and (0, X<0) rows)
 _mpfr_pi(s::Int) = Enclosure(prec -> setprecision(BigFloat, max(prec, 64)) do
@@ -936,7 +985,7 @@ function ωeval(::Val{:ArcTan2}, y::C, x::C) where {C<:AbstractFloat}
     (iszero(y) && x < 0) && return _mpfr_pi(1)
     _isneginf(y) && return _mpfr_halfpi(-1)
     (y < 0 && iszero(x)) && return _mpfr_halfpi(-1)
-    _mpfr2(atan, y, x)
+    _mpfr2_cr(atan, y, x)
 end
 function ωeval(::Val{:ArcTan2Pi}, y::C, x::C) where {C<:AbstractFloat}
     (isnan(x) | isnan(y)) && return _cnan(C)

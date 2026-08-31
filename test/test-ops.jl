@@ -330,3 +330,49 @@ end
         @test (@allocated Sqrt(F, RTE_SN, T(4.0))) == 0
     end
 end
+
+@testset "correctly-rounded enclosures contain the directed ones" begin
+    # `_mpfr1_cr`/`_mpfr2_cr` replace two directed MPFR calls with one
+    # round-to-nearest call widened by an ulp each side. That is sound ONLY
+    # because MPFR rounds each of its primitives correctly, and only for a
+    # SINGLE primitive: a composite closure rounds more than once and its error
+    # can exceed half an ulp. `Softplus` keeps the directed pair for that
+    # reason, and this testset pins the property the opt-in rests on rather
+    # than only its usual consequence.
+    A = AIFloats
+    unary = ((:Exp, exp), (:Exp2, exp2), (:ExpMinusOne, expm1), (:Log, log),
+             (:Log2, log2), (:LogOnePlus, log1p), (:Sin, sin), (:Cos, cos),
+             (:Tan, tan), (:ArcSin, asin), (:ArcCos, acos), (:ArcTan, atan),
+             (:Sinh, sinh), (:Cosh, cosh), (:Tanh, tanh), (:ArcSinh, asinh),
+             (:ArcCosh, acosh), (:ArcTanh, atanh))
+    for (_, f) in unary, xv in (0.5, 1.5, 2.0, 0.125, 3.75, 1e-5, 12.0, -0.5, -1.5, 100.0)
+        # first rung: the widened enclosure. Above it the cr ladder must hand
+        # back the directed pair unchanged, which the equality below asserts.
+        dc, uc = try A._ladder1_cr(f, xv)(64) catch; continue end
+        dd, ud = try A._ladder1(f, xv)(64)    catch; continue end
+        (isfinite(dc) && isfinite(uc) && isfinite(dd) && isfinite(ud)) || continue
+        @test dc <= dd && ud <= uc                       # contains the directed pair
+        t = setprecision(() -> f(BigFloat(xv)), BigFloat, 4096)
+        @test dc <= t <= uc                              # and contains the truth
+        @test A._ladder1_cr(f, xv)(256) == A._ladder1(f, xv)(256)   # escalation is rigorous
+    end
+    for f in (/, hypot, atan), xv in (1.0, 3.0, 0.5, -2.5), yv in (1.0, 3.0, 0.5, -2.5)
+        dc, uc = A._ladder2_cr(f, xv, yv)(64); dd, ud = A._ladder2(f, xv, yv)(64)
+        (isfinite(dc) && isfinite(uc) && isfinite(dd) && isfinite(ud)) || continue
+        @test dc <= dd && ud <= uc
+        t = setprecision(() -> f(BigFloat(xv), BigFloat(yv)), BigFloat, 4096)
+        @test dc <= t <= uc
+        @test A._ladder2_cr(f, xv, yv)(256) == A._ladder2(f, xv, yv)(256)
+    end
+
+    # The widened enclosure NEVER collapses to a point, so it cannot report an
+    # exactly-representable result; the directed pair can, and a directed mode
+    # needs it. Restricting the cheap form to the first rung is what makes this
+    # resolve at all -- without it, Exp here escalates to the cap and throws.
+    let F = Binary(16, 5, SIGNED, EXTENDED), T = BinaryValue(F)
+        for x in (T(1.5), T(1.0), T(2.0), T(0.5)), ρ in (RTP_SF, RTN_SF, RTZ_SN, RTO_SN, RTE_SN)
+            @test Exp(F, ρ, x) isa BinaryValue
+            @test Log(F, ρ, x) isa BinaryValue
+        end
+    end
+end
