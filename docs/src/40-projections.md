@@ -10,9 +10,9 @@ the choice of how a real is mapped onto one that is: a [rounding mode](@ref roun
 for values that fall between neighbours, and a [saturation mode](@ref saturation-modes) for
 values past the largest.
 
-!!! note "Names, not yet behavior"
-    These constants currently *name* the modes and let you pass a choice around. Applying a
-    projection to a number is not implemented — see [Implementation status](@ref status).
+Use a projection with [`Convert`](@ref), a registered operation, or
+[`project`](@ref). Projection is the package's single code-point write path, so
+the selected rounding and saturation behavior is applied exactly once.
 
 ## [Rounding modes](@id rounding-modes)
 

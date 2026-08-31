@@ -5,7 +5,11 @@ DocMeta.setdocmeta!(AIFloats, :DocTestSetup, :(using AIFloats); recursive = true
 
 # Add titles of sections and overrides page titles
 const titles = Dict(
-    # "10-tutorials" => "Tutorials", # example folder title
+    "70-examples" => "Examples",
+    "70-examples/10-basic.md" => "Basic examples",
+    "70-examples/20-intermediate.md" => "Intermediate examples",
+    "70-examples/30-advanced.md" => "Advanced examples",
+    "70-examples/40-technical.md" => "Technical examples",
     "91-developer.md" => "Developer docs",
 )
 
@@ -141,6 +145,11 @@ makedocs(;
     sitename = "AIFloats.jl",
     format = Documenter.HTML(;
         canonical = "https://JeffreySarnoff.github.io/AIFloats.jl",
+        # Direct `.html` targets work both on the deployed site and when a
+        # generated build is opened from disk. Pretty directory URLs require
+        # an HTTP server to resolve `path/` to `path/index.html`; without one,
+        # a click exposes the directory and makes the reader select index.html.
+        prettyurls = false,
         # 95-reference.md is one page holding every docstring in the package,
         # several of which carry the measurement tables that justify a policy
         # constant. It exceeds Documenter's 200 KiB default on its own.

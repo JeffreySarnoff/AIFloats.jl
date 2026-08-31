@@ -29,10 +29,10 @@ julia> CodeType(B), ValueType(B)          # how to store a code, and a value
 ```
 
 !!! note "Scope"
-    AIFloats.jl currently models formats, not numbers. It will tell you what a format *is*
-    and answer questions about it, but it does not yet produce the values a format
-    represents, encode or decode code points, or do arithmetic. See
-    [Implementation status](@ref status) for what exists today.
+    AIFloats.jl models formats and their values, including encoding, decoding,
+    correctly rounded scalar and array operations, shared-scale blocks, and
+    packed storage. See [Implementation status](@ref status) for the supported
+    surface and deliberate limits.
 
 ## Installation
 
@@ -48,6 +48,10 @@ julia> using Pkg; Pkg.add("AIFloats")
 | [Concepts](@ref concepts) | What K, P, S, and D mean, and why the rules are what they are |
 | [Binary formats](@ref formats) | The full `Binary` API — construction, accessors, validity, display |
 | [Projections](@ref projections) | Rounding and saturation modes, and the projections that pair them |
+| [Basic examples](@ref examples-basic) | Construct values, calculate, inspect, and convert |
+| [Intermediate examples](@ref examples-intermediate) | Explicit projections, stochastic rounding, and arrays |
+| [Advanced examples](@ref examples-advanced) | Packed storage, blocks, reductions, and block conversion |
+| [Technical examples](@ref examples-technical) | Carrier, table-policy, conformance, and oracle diagnostics |
 | [Implementation status](@ref status) | What is implemented and what is not |
 | [Reference](@ref reference) | Every documented name |
 
