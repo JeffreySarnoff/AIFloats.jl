@@ -50,7 +50,10 @@ Every accessor and predicate works on the `Binary` type, a `Binary` instance, th
 
 Facts a caller needs in order to predict cost. All are measured; the benchmark
 suite that produces them is `benchmark/runbenchmarks.jl` (an isolated
-environment — Chairmarks is not a dependency of the package).
+environment — Chairmarks is not a dependency of the package). That suite is run
+during every documentation build and its output is reproduced verbatim under
+[Benchmark results](@ref benchmarks), so the numbers on this page can be checked
+against the machine that built it.
 
 **Decoding.** `K ≤ 8` decodes through a `@generated` constant table (~1.4 ns);
 wider formats compute the value (~3 ns). Both are allocation-free.
