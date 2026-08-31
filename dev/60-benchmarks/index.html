@@ -3,143 +3,153 @@
 julia --project=benchmark -t 4 benchmark/runbenchmarks.jl scalar   # one suite</code></pre><p>The suite is run with four threads unless <code>JULIA_NUM_THREADS</code> says otherwise, whatever the machine&#39;s core count, so that the threading rows stay comparable between builds.</p><p>What the columns mean: time per call, then allocations and bytes when a call allocates at all (their absence is itself the claim — most scalar rows are allocation-free), and elements per second for array rows. The <code>latency</code> suite measures package load and first-call compilation in <em>fresh processes</em>, because those happen exactly once and cannot be sampled.</p><p>See <a href="../50-status/#performance">Performance characteristics</a> for the design decisions these measurements justify.</p><pre><code class="nohighlight hljs">AIFloats benchmarks
   julia    1.12.7   threads=4
   cpu      AMD EPYC 9V74 80-Core Processor
-  commit   81a7efb (dirty)
+  commit   9318d1a (dirty)
   defaults ρ=ρ(RoundToEven, SatNone)  TABLE_EAGER_BITS=16  THREAD_MIN_ELEMS=1024
 
 
 ── scalar — codec and projection ───────────────────────────────
-decode K=8 (generated table)                          3.5 ns
+decode K=8 (generated table)                          2.4 ns
 decode K=12 (computed)                                4.9 ns
-decode K=16 (rung 2)                                 33.5 ns
-codepoint                                             3.1 ns
-project Float64 → K=8                                 1.7 ns
-project Float64 → K=12                                1.7 ns
-project Float64 → K=8 RTZ_SF                          1.7 ns
-project Float64 → K=8 RSA_SN                          1.7 ns
-order_key                                             3.1 ns
-NextGreaterThan                                       3.1 ns
-Class                                                 3.5 ns
+decode K=16 (rung 2)                                 26.8 ns
+codepoint                                             2.4 ns
+project Float64 → K=8                                 1.4 ns
+project Float64 → K=12                                1.4 ns
+project Float64 → K=8 RTZ_SF                          1.4 ns
+project Float64 → K=8 RSA_SN                          1.4 ns
+project Float128 → K=16                              20.7 ns
+binary128 → exact Dyadic                              3.8 ns
+binary128 exact Float64 accept                       11.9 ns
+binary128 exact Float64 refuse                       10.0 ns
+order_key                                             2.7 ns
+NextGreaterThan                                       2.4 ns
+Class                                                 2.7 ns
 
 ── scalar — construction ───────────────────────────────────────
-T8(1.3)      (Float64 value)                          3.5 ns
-T8(1.3f0)    (Float32 value)                          3.8 ns
-T8(3)        (Integer value)                          3.8 ns
-convert(T8, 1.3)                                     20.6 ns
-T8(0x05)     (code point)                             1.7 ns
-Convert(F8, RTE_SN, 1.3)                              1.7 ns
+T8(1.3)      (Float64 value)                          2.7 ns
+T8(1.3f0)    (Float32 value)                          2.7 ns
+T8(3)        (Integer value)                          3.0 ns
+convert(T8, 1.3)                                     14.4 ns
+T8(0x05)     (code point)                             1.4 ns
+Convert(F8, RTE_SN, 1.3)                              1.4 ns
 
 ── scalar — operations by registry group, K=8 ──────────────────
-Add       explicit ρ                                 24.5 ns
-Add       session default ρ                          24.9 ns
-Subtract  explicit ρ                                 24.5 ns
-Multiply  explicit ρ                                 22.0 ns
-Divide    explicit ρ                                 25.0 ns
-FMA       explicit ρ                                 30.7 ns
-FAA       explicit ρ                                 26.7 ns
-Sqrt      explicit ρ                                 47.5 ns
-Exp       explicit ρ                                 54.8 ns
-Exp2      explicit ρ                                 57.0 ns
-Log       explicit ρ                                 68.7 ns
-Log2      explicit ρ                                 70.5 ns
-Sin       explicit ρ                                 63.7 ns
-Tanh      explicit ρ                                 64.9 ns
-ArcTan2Pi explicit ρ                                 80.5 ns
-Maximum   explicit ρ                                 19.5 ns
-Convert   K=8 → K=12                                 18.4 ns
-Add       RSA_SN (stochastic)                        22.9 ns
-Add       FAST_ARITH=false                           23.6 ns
-Exp       FAST_ENCLOSURE=false                     2290.9 ns  allocs=44 bytes=1328
+Add       explicit ρ                                 19.2 ns
+Add       session default ρ                          20.3 ns
+Subtract  explicit ρ                                 19.0 ns
+Multiply  explicit ρ                                 18.4 ns
+Divide    explicit ρ                                 19.4 ns
+FMA       explicit ρ                                 24.1 ns
+FAA       explicit ρ                                 20.8 ns
+Sqrt      explicit ρ                                 37.1 ns
+Exp       explicit ρ                                 43.3 ns
+Exp2      explicit ρ                                 44.2 ns
+Log       explicit ρ                                 54.7 ns
+Log2      explicit ρ                                 55.0 ns
+Sin       explicit ρ                                 50.8 ns
+Tanh      explicit ρ                                 51.3 ns
+ArcTan2Pi explicit ρ                                 62.5 ns
+Maximum   explicit ρ                                 16.2 ns
+Convert   K=8 → K=12                                 14.6 ns
+Add       RSA_SN (stochastic)                        18.1 ns
+Add       FAST_ARITH=false                           19.8 ns
+Exp       FAST_ENCLOSURE=false                     1736.9 ns  allocs=44 bytes=1328
 
 ── scalar — operations, K=12 and K=16 ──────────────────────────
-Add       K=12                                       32.1 ns
-Multiply  K=12                                       32.8 ns
-FMA       K=12                                       41.8 ns
-Exp       K=12                                       61.9 ns
-Log       K=12                                       74.8 ns
-Add       K=16 (rung 2)                             363.4 ns
-Multiply  K=16 (rung 2)                             979.4 ns
-Exp       K=16 (rung 2)                            4016.0 ns  allocs=62 bytes=2440
+Add       K=12                                       26.3 ns
+Multiply  K=12                                       25.6 ns
+FMA       K=12                                       33.6 ns
+Exp       K=12                                       48.5 ns
+Log       K=12                                       59.1 ns
+Add       K=16 (rung 2)                              81.0 ns
+Multiply  K=16 (rung 2)                              77.0 ns
+Exp       K=16 (rung 2)                             201.6 ns  allocs=2 bytes=48
 
 ── scalar — Base veneers ───────────────────────────────────────
-x + y                                                26.3 ns
-x * y                                                24.4 ns
-fma(x, y, z)                                         32.4 ns
-exp(x)                                               56.7 ns
-log(x)                                               69.4 ns
-x &lt; y                                                 3.8 ns
-Float64(x)                                            3.1 ns
-BigFloat(x)                                          21.9 ns  allocs=1 bytes=96
-round(x)                                            574.6 ns  allocs=2 bytes=32
-eps(x)                                               30.3 ns
-hash(x)                                              20.7 ns
-rand(T8)                                             17.3 ns
+x + y                                                20.5 ns
+x * y                                                19.0 ns
+fma(x, y, z)                                         25.6 ns
+exp(x)                                               43.9 ns
+log(x)                                               54.6 ns
+x &lt; y                                                 2.7 ns
+Float64(x)                                            2.7 ns
+BigFloat(x)                                          17.3 ns  allocs=1 bytes=96
+round(x)                                             16.0 ns
+floor(x)                                             16.4 ns
+ceil(x)                                              16.3 ns
+trunc(x)                                             15.2 ns
+round(x, RoundUp)                                    16.3 ns
+eps(x)                                               24.1 ns
+hash(x)                                              16.4 ns
+rand(T8)                                             14.2 ns
 
 ── arrays — vmap! and broadcasting ─────────────────────────────
-vmap! Add K=8  warm table N=4096                   2228.7 ns  1.838 Gelem/s
-vmap! Add K=12 compute   N=4096                   96924.0 ns  allocs=22 bytes=1568  0.042 Gelem/s
-vmap! Add K=12 compute 1thr N=4096               123974.0 ns  0.033 Gelem/s
-vmap! Exp K=8  warm table N=4096                   1733.2 ns  2.363 Gelem/s
-vmap! Exp K=12 warm table N=4096                   1775.1 ns  2.307 Gelem/s
-A .+ B      K=8  N=4096                            2385.4 ns  allocs=3 bytes=4168  1.717 Gelem/s
-A .+ B      K=12 N=4096                           98216.0 ns  allocs=25 bytes=9832  0.042 Gelem/s
-exp.(A)     K=8  N=4096                            1872.8 ns  allocs=3 bytes=4168  2.187 Gelem/s
-fma.(A,B,A) K=8  N=4096                           98746.0 ns  allocs=25 bytes=5800  0.041 Gelem/s
-Float64.(A) K=8  N=4096                            1892.8 ns  allocs=3 bytes=32840  2.164 Gelem/s
-sort(A)     K=8  N=4096                            4058.5 ns  allocs=5 bytes=6320  1.009 Gelem/s
-sort(A)     K=12 N=4096                           14251.0 ns  allocs=8 bytes=49464  0.287 Gelem/s
+vmap! Add K=8  warm table N=4096                   1746.3 ns  2.346 Gelem/s
+vmap! Add K=12 compute   N=4096                   77294.0 ns  allocs=22 bytes=1568  0.053 Gelem/s
+vmap! Add K=12 compute 1thr N=4096               102091.0 ns  0.04 Gelem/s
+vmap! Exp K=8  warm table N=4096                   1350.1 ns  3.034 Gelem/s
+vmap! Exp K=12 warm table N=4096                   1395.4 ns  2.935 Gelem/s
+A .+ B      K=8  N=4096                            1844.9 ns  allocs=3 bytes=4168  2.22 Gelem/s
+A .+ B      K=12 N=4096                           76242.0 ns  allocs=25 bytes=9832  0.054 Gelem/s
+exp.(A)     K=8  N=4096                            1452.8 ns  allocs=3 bytes=4168  2.819 Gelem/s
+fma.(A,B,A) K=8  N=4096                           76422.0 ns  allocs=25 bytes=5800  0.054 Gelem/s
+Float64.(A) K=8  N=4096                            1385.3 ns  allocs=3 bytes=32840  2.957 Gelem/s
+sort(A)     K=8  N=4096                            2998.2 ns  allocs=5 bytes=6320  1.366 Gelem/s
+sort(A)     K=12 N=4096                           10095.0 ns  allocs=8 bytes=49464  0.406 Gelem/s
 
-vmap! Add K=8  warm table N=65536                 33449.0 ns  1.959 Gelem/s
-vmap! Add K=12 compute   N=65536                 977581.0 ns  allocs=22 bytes=1568  0.067 Gelem/s
-vmap! Add K=12 compute 1thr N=65536            1.999508e6 ns  0.033 Gelem/s
-vmap! Exp K=8  warm table N=65536                 26158.0 ns  2.505 Gelem/s
-vmap! Exp K=12 warm table N=65536                 26459.0 ns  2.477 Gelem/s
-A .+ B      K=8  N=65536                          33430.0 ns  allocs=3 bytes=65608  1.96 Gelem/s
-A .+ B      K=12 N=65536                         983424.0 ns  allocs=25 bytes=132712  0.067 Gelem/s
-exp.(A)     K=8  N=65536                          26289.0 ns  allocs=3 bytes=65608  2.493 Gelem/s
-fma.(A,B,A) K=8  N=65536                         966329.0 ns  allocs=25 bytes=67240  0.068 Gelem/s
-Float64.(A) K=8  N=65536                          27390.0 ns  allocs=3 bytes=524360  2.393 Gelem/s
-sort(A)     K=8  N=65536                          49804.0 ns  allocs=5 bytes=67760  1.316 Gelem/s
-sort(A)     K=12 N=65536                         102172.0 ns  allocs=8 bytes=172344  0.641 Gelem/s
+vmap! Add K=8  warm table N=65536                 25547.0 ns  2.565 Gelem/s
+vmap! Add K=12 compute   N=65536                 856568.0 ns  allocs=22 bytes=1568  0.077 Gelem/s
+vmap! Add K=12 compute 1thr N=65536            1.642202e6 ns  0.04 Gelem/s
+vmap! Exp K=8  warm table N=65536                 20330.0 ns  3.224 Gelem/s
+vmap! Exp K=12 warm table N=65536                 20560.0 ns  3.188 Gelem/s
+A .+ B      K=8  N=65536                          25708.0 ns  allocs=3 bytes=65608  2.549 Gelem/s
+A .+ B      K=12 N=65536                         858159.0 ns  allocs=25 bytes=132712  0.076 Gelem/s
+exp.(A)     K=8  N=65536                          20440.0 ns  allocs=3 bytes=65608  3.206 Gelem/s
+fma.(A,B,A) K=8  N=65536                         792603.0 ns  allocs=25 bytes=67240  0.083 Gelem/s
+Float64.(A) K=8  N=65536                          21241.0 ns  allocs=3 bytes=524360  3.085 Gelem/s
+sort(A)     K=8  N=65536                          37836.0 ns  allocs=5 bytes=67760  1.732 Gelem/s
+sort(A)     K=12 N=65536                          75462.0 ns  allocs=8 bytes=172344  0.868 Gelem/s
 
 
 ── arrays — cold table build (evals=1) ─────────────────────────
-empty_tables! + vmap! Add K=8 N=4096             700685.0 ns  allocs=24 bytes=75656  0.006 Gelem/s
-empty_tables! + vmap! Exp K=8 N=4096              15362.0 ns  allocs=1 bytes=288  0.267 Gelem/s
+empty_tables! + vmap! Add K=8 N=4096             625124.0 ns  allocs=24 bytes=75656  0.007 Gelem/s
+empty_tables! + vmap! Exp K=8 N=4096              12538.0 ns  allocs=1 bytes=288  0.327 Gelem/s
 
 ── arrays — packed storage ─────────────────────────────────────
-PackedVector(A)   K=8  N=65536                    68331.0 ns  allocs=3 bytes=65608  0.959 Gelem/s
-PackedVector(A)   K=5  N=65536                    89583.0 ns  allocs=3 bytes=41032  0.732 Gelem/s
-collect(P)        K=5  N=65536                    11948.0 ns  allocs=3 bytes=65608  5.485 Gelem/s
-P[i]              K=5                                 3.8 ns
-vmap Negate packed K=5 N=65536                    30525.0 ns  allocs=4 bytes=65640  2.147 Gelem/s
-vmap Negate vector K=5 N=65536                    26309.0 ns  allocs=3 bytes=65608  2.491 Gelem/s
-vmap Exp    packed K=5 N=65536                    30164.0 ns  allocs=4 bytes=65640  2.173 Gelem/s
-vmap Exp    vector K=5 N=65536                    26299.0 ns  allocs=3 bytes=65608  2.492 Gelem/s
+PackedVector(A)   K=8  N=65536                    52749.0 ns  allocs=3 bytes=65608  1.242 Gelem/s
+PackedVector(A)   K=5  N=65536                    69863.0 ns  allocs=3 bytes=41032  0.938 Gelem/s
+collect(P)        K=5  N=65536                     4289.7 ns  allocs=3 bytes=65608  15.278 Gelem/s
+P[i]              K=5                                 3.0 ns
+vmap Negate packed K=5 N=65536                    24076.0 ns  allocs=4 bytes=65640  2.722 Gelem/s
+vmap Negate vector K=5 N=65536                    20430.0 ns  allocs=3 bytes=65608  3.208 Gelem/s
+vmap Exp    packed K=5 N=65536                    23665.0 ns  allocs=4 bytes=65640  2.769 Gelem/s
+vmap Exp    vector K=5 N=65536                    20440.0 ns  allocs=3 bytes=65608  3.206 Gelem/s
 
 ── arrays — blocks ─────────────────────────────────────────────
-blockdecode        B=16                              38.1 ns  allocs=1 bytes=144
-BlockReduceAdd     B=16                             618.6 ns
-BlockReduceMultiply B=16                            174.0 ns
-BlockDotProduct    B=16                             716.2 ns
-BlockAdd           B=16                            1363.0 ns  allocs=22 bytes=1008
+blockdecode        B=16                              27.2 ns  allocs=1 bytes=144
+BlockReduceAdd     B=16                             477.8 ns
+BlockReduceMultiply B=16                            133.2 ns
+BlockDotProduct    B=16                             528.2 ns
+BlockAdd           B=16                             320.7 ns
 
-blockdecode        B=32                              61.3 ns  allocs=1 bytes=272
-BlockReduceAdd     B=32                            1248.8 ns
-BlockReduceMultiply B=32                            321.4 ns
-BlockDotProduct    B=32                            1387.3 ns
-BlockAdd           B=32                            2310.1 ns  allocs=38 bytes=1936
+blockdecode        B=32                              63.8 ns  allocs=1 bytes=272
+BlockReduceAdd     B=32                             986.1 ns
+BlockReduceMultiply B=32                            260.8 ns
+BlockDotProduct    B=32                            1092.4 ns
+BlockAdd           B=32                             606.6 ns
 
-ScaledAdd (scalar lanes)                            280.3 ns  allocs=7 bytes=128
+ScaledAdd (scalar lanes)                             22.3 ns
+BlockReduceAdd rung 2 B=16                          858.5 ns
+BlockReduceMultiply rung 2 B=16                     621.6 ns
 
 ── latency — load and first call (fresh process each) ──────────
-using AIFloats                                   116.11 ms
+using AIFloats                                    86.96 ms
 first T(1.3)                                        0.0 ms
-first Add(x,y)                                    17.48 ms
-first Exp(x)                                      15.12 ms
-first Log(x)                                      14.02 ms
-first sort                                        13.64 ms
-first vmap! Add                                    1.47 ms
+first Add(x,y)                                     0.02 ms
+first Exp(x)                                       0.01 ms
+first Log(x)                                       0.02 ms
+first sort                                         0.03 ms
+first vmap! Add                                    1.14 ms
 first A .+ B                                       0.03 ms
-first exp.(A)                                      0.08 ms
+first exp.(A)                                      0.05 ms
 first PackedVector                                 0.02 ms
-first BlockReduceAdd                               0.04 ms</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../50-status/">« Implementation status</a><a class="docs-footer-nextpage" href="../90-contributing/">Contributing guidelines »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.18.0 on <span class="colophon-date" title="Monday 31 August 2026 21:54">Monday 31 August 2026</span>. Using Julia version 1.12.7.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+first BlockReduceAdd                               0.03 ms</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../50-status/">« Implementation status</a><a class="docs-footer-nextpage" href="../90-contributing/">Contributing guidelines »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.18.0 on <span class="colophon-date" title="Monday 31 August 2026 23:12">Monday 31 August 2026</span>. Using Julia version 1.12.7.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
