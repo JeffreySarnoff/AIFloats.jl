@@ -1,0 +1,11 @@
+# Normalize every text file to LF in the repository and on checkout.
+#
+# Mixed line endings were a live hazard here, not a style preference: any tool
+# that rewrites a file normalizes them silently, so an unrelated one-line edit
+# turns into a whole-file diff and buries the real change. That happened once
+# already (a 15-line edit to src/types/binaryformats.jl produced a 764-line
+# diff) and was only caught by reading the stat before pushing.
+#
+# `text=auto` lets git detect text vs binary rather than trusting this list;
+# `eol=lf` fixes the working-tree ending on every platform.
+* text=auto eol=lf
