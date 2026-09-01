@@ -279,14 +279,143 @@ end
 end
 
 @testset "packed constructor invariants" begin
+    A = AIFloats
     T = BinaryValue(Binary8p4se)
-    @test_throws ArgumentError PackedVector{T}(UInt64[], -1)
-    @test_throws ArgumentError PackedVector{T}(UInt64[], 1)
-    @test_throws ArgumentError PackedVector{T}(UInt64[0, 0], 1)
+    @test_throws ArgumentError A.packedfromwords(T, UInt64[], -1)
+    @test_throws DimensionMismatch A.packedfromwords(T, UInt64[], 1)
+    @test_throws DimensionMismatch A.packedfromwords(T, UInt64[0, 0], 1)
     pv = PackedVector(fill(T(1.0), 9))
     @test pv.data isa Memory{UInt64}
     @test_throws MethodError resize!(pv.data, 0)
     @test collect(pv) == fill(T(1.0), 9)
+    # the ambiguous representation constructor is gone: `PackedVector{T}(words, n)`
+    # could not say whether it validated, copied, or took ownership
+    @test_throws MethodError PackedVector{T}(UInt64[0], 1)
+end
+
+@testset "packed serialization and collections (improveapi3 Phase 6)" begin
+    A = AIFloats
+    for K in 3:16, (S, D) in ((SIGNED, EXTENDED), (UNSIGNED, FINITE))
+        F = Binary(K, min(2, K - 1), S, D); T = BinaryValue(F)
+        # exhaustive for small formats, boundary-crossing lengths for the rest
+        lens = K <= 6 ? vcat(0:(2^K), [2^K + 1]) :
+                        [0, 1, 7, 8, 63, 64, 65, 127, 128, 129, 1000]
+        for n in lens
+            xs = T[fromcode(F, (i - 1) % (2^K)) for i in 1:n]
+            pv = PackedVector(xs)
+
+            # words: cld(n*K, 64) of them, canonical padding, exact round trip
+            w = A.packedwords(pv)
+            @test length(w) == cld(n * K, 64)
+            @test w isa Vector{UInt64}
+            @test codepoint.(collect(A.packedfromwords(T, w, n))) == codepoint.(xs)
+
+            # bytes: the MINIMAL cld(n*K, 8), little-endian, exact round trip
+            b = A.packedbytes(pv)
+            @test length(b) == cld(n * K, 8)
+            @test codepoint.(collect(A.packedfrombytes(T, b, n))) == codepoint.(xs)
+
+            # a source held by the caller must not alias the vector built from it
+            if !isempty(w)
+                w[1] = ~w[1]
+                @test codepoint.(collect(A.packedfromwords(T, A.packedwords(pv), n))) ==
+                      codepoint.(xs)
+            end
+        end
+    end
+
+    F = Binary(5, 3, SIGNED, FINITE); T = BinaryValue(F)
+    xs = [fromcode(F, c) for c in 0:31]
+    pv = PackedVector(xs)
+
+    # a byte payload that does not fill its last word is SHORTER as bytes, and
+    # that is the point of having a byte form at all
+    @test length(A.packedbytes(pv)) == 20 < 8 * length(A.packedwords(pv))
+
+    # nonzero padding is refused, in both forms: a reader cannot tell a corrupt
+    # stream from a differently-conventioned writer and must not guess
+    let n = 3, G = Binary(5, 3, SIGNED, FINITE), TG = BinaryValue(G)
+        good_w = A.packedwords(PackedVector([fromcode(G, c) for c in 0:2]))
+        bad_w = copy(good_w); bad_w[end] |= UInt64(1) << 40
+        @test_throws ArgumentError A.packedfromwords(TG, bad_w, n)
+        good_b = A.packedbytes(PackedVector([fromcode(G, c) for c in 0:2]))
+        bad_b = copy(good_b); bad_b[end] |= 0x80
+        @test_throws ArgumentError A.packedfrombytes(TG, bad_b, n)
+        @test_throws DimensionMismatch A.packedfrombytes(TG, good_b, n + 1)
+    end
+
+    # length overflow is an OverflowError from checked arithmetic, not a wrap
+    @test_throws OverflowError PackedVector{T}(undef, typemax(Int))
+
+    # `similar` is ZERO-FILLED, not undef-packed. An undef BinaryValue can
+    # carry bits above K, and packing one writes them into its neighbour's
+    # share of the shared word -- this used to be `PackedVector(Vector{T}(undef, n))`.
+    sm = similar(pv)
+    @test length(sm) == length(pv) && all(iszero ∘ codepoint, sm)
+    @test similar(pv, BinaryValue(Binary8p4se)) isa PackedVector{BinaryValue(Binary8p4se)}
+    @test similar(pv, T, (7,)) isa PackedVector{T} && length(similar(pv, T, (7,))) == 7
+    @test similar(pv, Float64, (2, 3)) isa Matrix{Float64}     # not packable
+
+    # copy is an independent PACKED copy; mutating one leaves the other alone
+    c = copy(pv)
+    @test c isa PackedVector{T} && codepoint.(collect(c)) == codepoint.(xs)
+    c[1] = fromcode(F, 7)
+    @test codepoint(pv[1]) == 0x00 && codepoint(c[1]) == 0x07
+
+    # each copyto! direction, and the shape refusals
+    d = Vector{T}(undef, 32); copyto!(d, pv)
+    @test codepoint.(d) == codepoint.(xs)
+    p2 = similar(pv); copyto!(p2, xs)
+    @test codepoint.(collect(p2)) == codepoint.(xs)
+    p3 = similar(pv); copyto!(p3, pv)
+    @test codepoint.(collect(p3)) == codepoint.(xs)
+    @test_throws DimensionMismatch copyto!(Vector{T}(undef, 5), pv)
+    @test_throws DimensionMismatch copyto!(similar(pv, T, (5,)), xs)
+    @test_throws DimensionMismatch copyto!(similar(pv, T, (5,)), pv)
+
+    # collect/Vector are UNPACKED copies. Compared by CODE POINT: `xs` contains
+    # the format's NaN datum, and `==` on a NaN is false by IEEE rule, so an
+    # array `==` here would report a difference that is not one.
+    @test collect(pv) isa Vector{T}
+    @test codepoint.(Vector(pv)) == codepoint.(collect(pv)) == codepoint.(xs)
+end
+
+@testset "BlockVector collection contracts (improveapi3 Phase 6.8)" begin
+    F = Binary(5, 3, SIGNED, FINITE); T = BinaryValue(F)
+    S = Binary(8, 1, UNSIGNED, FINITE); ST = BinaryValue(S)
+    bs = [Block(ST(1.0), (T(1.0), T(2.0))), Block(ST(2.0), (T(0.5), T(0.25)))]
+    bv = BlockVector(bs)
+    @test collect(bv) == bs && Vector(bv) == bs
+
+    # independent copy
+    c = copy(bv)
+    c[1] = bs[2]
+    @test bv[1] == bs[1] && c[1] == bs[2]
+    # and the SoA columns are independent too, not merely the outer struct
+    c.elems[1, 2] = T(8.0)
+    @test bv[2] == bs[2]
+
+    # similar preserves the SoA representation for a Block element type of the
+    # same block size, and ZERO-FILLS: an undef BinaryValue can carry bits
+    # above K, which every decode and packing step assumes it cannot
+    sm = similar(bv)
+    @test sm isa BlockVector && length(sm) == length(bv)
+    @test all(j -> iszero(codepoint(sm[j].s)) && all(iszero ∘ codepoint, sm[j].x), 1:length(sm))
+    @test similar(bv, eltype(bv), (5,)) isa BlockVector
+    @test length(similar(bv, eltype(bv), (5,))) == 5
+    @test similar(bv, Float64, (2, 2)) isa Matrix{Float64}     # no SoA meaning
+
+    # exact-type copyto!, each direction, with shape refusals
+    b2 = similar(bv); copyto!(b2, bv); @test collect(b2) == bs
+    b3 = similar(bv); copyto!(b3, bs); @test collect(b3) == bs
+    v = Vector{eltype(bv)}(undef, 2); copyto!(v, bv); @test v == bs
+    @test_throws DimensionMismatch copyto!(similar(bv, eltype(bv), (1,)), bv)
+    @test_throws DimensionMismatch copyto!(similar(bv, eltype(bv), (1,)), bs)
+    @test_throws DimensionMismatch copyto!(Vector{eltype(bv)}(undef, 1), bv)
+
+    # the source vector of blocks must not alias the BlockVector built from it
+    bs[1] = bs[2]
+    @test bv[1] != bv[2]
 end
 
 

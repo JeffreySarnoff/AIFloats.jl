@@ -656,3 +656,54 @@ Base.@propagate_inbounds function Base.setindex!(bv::BlockVector{B,S,E}, b::Bloc
     end
     bv
 end
+
+# ---- collection contracts (improveapi3.md §6 Phase 6.8) ----------------------
+# New scale and element storage is ZERO-FILLED, never `undef`. There is no
+# uninitialized datum: a `BinaryValue` read out of undef memory can carry bits
+# above K, which violates the representation invariant every decode and every
+# packing step assumes. `zero(S)`/`zero(E)` are the datums at code point zero.
+_zeros(::Type{T}, dims...) where {T<:BinaryValue} =
+    fill!(Array{T}(undef, dims...), _rawvalue(BinaryFormatOf(T), zero(CodeType(T))))
+
+"""An independent copy: mutating either block vector leaves the other alone."""
+Base.copy(bv::BlockVector{B}) where {B} =
+    BlockVector{B}(copy(bv.scales), copy(bv.elems))
+
+# The SoA representation survives only when the requested element type is still
+# a `Block{B,S,E}` of the same block size, and the result is one-dimensional;
+# a `Block` of a different B has a different column height, and a second
+# dimension has no SoA meaning. Everything else is an ordinary Array.
+Base.similar(bv::BlockVector{B,S,E}) where {B,S,E} =
+    BlockVector{B}(_zeros(S, length(bv.scales)), _zeros(E, B, length(bv.scales)))
+Base.similar(bv::BlockVector, ::Type{Block{B,S,E}}) where {B,S,E} =
+    BlockVector{B}(_zeros(S, length(bv.scales)), _zeros(E, B, length(bv.scales)))
+Base.similar(bv::BlockVector, ::Type{Block{B,S,E}}, dims::Dims{1}) where {B,S,E} =
+    BlockVector{B}(_zeros(S, dims[1]), _zeros(E, B, dims[1]))
+Base.similar(bv::BlockVector, ::Type{X}, dims::Dims) where {X} = Array{X}(undef, dims)
+
+# exact-type `copyto!`: the SoA columns copy wholesale, with no per-block
+# tuple round trip
+function Base.copyto!(dest::BlockVector{B,S,E}, src::BlockVector{B,S,E}) where {B,S,E}
+    length(dest) == length(src) || throw(DimensionMismatch(
+        "destination has $(length(dest)) block(s), source has $(length(src))"))
+    copyto!(dest.scales, src.scales)
+    copyto!(dest.elems, src.elems)
+    dest
+end
+function Base.copyto!(dest::Vector{Block{B,S,E}}, src::BlockVector{B,S,E}) where {B,S,E}
+    length(dest) >= length(src) || throw(DimensionMismatch(
+        "destination has $(length(dest)) element(s), source has $(length(src))"))
+    @inbounds for j in eachindex(src)
+        dest[j] = src[j]
+    end
+    dest
+end
+function Base.copyto!(dest::BlockVector{B,S,E},
+                      src::AbstractVector{Block{B,S,E}}) where {B,S,E}
+    length(dest) == length(src) || throw(DimensionMismatch(
+        "destination has $(length(dest)) block(s), source has $(length(src))"))
+    @inbounds for (j, b) in enumerate(src)
+        dest[j] = b
+    end
+    dest
+end

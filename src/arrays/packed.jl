@@ -25,25 +25,59 @@ struct PackedVector{T<:BinaryValue} <: AbstractVector{T}
     data::Memory{UInt64}
     n::Int
 
-    function PackedVector{T}(data::Memory{UInt64}, n::Int) where {T<:BinaryValue}
-        n >= 0 || throw(ArgumentError("packed length must be nonnegative, got $n"))
-        K = Int(BitwidthOf(T))
-        nbits = Base.checked_mul(n, K)
-        required = cld(nbits, 64)
-        length(data) == required || throw(ArgumentError(
-            "packed storage for $n $(formatname(T)) values needs $required UInt64 word(s), " *
-            "got $(length(data))"))
-        new{T}(data, n)
-    end
+    # The ONE door that takes ownership without copying, for packing and
+    # deserialization kernels that just built and validated the words
+    # themselves (improveapi3.md §6 Phase 6.4). Every public entry point
+    # copies, so a caller's later mutation of its own source cannot invalidate
+    # the bounds or padding this type's unsafe loads assume.
+    global @inline _rawpacked(::Type{T}, data::Memory{UInt64},
+                              n::Int) where {T<:BinaryValue} = new{T}(data, n)
 end
 
-# Checked copying adapter for callers that already hold packed words. Copying
-# into fixed-size `Memory` prevents later `resize!` from breaking the invariant.
-function PackedVector{T}(data::AbstractVector{UInt64}, n::Integer) where {T<:BinaryValue}
-    ni = Int(n)
-    mem = Memory{UInt64}(undef, length(data))
-    copyto!(mem, data)
-    PackedVector{T}(mem, ni)
+"""
+    _packedwordcount(T, n) -> Int
+
+The exact number of `UInt64` words `n` datums of `T` occupy: `cld(n*K, 64)`.
+Throws `ArgumentError` for negative `n` and `OverflowError` if `n*K` overflows.
+"""
+@inline function _packedwordcount(::Type{T}, n::Int) where {T<:BinaryValue}
+    n >= 0 || throw(ArgumentError("packed length must be nonnegative, got $n"))
+    cld(Base.checked_mul(n, Int(BitwidthOf(T))), 64)
+end
+
+# the number of trailing units the payload occupies, and the mask of the bits
+# it actually uses inside the final one; 0 unused bits means a full final unit
+@inline function _padmask(nbits::Int, width::Int)
+    used = nbits % width
+    used == 0 ? typemax(UInt64) : (UInt64(1) << used) - UInt64(1)
+end
+
+"""
+    _validate_packed(T, data, n)
+
+The representation invariant of packed storage, checked in one place: the word
+count is exact, and the unused high bits of the final word are ZERO.
+
+The padding check is not pedantry. `getindex` masks what it reads, but
+`setindex!` on a cross-word element writes into the next word assuming its
+high bits are canonical, and `packedbytes` copies the final unit verbatim — so
+non-canonical padding turns into wrong neighbouring elements and a wire form
+that two readers disagree about.
+"""
+function _validate_packed(::Type{T}, data::AbstractVector{UInt64},
+                          n::Int) where {T<:BinaryValue}
+    required = _packedwordcount(T, n)
+    length(data) == required || throw(DimensionMismatch(
+        "packed storage for $n $(formatname(T)) values needs $required UInt64 word(s), " *
+        "got $(length(data))"))
+    nbits = n * Int(BitwidthOf(T))
+    if required > 0
+        m = _padmask(nbits, 64)
+        (@inbounds data[required]) & ~m == 0 || throw(ArgumentError(
+            "packed storage has nonzero padding in the unused high bits of its " *
+            "final word; the canonical form zeroes them"))
+    end
+    nothing
 end
 
 # element i at K bits/element begins at bit p = (i-1)K: word w = p ÷ 64
@@ -143,7 +177,7 @@ end
 function PackedVector(A::AbstractVector{T}) where {T<:BinaryValue}
     K = Int(BitwidthOf(T))
     n = length(A)
-    words = Memory{UInt64}(undef, cld(Base.checked_mul(n, K), 64))
+    words = Memory{UInt64}(undef, _packedwordcount(T, n))
     fill!(words, zero(UInt64))
     @inbounds for (i, v) in enumerate(A)
         w, off = _wordpos(K, i)
@@ -153,7 +187,108 @@ function PackedVector(A::AbstractVector{T}) where {T<:BinaryValue}
             words[w + 1] |= c >> (64 - off)
         end
     end
-    PackedVector{T}(words, n)
+    _rawpacked(T, words, n)
+end
+
+"""
+    PackedVector{T}(undef, n) -> PackedVector{T}
+
+`n` datums of `T`, all at code point zero. Zero-filled rather than `undef`
+because there is no such thing as an uninitialized *datum*: a `BinaryValue`
+whose code has bits above `K` violates the representation invariant, and
+packing one would corrupt its neighbours in the shared word.
+"""
+PackedVector{T}(::UndefInitializer, n::Integer) where {T<:BinaryValue} =
+    _rawpacked(T, fill!(Memory{UInt64}(undef, _packedwordcount(T, Int(n))), zero(UInt64)),
+               Int(n))
+
+# ---- portable serialization --------------------------------------------------
+# "Words" and "bytes" are LOGICAL forms, defined independently of host byte
+# order, so a file written on one machine reads on another. Exposing the
+# in-memory bytes of `Memory{UInt64}` would not have been a serialization
+# interface at all — only a description of this host.
+
+"""
+    packedfromwords(T, words, n) -> PackedVector{T}
+
+A packed vector of `n` datums of `T` from `cld(n*K, 64)` logical `UInt64`
+words, **validated and copied**.
+
+Words are the logical values, not a host byte layout: element `i` occupies bits
+`(i-1)K .. iK-1` of the concatenated little-endian bit stream. The unused high
+bits of the final word must be zero — see [`packedwords`](@ref) for the inverse.
+
+Copies, so later mutation of `words` cannot invalidate this vector.
+"""
+function packedfromwords(::Type{T}, words::AbstractVector{UInt64},
+                         n::Integer) where {T<:BinaryValue}
+    ni = Int(n)
+    _validate_packed(T, words, ni)
+    mem = Memory{UInt64}(undef, length(words))
+    copyto!(mem, words)
+    _rawpacked(T, mem, ni)
+end
+
+"""
+    packedwords(pv) -> Vector{UInt64}
+
+The `cld(n*K, 64)` logical words of `pv`, as an independent `Vector`.
+Inverse of [`packedfromwords`](@ref).
+"""
+packedwords(pv::PackedVector) = [(@inbounds pv.data[i]) for i in 1:length(pv.data)]
+
+"""
+    packedbytes(pv) -> Vector{UInt8}
+
+The canonical little-endian wire form of `pv`: exactly `cld(n*K, 8)` bytes,
+with byte `j` holding bits `8j .. 8j+7` of the bit stream and the unused high
+bits of the final byte zero.
+
+Shorter than [`packedwords`](@ref) whenever the payload does not fill its last
+word, and byte-order independent on every host. Inverse of
+[`packedfrombytes`](@ref).
+"""
+function packedbytes(pv::PackedVector{T}) where {T}
+    nbits = pv.n * Int(BitwidthOf(T))
+    nb = cld(nbits, 8)
+    out = Vector{UInt8}(undef, nb)
+    @inbounds for j in 0:(nb - 1)
+        out[j + 1] = UInt8((pv.data[(j >> 3) + 1] >> (8 * (j & 7))) & 0xff)
+    end
+    nb > 0 && (@inbounds out[nb] &= UInt8(_padmask(nbits, 8) & 0xff))
+    out
+end
+
+"""
+    packedfrombytes(T, bytes, n) -> PackedVector{T}
+
+Read the canonical little-endian wire form written by [`packedbytes`](@ref):
+exactly `cld(n*K, 8)` bytes, with zero unused high bits in the final byte.
+
+Validates and copies. A wrong length is a `DimensionMismatch`; nonzero padding
+is an `ArgumentError`, because a reader cannot tell a corrupt stream from a
+differently-conventioned writer and must not guess.
+"""
+function packedfrombytes(::Type{T}, bytes::AbstractVector{UInt8},
+                         n::Integer) where {T<:BinaryValue}
+    ni = Int(n)
+    nwords = _packedwordcount(T, ni)              # also checks ni >= 0 and overflow
+    nbits = ni * Int(BitwidthOf(T))
+    nb = cld(nbits, 8)
+    length(bytes) == nb || throw(DimensionMismatch(
+        "packed wire form for $ni $(formatname(T)) values is $nb byte(s), " *
+        "got $(length(bytes))"))
+    if nb > 0
+        m = UInt8(_padmask(nbits, 8) & 0xff)
+        (@inbounds bytes[nb]) & ~m == 0 || throw(ArgumentError(
+            "packed wire form has nonzero padding in the unused high bits of its " *
+            "final byte; the canonical form zeroes them"))
+    end
+    mem = fill!(Memory{UInt64}(undef, nwords), zero(UInt64))
+    @inbounds for j in 0:(nb - 1)
+        mem[(j >> 3) + 1] |= UInt64(bytes[j + 1]) << (8 * (j & 7))
+    end
+    _rawpacked(T, mem, ni)
 end
 
 Base.size(pv::PackedVector) = (pv.n,)
@@ -181,7 +316,53 @@ Base.@propagate_inbounds function Base.setindex!(pv::PackedVector{T}, v::T, i::I
     end
     pv
 end
-Base.similar(pv::PackedVector{T}) where {T} = PackedVector(Vector{T}(undef, pv.n))
+# ---- collection contracts ----------------------------------------------------
+# `copy` is an independent PACKED copy; `collect`/`Vector` are unpacked copies.
+"""An independent packed copy: mutating either vector leaves the other alone."""
+function Base.copy(pv::PackedVector{T}) where {T}
+    mem = Memory{UInt64}(undef, length(pv.data))
+    copyto!(mem, pv.data)
+    _rawpacked(T, mem, pv.n)
+end
+
+# Zero-filled, NOT `Vector{T}(undef, n)` packed. There is no uninitialized
+# datum: an undef `BinaryValue` can carry bits above K, and packing one writes
+# those bits straight into its neighbour's share of the word. `similar` used to
+# do exactly that.
+Base.similar(pv::PackedVector{T}) where {T} = PackedVector{T}(undef, pv.n)
+Base.similar(pv::PackedVector{T}, ::Type{S}) where {T,S<:BinaryValue} =
+    PackedVector{S}(undef, pv.n)
+# packed storage survives only for a one-dimensional result of datum element
+# type; anything else is an ordinary Array, because packing is defined for
+# neither a non-datum element nor a second dimension
+Base.similar(pv::PackedVector, ::Type{S}, dims::Dims{1}) where {S<:BinaryValue} =
+    PackedVector{S}(undef, dims[1])
+Base.similar(pv::PackedVector, ::Type{S}, dims::Dims) where {S} =
+    Array{S}(undef, dims)
+
+# `copyto!`, spelled at the MOST SPECIFIC signatures that do the job. Broader
+# ones are ambiguous with Base's (`PermutedDimsArray` among them), and this
+# package keeps Aqua's ambiguity check clean; narrowing is the fix the plan
+# asks for, not a catch-all (improveapi3.md §6 Phase 6.6).
+function Base.copyto!(dest::Vector{T}, src::PackedVector{T}) where {T<:BinaryValue}
+    length(dest) >= src.n || throw(DimensionMismatch(
+        "destination has $(length(dest)) element(s), source has $(src.n)"))
+    _unpack_into!(dest, src)
+end
+function Base.copyto!(dest::PackedVector{T}, src::AbstractVector{T}) where {T<:BinaryValue}
+    dest.n == length(src) || throw(DimensionMismatch(
+        "packed destination has $(dest.n) element(s), source has $(length(src))"))
+    @inbounds for (i, v) in enumerate(src)
+        dest[i] = v
+    end
+    dest
+end
+function Base.copyto!(dest::PackedVector{T}, src::PackedVector{T}) where {T<:BinaryValue}
+    dest.n == src.n || throw(DimensionMismatch(
+        "packed destination has $(dest.n) element(s), source has $(src.n)"))
+    copyto!(dest.data, src.data)
+    dest
+end
 
 # `collect`/`Vector` would otherwise walk `getindex`, recomputing the word
 # position and taking the cross-word branch per element.

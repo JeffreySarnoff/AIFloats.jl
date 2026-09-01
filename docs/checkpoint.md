@@ -22,9 +22,75 @@ green; anything short of that is recorded as in progress with what is missing.
 | 3 — scalar/array conversion parity | **done** | edge-population code-point equality |
 | 4 — queries and `formatinfo` | **done** | type stability, no Base shadowing |
 | 5 — table service | **done** | coherent snapshots under concurrency |
-| 6 — packed serialization and collections | not started | round trips, aliasing, Aqua ambiguities |
+| 6 — packed serialization and collections | **done** | round trips, aliasing, Aqua ambiguities |
 | 7 — registry validation and error taxonomy | not started | one validation per call, not per element |
 | 8 — residue removal and consumer alignment | not started | zero residual deleted forms |
+
+## Phase 6 — done (2026-09-01)
+
+**Gate.** `blocks` (two new testsets) · `kernels` · `compat` · `governance` ·
+`quality` (Aqua ambiguities, re-run after each new `copyto!` signature) ·
+doctests — green.
+
+### Two real defects, not just an interface tidy
+
+**`similar(pv)` packed uninitialized datums.** It was
+`PackedVector(Vector{T}(undef, pv.n))`. There is no such thing as an
+uninitialized *datum*: a `BinaryValue` read out of undef memory can carry bits
+above `K`, and the packing loop writes `UInt64(codepoint(v)) << off` — so those
+stray high bits land in the **neighbouring element's** share of the shared
+word. `getindex` masks what it reads, so the corruption is silent and shows up
+as a wrong neighbour. `similar` is now zero-filled, and so is every new
+`BlockVector` scale and element array.
+
+**Padding was never validated.** `getindex` masks, but `setindex!` on a
+cross-word element writes into the next word assuming its high bits are
+canonical, and the byte form copies its final unit verbatim. Non-canonical
+padding therefore turns into wrong neighbouring elements and a wire form two
+readers disagree about. `_validate_packed` now checks it in one place, and both
+deserializers refuse it — a reader cannot tell a corrupt stream from a
+differently-conventioned writer and must not guess.
+
+### Serialization is now portable, and says so
+
+`PackedVector{T}(words, n)` is gone: it could not say whether it validated,
+copied, or took ownership, and it was public. In its place four functions with
+one meaning each:
+
+| | |
+|---|---|
+| `packedfromwords(T, words, n)` | validates and **copies** `cld(n*K, 64)` logical words |
+| `packedwords(pv)` | an independent `Vector{UInt64}` |
+| `packedfrombytes(T, bytes, n)` | the canonical little-endian wire form |
+| `packedbytes(pv)` | exactly `cld(n*K, 8)` bytes |
+
+Both forms are **logical**, defined independently of host byte order — byte `j`
+holds bits `8j..8j+7` of the bit stream. Exposing the in-memory bytes of a
+`Memory{UInt64}` would not have been a serialization interface at all, only a
+description of this host. The byte form is the shorter one whenever the payload
+does not fill its final word (20 bytes against 24 for 32 datums at `K = 5`),
+which is the reason to have it.
+
+`_rawpacked` is the single ownership-taking door, now the struct's only inner
+constructor. Every public entry point copies.
+
+### Collections
+
+`copy` is an independent packed copy; `collect`/`Vector` unpack. `copyto!` is
+spelled at the three most specific signatures that do the job — packed→unpacked,
+unpacked→packed, packed→packed — and the same three for `BlockVector`. A
+broader signature is ambiguous with Base's (`PermutedDimsArray` among them);
+narrowing was the fix, not a catch-all. `similar` preserves packed or SoA
+storage only for a one-dimensional result of the right element type.
+
+The tests round-trip **all codes exhaustively for `K ≤ 6`** and boundary-crossing
+lengths (0, 1, 7, 8, 63, 64, 65, 127, 128, 129, 1000) for every `K` in 3:16,
+both wire forms, plus aliasing in both directions, nonzero-padding refusal,
+`OverflowError` on length overflow, and every `copyto!` shape refusal.
+
+One measurement note for the log: `Vector(pv) == collect(pv)` **fails** on a
+population containing the format's NaN datum, because `==` on a NaN is false by
+IEEE rule and array `==` inherits it. The assertions compare code points.
 
 ## Phase 5 — done (2026-09-01)
 
