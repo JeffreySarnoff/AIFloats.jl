@@ -207,7 +207,6 @@ Whether `PackedVector{T}` is smaller than `Vector{T}`: `false` exactly when
 """
 packing_saves(::Type{T}) where {T<:BinaryValue} = Int(BitwidthOf(T)) < 8 * sizeof(CodeType(T))
 packing_saves(::Type{F}) where {F<:Binary} = packing_saves(BinaryValue(F))
-packing_saves(F::Binary) = packing_saves(typeof(F))
 packing_saves(pv::PackedVector{T}) where {T} = packing_saves(T)
 
 const PACK_TILE = 256
@@ -226,8 +225,6 @@ function vmap(op::Symbol, fr::Type{<:Binary}, ρ::Projection, pv::PackedVector;
 end
 vmap(op::Symbol, fr::Type{<:BinaryValue}, ρ::Projection, pv::PackedVector; kw...) =
     vmap(op, BinaryFormatOf(fr), ρ, pv; kw...)
-vmap(op::Symbol, fr::Binary, ρ::Projection, pv::PackedVector; kw...) =
-    vmap(op, typeof(fr), ρ, pv; kw...)
 
 function _vmap_packed(v::Val{op}, ::Type{OUT}, ρ::Projection, pv::PackedVector{T},
                       rng::MaybeRNG) where {op, OUT<:BinaryValue, T<:BinaryValue}

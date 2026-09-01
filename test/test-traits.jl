@@ -41,12 +41,12 @@ end
         # trailing significand
         @test TrailingSignificantBitsOf(F) == P - 1
 
-        # type and instance agree on every trait
-        b = F()
+        # every trait answers for the format TYPE; there is no instance form
         for t in (ExponentBiasOf, ExponentBitwidthOf, TrailingSignificantBitsOf,
                   AIFloats.codemask, AIFloats.signmask, AIFloats.orderkeytype)
-            @test t(F) === t(b)
+            @test applicable(t, F)
         end
+        @test_throws ArgumentError F()
     end
 end
 

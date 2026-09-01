@@ -16,20 +16,20 @@ using Random
         t = AIFloats.get_table(:Exp, F, F, ρ)
         @test length(t) == 32
         for c in 0:31
-            x = BVF(UInt8(c))
+            x = fromcode(BVF, c)
             @test t[c + 1] == codepoint(Exp(F, ρ, x))
         end
         # binary, mixed formats (operands G, results F)
         t2 = AIFloats.get_table(:Add, F, G, G, ρ)
         @test length(t2) == 256
         for c1 in 0:15, c2 in 0:15
-            want = codepoint(Add(F, ρ, BVG(UInt8(c1)), BVG(UInt8(c2))))
+            want = codepoint(Add(F, ρ, fromcode(BVG, c1), fromcode(BVG, c2)))
             @test t2[(c1 << 4) + c2 + 1] == want
         end
         # Convert: the one op with no ω-semantics — a bare projection
         t3 = AIFloats.get_table(:Convert, G, F, ρ)
         for c in 0:31
-            @test t3[c + 1] == codepoint(Convert(G, ρ, BVF(UInt8(c))))
+            @test t3[c + 1] == codepoint(Convert(G, ρ, fromcode(BVF, c)))
         end
     end
     # a wide-format table: UInt16 code unit selects the other cache
@@ -38,7 +38,7 @@ using Random
     @test eltype(tw) === UInt16
     BW = BinaryValue(W)
     for c in (0, 1, 255, 256, 511)
-        @test tw[c + 1] == codepoint(Negate(W, RTE_SN, BW(UInt16(c))))
+        @test tw[c + 1] == codepoint(Negate(W, RTE_SN, fromcode(BW, c)))
     end
 end
 
@@ -86,12 +86,12 @@ end
     AIFloats.empty_tables!()
     F = Binary(4, 2, SIGNED, EXTENDED)          # 3×4 = 12 bits: eager band
     BV = BinaryValue(F)
-    A = [BV(UInt8(c % 16)) for c in 0:99]
+    A = [fromcode(BV, c % 16) for c in 0:99]
     FMA(F, RTE_SN, A, A, A)
     @test AIFloats.ternary_count() == 1
     # adaptive band: 3×7 = 21 bits — no table until the signature earns it
     F7 = Binary(7, 3, SIGNED, EXTENDED); BV7 = BinaryValue(F7)
-    A7 = [BV7(UInt8(c % 128)) for c in 0:999]
+    A7 = [fromcode(BV7, c % 128) for c in 0:999]
     oldE = AIFloats.TERNARY_BUILD_ELEMS[]
     try
         AIFloats.TERNARY_BUILD_ELEMS[] = 2500
@@ -113,7 +113,7 @@ end
     try
         AIFloats.TERNARY_CACHE_BYTES[] = 1 << 21   # 2 MiB: holds the 7-bit table alone
         G = Binary(3, 1, UNSIGNED, FINITE); BG = BinaryValue(G)
-        Ag = [BG(UInt8(c % 8)) for c in 0:49]
+        Ag = [fromcode(BG, c % 8) for c in 0:49]
         FMA(G, RTE_SN, Ag, Ag, Ag)                 # eager insert triggers eviction
         @test AIFloats.ternary_count() < 3
     finally
@@ -162,8 +162,8 @@ end
 @testset "complete deterministic cache introspection" begin
     AIFloats.empty_tables!()
     F = Binary(3, 2, SIGNED, FINITE)
-    AIFloats.get_table(:Negate, F(), F, RTE_SN)
-    AIFloats.get_table(:FMA, F, F(), F, F(), RTE_SN)
+    AIFloats.get_table(:Negate, F, F, RTE_SN)
+    AIFloats.get_table(:FMA, F, F, F, F, RTE_SN)
     keys1 = AIFloats.table_keys()
     keys2 = AIFloats.table_keys()
     @test keys1 == keys2
@@ -202,8 +202,8 @@ end
     # hundreds of µs to milliseconds. It is tabled once the signature has
     # actually processed TABLE_BUILD_ELEMS elements.
     F9 = Binary(9, 4, SIGNED, EXTENDED); T9 = BinaryValue(F9)
-    mk(n) = ([T9(UInt16(i & 0x1ff)) for i in 0:n-1],
-             [T9(UInt16((3i + 1) & 0x1ff)) for i in 0:n-1])
+    mk(n) = ([fromcode(T9, i & 0x1ff) for i in 0:n-1],
+             [fromcode(T9, (3i + 1) & 0x1ff) for i in 0:n-1])
     oldelems = AIFloats.TABLE_BUILD_ELEMS[]
     oldbits  = AIFloats.TABLE_ADAPTIVE_BITS[]
     try

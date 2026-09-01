@@ -43,8 +43,15 @@ This page says plainly what exists and what the deliberate limits are.
 | **Governance** | [`conformance`](@ref) — the draft-§4.6 declaration derived live from the registry, the table cache, and the κ registry ([`conformance_report`](@ref), [`conformance_dict`](@ref)); [`register_approx!`](@ref)/[`measure_kappa`](@ref) — κ measured by enumeration, understatement rejected; [`ftz_variant`](@ref), the Annex's worked example; [`draft_identity`](@ref) with the retained transliteration's digest |
 | IEEE 754 aliases | [`binary16`](@ref), [`binary32`](@ref), [`binary64`](@ref), [`binary128`](@ref), [`bfloat16`](@ref) |
 
-Every accessor and predicate works on the `Binary` type, a `Binary` instance, the
-`BinaryValue` datum type, and a datum.
+Every accessor and predicate works on the `Binary` format type, the `BinaryValue`
+datum type, and a datum. A format has no instance form: `F()` raises, because `F`
+already *is* the format. Calling a format constructs a **datum**, so `F(x) isa F`
+is `false` and the datum type is spelled `BinaryValue(F)`.
+
+Construction has one semantic axis. `F(x)`, `BinaryValue(F, x)`, `BinaryValue{F}(x)`,
+and `convert(BinaryValue(F), x)` all mean *the number `x`, projected into `F`* —
+`Unsigned` included, so `F(0x03)` is three. A **code point** is a different
+question with a different spelling, [`fromcode`](@ref).
 
 ## [Performance characteristics](@id performance)
 

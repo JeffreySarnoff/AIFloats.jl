@@ -18,21 +18,21 @@ Binary{16, 10, +, ∞}
 
 ### It returns a type
 
-`Binary(K, P, S, D)` gives back the parameterized type. Append `()` for an instance:
+`Binary(K, P, S, D)` gives back the parameterized type, and that type is the format —
+there is no second, instance-shaped spelling of it:
 
 ```jldoctest formats
 julia> B isa Type
 true
 
 julia> B()
-Binary{16, 10, +, ∞}
-
-julia> B() isa B
-true
+ERROR: ArgumentError: Binary{16, 10, UNSIGNED, EXTENDED} is already the format; formats have no instances.
+[...]
 ```
 
-Every accessor and predicate in this package accepts either form and gives the same answer,
-so which you use is a matter of what the surrounding code needs.
+Every accessor and predicate in this package takes the format type. `B(x)` is not the
+exception it looks like: it constructs the *datum* of `B` nearest `x`, and the datum type
+is `BinaryValue(B)`.
 
 ### Singletons and `Bool`s are interchangeable
 
@@ -179,11 +179,14 @@ The glyphs are one per axis:
 | domain | `∞` | [`EXTENDED`](@ref) |
 | | `⏥` | [`FINITE`](@ref) |
 
-A format and its instance display identically:
+A format's two renderings are the spelled-out `string` and the glyphic `String`:
 
 ```jldoctest formats
-julia> repr(B) == repr(B())
-true
+julia> string(B)
+"Binary{16, 10, UNSIGNED, EXTENDED}"
+
+julia> String(B)
+"Binary{16, 10, +, ∞}"
 ```
 
 ```@meta

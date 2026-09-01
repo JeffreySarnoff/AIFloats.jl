@@ -2,7 +2,7 @@ using AIFloats
 using Test
 
 @testset "Binary format" begin
-    b = AIFloats.Binary(16, 10, false, true)()
+    b = AIFloats.Binary(16, 10, false, true)
 
     @testset "resolve_fields" begin
         # singleton arguments and their Bool equivalents canonicalize alike
@@ -32,7 +32,7 @@ using Test
     end
 
     @testset "Binary" begin
-        @test b isa AIFloats.Binary{Int8(16), Int8(10), false, true}
+        @test b === AIFloats.Binary{Int8(16), Int8(10), false, true}
 
         # Binary(K,P,S,D) returns the parameterized *type*, with Int8 K and P
         @test AIFloats.Binary(16, 10, UNSIGNED, EXTENDED) === AIFloats.Binary{Int8(16), Int8(10), false, true}
@@ -52,7 +52,7 @@ using Test
         @test AIFloats.SignednessOf(b) == false
         @test AIFloats.DomainOf(b) == true
 
-        sb = AIFloats.Binary(16, 10, SIGNED, FINITE)()
+        sb = AIFloats.Binary(16, 10, SIGNED, FINITE)
         @test AIFloats.BitwidthOf(sb) == 16
         @test AIFloats.PrecisionOf(sb) == 10
         @test AIFloats.SignednessOf(sb) == true
@@ -74,11 +74,8 @@ using Test
         @test AIFloats.SignednessOf(AIFloats.Binary{8, 4, true, false}) == true
         @test AIFloats.DomainOf(AIFloats.Binary{8, 4, true, false}) == false
 
-        # the type and its instance agree
-        @test AIFloats.BitwidthOf(B) == AIFloats.BitwidthOf(B())
-        @test AIFloats.PrecisionOf(B) == AIFloats.PrecisionOf(B())
-        @test AIFloats.SignednessOf(B) == AIFloats.SignednessOf(B())
-        @test AIFloats.DomainOf(B) == AIFloats.DomainOf(B())
+        # a format has no instance form to disagree with
+        @test_throws ArgumentError B()
 
         for (K, P, S, D) in [(16, 10, SIGNED, FINITE), (8, 4, UNSIGNED, EXTENDED),
                              (3, 1, SIGNED, EXTENDED), (16, 16, UNSIGNED, FINITE)]
@@ -91,8 +88,8 @@ using Test
     end
 
     @testset "Predicates" begin
-        signed_finite = AIFloats.Binary(16, 10, SIGNED, FINITE)()
-        unsigned_extended = AIFloats.Binary(16, 10, UNSIGNED, EXTENDED)()
+        signed_finite = AIFloats.Binary(16, 10, SIGNED, FINITE)
+        unsigned_extended = AIFloats.Binary(16, 10, UNSIGNED, EXTENDED)
 
         @test is_signed(signed_finite)
         @test !is_unsigned(signed_finite)
@@ -107,7 +104,7 @@ using Test
         # all four corners
         for (S, D) in [(SIGNED, FINITE), (SIGNED, EXTENDED),
                        (UNSIGNED, FINITE), (UNSIGNED, EXTENDED)]
-            bin = AIFloats.Binary(16, 10, S, D)()
+            bin = AIFloats.Binary(16, 10, S, D)
 
             @test is_signed(bin) == is_signed(S)
             @test is_unsigned(bin) == is_unsigned(S)
@@ -149,13 +146,10 @@ using Test
         @test repr(b) == "Binary{16, 10, UNSIGNED, EXTENDED}"
         @test repr(MIME("text/plain"), b) == "Binary{16, 10, +, ∞}"
 
-        sb = AIFloats.Binary{8, 4, true, false}()
+        sb = AIFloats.Binary{8, 4, true, false}
         @test sprint(show, sb) == "Binary{8, 4, SIGNED, FINITE}"
         @test sprint(show, MIME("text/plain"), sb) == "Binary{8, 4, ±, ⏥}"
 
-        # a format and its type display alike
-        @test repr(sb) == repr(typeof(sb))
-        @test repr(MIME("text/plain"), sb) == repr(MIME("text/plain"), typeof(sb))
 
         # all four corners of the glyph form: ± / + for signedness, ∞ / ⏥ for domain
         for (S, D, glyphs) in [(SIGNED, FINITE, "±, ⏥"), (SIGNED, EXTENDED, "±, ∞"),
@@ -189,51 +183,54 @@ end
         @test T <: Real && T <: Number
         @test isconcretetype(T) && isbitstype(T)
         # and the numeric predicates answer about datums, never about formats
-        @test isnan(T(AIFloats.nan_code(F))) isa Bool
-        @test_throws MethodError isnan(F())
-        @test_throws MethodError zero(F())
+        @test isnan(fromcode(T, AIFloats.nan_code(F))) isa Bool
+        # there is no format instance for a numeric predicate to be asked about
+        @test_throws ArgumentError F()
     end
     @test !(Binary <: AbstractFloat)
     # the name that described the old, inverted hierarchy is gone
     @test !isdefined(AIFloats, :BinaryFloat)
 end
 
-@testset "format type vs format instance: one convention, no holes" begin
-    # A format is canonically a TYPE: Binary(K,P,S,D) returns one, and it must,
-    # because it is BinaryValue{F,U}'s first parameter. Instances are still
-    # constructible and every accessor takes one. This testset pins that the
-    # instance surface has NO HOLES, because a hole is what invites a bridge to
-    # be written wrongly -- see the recursion note in types/binaryvalue.jl.
+@testset "a format is type-level information: one spelling, no instances" begin
+    # improveapi3.md §4.1: a format IS a type, and there is no second,
+    # instance-shaped spelling of it. This used to be a two-convention surface
+    # (`F` and `F()`), which is what invited the accessor bridges, and one of
+    # those bridges was written as an infinite recursion Julia could not warn
+    # about -- the signature legitimately matched itself, so it presented as a
+    # StackOverflowError rather than as an ambiguity. Removing the second
+    # spelling removes the bridges and the whole class of bug with them.
     A = AIFloats
     for F in (Binary(5, 3, SIGNED, FINITE), Binary(8, 4, SIGNED, EXTENDED),
               Binary(16, 5, SIGNED, EXTENDED), Binary(4, 1, UNSIGNED, FINITE))
-        i = F()
-        @test i isa F && typeof(i) === F
-        # every accessor answers identically for the type and for an instance
+        @test F isa Type && F <: Binary
+        # the suppressed zero-argument constructor says so, by name
+        err = try (F(); nothing) catch e; e end
+        @test err isa ArgumentError
+        @test occursin("already the format", err.msg)
+        # every accessor takes the format type and nothing else
         for f in (BitwidthOf, PrecisionOf, SignednessOf, DomainOf, CodeType, ValueType,
                   is_signed, is_unsigned, is_finite, is_extended,
                   TrailingSignificantBitsOf, ExponentBiasOf, ExponentBitwidthOf,
                   A.codemask, A.signmask, A.rung, A.datumcarrier, A.promotecarrier,
                   A.bigprec, A.orderkeytype, A.decodepolicy, A.validformat)
-            @test f(i) == f(F)
+            @test applicable(f, F)
         end
-        # the constructors too -- these were the last hole
-        @test BinaryValue(i) === BinaryValue(F)
-        for c in (0x00, 0x01, 0x05)
-            u = CodeType(F)(c)
-            @test BinaryValue(i, u) === BinaryValue(F, u)
-        end
+        # calling a format constructs a DATUM, not a format instance -- the one
+        # deliberate exception to the ordinary type/instance relationship
+        @test F(1.0) isa BinaryValue(F)
+        @test !(F(1.0) isa F)
+        @test BinaryValue(F) === BinaryValue{F, CodeType(F)}
     end
 
-    # The bridges must TERMINATE. `typeof` changes the argument's kind, so the
-    # forwarded call lands on the ::Type{F} method and cannot re-enter. Written
-    # instead as a delegation that hands back a Binary value, this is an
-    # infinite recursion Julia cannot warn about -- the signature matches itself
-    # -- and it presents as StackOverflowError, not as an ambiguity. A timeout
-    # is not needed: if these recurse the test process dies, which is the signal.
-    let F = Binary(5, 3, SIGNED, FINITE), i = F()
-        @test (@inferred BinaryValue(i, 0x05)) isa BinaryValue
-        @test @inferred(A.bigprec(i)) isa Integer
+    # construction has ONE semantic axis (§4.2): every constructor spelling means
+    # the NUMBER, and Unsigned is not special. A code point needs `fromcode`.
+    let F = Binary(5, 3, SIGNED, FINITE), T = BinaryValue(F)
+        @test F(0x03) === T(3) === BinaryValue(F, 3.0) === BinaryValue{F}(3)
+        @test F(0x03) === F(3.0)                       # Unsigned is just a number
+        @test codepoint(fromcode(F, 0x03)) === CodeType(F)(3)
+        @test F(0x03) !== fromcode(F, 0x03)            # and the two differ
+        @test @inferred(A.bigprec(F)) isa Integer
     end
 
     # The singleton families run the OPPOSITE convention -- the value is

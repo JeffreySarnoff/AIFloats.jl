@@ -14,5 +14,4 @@ Working MPFR precision sufficient for exact arithmetic on `F`'s datums:
 """
 bigprec(::Type{F}) where {F<:Binary} =
     2 * (ExponentBiasOf(F) + Int(PrecisionOf(F))) + 64
-bigprec(b::Binary) = bigprec(typeof(b))            # typeof bridge; see binaryvalue.jl
 bigprec(::Type{BV}) where {BV<:BinaryValue} = bigprec(BinaryFormatOf(BV))

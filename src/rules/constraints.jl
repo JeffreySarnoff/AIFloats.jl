@@ -33,7 +33,6 @@ julia> formatname(Binary(8, 4, SIGNED, EXTENDED))
 ```
 """
 formatname(::Type{Binary{K,P,S,D}}) where {K,P,S,D} = _formatname(K, P, S, D)
-formatname(b::Binary) = formatname(typeof(b))
 formatname(::Type{BV}) where {BV<:BinaryValue} = formatname(BinaryFormatOf(BV))
 formatname(x::BinaryValue) = formatname(BinaryFormatOf(x))
 

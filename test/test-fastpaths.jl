@@ -4,7 +4,7 @@ using Test
 @testset "exact Float128-to-Float64 evaluation narrowing" begin
     F = Binary(16, 4, SIGNED, EXTENDED)
     T = BinaryValue(F)
-    vals = T[T(UInt16(c)) for c in (0, 1, 2, 3, 0x1234, 0x4000, 0x7ffe, 0x7fff,
+    vals = T[fromcode(T, c) for c in (0, 1, 2, 3, 0x1234, 0x4000, 0x7ffe, 0x7fff,
                                      0x8000, 0xfffe, 0xffff)]
     projections = (RTE_SN, RTA_SF, RTP_SP, RTN_SN, RTZ_SF, RTO_SN)
     for ρ in projections, x in vals
@@ -175,10 +175,10 @@ end
     @test (@allocated convert(T, 0x03)) == 0
     # the format-alias spelling introduced with improveapi.md §4.1.2 is one
     # inlined delegation to the same seam, so it allocates nothing either
-    F(1.3); F(1.3f0); F(3); F(0x03)
+    F(1.3); F(1.3f0); F(3); fromcode(F, 0x03)
     @test (@allocated F(1.3)) == 0
     @test (@allocated F(3)) == 0
-    @test F(1.3) === T(1.3) && F(0x03) === T(0x03)
+    @test F(1.3) === T(1.3) && fromcode(F, 0x03) === fromcode(T, 0x03)
     let saved = DefaultProjection()
         try
             DefaultProjection!(RTZ_SF)

@@ -203,7 +203,6 @@ end
     throw(ArgumentError("Convert does not accept Irrational: supply a rounded float, or use the interval route"))
 @inline Convert(fr::Type{<:BinaryValue}, ρ::Projection, x; kw...) =
     Convert(BinaryFormatOf(fr), ρ, x; kw...)
-@inline Convert(fr::Binary, ρ::Projection, x; kw...) = Convert(typeof(fr), ρ, x; kw...)
 export Convert
 
 # ---- a format type constructs a datum ----------------------------------------

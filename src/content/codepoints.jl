@@ -47,7 +47,6 @@ _minfinite_code(::Type{F}) where {F<:Binary} =
     is_signed(F) ? (_maxfinite_code(F) | signmask(F)) : _cu(F, 0)
 
 for f in (:nan_code, :posinf_code, :neginf_code, :_maxfinite_code, :_minfinite_code)
-    @eval $f(b::Binary) = $f(typeof(b))
     @eval $f(::Type{BV}) where {BV<:BinaryValue} = $f(BinaryFormatOf(BV))
     @eval $f(x::BinaryValue) = $f(BinaryFormatOf(x))
 end
@@ -102,7 +101,6 @@ MinNormalOf(::Type{F}) where {F<:Binary} =
 
 for f in (:MaxFiniteOf, :MinFiniteOf, :MinPositiveOf, :MaxSubnormalOf, :MinNormalOf)
     @eval $f(::Type{Union{}}) = throw(ArgumentError("Union{} has no datums"))   # analysis totality
-    @eval $f(b::Binary) = $f(typeof(b))
     @eval $f(::Type{BV}) where {BV<:BinaryValue} = $f(BinaryFormatOf(BV))
     @eval $f(x::BinaryValue) = $f(BinaryFormatOf(x))
 end

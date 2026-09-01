@@ -157,6 +157,7 @@ end
         # the value constructors, in both spellings: the format alias is the
         # convenient one, the datum type is what an array element must be
         F(1.3); F(1.3f0); F(3); T(1.3); convert(T, 1.3)
+        fromcode(F, 0x45); fromcode(T, 3)
         # one Group B ladder row — the enclosure machinery is shared, and Log
         # alone was ~103 ms cold
         Log(F, RTE_SN, a); Log(a); log(a)

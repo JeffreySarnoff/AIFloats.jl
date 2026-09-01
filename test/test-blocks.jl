@@ -12,8 +12,8 @@ const T8 = BinaryValue(Binary8p3se)
 const U1 = BinaryValue(Binary8p1uf)                      # E8M0: the MX scale format
 const T16 = BinaryValue(AIFloats.Binary16p1se)           # rung-3 scale (B = 16384)
 
-rnd(rng, T) = T(CodeType(T)(rand(rng, 0:(1 << Int(BitwidthOf(T))) - 1)))
-nanof(T) = T(AIFloats.nan_code(T)); pinf(T) = T(AIFloats.posinf_code(T))
+rnd(rng, T) = fromcode(T, rand(rng, 0:(1 << Int(BitwidthOf(T))) - 1))
+nanof(T) = fromcode(T, AIFloats.nan_code(T)); pinf(T) = fromcode(T, AIFloats.posinf_code(T))
 
 # reference lane: the draft's ωMultiply on decoded values, single zero
 function ref_lane(S, x)
@@ -234,7 +234,7 @@ end
         P >= K && continue
         F = Binary(K, P, S, D); T = BinaryValue(F); nc = 2^K
         for N in (0, 1, 63, 64, 65, 1000)          # word boundaries and past them
-            A = [T(CodeType(F)(i % nc)) for i in 0:N-1]
+            A = [fromcode(T, i % nc) for i in 0:N-1]
             pv = PackedVector(A)
             for op in (:Negate, :Exp, :Abs), ρ in (RTE_SN, RTZ_SF)
                 @test codepoint.(vmap(op, F, ρ, pv)) == codepoint.(vmap(op, F, ρ, A))
@@ -248,7 +248,7 @@ end
     for K in 3:16, (S, D) in ((SIGNED, EXTENDED), (UNSIGNED, FINITE))
         F = Binary(K, min(2, K - 1), S, D); T = BinaryValue(F); U = CodeType(F); nc = 2^K
         for len in vcat(0:70, [126, 127, 128, 129, 130, 255, 256, 257, 1000, 4097])
-            xs = [T(U(i % nc)) for i in 0:len-1]
+            xs = [fromcode(F, i % nc) for i in 0:len-1]
             pv = PackedVector(xs)
             @test codepoint.(collect(pv)) == codepoint.(xs)
             @test codepoint.(Vector(pv)) == codepoint.(xs)
@@ -262,7 +262,7 @@ end
 
     # stochastic keeps the tiled adapter and must stay stream-identical
     let F = Binary(5, 2, SIGNED, EXTENDED), T = BinaryValue(F)
-        A = [T(UInt8(i & 0x1f)) for i in 0:999]; pv = PackedVector(A)
+        A = [fromcode(T, i & 0x1f) for i in 0:999]; pv = PackedVector(A)
         for ρ in (RSA_SN, RSB_SF, RSC_SN)
             @test codepoint.(vmap(:Exp, F, ρ, pv; rng = MersenneTwister(7))) ==
                   codepoint.(vmap(:Exp, F, ρ, A;  rng = MersenneTwister(7)))
@@ -294,9 +294,10 @@ end
     F = Binary(5, 2, SIGNED, EXTENDED); T = BinaryValue(F)
     S = Binary(8, 1, UNSIGNED, FINITE); ST = BinaryValue(S)
     b = Block(ST(1.0), (T(1.0), T(2.0)))
-    @test BlockReduceAdd(F(), RTE_SN, b) == BlockReduceAdd(F, RTE_SN, b)
-    @test ConvertFromBlock(F(), RTE_SN, b) == ConvertFromBlock(F, RTE_SN, b)
-    @test packing_saves(F()) == packing_saves(F)
+    # the datum-type spelling and the format spelling name the same call
+    @test BlockReduceAdd(BinaryValue(F), RTE_SN, b) == BlockReduceAdd(F, RTE_SN, b)
+    @test ConvertFromBlock(BinaryValue(F), RTE_SN, b) == ConvertFromBlock(F, RTE_SN, b)
+    @test packing_saves(BinaryValue(F)) == packing_saves(F)
 end
 
 @testset "block reductions: Dyadic accumulation ≡ BigFloat oracle" begin
@@ -364,7 +365,7 @@ end
 
     # and the payoff: no allocation on the common path
     let E = BinaryValue(Binary8p4se), S = BinaryValue(Binary8p3se)
-        b = Block(one(S), ntuple(i -> E(UInt8((7i + 3) & 0x7f)), 16))
+        b = Block(one(S), ntuple(i -> fromcode(E, (7i + 3) & 0x7f), 16))
         BlockReduceAdd(E, RTE_SN, b)
         @test (@allocated BlockReduceAdd(E, RTE_SN, b)) == 0
         @test AIFloats.blockdecode(b) isa NTuple{16,Float64}
@@ -373,7 +374,7 @@ end
         # crossing it costs one box. The reductions above are the hot callers
         # and they bypass it via `_f64_lanes`, which is why THEY are free.
         @test (@allocated AIFloats._f64_lanes(b)) == 0
-        bx2 = Block(one(S), ntuple(i -> E(UInt8((5i + 1) & 0x7f)), 16))
+        bx2 = Block(one(S), ntuple(i -> fromcode(E, (5i + 1) & 0x7f), 16))
         BlockDotProduct(E, RTE_SN, b, bx2)
         @test (@allocated BlockDotProduct(E, RTE_SN, b, bx2)) == 0
     end
@@ -426,7 +427,7 @@ end
     end
     # the MX shape (P = 1 power-of-two scale) is exact end to end and allocates nothing
     let E = BinaryValue(Binary8p4se), S1 = BinaryValue(Binary8p1uf)
-        xs = ntuple(i -> E(UInt8((7i + 3) & 0x7f)), 16)
+        xs = ntuple(i -> fromcode(E, (7i + 3) & 0x7f), 16)
         ConvertToBlockMaxAbsFinite(BinaryFormatOf(S1), BinaryFormatOf(E), RTE_SN, RTE_SN, xs)
         @test (@allocated ConvertToBlockMaxAbsFinite(BinaryFormatOf(S1), BinaryFormatOf(E),
                                                      RTE_SN, RTE_SN, xs)) == 0
@@ -490,7 +491,7 @@ end
     @test AIFloats._dyadic_prod(ntuple(_ -> 1.0 + 2.0^-40, 32)) === nothing
     # and the common shape is allocation-free
     let E = BinaryValue(Binary8p4se), S = BinaryValue(Binary8p3se)
-        b = Block(one(S), ntuple(i -> E(UInt8((7i + 3) & 0x7f)), 16))
+        b = Block(one(S), ntuple(i -> fromcode(E, (7i + 3) & 0x7f), 16))
         BlockReduceMultiply(BinaryFormatOf(E), RTE_SN, b)
         @test (@allocated BlockReduceMultiply(BinaryFormatOf(E), RTE_SN, b)) == 0
     end

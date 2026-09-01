@@ -200,5 +200,3 @@ function ftz_variant(op::Symbol, fr::Type{<:Binary}, f1::Type{<:Binary}, ρ::Pro
 end
 ftz_variant(op::Symbol, fr::Type{<:BinaryValue}, f1::Type{<:BinaryValue}, ρ::Projection) =
     ftz_variant(op, BinaryFormatOf(fr), BinaryFormatOf(f1), ρ)
-ftz_variant(op::Symbol, fr::BinarySpecifier, f1::BinarySpecifier, ρ::Projection) =
-    ftz_variant(op, _formattype(fr), _formattype(f1), ρ)

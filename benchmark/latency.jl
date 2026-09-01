@@ -22,14 +22,14 @@ const x = T(1.5); const y = T(0.25)
 @first "Exp(x)"          Exp(x)
 @first "Log(x)"          Log(x)
 @first "sort"            sort([x, y, x])
-const A = [T(UInt8(i & 0xff)) for i in 0:4095]
-const B = [T(UInt8((3i + 1) & 0xff)) for i in 0:4095]
+const A = [fromcode(T, i & 0xff) for i in 0:4095]
+const B = [fromcode(T, (3i + 1) & 0xff) for i in 0:4095]
 const D = similar(A)
 @first "vmap! Add"       vmap!(D, Val(:Add), RTE_SN, A, B)
 @first "A .+ B"          A .+ B
 @first "exp.(A)"         exp.(A)
 @first "PackedVector"    PackedVector(A)
-const bx = Block(one(S), ntuple(i -> T(UInt8((7i + 3) & 0x7f)), 16))
+const bx = Block(one(S), ntuple(i -> fromcode(T, (7i + 3) & 0x7f), 16))
 @first "BlockReduceAdd"  BlockReduceAdd(T, RTE_SN, bx)
 """
 

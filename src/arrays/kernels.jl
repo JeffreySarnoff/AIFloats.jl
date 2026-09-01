@@ -214,9 +214,6 @@ end
 @inline vmap(op::Symbol, fr::Type{<:BinaryValue}, ρ::Projection,
              As::AbstractArray{<:BinaryValue}...; rng::MaybeRNG = nothing) =
     vmap(op, BinaryFormatOf(fr), ρ, As...; rng)
-@inline vmap(op::Symbol, fr::Binary, ρ::Projection,
-             As::AbstractArray{<:BinaryValue}...; rng::MaybeRNG = nothing) =
-    vmap(op, typeof(fr), ρ, As...; rng)
 
 # ---- registry-generated array surface: Op(fr, ρ, A...) mirrors the scalar
 # signature, plus the same-format convenience under the session default ρ
@@ -232,8 +229,6 @@ for op in OP_REGISTRY
             vmap($(QuoteNode(name)), fr, ρ, $(xs...); rng)
         @inline $name(fr::Type{<:BinaryValue}, ρ::Projection, $(spec...); kw...) =
             $name(BinaryFormatOf(fr), ρ, $(xs...); kw...)
-        @inline $name(fr::Binary, ρ::Projection, $(spec...); kw...) =
-            $name(typeof(fr), ρ, $(xs...); kw...)
         @inline function $name($(same...); kw...) where {T<:BinaryValue}
             ρ = DefaultProjection()                     # the speculation guard, as in scalar.jl
             ρ === RTE_SN && return $name(BinaryFormatOf(T), RTE_SN, $(xs...); kw...)

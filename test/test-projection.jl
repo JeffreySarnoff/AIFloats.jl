@@ -146,7 +146,7 @@ end
               AIFloats.Binary(5, 1, UNSIGNED, EXTENDED))
         BV = BinaryValue(F)
         for c in 0x00:AIFloats.codemask(F)
-            x = BV(c)
+            x = fromcode(F, c)
             v = decode(x)
             for (_, μ) in DET_MODES, sm in (SF, SP, SN)
                 isnan(v) && continue

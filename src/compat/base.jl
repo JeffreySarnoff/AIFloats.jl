@@ -366,9 +366,9 @@ Base.BigFloat(x::BinaryValue) = BigFloat(decode(x))
 (::Type{T})(x::BinaryValue) where {T<:Integer} = T(decode(x))
 Base.Bool(x::BinaryValue) = Bool(decode(x))
 
-# inbound: `convert` is the value-preserving exception to "Unsigned means code
-# point" (plan §4) — assignment into a datum array converts VALUES, so an
-# Integer (unsigned included) converts as its value, through Convert.
+# inbound: every one of these means the same thing — the NUMBER x, projected
+# into F (improveapi3.md §4.2.1). `Unsigned` is not special here or anywhere
+# else; a code point is spelled `fromcode`.
 (::Type{BinaryValue{F,U}})(x::BinaryValue{F,U}) where {F<:Binary, U<:Unsigned} = x
 # @inline on both spellings below is worth 4.5x and was measured: without it
 # the forwarding method is not inlined and the call costs 7.2 ns against the
@@ -376,11 +376,9 @@ Base.Bool(x::BinaryValue) = Bool(decode(x))
 # else differs — same guard, same zero allocations.
 @inline (::Type{BinaryValue{F}})(x::Real; kw...) where {F<:Binary} =
     BinaryValue{F, CodeType(F)}(x; kw...)
-# the two-argument spelling, mirroring `BinaryValue(F, code)` in
-# types/binaryvalue.jl. The split there is the split here: an `Unsigned` is a
-# CODE POINT and takes no projection, every other `Real` is a VALUE and goes
-# through `Convert`. `Unsigned` is the more specific signature, so it keeps
-# winning and the two meanings cannot collide.
+# the two-argument spelling. There is no `Unsigned` sibling to out-specialize
+# it: that method is what used to make `BinaryValue(F, 0x03)` mean code point
+# three, and its removal is the whole of improveapi3 Phase 1.
 #
 # `Real` rather than the narrower `AbstractFloat`, so that this form accepts
 # exactly what the one-argument form accepts — `BinaryValue{F}(3)` works, and
@@ -389,17 +387,12 @@ Base.Bool(x::BinaryValue) = Bool(decode(x))
 # the same ~2 ns.
 @inline BinaryValue(::Type{F}, x::Real; kw...) where {F<:Binary} =
     BinaryValue{F, CodeType(F)}(x; kw...)
-@inline BinaryValue(fmt::Binary, x::Real; kw...) = BinaryValue(typeof(fmt), x; kw...)
 Base.convert(::Type{T}, x::T) where {T<:BinaryValue} = x
 Base.convert(::Type{T}, x::BinaryValue) where {T<:BinaryValue} = T(x)
 Base.convert(::Type{T}, x::Real) where {T<:BinaryValue} = T(x)
-# the same speculation guard as the value constructor: reading the abstract
-# default Ref unconditionally would make every conversion a dynamic call
-function Base.convert(::Type{T}, x::Unsigned) where {T<:BinaryValue}
-    ρ = DefaultProjection()
-    ρ === RTE_SN && return Convert(T, RTE_SN, x)::T
-    Convert(T, ρ, x)::T
-end
+# no `Unsigned` method: it existed only to override the old code-point
+# meaning, and `convert(T, ::Real)` above now carries unsigned values through
+# the same guarded constructor as every other number.
 # Rational: consistent with Convert's policy — refused rather than double-rounded
 # (and it disambiguates against Base's (::Type{T})(::Rational) for AbstractFloat)
 # Spelled once per constructor signature, matching them exactly: a looser

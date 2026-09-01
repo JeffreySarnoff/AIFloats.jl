@@ -16,8 +16,8 @@ green; anything short of that is recorded as in progress with what is missing.
 |---|---|---|
 | 0 — freeze contract, inventory | **done** | inventory recorded below |
 | 1a — add `fromcode`/`_rawvalue`, migrate callers | **done** | 10 focused test files green |
-| 1b — diagnostic trap for missed unsigned construction | not started | focused groups + doctests, never committed |
-| 1c — canonical format/datum model | **partly done** | ambiguity + inference clean |
+| 1b — diagnostic trap for missed unsigned construction | **done** (not committed, by design) | focused groups + doctests |
+| 1c — canonical format/datum model | **done** | ambiguity + inference clean |
 | 2 — scoped projection default | not started | zero alloc steady state; scoped/nested/task tests |
 | 3 — scalar/array conversion parity | not started | edge-population code-point equality |
 | 4 — queries and `formatinfo` | not started | type stability, no Base shadowing |
@@ -25,6 +25,101 @@ green; anything short of that is recorded as in progress with what is missing.
 | 6 — packed serialization and collections | not started | round trips, aliasing, Aqua ambiguities |
 | 7 — registry validation and error taxonomy | not started | one validation per call, not per element |
 | 8 — residue removal and consumer alignment | not started | zero residual deleted forms |
+
+## Phases 1b and 1c — done (2026-09-01)
+
+Committed together, on purpose: the plan forbids committing 1b's interface
+(improveapi3.md §6 Phase 1b, "never to be the committed interface"), and 1c is
+what replaces it. 1b existed only to *find* call sites, and its findings are
+carried in 1c's diff.
+
+**Gate.** `binary-format` · `binaryvalue` · `codec` · `projection` · `ops` ·
+`blocks` · `compat` · `dyadic` · `traits` · `kernels` · `tables` · `fastpaths` ·
+`governance` · `singletons` · `rounding-paths` · `quality` (Aqua ambiguities,
+undefined exports, piracies, stale deps + JET) — all green.
+
+### 1b — what the trap found
+
+The trap was an inner `BinaryValue{F,U}(::Unsigned)` that threw, installed on
+every code-point constructor spelling. It had to exist: deleting the code-point
+constructor outright gives no `MethodError`, because the value-taking `Real`
+constructor accepts the identical argument, so each missed site would have
+silently become a *number* instead of a code point — `T(0x45)` meaning 69.0
+rather than 1.625.
+
+Sites it caught, all in tests, each classified rather than rewritten
+mechanically:
+
+| Site | Was | Meant |
+|---|---|---|
+| `test-binaryvalue.jl` total-order sweep | `BV(U(c))` over `0:2^K-1` | code points |
+| `test-binaryvalue.jl` show styles | `BinaryValue(F)(0x45)` | code point |
+| `test-binaryvalue.jl` NaN probe | `BinaryValue(F)(nan_code(F))` | code point |
+| `test-codec.jl` layout spot checks | `BinaryValue(F)(0x45)`, `(0xff)`, `(0x00)` | code points |
+| `test-codec.jl` monotone decode | `BV(U(c))` | code points |
+| `test-projection.jl` idempotence | `BV(c)` | code points |
+| `test-ops.jl` probe set | `BV(zero(U))`, `BV(U(maxfinite>>1))` | code points |
+| `test-blocks.jl` packed round trip | `T(U(i % nc))` | code points |
+| `test-dyadic.jl` rung-3 decode sweep | `BinaryValue(F, UInt16(c))` | code points |
+| `test-binaryvalue.jl` two-arg testset | `BinaryValue(F, 0x03) !== BinaryValue(F, 3)` | pinned the OLD split |
+
+Every one became `fromcode`, except the last: it asserted the very distinction
+1c removes, so it was rewritten to assert the new contract instead — that all
+constructor spellings agree, and that `fromcode(F, 0x03)` differs from
+`F(0x03)`.
+
+### 1c — the canonical model
+
+**`Binary` has no instances.** `struct Binary{K,P,S,D}` now declares an inner
+zero-argument constructor that throws, which suppresses Julia's generated one.
+The error names all four things a caller might have wanted:
+
+```
+Binary{8, 4, SIGNED, EXTENDED} is already the format; formats have no instances.
+  a format:      Binary{8, 4, SIGNED, EXTENDED}
+  the number x:  Binary{8, 4, SIGNED, EXTENDED}(x)
+  a code point:  fromcode(Binary{8, 4, SIGNED, EXTENDED}, c)
+  the datum type: BinaryValue(Binary{8, 4, SIGNED, EXTENDED})
+```
+
+That deletion is what earns the rest. With no instances there is nothing for an
+instance overload to serve, so `BinarySpecifier`, `_formattype`, and **31**
+`::Binary` one-hop adapters are gone: the trait forwarders in
+`types/binaryformats.jl` and `types/traits.jl`, `decodepolicy`, `bigprec`,
+`formatname`, the two generated families in `content/codepoints.jl`, and the
+kernel/block/packed/table/approx/scalar entry points. Each was a real
+liability, not clutter — one of them, `BinaryValue(fmt::Binary, code)`, had
+already been written as a self-recursion Julia cannot diagnose, because the
+signature legitimately matches itself. It presented as `StackOverflowError`.
+
+**Construction has one semantic axis.** The inner `Unsigned` constructor is
+gone with the trap, so `Unsigned` now falls through to the ordinary `Real`
+value path. Every spelling agrees:
+
+```julia
+F(0x03) === T(3) === BinaryValue(F, 3.0) === BinaryValue{F}(3) === convert(T, 0x03)
+```
+
+and `fromcode(F, 0x03)` is the different question with the different answer.
+`Base.convert(::Type{T}, ::Unsigned)` was deleted for the same reason: it
+existed only to override the old code-point meaning, and `convert(T, ::Real)`
+now carries unsigned values through the same guarded constructor.
+
+`_rawvalue` is the sole remaining door into `new`. `rawvalue` (the truncating
+`%` variant) had no callers left after 1a and was deleted.
+
+**Two spellings, two questions.** `BinaryValue(F)` is the datum *type*;
+`_datumtype(F)` is its internal name, used where a kernel needs a concrete
+element type and "the datum type of F" reads better than a constructor call.
+`F(x)` constructs a *datum*, so `F(x) isa F` is `false` — the one deliberate
+exception to the ordinary type/instance relationship, now stated in both
+docstrings and asserted directly in `test-binary-format.jl`.
+
+**Test surface.** The testset that pinned "the instance surface has no holes"
+became "a format is type-level information: one spelling, no instances" — it
+asserts the suppressed constructor by message, that every accessor is
+`applicable` to the format type, and the `F(x) isa BinaryValue(F)` /
+`!(F(x) isa F)` pair.
 
 ## Phase 1a — done (2026-09-01)
 

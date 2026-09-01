@@ -17,7 +17,6 @@ struct ComputeDecode end
 compile-time hazard. Not exported.
 """
 decodepolicy(::Type{F}) where {F<:Binary} = _decodepolicy(CodeType(F))
-decodepolicy(b::Binary) = decodepolicy(typeof(b))   # typeof bridge; see binaryvalue.jl
 _decodepolicy(::Type{UInt8}) = TableDecode()
 _decodepolicy(::Type{UInt16}) = ComputeDecode()
 

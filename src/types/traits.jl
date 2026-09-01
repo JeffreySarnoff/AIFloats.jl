@@ -25,7 +25,6 @@ julia> ExponentBiasOf(Binary(8, 4, UNSIGNED, FINITE))
 """
 ExponentBiasOf(::Type{Binary{K,P,S,D}}) where {K,P,S,D} =
     S ? 1 << (Int(K) - Int(P) - 1) : 1 << (Int(K) - Int(P))
-ExponentBiasOf(b::Binary) = ExponentBiasOf(typeof(b))
 
 """
     ExponentBitwidthOf(format)
@@ -45,7 +44,6 @@ julia> ExponentBitwidthOf(Binary(8, 4, UNSIGNED, FINITE))
 """
 ExponentBitwidthOf(::Type{Binary{K,P,S,D}}) where {K,P,S,D} =
     (Int(K) - Int(S)) - (Int(P) - 1)
-ExponentBitwidthOf(b::Binary) = ExponentBitwidthOf(typeof(b))
 
 # the mask primitive, built BY COMPLEMENT — shift down from typemax, never up
 # from one. UInt8(1) << 8 == 0 in Julia, and the grid always contains a format
@@ -64,7 +62,6 @@ The mask of the format's `K` code bits in its storage unit ([`CodeType`](@ref)):
 Not exported; call it as `AIFloats.codemask`.
 """
 codemask(::Type{Binary{K,P,S,D}}) where {K,P,S,D} = _unitmask(CodeType(K), K)
-codemask(b::Binary) = codemask(typeof(b))
 
 """
     signmask(format)
@@ -75,7 +72,6 @@ For a signed format this isolates the sign; for an unsigned format the same bit
 position is ordinary magnitude. Not exported; call it as `AIFloats.signmask`.
 """
 signmask(::Type{Binary{K,P,S,D}}) where {K,P,S,D} = one(CodeType(K)) << (Int(K) - 1)
-signmask(b::Binary) = signmask(typeof(b))
 
 """
     orderkeytype(format)
@@ -88,6 +84,5 @@ not wrap at `2^K` — `UInt16` for `UInt8`-coded formats, `UInt32` for
 `UInt16`-coded ones. Not exported.
 """
 orderkeytype(::Type{Binary{K,P,S,D}}) where {K,P,S,D} = _orderkeytype(CodeType(K))
-orderkeytype(b::Binary) = orderkeytype(typeof(b))
 _orderkeytype(::Type{UInt8}) = UInt16
 _orderkeytype(::Type{UInt16}) = UInt32

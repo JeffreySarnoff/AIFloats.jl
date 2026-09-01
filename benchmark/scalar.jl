@@ -34,7 +34,7 @@ row("T8(1.3)      (Float64 value)",     @b T8(1.3))
 row("T8(1.3f0)    (Float32 value)",     @b T8(1.3f0))
 row("T8(3)        (Integer value)",     @b T8(3))
 row("convert(T8, 1.3)",                 @b convert(T8, 1.3))
-row("T8(0x05)     (code point)",        @b T8(0x05))
+row("fromcode(T8, 0x05)     (code point)",        @b fromcode(T8, 0x05))
 row("Convert(F8, RTE_SN, 1.3)",         @b Convert($F8, RTE_SN, 1.3))
 
 section("scalar — operations by registry group, K=8")

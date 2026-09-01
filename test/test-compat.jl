@@ -244,7 +244,7 @@ end
     @test AIFloats.promotecarrier(F16) === Float128
     @test AIFloats.promotecarrier(F16X) === BigFloat
     # Unsigned is a code point at the constructor, a value at convert
-    @test codepoint(B8(0x05)) == 0x05
+    @test codepoint(fromcode(B8, 0x05)) == 0x05
     @test convert(B8, 0x05) == 5 && convert(B8, 5) == 5 && convert(B8, 2.5) == 2.5
     v = Vector{B8}(undef, 1); v[1] = 0x05
     @test v[1] == 5
@@ -267,12 +267,12 @@ end
     V = view(A, 1:2)
     @test eltype(similar(V)) === B8
     @test eltype(similar(B8[])) === B8
-    @test reinterpret(B8, 0x45) === B8(0x45)
-    @test reinterpret(UInt8, B8(0x45)) === 0x45
+    @test reinterpret(B8, 0x45) === fromcode(B8, 0x45)
+    @test reinterpret(UInt8, fromcode(B8, 0x45)) === 0x45
     @test_throws ArgumentError reinterpret(B8, 0x0045)
     T5 = BinaryValue(F5)
     @test_throws ArgumentError reinterpret(T5, 0xFF)
-    @test reinterpret(T5, 0x1F) === T5(0x1F)
+    @test reinterpret(T5, 0x1F) === fromcode(T5, 0x1F)
 end
 
 @testset "inference pins" begin

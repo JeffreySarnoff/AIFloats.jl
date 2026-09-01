@@ -230,8 +230,6 @@ function blockproject(::Type{FR}, ρ::Projection, sr::BinaryValue, Z::NTuple{B,A
 end
 blockproject(::Type{FR}, ρ::Projection, sr, Z; kw...) where {FR<:BinaryValue} =
     blockproject(BinaryFormatOf(FR), ρ, sr, Z; kw...)
-blockproject(FR::Binary, ρ::Projection, sr, Z; kw...) =
-    blockproject(typeof(FR), ρ, sr, Z; kw...)
 
 # ---- generated elementwise BlockOp / ScaledOp surface (draft §5.4 / §5.5) ---
 #   BlockOp(FR, ρ, b1[, b2[, b3]], sr; rng)  — operand blocks, result scale sr
@@ -271,9 +269,6 @@ for op in OP_REGISTRY
         @inline $bname(fr::Type{<:BinaryValue}, ρ::Projection, $(block_params...),
                        sr::BinaryValue; kw...) where {B} =
             $bname(BinaryFormatOf(fr), ρ, $(bs...), sr; kw...)
-        @inline $bname(fr::Binary, ρ::Projection, $(block_params...),
-                       sr::BinaryValue; kw...) where {B} =
-            $bname(typeof(fr), ρ, $(bs...), sr; kw...)
         function $sname(fr::Type{<:Binary}, ρ::Projection, $(scaled_params...);
                         rng::MaybeRNG = nothing)
             $unit_scales && return $name(fr, ρ, $(xs...); rng)
@@ -283,9 +278,6 @@ for op in OP_REGISTRY
         end
         @inline $sname(fr::Type{<:BinaryValue}, ρ::Projection, $(scaled_params...); kw...) =
             $sname(BinaryFormatOf(fr), ρ, $(ss[1]), $(xs[1]),
-                   $((Iterators.flatten((ss[i], xs[i]) for i in 2:op.arity))...); kw...)
-        @inline $sname(fr::Binary, ρ::Projection, $(scaled_params...); kw...) =
-            $sname(typeof(fr), ρ, $(ss[1]), $(xs[1]),
                    $((Iterators.flatten((ss[i], xs[i]) for i in 2:op.arity))...); kw...)
         export $bname, $sname
     end
@@ -563,14 +555,8 @@ for f in (:BlockReduceAdd, :BlockReduceMultiply)
     @eval @inline $f(fr::Type{<:BinaryValue}, ρ::Projection, b::Block; kw...) =
         $f(BinaryFormatOf(fr), ρ, b; kw...)
 end
-for f in (:BlockReduceAdd, :BlockReduceMultiply)
-    @eval @inline $f(fr::Binary, ρ::Projection, b::Block; kw...) =
-        $f(typeof(fr), ρ, b; kw...)
-end
 @inline BlockDotProduct(fr::Type{<:BinaryValue}, ρ::Projection, bx::Block, by::Block; kw...) =
     BlockDotProduct(BinaryFormatOf(fr), ρ, bx, by; kw...)
-@inline BlockDotProduct(fr::Binary, ρ::Projection, bx::Block, by::Block; kw...) =
-    BlockDotProduct(typeof(fr), ρ, bx, by; kw...)
 
 # ---- conversion family (draft §5.2) ------------------------------------------
 """
@@ -630,18 +616,11 @@ for f in (:ConvertFromBlock,)
     @eval @inline $f(fr::Type{<:BinaryValue}, ρ::Projection, b::Block; kw...) =
         $f(BinaryFormatOf(fr), ρ, b; kw...)
 end
-@inline ConvertFromBlock(fr::Binary, ρ::Projection, b::Block; kw...) =
-    ConvertFromBlock(typeof(fr), ρ, b; kw...)
 @inline ConvertToBlock(fr::Type{<:BinaryValue}, ρ::Projection, xs::Tuple, s::BinaryValue; kw...) =
     ConvertToBlock(BinaryFormatOf(fr), ρ, xs, s; kw...)
-@inline ConvertToBlock(fr::Binary, ρ::Projection, xs::Tuple, s::BinaryValue; kw...) =
-    ConvertToBlock(typeof(fr), ρ, xs, s; kw...)
 @inline ConvertToBlockMaxAbsFinite(fs::Type{<:BinaryValue}, fr::Type{<:BinaryValue},
                                    ρs::Projection, ρ::Projection, xs::Tuple; kw...) =
     ConvertToBlockMaxAbsFinite(BinaryFormatOf(fs), BinaryFormatOf(fr), ρs, ρ, xs; kw...)
-@inline ConvertToBlockMaxAbsFinite(fs::BinarySpecifier, fr::BinarySpecifier,
-                                   ρs::Projection, ρ::Projection, xs::Tuple; kw...) =
-    ConvertToBlockMaxAbsFinite(_formattype(fs), _formattype(fr), ρs, ρ, xs; kw...)
 
 # ---- SoA array-of-blocks container -----------------------------------------
 """

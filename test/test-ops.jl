@@ -70,7 +70,7 @@ end
         BV = BinaryValue(F)
         n = 2^K
         for c1 in 0:(n - 1), c2 in 0:(n - 1)
-            x = BV(UInt8(c1)); y = BV(UInt8(c2))
+            x = fromcode(BV, c1); y = fromcode(BV, c2)
             for (msym, μ) in modes, (ssym, sm) in sats
                 ρ = Projection(μ, sm)
                 for (opn, opf) in ((:Add, Add), (:Subtract, Subtract), (:Multiply, Multiply))
@@ -94,11 +94,11 @@ end
     for F in reps
         BV = BinaryValue(F)
         U = CodeType(F)
-        probe = [BV(zero(U)), MinPositiveOf(F), MinNormalOf(F), MaxFiniteOf(F),
-                 BV(AIFloats.nan_code(F))]
-        is_extended(F) && push!(probe, BV(AIFloats.posinf_code(F)))
+        probe = [fromcode(F, 0), MinPositiveOf(F), MinNormalOf(F), MaxFiniteOf(F),
+                 fromcode(BV, AIFloats.nan_code(F))]
+        is_extended(F) && push!(probe, fromcode(BV, AIFloats.posinf_code(F)))
         # a mid-range datum: halfway up the positive codes
-        push!(probe, BV(U(AIFloats._maxfinite_code(F) >> 1)))
+        push!(probe, fromcode(F, AIFloats._maxfinite_code(F) >> 1))
         for op in AIFloats.OP_REGISTRY
             op.name === :Convert && continue
             f = getfield(AIFloats, op.name)
@@ -126,7 +126,7 @@ end
     BV = Binary8p4se
     @test decode(Add(F, RTE_SN, BV(1.5), BV(0.25))) == 1.75
     @test decode(Divide(F, RTE_SN, BV(1.0), BV(8.0))) == 0.125
-    @test isnan(decode(Divide(F, RTE_SN, BV(1.0), BV(0x00))))   # x/0: one zero, no sign
+    @test isnan(decode(Divide(F, RTE_SN, BV(1.0), fromcode(BV, 0x00))))   # x/0: one zero, no sign
     @test decode(Sqrt(F, RTE_SN, BV(4.0))) == 2.0
     @test decode(Recip(F, RTE_SN, BV(8.0))) == 0.125
     @test decode(RSqrt(F, RTE_SN, BV(4.0))) == 0.5
@@ -142,13 +142,13 @@ end
     @test isnan(decode(TanPi(F, RTE_SN, BV(0.5))))
     @test decode(ArcTan(F, RTE_SN, BV(1.0))) == 0.8125          # π/4 = .7853… → 13/16
     @test decode(Hypot(F, RTE_SN, BV(3.0), BV(4.0))) == 5.0
-    @test decode(Softplus(F, RTE_SN, BV(0x00))) == 0.6875       # ln 2 again
+    @test decode(Softplus(F, RTE_SN, fromcode(BV, 0x00))) == 0.6875       # ln 2 again
     @test decode(FMA(F, RTE_SN, BV(1.5), BV(0.25), BV(1.0))) == 1.375
     @test decode(FAA(F, RTE_SN, BV(1.5), BV(0.25), BV(1.0))) == 2.75
     @test decode(Clamp(F, RTE_SN, BV(3.0), BV(1.0), BV(2.0))) == 2.0
     # extremum family corner semantics
-    nanv = BV(AIFloats.nan_code(F))
-    pinf = BV(AIFloats.posinf_code(F))
+    nanv = fromcode(BV, AIFloats.nan_code(F))
+    pinf = fromcode(BV, AIFloats.posinf_code(F))
     @test isnan(decode(Maximum(F, RTE_SN, BV(1.0), nanv)))
     @test decode(MaximumNumber(F, RTE_SN, BV(1.0), nanv)) == 1.0
     @test decode(MaximumMagnitude(F, RTE_SN, BV(-2.0), BV(1.5))) == -2.0
@@ -261,7 +261,7 @@ end
         A.datumcarrier(F) === Float128 || continue
         T = BinaryValue(F)
         append!(pool, filter(v -> isfinite(v) && !iszero(v),
-                             [decode(T(CodeType(F)(c))) for c in 0:409:2^K-1]))
+                             [decode(fromcode(T, c)) for c in 0:409:2^K-1]))
     end
     append!(pool, Float128[Float128(3), Float128(1)/Float128(3),
                            Float128(2)^100, Float128(2)^-100,
@@ -291,7 +291,7 @@ end
         F = Binary(K, P, SIGNED, EXTENDED)
         A.datumcarrier(F) === Float128 || continue
         T = BinaryValue(F)
-        cs = [T(CodeType(F)(c)) for c in 0:1021:2^K-1]
+        cs = [fromcode(T, c) for c in 0:1021:2^K-1]
         for ρ in (RTE_SN, RTZ_SF, RTP_SN, RTN_SF, RTO_SN, RTA_SP), a in cs
             va = decode(a)
             (isfinite(va) && !iszero(va)) || continue

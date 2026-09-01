@@ -58,7 +58,7 @@ end
     # exactness of the decode→Dyadic seam over every datum of a rung-3 format
     F = Binary(16, 1, SIGNED, EXTENDED)
     for c in 0:(2^16 - 1)
-        v = BinaryValue(F, UInt16(c))
+        v = fromcode(F, c)
         d = decode(v)
         @test d isa Dyadic
         isfinite(v) && @test Rational{BigInt}(d) == Rational{BigInt}(BigFloat(d))

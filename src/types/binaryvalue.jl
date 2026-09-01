@@ -13,15 +13,18 @@ A datum of format `F` — one member of `F`'s value set, stored as its code poin
 - `U` is `CodeType(F)` — `UInt8` for `K <= 8`, `UInt16` above
 
 The representation invariant: the code point occupies the low `K` bits of the
-storage unit and the high bits are zero. Constructors enforce it.
+storage unit and the high bits are zero. Every construction path enforces it.
 
-An `Unsigned` constructor argument means **code point** (range-checked against
-`2^K`); every other `Real` means a **value**, and goes through the projection
-engine under a [`Projection`](@ref) — the session default unless a `projection`
-keyword says otherwise.
+**Construction has one semantic axis.** Every constructor argument is a
+`Real` **value**, projected into `F` under a [`Projection`](@ref) — the session
+default unless a `projection` keyword says otherwise. `Unsigned` is not special:
+`BinaryValue(F, 0x03)` is the number three, exactly as `BinaryValue(F, 3.0)` is.
 
-The format may be given as a type or as an instance, and either may be spelled
-as a parameter or passed as an argument. All four spellings agree.
+To name a **code point**, use [`fromcode`](@ref). It is a different question and
+it gets a different spelling, because the two used to be told apart by the
+argument's type — which silently made `T(codepoint(y))` a reinterpretation.
+
+`BinaryValue(F)` is the datum TYPE of `F`; `F` itself is the format.
 
 # Examples
 
@@ -29,20 +32,20 @@ as a parameter or passed as an argument. All four spellings agree.
 julia> F = Binary(8, 4, SIGNED, EXTENDED)
 Binary{8, 4, ±, ∞}
 
-julia> x = BinaryValue(F, 0x45)          # an Unsigned is a CODE POINT
+julia> x = BinaryValue(F, 1.625)         # every Real argument is a VALUE
 1.625
-
-julia> codepoint(x), decode(x)
-(0x45, 1.625)
-
-julia> BinaryValue(F, 1.625) === x       # any other Real is a VALUE
-true
 
 julia> BinaryValue{F}(1.625) === x       # the parameter spelling
 true
 
-julia> BinaryValue(F(), 0x45) === x      # a format instance also works
+julia> F(1.625) === x                    # calling the format is the short one
 true
+
+julia> fromcode(F, 0x45) === x           # and 0x45 is where that value lives
+true
+
+julia> BinaryValue(F, 0x45)              # but as a NUMBER, 0x45 is 69
+64.0
 
 julia> BinaryValue(F, 1.7)               # a value off the lattice is projected
 1.75
@@ -51,61 +54,67 @@ julia> BinaryValue(F, 1.7; projection = RTZ_SN)
 1.625
 ```
 """
+# PHASE 1b DIAGNOSTIC -- TEMPORARY, NEVER TO BE THE COMMITTED INTERFACE.
+#
+# Deleting the code-point constructor outright would NOT give a MethodError:
+# the value-taking `Real` constructor accepts the very same argument, so every
+# missed `T(0x45)` would silently become the number 69. That is the plan's
+# top-ranked risk (improveapi3.md §6 Phase 1b) and a loud diagnostic is the
+# only way to expose the call sites a grep and the test inventory missed.
+#
 struct BinaryValue{F<:Binary, U<:Unsigned} <: AbstractFloat
     code::U
-    # the one checked gateway; rawvalue (below) is the unchecked kernel route
-    function BinaryValue{F,U}(code::Unsigned) where {F<:Binary, U<:Unsigned}
-        U === CodeType(F) ||
-            throw(ArgumentError("BinaryValue storage unit must be $(CodeType(F)) for $(string(F)), got $U"))
-        (code <= codemask(F)) ||
-            throw(ArgumentError("code point $code exceeds $(2^Int(BitwidthOf(F)) - 1) for $(string(F))"))
-        new{F,U}(code % U)
-    end
 
-    # unchecked construction — kernel-internal. Assumes the representation
-    # invariant (high bits zero); every checked path goes through the
-    # constructor above. Defined inside the struct so it is the only door
-    # around the checks.
-    global @inline rawvalue(::Type{F}, code::Unsigned) where {F<:Binary} =
-        new{F, CodeType(F)}(code % CodeType(F))
-
-    # improveapi3.md §4.2.5: the internal fast path. Precondition: the code is
+    # improveapi3.md §4.2.5: the ONE internal door. Precondition: the code is
     # already canonical for F (high bits zero). No range check.
     #
     # The plan spells the contract `code::CodeType(F)`, which Julia cannot
     # express -- a signature is evaluated at definition time, where F is still
-    # a TypeVar. It is enforced by CONVERSION instead: `new` converts into the
-    # field type, so a value that does not fit raises InexactError. That is
-    # strictly better than `rawvalue`'s `%`, which truncates silently, and it
-    # checks the representation invariant rather than merely the storage width.
-    # Never exported, never `public`. `rawvalue` is its lenient predecessor and
-    # is deleted once every internal caller has moved (Phase 1c.6).
+    # a TypeVar. Enforced by CONVERSION instead: `new` converts into the field
+    # type, so a value that does not fit raises InexactError. That checks the
+    # representation invariant, not merely the storage width.
+    #
+    # There is deliberately no public `Unsigned` inner constructor. One would
+    # out-specialize the `Real` value constructor in ops/scalar.jl, and
+    # `BinaryValue{F,U}(0x03)` would silently mean code point three rather than
+    # the number three. Code points are reached only through `fromcode`.
     global @inline _rawvalue(::Type{F}, code::Unsigned) where {F<:Binary} =
         new{F, CodeType(F)}(code)
 end
 
-# normalize the one-parameter spellings to the full type
-BinaryValue{F}(code::Unsigned) where {F<:Binary} = BinaryValue{F, CodeType(F)}(code)
-BinaryValue(::Type{F}) where {F<:Binary} = BinaryValue{F, CodeType(F)}
-BinaryValue(::Type{F}, code::Unsigned) where {F<:Binary} = BinaryValue{F, CodeType(F)}(code)
+"""
+    BinaryValue(F) -> Type
 
-# ---- accepting a format INSTANCE ---------------------------------------------
-# A format is canonically a TYPE here — `Binary(K,P,S,D)` returns one, and it has
-# to, because it is `BinaryValue{F,U}`'s first parameter. Instances are still
-# constructible (`Binary(5,3,SIGNED,FINITE)()`) and every format accessor
-# already accepts one, so these two were the last hole in that surface. A hole
-# is worse than either extreme: it is what invites the fix below to be written
-# wrongly.
-#
-# THE RULE, and the reason these are one-liners: an instance-form method must
-# change its argument's KIND, never merely its value. `typeof` does that, so the
-# forwarded call provably lands on the `::Type{F}` method above and cannot
-# re-enter this one. Delegating through anything that hands back a `Binary`
-# value instead — including an identity-like helper — is an infinite recursion
-# that Julia cannot warn about, because the signature legitimately matches
-# itself. It is a StackOverflowError, not an ambiguity.
-BinaryValue(fmt::Binary) = BinaryValue(typeof(fmt))
-BinaryValue(fmt::Binary, code::Unsigned) = BinaryValue(typeof(fmt), code)
+The concrete `AbstractFloat` datum type of format `F`: `BinaryValue{F,CodeType(F)}`.
+
+This is the spelling to use for an array element type or a type annotation. `F`
+itself is the FORMAT — `x isa F` is false for every datum `x`, because a format
+describes a value set rather than belonging to one. Calling a format,
+`F(x)`, is a convenience that constructs a datum; it is not the ordinary Julia
+relationship between a type and its instances, so the two spellings answer
+different questions and both are needed.
+
+# Examples
+
+```jldoctest
+julia> F = Binary(8, 4, SIGNED, FINITE);
+
+julia> T = BinaryValue(F)
+BinaryValue(Binary8p4sf)
+
+julia> F(1.5) isa T
+true
+
+julia> F(1.5) isa F
+false
+```
+"""
+BinaryValue(::Type{F}) where {F<:Binary} = BinaryValue{F, CodeType(F)}
+
+# improveapi3.md §4.1.3: the internal spelling of the same query. Public code
+# writes `BinaryValue(F)`; kernels that need a concrete element type write this,
+# so the intent reads as "the datum type of F" rather than as a constructor call.
+@inline _datumtype(::Type{F}) where {F<:Binary} = BinaryValue{F, CodeType(F)}
 
 """
     fromcode(F, code) -> BinaryValue
@@ -165,7 +174,7 @@ Extends `Base.codepoint` (which Base defines for `Char`).
 # Examples
 
 ```jldoctest
-julia> codepoint(BinaryValue(Binary(8, 4, SIGNED, FINITE), 0x45))
+julia> codepoint(fromcode(Binary(8, 4, SIGNED, FINITE), 0x45))
 0x45
 ```
 """
@@ -181,7 +190,7 @@ The [`Binary`](@ref) format of a `BinaryValue` datum or datum type.
 # Examples
 
 ```jldoctest
-julia> BinaryFormatOf(BinaryValue(Binary(8, 4, SIGNED, FINITE), 0x00))
+julia> BinaryFormatOf(fromcode(Binary(8, 4, SIGNED, FINITE), 0x00))
 Binary{8, 4, ±, ⏥}
 ```
 """
@@ -193,7 +202,6 @@ BinaryFormatOf(::Type{BinaryValue{F,U}}) where {F,U} = F
 # attaches to the next method defined, so leading with these would silently
 # retarget it and the `@ref` in docs/src/50-status.md would stop resolving.
 BinaryFormatOf(::Type{F}) where {F<:Binary} = F
-BinaryFormatOf(f::Binary) = typeof(f)
 BinaryFormatOf(::Type{BinaryValue{F}}) where {F} = F
 BinaryFormatOf(x::BinaryValue) = BinaryFormatOf(typeof(x))
 # the bottom type satisfies `<: BinaryValue` and has no format; a stated

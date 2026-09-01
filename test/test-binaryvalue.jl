@@ -12,32 +12,36 @@ using Test
     @test !(Binary8p4sf <: BinaryValue)
     @test Binary8p4sf(1.5) isa BV          # the convenient constructor survives
     @test BV === BinaryValue{F, UInt8}
-    @test BinaryValue{F}(0x45) === BV(0x45)
-    @test BinaryValue(F, 0x45) === BV(0x45)
-    fmt = F()
-    @test BinaryValue(fmt, 0x45) === BV(0x45)
-    @test BinaryValue(fmt, 1.625) === BV(0x45)
-    @test project(fmt, RTE_SN, 1.625) === BV(0x45)
-    @test Convert(fmt, RTE_SN, 1.625) === BV(0x45)
+    # improveapi3 §4.2: a code point has ONE spelling, and it is `fromcode`.
+    # Every ordinary constructor means a numeric VALUE, `Unsigned` included --
+    # which is why `fromcode(BV, 0x45)` and `BV(0x45)` are different datums.
+    @test fromcode(BV, 0x45) === fromcode(F, 0x45)
+    @test fromcode(BV, 0x45) === fromcode(Binary8p4sf, 0x45)
+    @test codepoint(fromcode(BV, 0x45)) == 0x45
+    @test BinaryValue(F, 1.625) === fromcode(BV, 0x45)
+    @test project(F, RTE_SN, 1.625) === fromcode(BV, 0x45)
+    @test Convert(F, RTE_SN, 1.625) === fromcode(BV, 0x45)
 
-    # Unsigned argument = code point, range-checked against 2^K
-    @test codepoint(BV(0xff)) === 0xff
-    @test_throws ArgumentError BinaryValue(AIFloats.Binary(4, 2, SIGNED, FINITE), 0x10)
-    # wrong storage unit refused
-    @test_throws ArgumentError BinaryValue{F, UInt16}(0x0045)
+    # code points are range-checked against 2^K by `fromcode`
+    @test codepoint(fromcode(BV, 0xff)) === 0xff
+    @test_throws ArgumentError fromcode(AIFloats.Binary(4, 2, SIGNED, FINITE), 0x10)
+    @test_throws ArgumentError fromcode(BV, -1)
 
-    # wider unsigned code accepted when in range (range first, then narrowed)
-    @test BV(UInt16(0x45)) === BV(0x45)
-    @test_throws ArgumentError BV(UInt16(0x100))
+    # any integer width is accepted: the range is checked BEFORE narrowing, so
+    # a wide code that fits is fine and one that does not raises rather than
+    # truncating (0x100 would become 0x00 under a `%`)
+    @test fromcode(BV, UInt16(0x45)) === fromcode(BV, 0x45)
+    @test fromcode(BV, Int64(0x45)) === fromcode(BV, 0x45)
+    @test_throws ArgumentError fromcode(BV, 0x100)
 
     # isbits, concrete: a valid array element type
     @test isbitstype(BV)
     @test isconcretetype(BV)
-    v = [BV(0x01), BV(0x02)]
+    v = [fromcode(BV, 0x01), fromcode(BV, 0x02)]
     @test eltype(v) === BV
 
     # format recovery and trait forwarding, on type and instance
-    x = BV(0x45)
+    x = fromcode(BV, 0x45)
     @test BinaryFormatOf(BV) === F === BinaryFormatOf(x)
     @test BitwidthOf(x) == 8 && PrecisionOf(x) == 4
     @test is_signed(x) && is_finite(x)
@@ -53,17 +57,17 @@ end
         BV = BinaryValue(F)
         U = CodeType(F)
 
-        z = BV(zero(U))
+        z = fromcode(F, 0)
         @test iszero(z) && isfinite(z) && !isnan(z) && !signbit(z) && !issubnormal(z)
 
-        nv = BV(AIFloats.nan_code(F))
+        nv = fromcode(BV, AIFloats.nan_code(F))
         @test isnan(nv) && !isfinite(nv) && !isinf(nv) && !signbit(nv)
 
         if E
-            pinf = BV(AIFloats.posinf_code(F))
+            pinf = fromcode(BV, AIFloats.posinf_code(F))
             @test isinf(pinf) && !isfinite(pinf) && !signbit(pinf)
             if S
-                ninf = BV(AIFloats.neginf_code(F))
+                ninf = fromcode(BV, AIFloats.neginf_code(F))
                 @test isinf(ninf) && signbit(ninf)
             end
         end
@@ -85,12 +89,12 @@ end
         F = AIFloats.Binary(K, P, S, E)
         BV = BinaryValue(F)
         U = CodeType(F)
-        xs = [BV(U(c)) for c in 0:(2^K - 1)]
+        xs = [fromcode(F, c) for c in 0:(2^K - 1)]
 
         # keys are unique, NaN's is 0 and strictly the smallest
         ks = AIFloats.order_key.(xs)
         @test allunique(ks)
-        nv = BV(AIFloats.nan_code(F))
+        nv = fromcode(BV, AIFloats.nan_code(F))
         @test AIFloats.order_key(nv) == 0
 
         # sorting by key sorts finite datums by value; NaN lands FIRST
@@ -117,7 +121,7 @@ end
 
         # NextLessThan inverts NextGreaterThan on every datum
         for c in 0:(2^K - 1)
-            a = BV(U(c))
+            a = fromcode(F, c)
             isnan(a) && continue
             up = NextGreaterThan(a)
             isnan(up) || @test NextLessThan(up) === a
@@ -129,19 +133,19 @@ end
 @testset "Classification" begin
     F = AIFloats.Binary(8, 4, SIGNED, EXTENDED)
     BV = BinaryValue(F)
-    @test Class(BV(AIFloats.nan_code(F))) === ClassNaN
-    @test Class(BV(AIFloats.posinf_code(F))) === ClassPosInf
-    @test Class(BV(AIFloats.neginf_code(F))) === ClassNegInf
-    @test Class(BV(0x00)) === ClassZero
+    @test Class(fromcode(BV, AIFloats.nan_code(F))) === ClassNaN
+    @test Class(fromcode(BV, AIFloats.posinf_code(F))) === ClassPosInf
+    @test Class(fromcode(BV, AIFloats.neginf_code(F))) === ClassNegInf
+    @test Class(fromcode(BV, 0x00)) === ClassZero
     @test Class(MinPositiveOf(F)) === ClassPosSubnormal
     @test Class(MinNormalOf(F)) === ClassPosNormal
-    @test Class(NextGreaterThan(BV(AIFloats.neginf_code(F)))) === ClassNegNormal
+    @test Class(NextGreaterThan(fromcode(BV, AIFloats.neginf_code(F)))) === ClassNegNormal
 
     # every datum of every corner format classifies, and class order matches key order
     for (S, E) in ((true, true), (true, false), (false, true), (false, false))
         G = AIFloats.Binary(6, 3, S, E)
         W = BinaryValue(G)
-        xs = sort([W(UInt8(c)) for c in 0:63]; by = AIFloats.order_key)
+        xs = sort([fromcode(W, c) for c in 0:63]; by = AIFloats.order_key)
         cs = Class.(xs)
         @test issorted(Int8.(cs))             # FPClass is declared in order position
     end
@@ -149,7 +153,7 @@ end
 
 @testset "Show styles" begin
     F = AIFloats.Binary(8, 4, SIGNED, FINITE)
-    x = BinaryValue(F)(0x45)
+    x = fromcode(F, 0x45)
     old = get_show_style()
     try
         set_show_style!(:value)
@@ -163,7 +167,7 @@ end
         # IOContext overrides the process default
         @test sprint(show, x; context = :binary_show_style => :value) == "1.625"
         # NaN prints as NaN, never throws, in every style
-        nv = BinaryValue(F)(AIFloats.nan_code(F))
+        nv = fromcode(F, AIFloats.nan_code(F))
         for st in VALID_SHOW_STYLES
             set_show_style!(st)
             @test sprint(show, nv) isa String
@@ -190,7 +194,7 @@ end
     @test AIFloats._NAMED[:Binary16p1uf] === AIFloats.Binary16p1uf
     @test length(AIFloats._NAMED) == 504
     @test formatname(Binary8p4se) === :Binary8p4se
-    @test formatname(AIFloats.Binary(8, 4, SIGNED, EXTENDED)()) === :Binary8p4se
+    @test formatname(BinaryValue(AIFloats.Binary(8, 4, SIGNED, EXTENDED))) === :Binary8p4se
 end
 
 @testset "two-argument value construction" begin
@@ -207,15 +211,17 @@ end
             @test BinaryValue{F}(v) === T(v)
             @test BinaryValue(F, v) isa T
         end
-        # and the code-point meaning of an Unsigned survives
+        # an Unsigned is now just a number (improveapi3 §4.2.2): every
+        # constructor spelling agrees with the Float64 one
         for c in (0x00, 0x01, 0x05)
             u = CodeType(F)(c)
-            @test BinaryValue(F, u) === BinaryValue{F}(u)
-            @test codepoint(BinaryValue(F, u)) == u
+            @test BinaryValue(F, u) === BinaryValue{F}(u) === T(Float64(u))
         end
-        # a value and a code point that share a numeral must NOT agree
+        # the code point is a different question with a different spelling,
+        # and on this format the two answers differ
         if Int(BitwidthOf(F)) >= 5
-            @test BinaryValue(F, 0x03) !== BinaryValue(F, 3)
+            @test codepoint(fromcode(F, 0x03)) == CodeType(F)(3)
+            @test fromcode(F, 0x03) !== BinaryValue(F, 3)
         end
         # keywords reach Convert, and the session default is honored
         @test BinaryValue(F, 1.3; projection = RTZ_SF) === Convert(T, RTZ_SF, 1.3)

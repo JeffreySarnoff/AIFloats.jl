@@ -93,7 +93,7 @@ The datum's [`FPClass`](@ref).
 ```jldoctest
 julia> F = Binary(8, 4, SIGNED, EXTENDED);
 
-julia> Class(MaxFiniteOf(F)), Class(BinaryValue(F, AIFloats.nan_code(F)))
+julia> Class(MaxFiniteOf(F)), Class(fromcode(F, AIFloats.nan_code(F)))
 (ClassPosNormal, ClassNaN)
 ```
 """

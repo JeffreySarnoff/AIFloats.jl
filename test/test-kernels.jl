@@ -28,7 +28,7 @@ end
 @testset "Shape A ≡ Shape B, measured" begin
     F = Binary(5, 3, SIGNED, EXTENDED)
     BV = BinaryValue(F)
-    all32 = [BV(UInt8(c)) for c in 0:31]
+    all32 = [fromcode(BV, c) for c in 0:31]
     # every operand pair, as two 1024-long arrays: the gather and the compute
     # loop must agree on every code-point combination
     A = repeat(all32, inner = 32)
@@ -49,7 +49,7 @@ end
 @testset "threading changes nothing" begin
     F = Binary(9, 4, SIGNED, EXTENDED)          # wide: compute path, no table
     BV = BinaryValue(F)
-    A = [BV(UInt16(c % 512)) for c in 0:2999]
+    A = [fromcode(BV, c % 512) for c in 0:2999]
     B = reverse(A)
     oldmin = AIFloats.THREAD_MIN_ELEMS[]
     oldsw = AIFloats.THREADED_KERNELS[]
@@ -69,7 +69,7 @@ end
 @testset "the stochastic kernel: sequential, single stream, reproducible" begin
     F = Binary(8, 4, SIGNED, EXTENDED)
     BV = BinaryValue(F)
-    A = [BV(UInt8(c)) for c in 0:255]
+    A = [fromcode(BV, c) for c in 0:255]
     B = reverse(A)
     ρ = RSA_SN
     s1 = Add(F, ρ, A, B; rng = Xoshiro(11))
@@ -89,7 +89,7 @@ end
 @testset "vmap / vmap! surface" begin
     F = Binary(5, 3, SIGNED, EXTENDED)
     BV = BinaryValue(F)
-    A = [BV(UInt8(c)) for c in 0:31]
+    A = [fromcode(BV, c) for c in 0:31]
     r = vmap(:Negate, F, RTE_SN, A)
     @test eltype(r) === BV
     @test codepoint.(r) == codepoint.(Negate(F, RTE_SN, A))
@@ -109,7 +109,7 @@ end
     F = Binary(8, 4, SIGNED, EXTENDED)
     G = Binary(5, 3, SIGNED, EXTENDED)
     BG = BinaryValue(G)
-    A = [BG(UInt8(c)) for c in 0:31]
+    A = [fromcode(BG, c) for c in 0:31]
     r = Convert(F, RTE_SN, A)
     @test eltype(r) === BinaryValue(F)
     @test all(i -> r[i] === Convert(F, RTE_SN, A[i]), eachindex(A))
@@ -127,10 +127,11 @@ end
         got = Convert(F, RTE_SN, W)
         @test got == [Convert(F, RTE_SN, v) for v in W]
     end
-    # format instances are one-hop adapters over the same type-specialized path
-    @test Convert(F(), RTE_SN, x) == c
-    @test codepoint.(Negate(F(), RTE_SN, r)) == codepoint.(Negate(F, RTE_SN, r))
-    @test codepoint.(vmap(:Negate, F(), RTE_SN, r)) ==
+    # the datum-type spelling is a one-hop adapter over the same
+    # type-specialized path; the format-instance spelling no longer exists
+    @test Convert(BinaryValue(F), RTE_SN, x) == c
+    @test codepoint.(Negate(BinaryValue(F), RTE_SN, r)) == codepoint.(Negate(F, RTE_SN, r))
+    @test codepoint.(vmap(:Negate, BinaryValue(F), RTE_SN, r)) ==
           codepoint.(vmap(:Negate, F, RTE_SN, r))
     # stochastic Convert draws per element, reproducibly
     s1 = Convert(F, RSA_SN, A; rng = Xoshiro(5))
@@ -141,8 +142,8 @@ end
 @testset "the warm path allocates independently of length" begin
     F = Binary(5, 3, SIGNED, EXTENDED)
     BV = BinaryValue(F)
-    small = [BV(UInt8(c % 32)) for c in 0:99]
-    big = [BV(UInt8(c % 32)) for c in 0:99_999]
+    small = [fromcode(BV, c % 32) for c in 0:99]
+    big = [fromcode(BV, c % 32) for c in 0:99_999]
     dsmall, dbig = similar(small), similar(big)
     v = Val(:Add)
     vmap!(dsmall, v, RTE_SN, small, small)      # warm: table built, code compiled
@@ -159,9 +160,9 @@ end
     # is that the broadcast form now produces IDENTICAL results by taking the
     # same path, and that everything the hook declines still goes to Base.
     T = Binary8p4se; F = BinaryFormatOf(T)
-    A = [T(UInt8((7i + 1) & 0xff)) for i in 0:999]
-    B = [T(UInt8((3i + 5) & 0xff)) for i in 0:999]
-    C = [T(UInt8((5i + 2) & 0xff)) for i in 0:999]
+    A = [fromcode(T, (7i + 1) & 0xff) for i in 0:999]
+    B = [fromcode(T, (3i + 5) & 0xff) for i in 0:999]
+    C = [fromcode(T, (5i + 2) & 0xff) for i in 0:999]
 
     # every veneer arity the hook serves
     @test codepoint.(A .+ B)       == codepoint.(vmap(:Add, F, RTE_SN, A, B))

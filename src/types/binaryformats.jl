@@ -23,14 +23,25 @@ failing. `test-binary-format.jl` pins this.
 See also [`BitwidthOf`](@ref), [`PrecisionOf`](@ref), [`SignednessOf`](@ref),
 [`DomainOf`](@ref).
 """
-struct Binary{K,P,S,D} end
+struct Binary{K,P,S,D}
+    # improveapi3.md §4.1.4: a format is type-level information and has no
+    # instances. Suppressing the generated zero-argument constructor is what
+    # makes that true; without it `F()` yields a token that is a second,
+    # competing spelling of the same format, and every public method then owes
+    # an instance overload. Julia generates the inner constructor only when the
+    # struct declares none, so declaring this one removes it.
+    Binary{K,P,S,D}() where {K,P,S,D} = _no_format_instance(Binary{K,P,S,D})
+end
 
-# The one normalization seam for public methods that accept either canonical
-# format types or their zero-field instances. Type-based methods remain the hot
-# implementation; instance methods are one-hop adapters into them.
-const BinarySpecifier = Union{Type{<:Binary},Binary}
-@inline _formattype(::Type{F}) where {F<:Binary} = F
-@inline _formattype(f::Binary) = typeof(f)
+@noinline function _no_format_instance(::Type{F}) where {F<:Binary}
+    n = string(F)
+    throw(ArgumentError(
+        "$n is already the format; formats have no instances.\n" *
+        "  a format:      $n\n" *
+        "  the number x:  $n(x)\n" *
+        "  a code point:  fromcode($n, c)\n" *
+        "  the datum type: BinaryValue($n)"))
+end
 
 """
     Binary(K, P, S, D)
@@ -46,9 +57,9 @@ This returns the parameterized **type**, not an instance. Append `()` when you n
 Invalid combinations throw an `ArgumentError` — see [`validformat`](@ref) for the rules.
 
 The type is the canonical spelling: it is what [`BinaryValue`](@ref) takes as its first
-parameter. An instance is accepted everywhere a format is, and every accessor and
-constructor answers identically for both — see `docs/structuralplan.md` §9.2a for why that
-surface must stay total, and for the rule any new instance-form method has to follow.
+parameter. There is no instance form: `B()` raises, because `B` already *is* the
+format (improveapi3.md §4.1). Calling a format constructs a **datum**, so `B(x)` is a
+[`BinaryValue`](@ref) and `B(x) isa B` is `false`; the datum type is `BinaryValue(B)`.
 
 # Examples
 
@@ -59,10 +70,10 @@ Binary{8, 4, ±, ⏥}
 julia> B isa Type
 true
 
-julia> B()
-Binary{8, 4, ±, ⏥}
-
 julia> Binary(8, 4, true, false) === B
+true
+
+julia> B(1.5) isa BinaryValue(B)
 true
 ```
 """
@@ -95,7 +106,6 @@ function CodeType(K::Integer)
     K <= 8 ? UInt8 : UInt16
 end
 CodeType(::Type{Binary{K,P,S,D}}) where {K,P,S,D} = CodeType(K)
-CodeType(B::Binary) = CodeType(typeof(B))
 
 """
     ValueType(K)
@@ -121,7 +131,6 @@ function ValueType(K::Integer)
     K <= 8 ? Float32 : K <= 10 ? Float64 : Float128
 end
 ValueType(::Type{Binary{K,P,S,D}}) where {K,P,S,D} = ValueType(K)
-ValueType(B::Binary) = ValueType(typeof(B))
 
 """
     resolve_fields(K, P, S, D)
@@ -159,7 +168,7 @@ end
 
 Whether `x` describes an unsigned format — one that represents magnitudes only.
 
-`x` may be a [`Binary`](@ref) type or instance, a [`Signedness`](@ref) singleton, or a `Bool`.
+`x` may be a [`Binary`](@ref) format, a [`Signedness`](@ref) singleton, or a `Bool`.
 Opposite of [`is_signed`](@ref).
 
 # Examples
@@ -179,7 +188,7 @@ is_unsigned(::Type{Binary{K,P,S,D}}) where {K,P,S,D} = S === false
 
 Whether `x` describes a signed format — one in which negative values are representable.
 
-`x` may be a [`Binary`](@ref) type or instance, a [`Signedness`](@ref) singleton, or a `Bool`.
+`x` may be a [`Binary`](@ref) format, a [`Signedness`](@ref) singleton, or a `Bool`.
 Opposite of [`is_unsigned`](@ref).
 
 # Examples
@@ -188,21 +197,19 @@ Opposite of [`is_unsigned`](@ref).
 julia> is_signed(Binary(8, 4, SIGNED, FINITE))
 true
 
-julia> is_signed(Binary(8, 4, UNSIGNED, FINITE)())
+julia> is_signed(Binary(8, 4, UNSIGNED, FINITE))
 false
 ```
 """
 is_signed(::Type{Binary{K,P,S,D}}) where {K,P,S,D} = S === true
 
-is_unsigned(b::Binary{K,P,S,D}) where {K,P,S,D} = S === false
-is_signed(b::Binary{K,P,S,D}) where {K,P,S,D} = S === true
 
 """
     is_finite(x)
 
 Whether `x` describes a finite format — reals and NaN, but no infinities.
 
-`x` may be a [`Binary`](@ref) type or instance, a [`Domain`](@ref) singleton, or a `Bool`.
+`x` may be a [`Binary`](@ref) format, a [`Domain`](@ref) singleton, or a `Bool`.
 Opposite of [`is_extended`](@ref).
 
 This asks about a *format*, not about a number, so it is unrelated to `Base.isfinite`.
@@ -224,7 +231,7 @@ is_finite(::Type{Binary{K,P,S,D}}) where {K,P,S,D} = D === false
 
 Whether `x` describes an extended format — one that includes the infinities.
 
-`x` may be a [`Binary`](@ref) type or instance, a [`Domain`](@ref) singleton, or a `Bool`.
+`x` may be a [`Binary`](@ref) format, a [`Domain`](@ref) singleton, or a `Bool`.
 Opposite of [`is_finite`](@ref).
 
 "Extended" means the value domain is extended with ±Inf. It says nothing about bitwidth or
@@ -242,8 +249,6 @@ false
 """
 is_extended(::Type{Binary{K,P,S,D}}) where {K,P,S,D} = D === true
 
-is_finite(b::Binary{K,P,S,D}) where {K,P,S,D} = D === false
-is_extended(b::Binary{K,P,S,D}) where {K,P,S,D} = D === true
 
 """
     validformat(K, P, S, D)
@@ -276,7 +281,6 @@ validformat(K::I, P::I, S::Union{Signedness,Bool}, D::Union{Domain,Bool}) where 
      ((KMIN <= K <= KMAX) && (P > 0) && (P <= K - convert(Bool, S)) && (S isa Signedness || S isa Bool) && (D isa Domain || D isa Bool)) ? nothing : throw(ArgumentError("Invalid format: K=$K, P=$P, S=$S, D=$D"))
 
 validformat(::Type{Binary{K,P,S,D}}) where {K,P,S,D} = validformat(K, P, S, D)
-validformat(b::Binary{K,P,S,D}) where {K,P,S,D} = validformat(K, P, S, D)  
 
 # format-level accessors
 """
@@ -342,10 +346,6 @@ true
 """
 DomainOf(::Type{Binary{K,P,S,D}}) where {K,P,S,D} = D
 
-BitwidthOf(::Binary{K,P,S,D}) where {K,P,S,D} = K
-PrecisionOf(::Binary{K,P,S,D}) where {K,P,S,D} = P
-SignednessOf(::Binary{K,P,S,D}) where {K,P,S,D} = S
-DomainOf(::Binary{K,P,S,D}) where {K,P,S,D} = D
 
 """
     TrailingSignificantBitsOf(format)
@@ -362,7 +362,6 @@ julia> TrailingSignificantBitsOf(Binary(8, 4, SIGNED, FINITE))
 ```
 """
 TrailingSignificantBitsOf(::Type{Binary{K,P,S,D}}) where {K,P,S,D} = P - one(IntParam)
-TrailingSignificantBitsOf(b::Binary) = TrailingSignificantBitsOf(typeof(b))
 
 # `Binary` itself, a partial form such as `Binary{8,4}`, and the `Binary{K,P,S,D}` Julia
 # builds to print a method signature all carry TypeVars where values belong. So the
@@ -381,7 +380,6 @@ function Base.string(T::Type{<:Binary})
            domainstr(D, "EXTENDED", "FINITE"), "}")
 end
 
-Base.string(x::Binary) = string(typeof(x))
 
 # the glyphic form: Binary{8, 4, ±, ⏥}
 function Base.String(T::Type{<:Binary})
@@ -391,10 +389,7 @@ function Base.String(T::Type{<:Binary})
            domainstr(D, "∞", "⏥"), "}")
 end
 
-Base.String(x::Binary) = String(typeof(x))
 
 Base.show(io::IO, ::MIME"text/plain", T::Type{<:Binary}) = print(io, String(T))
 Base.show(io::IO, T::Type{<:Binary}) = print(io, string(T))
 
-Base.show(io::IO, ::MIME"text/plain", b::Binary) = print(io, String(b))
-Base.show(io::IO, b::Binary) = print(io, string(b))

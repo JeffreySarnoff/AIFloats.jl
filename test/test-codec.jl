@@ -24,7 +24,7 @@ function sweepformat(F)
 
     for c in 0:(n - 1)
         code = U(c)
-        x = BV(code)
+        x = fromcode(BV, code)
         kind, sgn, S, Q = AIFloats._canonical(F, code)
         v = decode(x)
 
@@ -74,19 +74,19 @@ end
     @test AIFloats.posinf_code(F) == 0x7f
     @test AIFloats.neginf_code(F) == 0xff
     @test codepoint(MaxFiniteOf(F)) == 0x7e
-    @test decode(BinaryValue(F)(0x45)) == 1.625
+    @test decode(fromcode(F, 0x45)) == 1.625
 
     # unsigned: NaN at the top; the −Inf slot aliases it, so NaN wins
     G = AIFloats.Binary(8, 4, UNSIGNED, EXTENDED)
     @test AIFloats.nan_code(G) == 0xff
     @test AIFloats.posinf_code(G) == 0xfe
     @test codepoint(MaxFiniteOf(G)) == 0xfd
-    @test isnan(decode(BinaryValue(G)(0xff)))
+    @test isnan(decode(fromcode(G, 0xff)))
 
     # single zero: code 0 decodes to +0.0 with no sign, everywhere
     for (S, E) in ((true, true), (true, false), (false, true), (false, false))
         H = AIFloats.Binary(5, 2, S, E)
-        z = decode(BinaryValue(H)(0x00))
+        z = decode(fromcode(H, 0x00))
         @test z == 0.0 && !signbit(z)
     end
 
@@ -106,7 +106,7 @@ end
     F8 = AIFloats.Binary(8, 5, SIGNED, EXTENDED)
     for c in 0x00:0xff
         @test isequal(AIFloats._decode_compute(F8, c),
-                      decode(BinaryValue(F8)(c)))
+                      decode(fromcode(F8, c)))
     end
 end
 
@@ -119,9 +119,9 @@ end
         BV = BinaryValue(F)
         U = CodeType(F)
         top = Int(AIFloats._maxfinite_code(F))
-        prev = decode(BV(zero(U)))
+        prev = decode(fromcode(F, 0))
         for c in 1:top
-            cur = decode(BV(U(c)))
+            cur = decode(fromcode(F, c))
             @test cur > prev
             prev = cur
         end

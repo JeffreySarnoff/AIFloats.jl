@@ -39,15 +39,17 @@ true
 ```
 
 That is deliberate: a format is a compile-time description, and the four parameters are all
-there is to it. When you need a value — to store in an array, say, or to dispatch on — call
-the type:
+there is to it. There is no instance to make — `B()` is an error, on purpose. When you need
+a value to store in an array or to dispatch on, you want a *datum*, and its type is
+`BinaryValue(B)`:
 
 ```jldoctest started
-julia> b = B()
-Binary{8, 4, ±, ⏥}
-```
+julia> T = BinaryValue(B)
+BinaryValue(Binary8p4sf)
 
-Everything below works the same on either one.
+julia> B(1.5) isa T
+true
+```
 
 ## Read the fields back
 

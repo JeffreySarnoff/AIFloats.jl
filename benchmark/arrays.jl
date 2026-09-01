@@ -9,8 +9,8 @@ const AT12 = BinaryValue(Binary(12, 6, SIGNED, EXTENDED))
 const AF8, AF12 = BinaryFormatOf(AT8), BinaryFormatOf(AT12)
 
 # deterministic code populations; `stride` decorrelates the two operands
-codes8(n, stride = 1)  = [AT8(UInt8((stride * i + 1) & 0xff)) for i in 0:n-1]
-codes12(n, stride = 1) = [AT12(UInt16((stride * i + 1) & 0xfff)) for i in 0:n-1]
+codes8(n, stride = 1)  = [fromcode(AT8, (stride * i + 1) & 0xff) for i in 0:n-1]
+codes12(n, stride = 1) = [fromcode(AT12, (stride * i + 1) & 0xfff) for i in 0:n-1]
 
 for N in (4096, 65536)
     A8, B8, D8 = codes8(N), codes8(N, 3), similar(codes8(N))
@@ -53,7 +53,7 @@ section("arrays — packed storage")
 let N = 65536
     A8 = codes8(N)
     T5 = BinaryValue(Binary(5, 2, SIGNED, EXTENDED))
-    A5 = [T5(UInt8((i + 1) & 0x1f)) for i in 0:N-1]
+    A5 = [fromcode(T5, (i + 1) & 0x1f) for i in 0:N-1]
     F5 = BinaryFormatOf(T5)
     P8, P5 = PackedVector(A8), PackedVector(A5)
     vmap(:Negate, AF8, RTE_SN, P8); vmap(:Negate, F5, RTE_SN, P5)
@@ -71,8 +71,8 @@ section("arrays — blocks")
 
 let S = BinaryValue(Binary8p3se), E = BinaryValue(Binary8p4se)
     for B in (16, 32)
-        xs = ntuple(i -> E(UInt8((7i + 3) & 0x7f)), B)
-        ys = ntuple(i -> E(UInt8((5i + 1) & 0x7f)), B)
+        xs = ntuple(i -> fromcode(E, (7i + 3) & 0x7f), B)
+        ys = ntuple(i -> fromcode(E, (5i + 1) & 0x7f), B)
         bx, by = Block(one(S), xs), Block(one(S), ys)
         row("blockdecode        B=$B",    @b AIFloats.blockdecode($bx))
         row("BlockReduceAdd     B=$B",    @b BlockReduceAdd($E, RTE_SN, $bx))

@@ -46,7 +46,7 @@ end
     ftz = ftz_variant(:Exp, T8, T8, ρf)
     P = Int(PrecisionOf(T8)); half = 1 << (P - 2); mn = decode(MinNormalOf(T8))
     for c in 0:255
-        x = T8(UInt8(c))
+        x = fromcode(T8, c)
         want = Exp(T8, ρf, x); got = ftz(x)
         if issubnormal(want)
             m = Int(codepoint(want) & ~AIFloats.signmask(T8))
@@ -62,7 +62,7 @@ end
     # signed negative subnormal results flush symmetrically
     ftzn = ftz_variant(:Negate, T5, T5, RTE_SN)
     for c in 0:31
-        x = T5(UInt8(c)); want = Negate(T5, RTE_SN, x); got = ftzn(x)
+        x = fromcode(T5, c); want = Negate(T5, RTE_SN, x); got = ftzn(x)
         issubnormal(want) || @test got === want
         issubnormal(want) && @test iszero(got) || got === (signbit(want) ? Negate(MinNormalOf(T5)) : MinNormalOf(T5))
     end
