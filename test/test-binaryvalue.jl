@@ -178,3 +178,48 @@ end
     @test formatname(binary8p4se) === :binary8p4se
     @test formatname(AIFloats.Binary(8, 4, SIGNED, EXTENDED)()) === :binary8p4se
 end
+
+@testset "two-argument value construction" begin
+    # BinaryValue(F, code::Unsigned) is a CODE POINT (types/binaryvalue.jl);
+    # BinaryValue(F, x::Real) is a VALUE. Unsigned is the more specific
+    # signature, so the two meanings cannot collide — that split is the point
+    # of this testset, not an incidental property.
+    for F in (Binary(8, 4, SIGNED, EXTENDED), Binary(5, 2, SIGNED, EXTENDED),
+              Binary(6, 3, UNSIGNED, FINITE), Binary(16, 5, SIGNED, EXTENDED))
+        T = BinaryValue(F)
+        # the value forms all agree with the fully spelled constructor
+        for v in (1.5, 1.3, 0.0, -0.5, 2.0, 1.5f0, Float16(1.5), big(1.25), 3, -7, true)
+            @test BinaryValue(F, v) === T(v)
+            @test BinaryValue{F}(v) === T(v)
+            @test BinaryValue(F, v) isa T
+        end
+        # and the code-point meaning of an Unsigned survives
+        for c in (0x00, 0x01, 0x05)
+            u = CodeType(F)(c)
+            @test BinaryValue(F, u) === BinaryValue{F}(u)
+            @test codepoint(BinaryValue(F, u)) == u
+        end
+        # a value and a code point that share a numeral must NOT agree
+        if Int(BitwidthOf(F)) >= 5
+            @test BinaryValue(F, 0x03) !== BinaryValue(F, 3)
+        end
+        # keywords reach Convert, and the session default is honored
+        @test BinaryValue(F, 1.3; projection = RTZ_SF) === Convert(T, RTZ_SF, 1.3)
+        @test BinaryValue(F, 1.3; projection = RTP_SN) === Convert(T, RTP_SN, 1.3)
+        let saved = DefaultProjection()
+            try
+                DefaultProjection!(RTZ_SF)
+                @test BinaryValue(F, 1.3) === Convert(T, RTZ_SF, 1.3)
+            finally
+                DefaultProjection!(saved)
+            end
+        end
+        # Rational is refused for this spelling too, with the same message
+        @test_throws ArgumentError BinaryValue(F, 1 // 3)
+        # inference and allocation, the reason both spellings carry @inline
+        @test Base.return_types(BinaryValue, (Type{F}, Float64))[1] === T
+        BinaryValue(F, 1.3); BinaryValue{F}(1.3)
+        @test (@allocated BinaryValue(F, 1.3)) == 0
+        @test (@allocated BinaryValue{F}(1.3)) == 0
+    end
+end
