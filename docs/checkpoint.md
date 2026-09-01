@@ -20,11 +20,53 @@ green; anything short of that is recorded as in progress with what is missing.
 | 1c — canonical format/datum model | **done** | ambiguity + inference clean |
 | 2 — scoped projection default | **done** | zero alloc steady state; scoped/nested/task tests |
 | 3 — scalar/array conversion parity | **done** | edge-population code-point equality |
-| 4 — queries and `formatinfo` | not started | type stability, no Base shadowing |
+| 4 — queries and `formatinfo` | **done** | type stability, no Base shadowing |
 | 5 — table service | not started | coherent snapshots under concurrency |
 | 6 — packed serialization and collections | not started | round trips, aliasing, Aqua ambiguities |
 | 7 — registry validation and error taxonomy | not started | one validation per call, not per element |
 | 8 — residue removal and consumer alignment | not started | zero residual deleted forms |
+
+## Phase 4 — done (2026-09-01)
+
+**Gate.** `traits` (with the new query testset) · `binary-format` · `quality` ·
+doctests — green.
+
+**The Julia-style names are bindings, not wrappers.** `const bitwidth =
+BitwidthOf`, and so on for `formatof`, `signedness`, `domain`, `codetype`,
+`valuetype`. Writing them as forwarding methods would have been the obvious
+thing and the wrong one: two names would then have two method tables that can
+drift apart in what they accept, and a method added for one would not be a
+method for the other. Bound to the same function object, `formatof ===
+BinaryFormatOf` is literally `true`, and there is no second call to elide.
+
+`formatof(F) === F`, so internal code has one total normalization query
+whatever it is handed — format, datum type, or datum.
+
+**`Base.precision` now covers formats**, not just datums. §4.2 declines to
+export a `precision` of AIFloats' own: shadowing Base's would change the
+meaning of a name every Julia program already has. The test asserts the name
+is absent from `names(AIFloats)`.
+
+**`formatinfo(F)`** returns the stable 14-field named tuple. Two details:
+
+* It lives in the new `types/queries.jl`, loaded late, because it binds names
+  from `types/binaryvalue.jl`, `carriers/heads.jl` and `rules/constraints.jl`.
+  `types/traits.jl` is loaded before all three — the format machinery needs it
+  first — so the block could not stay there.
+* It carries `Base.@assume_effects :foldable`, and the promise is honest: the
+  body is pure, terminates, and every component of the result is interned or
+  immortal. Without it the call does **not** fold — `formatname` builds its
+  Symbol through a String, which inference will not prove consistent on its
+  own — and the tuple costs ~900 bytes on every call. With it: 0 bytes, and
+  `formatinfo(F).bitwidth` compiles to a literal. Both are asserted.
+
+**Phase 1c's instance sweep was incomplete**, and Phase 4 is where that
+surfaced: `datumcarrier(b::Binary)` was needed by `formatinfo` and turned out
+to still exist. The original inventory grep was truncated by a `head -40`.
+Re-run without it, twelve more adapters were found and deleted — in
+`gentables.jl`, `heads.jl`, `scalar.jl`, `project.jl`, `policy.jl` and
+`approx.jl`. `grep -rn '::Binary\b' src/ | grep -v 'Type{' | grep -v '<:Binary'`
+is now empty.
 
 ## Phase 3 — done (2026-09-01)
 

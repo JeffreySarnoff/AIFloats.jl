@@ -93,8 +93,6 @@ function measure_kappa(fn::Fn, op::Symbol, fr::Type{<:Binary},
 end
 measure_kappa(fn, op::Symbol, fr::Type{<:BinaryValue}, args::Tuple, ρ::Projection; kw...) =
     measure_kappa(fn, op, BinaryFormatOf(fr), args, ρ; kw...)
-measure_kappa(fn, op::Symbol, fr::Binary, args::Tuple, ρ::Projection; kw...) =
-    measure_kappa(fn, op, typeof(fr), map(a -> a isa Binary ? typeof(a) : a, args), ρ; kw...)
 
 """
     ApproxImpl
@@ -157,8 +155,6 @@ function register_approx!(name::Symbol, op::Symbol, fr::Type{<:Binary},
 end
 register_approx!(name::Symbol, op::Symbol, fr::Type{<:BinaryValue}, args::Tuple, ρ::Projection, fn; kw...) =
     register_approx!(name, op, BinaryFormatOf(fr), args, ρ, fn; kw...)
-register_approx!(name::Symbol, op::Symbol, fr::Binary, args::Tuple, ρ::Projection, fn; kw...) =
-    register_approx!(name, op, typeof(fr), map(a -> a isa Binary ? typeof(a) : a, args), ρ, fn; kw...)
 
 """Retrieve a registered approximate implementation (callable via `.fn`)."""
 approx(name::Symbol) = lock(APPROX_LOCK) do

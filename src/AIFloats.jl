@@ -33,6 +33,7 @@ Projection, RoundOf, SatOf,
 RTE_SF, RTE_SP, RTE_SN, RTA_SF, RTA_SP, RTA_SN, RTP_SF, RTP_SP, RTP_SN, RTN_SF, RTN_SP, RTN_SN, RTZ_SF, RTZ_SP, RTZ_SN, RTO_SF, RTO_SP, RTO_SN, RSA_SF, RSA_SP, RSA_SN, RSB_SF, RSB_SP, RSB_SN, RSC_SF, RSC_SP, RSC_SN,
 # Binary format API
 BitwidthOf, PrecisionOf, SignednessOf, DomainOf,
+bitwidth, signedness, domain, formatof, codetype, valuetype, formatinfo,
 ExponentBiasOf, ExponentBitwidthOf, TrailingSignificantBitsOf,
 # stochastic-mode queries
 isstochastic, nrandbits,
@@ -115,6 +116,7 @@ include("projection/saturate.jl")
 include("projection/project.jl")
 include("rules/constraints.jl")    # the alias grid; validity stays in validformat
 include("rules/defaults.jl")       # before ops: consumed by generated methods
+include("types/queries.jl")        # late: binds names from binaryvalue/heads/constraints
 include("ops/registry.jl")
 include("ops/oracle.jl")
 include("ops/scalar.jl")

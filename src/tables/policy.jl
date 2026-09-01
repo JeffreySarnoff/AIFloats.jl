@@ -182,8 +182,6 @@ function table_policy(op::Symbol, ::Type{fr}, Fs::Vararg{Any};
        reason=earned ? "prospective call earns adaptive table" :
                        "adaptive table needs $(threshold - used) more cumulative elements")
 end
-table_policy(op::Symbol, fr::Binary, Fs...; kw...) =
-    table_policy(op, typeof(fr), Fs...; kw...)
 
 # ---- fetch -------------------------------------------------------------------
 

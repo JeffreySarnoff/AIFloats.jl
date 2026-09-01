@@ -210,6 +210,15 @@ function Base.precision(::Type{T}; base::Integer = 2) where {T<:BinaryValue}
     base == 2 ? P : floor(Int, P / log2(base))
 end
 Base.precision(x::BinaryValue; base::Integer = 2) = precision(typeof(x); base)
+# and the FORMAT answers the same question. improveapi3.md §4.2 declines to
+# export a new `precision`: shadowing Base's would make `using AIFloats` change
+# the meaning of a name every Julia program already has. Extending Base's is
+# the version that composes.
+function Base.precision(::Type{F}; base::Integer = 2) where {F<:Binary}
+    base > 1 || throw(DomainError(base, "`base` cannot be less than 2."))
+    P = Int(PrecisionOf(F))
+    base == 2 ? P : floor(Int, P / log2(base))
+end
 
 # ---- decompose ⇒ hash ⇒ Dict keys and Set elements
 #

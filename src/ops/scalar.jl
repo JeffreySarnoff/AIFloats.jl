@@ -102,8 +102,6 @@ for op in OP_REGISTRY
         end
         @inline $name(fr::Type{<:BinaryValue}, ρ::Projection, $(spec...); kw...) =
             $name(BinaryFormatOf(fr), ρ, $(xs...); kw...)
-        @inline $name(fr::Binary, ρ::Projection, $(spec...); kw...) =
-            $name(typeof(fr), ρ, $(xs...); kw...)
         # The PROJECTION-TYPED FUNCTION BARRIER (improveapi3.md §4.3). The
         # scoped default is a `ScopedValue{Projection}`, so reading it yields an
         # abstractly typed projection; passing that straight to the operation

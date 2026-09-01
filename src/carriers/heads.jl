@@ -55,7 +55,6 @@ exponent range holds any two-factor monomial of `F`'s datums exactly.
 Not exported; call it as `AIFloats.rung`.
 """
 rung(::Type{F}) where {F<:Binary} = _rung(Val(_rungindex(F)), F)
-rung(b::Binary) = rung(typeof(b))
 _rung(::Val{1}, _) = HeadF64()
 _rung(::Val{2}, _) = HeadF128()
 _rung(::Val{3}, _) = HeadExact()
@@ -72,7 +71,6 @@ above (a `Real`, not an `AbstractFloat`). Internal counterpart of the public
 exported.
 """
 datumcarrier(::Type{F}) where {F<:Binary} = carriertype(rung(F))
-datumcarrier(b::Binary) = datumcarrier(typeof(b))
 
 # the two carrier traits stay distinct. `datumcarrier` is INTERNAL — what
 # decode returns and ωeval computes on; the plan lets it become Dyadic, which
@@ -90,7 +88,6 @@ interface: `Float64` for B ≤ 512, `Float128` for B ≤ 8192, `BigFloat` above.
 Never the internal exact carrier. Not exported.
 """
 promotecarrier(::Type{F}) where {F<:Binary} = _promotecarrier(rung(F))
-promotecarrier(b::Binary) = promotecarrier(typeof(b))
 _promotecarrier(::HeadF64)   = Float64
 _promotecarrier(::HeadF128)  = Float128
 _promotecarrier(::HeadExact) = BigFloat
