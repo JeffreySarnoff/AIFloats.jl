@@ -26,7 +26,7 @@ value on the format's carrier; `codepoint` returns the stored encoding.
 ## Calculate with Julia syntax
 
 Same-format values support Julia's ordinary numeric spelling. These methods use
-the session's [`DefaultProjection`](@ref), initially `RTE_SN`.
+the task's [`DefaultProjection`](@ref), initially `RTE_SN`.
 
 ```@example basic_arithmetic
 using AIFloats
@@ -50,7 +50,7 @@ F = BinaryFormatOf(T)
 
 ## Convert values explicitly
 
-Construction uses the session default. [`Convert`](@ref) makes the format and
+Construction uses the task's default projection. [`Convert`](@ref) makes the format and
 projection explicit:
 
 ```@example basic_convert

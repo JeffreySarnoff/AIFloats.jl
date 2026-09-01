@@ -226,13 +226,8 @@ end
         # keywords reach Convert, and the session default is honored
         @test BinaryValue(F, 1.3; projection = RTZ_SF) === Convert(T, RTZ_SF, 1.3)
         @test BinaryValue(F, 1.3; projection = RTP_SN) === Convert(T, RTP_SN, 1.3)
-        let saved = DefaultProjection()
-            try
-                DefaultProjection!(RTZ_SF)
-                @test BinaryValue(F, 1.3) === Convert(T, RTZ_SF, 1.3)
-            finally
-                DefaultProjection!(saved)
-            end
+        with_projection(RTZ_SF) do
+            @test BinaryValue(F, 1.3) === Convert(T, RTZ_SF, 1.3)
         end
         # Rational is refused for this spelling too, with the same message
         @test_throws ArgumentError BinaryValue(F, 1 // 3)

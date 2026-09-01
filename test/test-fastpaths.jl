@@ -179,16 +179,12 @@ end
     @test (@allocated F(1.3)) == 0
     @test (@allocated F(3)) == 0
     @test F(1.3) === T(1.3) && fromcode(F, 0x03) === fromcode(T, 0x03)
-    let saved = DefaultProjection()
-        try
-            DefaultProjection!(RTZ_SF)
-            @test T(1.3) === Convert(T, RTZ_SF, 1.3)      # the non-default branch is live
-            @test convert(T, 1.3) === Convert(T, RTZ_SF, 1.3)
-            @test convert(T, 0x03) === Convert(T, RTZ_SF, 0x03)
-        finally
-            DefaultProjection!(saved)
-        end
+    with_projection(RTZ_SF) do
+        @test T(1.3) === Convert(T, RTZ_SF, 1.3)          # the non-default branch is live
+        @test convert(T, 1.3) === Convert(T, RTZ_SF, 1.3)
+        @test convert(T, 0x03) === Convert(T, RTZ_SF, 0x03)
     end
+    @test DefaultProjection() === RTE_SN                  # and the scope restored it
     @test T(1.3; projection = RTP_SN) === Convert(T, RTP_SN, 1.3)
     @test T(1.3; projection = RTE_SN) === Convert(T, RTE_SN, 1.3)
     @test T(1.3) === Convert(T, RTE_SN, 1.3)

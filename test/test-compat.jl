@@ -32,8 +32,8 @@ finites(F) = filter(isfinite, allcodes(F))
     @test union(mapped, nobase) == registry
 end
 
-@testset "veneers are the register under the session default" begin
-    DefaultProjection!(RTE_SN)
+@testset "veneers are the register under the task default" begin
+    @test DefaultProjection() === RTE_SN
     xs = allcodes(F5)
     for (op, bf) in AIFloats._BASE_UNARY
         f = getfield(Base, bf); g = getfield(AIFloats, op)
@@ -57,10 +57,10 @@ end
     @test sincos(x) == (Sin(x), Cos(x))
     @test sincospi(x) == (SinPi(x), CosPi(x))
     @test minmax(x, B8(2.0)) == (B8(0.75), B8(2.0))
-    # the session default is honored, not RTE_SN by fiat
-    DefaultProjection!(RTZ_SF)
-    @test all(codepoint(x + y) == codepoint(Add(F5, RTZ_SF, x, y)) for x in xs, y in xs)
-    DefaultProjection!(RTE_SN)
+    # the task default is honored, not RTE_SN by fiat
+    with_projection(RTZ_SF) do
+        @test all(codepoint(x + y) == codepoint(Add(F5, RTZ_SF, x, y)) for x in xs, y in xs)
+    end
     # projection-first convenience, scalar and array
     @test codepoint(Exp(RTZ_SF, x)) == codepoint(Exp(F8, RTZ_SF, x))
     A = B8.(randn(MersenneTwister(1), 16))
@@ -175,10 +175,10 @@ end
     @test ExponentBiasOf(T) == 1
     @test_throws ArgumentError significand(T(1.0))
     @test exponent(T(1.0)) == 0
-    # ldexp saturates by the session saturation mode
-    DefaultProjection!(RTE_SF)
-    @test ldexp(MaxFiniteOf(B8), 1) === MaxFiniteOf(B8)
-    DefaultProjection!(RTE_SN)
+    # ldexp saturates by the task's saturation mode
+    with_projection(RTE_SF) do
+        @test ldexp(MaxFiniteOf(B8), 1) === MaxFiniteOf(B8)
+    end
     @test isinf(ldexp(MaxFiniteOf(B8), 1))
 end
 

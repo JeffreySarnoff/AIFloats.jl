@@ -157,28 +157,51 @@ end
     @test decode(Minimum(F, RTE_SN, BV(1.0), BV(-2.0))) == -2.0
 end
 
-@testset "Session defaults and value construction" begin
-    old = DefaultProjection()
-    try
-        BV = Binary8p4se
-        @test DefaultProjection() === RTE_SN
-        @test decode(Add(BV(1.5), BV(0.25))) == 1.75            # same-format convenience
-        DefaultRoundingMode!(RTZ)
-        @test DefaultProjection() === RTZ_SN
-        @test DefaultSaturationMode() === SN
-        DefaultSaturationMode!(SF)
-        @test DefaultProjection() === RTZ_SF
-        DefaultProjection!(RTE, SN)
-        @test DefaultRoundingMode() === RTE
+@testset "Scoped default and value construction" begin
+    BV = Binary8p4se
+    @test DefaultProjection() === RTE_SN
+    @test decode(Add(BV(1.5), BV(0.25))) == 1.75            # same-format convenience
 
-        @test BV(1.6) === Convert(BV, RTE_SN, 1.6)              # default ρ route
-        @test decode(BV(1.6; projection = RTZ_SF)) == 1.5
-        @test BV(3) === BV(3.0)
-        @test_throws ArgumentError Convert(BV, RTE_SF, 1 // 3)
-        @test_throws ArgumentError Convert(BV, RTE_SF, π)
-    finally
-        DefaultProjection!(old)
+    # the components DERIVE from the one projection, so they cannot be torn
+    with_projection(RTZ_SN) do
+        @test DefaultProjection() === RTZ_SN
+        @test DefaultRoundingMode() === RTZ && DefaultSaturationMode() === SN
     end
+    with_projection(RTZ, SF) do                             # the component spelling
+        @test DefaultProjection() === RTZ_SF
+    end
+    @test DefaultProjection() === RTE_SN                    # restored on exit
+
+    # nesting, and restoration through an exception
+    with_projection(RTZ_SF) do
+        with_projection(RTP_SN) do
+            @test DefaultProjection() === RTP_SN
+        end
+        @test DefaultProjection() === RTZ_SF
+        @test_throws ErrorException with_projection(() -> error("boom"), RTE_SF)
+        @test DefaultProjection() === RTZ_SF
+    end
+    @test DefaultProjection() === RTE_SN
+
+    # sibling tasks are isolated; a child task inherits the binding
+    with_projection(RTZ_SF) do
+        t = Threads.@spawn DefaultProjection()
+        @test fetch(t) === RTZ_SF
+    end
+    outer = Threads.@spawn with_projection(() -> DefaultProjection(), RTP_SN)
+    @test fetch(outer) === RTP_SN
+    @test DefaultProjection() === RTE_SN
+
+    @test BV(1.6) === Convert(BV, RTE_SN, 1.6)              # default ρ route
+    @test decode(BV(1.6; projection = RTZ_SF)) == 1.5
+    @test BV(3) === BV(3.0)
+    @test_throws ArgumentError Convert(BV, RTE_SF, 1 // 3)
+    @test_throws ArgumentError Convert(BV, RTE_SF, π)
+
+    # the setters are gone; a projection is bound for a dynamic extent only
+    @test !isdefined(AIFloats, :DefaultProjection!)
+    @test !isdefined(AIFloats, :DefaultRoundingMode!)
+    @test !isdefined(AIFloats, :DefaultSaturationMode!)
 end
 
 @testset "rand / randn" begin

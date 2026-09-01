@@ -53,27 +53,28 @@ F = Binary(8, 3, SIGNED, EXTENDED)
 (Convert(F, RTE_SF, 1.0e100), Convert(F, RTE_SP, 1.0e100))
 ```
 
-## Change the session default safely
+## Change the default projection for a block
 
-Convenience operations and constructors read a process-wide default. Restore
-it in a `finally` block when changing it temporarily:
+Convenience operations and constructors read the *task's* default projection.
+Bind it for a dynamic extent with `with_projection`; it is restored on return
+and on exception, it nests, and a task started inside inherits it:
 
 ```@example intermediate_default
 using AIFloats
 
 F = Binary(8, 3, SIGNED, EXTENDED)
 T = BinaryValue(F)
-old = DefaultProjection()
-try
-    DefaultProjection!(RTZ_SF)
+with_projection(RTZ_SF) do
     (DefaultProjection(), T(1.3))
-finally
-    DefaultProjection!(old)
 end
 ```
 
-Library code should generally prefer explicit projections so it does not
-depend on process-global state.
+There is no setter. A process-wide one would make two concurrently running
+tasks silently fight over what arithmetic means, which is exactly what a
+projection must never be.
+
+Library code should still generally prefer explicit projections: `Add(F, ρ, x, y)`
+never reads the default at all, and it is the fastest path by a wide margin.
 
 ## Reproduce stochastic rounding
 

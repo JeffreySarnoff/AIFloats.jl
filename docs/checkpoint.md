@@ -18,13 +18,97 @@ green; anything short of that is recorded as in progress with what is missing.
 | 1a — add `fromcode`/`_rawvalue`, migrate callers | **done** | 10 focused test files green |
 | 1b — diagnostic trap for missed unsigned construction | **done** (not committed, by design) | focused groups + doctests |
 | 1c — canonical format/datum model | **done** | ambiguity + inference clean |
-| 2 — scoped projection default | not started | zero alloc steady state; scoped/nested/task tests |
+| 2 — scoped projection default | **done** | zero alloc steady state; scoped/nested/task tests |
 | 3 — scalar/array conversion parity | not started | edge-population code-point equality |
 | 4 — queries and `formatinfo` | not started | type stability, no Base shadowing |
 | 5 — table service | not started | coherent snapshots under concurrency |
 | 6 — packed serialization and collections | not started | round trips, aliasing, Aqua ambiguities |
 | 7 — registry validation and error taxonomy | not started | one validation per call, not per element |
 | 8 — residue removal and consumer alignment | not started | zero residual deleted forms |
+
+## Phase 2 — done (2026-09-01)
+
+**Gate.** `ops` · `compat` · `fastpaths` · `kernels` · `binaryvalue` ·
+`projection` · `blocks` · `tables` · `governance` · `quality` (Aqua + JET) ·
+doctests — all green.
+
+`rules/defaults.jl` is now one `ScopedValue{Projection}(RTE_SN)`. The three
+mutable `Ref`s and all three setters are gone; `DefaultRoundingMode` and
+`DefaultSaturationMode` derive from the single value, so they cannot be read
+torn. `with_projection(f, ρ)` and `with_projection(f, μ, σ)` are exported.
+
+The abstract parameter on the `ScopedValue` is required: `ScopedValue(RTE_SN)`
+would infer `ScopedValue{Projection{typeof(RTE),typeof(SN)}}` and reject every
+other projection at bind time.
+
+Performance-policy `Ref`s (`FAST_ARITH`, `FAST_ENCLOSURE`, threading, table
+budgets) stay process-wide, and the reason is stated in the file: they select
+an implementation *strategy* rather than a *result*. Display keeps its
+`IOContext`/`DEFAULT_SHOW_STYLE` pair, because display context travels with
+`IO` rather than with task scope.
+
+### The function barrier, and three things that silently defeat it
+
+Measured on Julia 1.12.6, one thread:
+
+| Path | Time | Allocated |
+|---|---:|---:|
+| explicit `Add(F, ρ, a, b)` | 1.3 ns | 0 B |
+| `DefaultProjection()` unbound | 4.1 ns | 0 B |
+| RTE convenience `Add(a, b)` | 4.1 ns | 0 B |
+| RTE constructor `F(1.35)` | 3.1 ns | 0 B |
+| explicit-projection constructor | 1.3 ns | 0 B |
+| `DefaultProjection()` bound | 31.4 ns | 0 B |
+| scoped convenience `Add(a, b)` | 61.2 ns | 48 B |
+| scoped constructor `F(1.35)` | 60.9 ns | 32 B |
+| scoped `a + b` (Base veneer) | 70.4 ns | 48 B |
+| RTE array `Add(A, B)`, n = 4 | 140.4 ns | 64 B |
+| scoped array `Add(A, B)`, n = 4 | 177.7 ns | 64 B |
+
+Every steady-state path — explicit projection, and the unscoped RTE default —
+allocates nothing. The scoped seam went from the plan's measured 272 ns naive
+figure to 61 ns.
+
+Three properties of the barrier are load-bearing, and each was found by
+measurement after the obvious spelling failed:
+
+1. **It must not be `@inline`.** Inlining it back into the guard puts the
+   abstract projection exactly where it was; the barrier does nothing. First
+   attempt: no change at all.
+2. **It must match `Projection{RM,SM}`, not `ρ::P where P<:Projection`.** An
+   argument statically typed `Projection` *satisfies* `P<:Projection`, so Julia
+   binds `P = Projection`, makes a static call to an abstract specialization,
+   and the barrier compiles away. Inspecting `Base.specializations` showed the
+   method instance with `specTypes` naming plain `Projection` — that is the
+   tell. `Projection{RM,SM}` cannot be satisfied statically, which forces the
+   runtime dispatch the seam is paying for.
+3. **The format must arrive on a datum, not as a leading `::Type{F}`.** A
+   `Type` argument in a dynamically dispatched call is expensive to match:
+   148 ns with it against 28 ns without, same body. For value construction,
+   where there is no datum argument, the barrier takes a witness — the zero
+   datum of `F`, isbits and free to make (169 ns → 24 ns).
+
+**The residual allocation is the dynamic call's return box** and is not
+removable at this seam. Confirmed by an A/B: the identical barrier returning
+`nothing` allocates 0 B and the one returning the datum allocates 16 B, with
+inference proving the concrete return type in both. Julia's generic calling
+convention boxes the result of `jl_apply_generic`. Removing it would mean
+replacing the dispatch with a static ladder over all 27 projections in each of
+~30 generated ops. The plan's §9.2 gate accepts "the one dynamic dispatch and
+measured latency of the non-RTE convenience seam"; this is the allocation that
+dispatch entails. Stated rather than papered over.
+
+Array kernels and broadcasting resolve the default **once per public call**,
+never per element — the four-element figures above differ by 37 ns, and the
+difference does not grow with n.
+
+**Call-site migration.** `test-ops.jl`'s session-default testset became a
+scoped one and now also pins nesting, restoration through an exception, sibling
+task isolation, child task inheritance, and the absence of all three setters.
+`test-fastpaths`, `test-binaryvalue`, `test-kernels` and `test-compat` lost
+their save/restore `try`/`finally` scaffolding. `benchmark/runbenchmarks.jl`'s
+`withflags` no longer saves the projection at all: a measured body that wants a
+different one runs under `with_projection` and cannot leak it.
 
 ## Phases 1b and 1c — done (2026-09-01)
 

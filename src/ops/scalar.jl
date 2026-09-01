@@ -94,6 +94,7 @@ for op in OP_REGISTRY
     spec = [:($(x)::BinaryValue) for x in xs]
     same = [:($(x)::T) for x in xs]
     dec = [:(decode($x)) for x in xs]
+    bar = Symbol(:_default_, name)          # the projection-typed barrier
     @eval begin
         @inline function $name(fr::Type{<:Binary}, ρ::Projection, $(spec...);
                                rng::MaybeRNG = nothing, R::MaybeR = nothing)
@@ -103,16 +104,43 @@ for op in OP_REGISTRY
             $name(BinaryFormatOf(fr), ρ, $(xs...); kw...)
         @inline $name(fr::Binary, ρ::Projection, $(spec...); kw...) =
             $name(typeof(fr), ρ, $(xs...); kw...)
-        # same-format convenience under the session default projection. The
-        # SPECULATION GUARD: the default is read from a Ref{Projection} (an
-        # abstract slot, so the call through it is dynamic and boxes); the
-        # untouched default RTE_SN is tested by identity and called with the
-        # literal constant, so the common case is a static, allocation-free
-        # call. Spelled inline — a closure would defeat the split.
-        @inline function $name($(same...); kw...) where {T<:BinaryValue}
+        # The PROJECTION-TYPED FUNCTION BARRIER (improveapi3.md §4.3). The
+        # scoped default is a `ScopedValue{Projection}`, so reading it yields an
+        # abstractly typed projection; passing that straight to the operation
+        # leaves every downstream decision dynamic — 182 ns against the 2.5 ns
+        # of the same call with a concrete projection.
+        #
+        # Three things about the signature are load-bearing:
+        #
+        #   * NOT `@inline`. Inlining it back into the guard would put the
+        #     abstract projection right back where it was.
+        #   * `Projection{RM,SM}`, not `ρ::P where P<:Projection`. An argument
+        #     statically typed `Projection` SATISFIES `P<:Projection`, so Julia
+        #     binds `P = Projection` and makes a static call to an abstract
+        #     specialization — the barrier compiles away to nothing. It cannot
+        #     satisfy `Projection{RM,SM}` for any particular `RM, SM`, which is
+        #     what forces the runtime dispatch this seam is paying for.
+        #   * The format comes from the DATUM, not from a leading `::Type{T}`.
+        #     A `Type` argument in a dynamically dispatched call is expensive to
+        #     match: measured 148 ns with it against 28 ns without, for the same
+        #     body. That single argument cost more than everything else here.
+        #   * `rng` and `R` cross the boundary POSITIONALLY. A `; kw...` splat
+        #     through a dynamic call materializes its named tuple, and that was
+        #     two of the three allocations this seam used to make.
+        function $bar(ρ::Projection{RM,SM}, $(same...),
+                      rng, R) where {T<:BinaryValue, RM, SM}
+            $name(BinaryFormatOf(T), ρ, $(xs...); rng, R)::T
+        end
+        # same-format convenience under the task's default projection. The
+        # SPECULATION GUARD: the untouched default RTE_SN is tested by
+        # identity and called with the literal constant, so the overwhelmingly
+        # common unscoped path is a static, allocation-free call and never
+        # reaches the barrier. Spelled inline — a closure would defeat the split.
+        @inline function $name($(same...); rng::MaybeRNG = nothing,
+                               R::MaybeR = nothing) where {T<:BinaryValue}
             ρ = DefaultProjection()
-            ρ === RTE_SN && return $name(BinaryFormatOf(T), RTE_SN, $(xs...); kw...)
-            $name(BinaryFormatOf(T), ρ, $(xs...); kw...)
+            ρ === RTE_SN && return $name(BinaryFormatOf(T), RTE_SN, $(xs...); rng, R)::T
+            $bar(ρ, $(xs...), rng, R)::T
         end
         export $name
     end
@@ -231,8 +259,19 @@ export Convert
 @inline function (::Type{BinaryValue{F,U}})(x::Real;
         projection::Union{Nothing, Projection} = nothing,
         rng::MaybeRNG = nothing, R::MaybeR = nothing) where {F<:Binary, U<:Unsigned}
-    projection === nothing || return Convert(F, projection, x; rng, R)::BinaryValue{F,U}
+    projection === nothing || return _default_convert(_witness(F), projection, x, rng, R)
     ρ = DefaultProjection()
     ρ === RTE_SN && return Convert(F, RTE_SN, x; rng, R)::BinaryValue{F,U}
-    Convert(F, ρ, x; rng, R)::BinaryValue{F,U}
+    _default_convert(_witness(F), ρ, x, rng, R)
 end
+
+# Value construction's projection-typed barrier — same shape, same three
+# constraints as the generated ops' (see the comment there). It needs the
+# format, and there is no datum argument to read it from, so it takes a
+# WITNESS: the zero datum of F, which is isbits and free to make. A leading
+# `::Type{F}` would be the obvious spelling and is the expensive one — 169 ns
+# against this form's 24 ns, for an identical body.
+@inline _witness(::Type{F}) where {F<:Binary} = _rawvalue(F, zero(CodeType(F)))
+_default_convert(::BinaryValue{F,U}, ρ::Projection{RM,SM}, x, rng,
+                 R) where {F<:Binary, U<:Unsigned, RM, SM} =
+    Convert(F, ρ, x; rng, R)::BinaryValue{F,U}

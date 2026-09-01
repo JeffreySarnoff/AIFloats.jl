@@ -204,13 +204,8 @@ end
     end
 
     # the session default is honored, through the same speculation guard
-    let saved = DefaultProjection()
-        try
-            DefaultProjection!(RTZ_SF)
-            @test codepoint.(A .+ B) == codepoint.(vmap(:Add, F, RTZ_SF, A, B))
-            @test codepoint.(exp.(A)) == codepoint.(vmap(:Exp, F, RTZ_SF, A))
-        finally
-            DefaultProjection!(saved)
-        end
+    with_projection(RTZ_SF) do
+        @test codepoint.(A .+ B) == codepoint.(vmap(:Add, F, RTZ_SF, A, B))
+        @test codepoint.(exp.(A)) == codepoint.(vmap(:Exp, F, RTZ_SF, A))
     end
 end

@@ -61,9 +61,9 @@ conformance, conformance_dict, conformance_report, draft_revision, draft_identit
 measure_kappa, register_approx!, unregister_approx!, approx, list_approx, kappa, kappa_measured,
 ftz_variant,
 # session defaults
-DefaultProjection, DefaultProjection!,
-DefaultRoundingMode, DefaultRoundingMode!,
-DefaultSaturationMode, DefaultSaturationMode!,
+DefaultProjection, with_projection,
+DefaultRoundingMode,
+DefaultSaturationMode,
 # external types (IEEE 754, bfloat16)
 binary16, binary32, binary64, binary128, bfloat16,
 # dual use constants: both implementation-facing and user-facing

@@ -24,8 +24,7 @@ end
 function withflags(f; fast_arith = true, fast_enclosure = true, threaded = true,
                    eager_bits = 16, thread_min = 1 << 15)
     saved = (AIFloats.FAST_ARITH[], AIFloats.FAST_ENCLOSURE[],
-             AIFloats.THREADED_KERNELS[], AIFloats.TABLE_EAGER_BITS[],
-             AIFloats.THREAD_MIN_ELEMS[], DefaultProjection())
+             AIFloats.THREADED_KERNELS[], AIFloats.TABLE_EAGER_BITS[])
     try
         AIFloats.FAST_ARITH[] = fast_arith
         AIFloats.FAST_ENCLOSURE[] = fast_enclosure
@@ -34,10 +33,12 @@ function withflags(f; fast_arith = true, fast_enclosure = true, threaded = true,
         AIFloats.THREAD_MIN_ELEMS[] = thread_min
         f()
     finally
+        # the projection is NOT saved and restored here: it is a scoped value
+        # now, so a measured body that wants a different one runs under
+        # `with_projection` and cannot leak it (improveapi3.md §4.3)
         AIFloats.FAST_ARITH[], AIFloats.FAST_ENCLOSURE[],
         AIFloats.THREADED_KERNELS[], AIFloats.TABLE_EAGER_BITS[],
         AIFloats.THREAD_MIN_ELEMS[] = saved[1:5]
-        DefaultProjection!(saved[6])
         AIFloats.empty_tables!()
     end
 end

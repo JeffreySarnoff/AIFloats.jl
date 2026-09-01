@@ -28,12 +28,12 @@ This page says plainly what exists and what the deliberate limits are.
 | Projection vocabulary | 9 rounding modes (stochastic ones carry their random-bit budget `N`; [`isstochastic`](@ref), [`nrandbits`](@ref)), 3 saturation modes, [`Projection`](@ref) and its 27 constants |
 | **Projection behavior** | [`project`](@ref) — the single write path: round to precision → saturate → encode, for every rounding mode (sticky protocol, stochastic at fixed `R`) and all three saturation modes, from `Float64`/`Float128`/`BigFloat`; the interval oracle `AIFloats.project_interval` |
 | **Operations** | the draft register — `Add`, `Subtract`, `Multiply`, `Divide`, `FMA`, `FAA`, `Sqrt`, `Exp`, `Log`, the trig/hyperbolic families and their π-scaled forms, `Hypot`, `Clamp`, the extremum family — correctly rounded via exact evaluation or interval enclosure; [`Convert`](@ref) from datums, floats, and integers |
-| **Value construction** | `Binary8p4se(1.5)` (via `Convert` under the session default or an explicit `projection` keyword) |
-| **Session defaults** | [`DefaultProjection`](@ref) and its coupled component setters |
+| **Value construction** | `Binary8p4se(1.5)` (via `Convert` under the task's default projection or an explicit `projection` keyword) |
+| **Default projection** | [`DefaultProjection`](@ref), bound for a dynamic extent by [`with_projection`](@ref); `DefaultRoundingMode`/`DefaultSaturationMode` derive from it |
 | **Random datums** | `rand` (default `RTZ_SN`, provably `< 1`) and `randn` (default `RTE_SF`, tails clamp; signed formats only) |
 | **Array kernels** | every register op elementwise over arrays — `Add(F, ρ, A, B)`, `Exp(A)` — via `vmap`/`vmap!`; pure projections gather from a memoized table when policy grants one, otherwise compute per element (same answer either way); stochastic projections run a sequential, seeded-reproducible loop |
 | **Tables** | memoized result tables per `(op, formats, projection)`: `AIFloats.get_table`, `AIFloats.table_for`, `AIFloats.table_policy` introspection, byte and build-time budgets that refuse loudly, ternary eager/adaptive bands with LRU eviction |
-| **Base surface** | same-format `+ - * /`, `abs`, `sqrt`, `exp`, `log`, the trig/hyperbolic families, `hypot`, `copysign`, `max`/`min` (NaN-propagating), `fma`/`muladd`, `clamp` — each one register call under the session default; `Op(ρ, x)` projection-first convenience; comparison (`==`/`<` unordered on NaN), `isless`/`sort` in the draft's **NaN-first** total order (a counting sort, `AIFloats.CodeCountingSort`); `hash`/`Dict`/`Set` via `Base.decompose` |
+| **Base surface** | same-format `+ - * /`, `abs`, `sqrt`, `exp`, `log`, the trig/hyperbolic families, `hypot`, `copysign`, `max`/`min` (NaN-propagating), `fma`/`muladd`, `clamp` — each one register call under the task's default projection; `Op(ρ, x)` projection-first convenience; comparison (`==`/`<` unordered on NaN), `isless`/`sort` in the draft's **NaN-first** total order (a counting sort, `AIFloats.CodeCountingSort`); `hash`/`Dict`/`Set` via `Base.decompose` |
 | **AbstractFloat contract** | `zero`/`one`/`eps`/`typemin`/`typemax`/`floatmin`/`floatmax`/`precision`; `exponent`/`significand`/`frexp`/`ldexp`; `round`/`floor`/`ceil`/`trunc` and `round(x, RoundUp)` etc. as one projection each; `nextfloat`/`prevfloat` (off-lattice into NaN) |
 | **Conversion & promotion** | `Float64`/`Float32`/`Float16`/`BFloat16`/`Float128`/`BigFloat`/`Int(x)`; `convert` (value semantics, `Unsigned` included); `x + 1.0` promotes to the format's public carrier `AIFloats.promotecarrier` — `Float64`, `Float128`, or `BigFloat` by exponent bias; `similar` keeps element types concrete; `reinterpret` checks the representation invariant |
 | **Stated refusals** | `rem`/`mod`, `round(x, RoundNearestTiesUp)`/`RoundFromZero`, `Rational` inputs — each throws an `ArgumentError` that says why, never a bare `MethodError` |
@@ -108,11 +108,31 @@ lanes, or a lane spread beyond `Dyadic`'s exact alignment band fall back to
 `BlockReduceMultiply` always takes the `BigFloat` path: accumulating products
 leaves the exact fixed-point band almost immediately.
 
-**Session defaults.** Reading `DefaultProjection()` is a process-global
-`Ref{Projection}` load. The convenience methods and value constructors
-speculate on the untouched default (`RTE_SN`) so the common case is a static,
-allocation-free call; setting a different default costs one dynamic dispatch
-per call.
+**Default projection.** `DefaultProjection()` reads a
+`ScopedValue{Projection}`: 4.1 ns unbound, 31 ns inside a `with_projection`
+block. The convenience methods and value constructors speculate on the
+untouched default (`RTE_SN`), so the overwhelmingly common path is a static,
+allocation-free call — 4.1 ns for `Add(x, y)`, 3.1 ns for `F(1.35)`. Under a
+bound non-`RTE_SN` projection those seams cost ~61 ns and one small allocation,
+because the projection's type is not known until run time: the call crosses a
+dynamic dispatch, and Julia's generic calling convention boxes its return.
+A projection-typed function barrier recovers everything after that boundary
+(without it the same call is 272 ns).
+
+Three details of that barrier were each worth more than they look, and are
+commented at the seam in `ops/scalar.jl`: it must not be `@inline`d; it must
+match `Projection{RM,SM}` rather than `ρ::P where P<:Projection`, because an
+abstract `Projection` argument *satisfies* the latter and Julia then binds
+`P = Projection` and compiles the barrier away; and it must take the format
+from a datum rather than from a leading `::Type{F}` argument, which alone
+cost 120 ns in a dynamically dispatched call.
+
+Where that matters, pass the projection explicitly. `Add(F, ρ, x, y)` is
+1.3 ns and never reads the default at all.
+
+Array operations resolve the default **once per call**, never per element:
+a four-element `Add(A, B)` is 140 ns unbound and 178 ns bound, and the
+difference does not grow with the array.
 
 **First call.** `using AIFloats` is ~57 ms. The precompile workload covers the
 standard profile's hot entries, so first calls to constructors, arithmetic,
