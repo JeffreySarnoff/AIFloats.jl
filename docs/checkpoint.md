@@ -66,6 +66,195 @@ site; do not rewrite mechanically.
 
 ---
 
+# `convert(T, x)` at 14.1 ns, and a benchmark convention that was lying (2026-09-01)
+
+The published `convert(T8, 1.3)` row read **14.1 ns** against `T8(1.3)`'s
+**3.5 ns**, for two spellings that reach the same constructor. Two causes, one
+real and one a measurement artifact — and the artifact was the larger.
+
+## The real cause: `convert` was the only uninlined seam
+
+```julia
+Base.convert(::Type{T}, x::Real) where {T<:BinaryValue} = T(x)    # before
+@inline Base.convert(::Type{T}, x::Real) where {T<:BinaryValue} = T(x)::T   # after
+```
+
+Every neighbour on that seam — the value constructors, `BinaryValue(F, x)`,
+`Convert` — is `@inline` with a concrete return assertion. The three
+`Base.convert` methods were not. So `convert` stayed an out-of-line call: it
+could not fold where a literal source makes folding legal, and it did not hand
+the caller a concrete result type.
+
+Measured per call on a **non-constant** source (loop difference, 64 vs 4096
+iterations, so nothing hoists):
+
+| | before | after |
+|---|---:|---:|
+| `T8(v)` | 6.10 ns | 6.40 ns |
+| `convert(T8, v)` | 7.39 ns | **6.42 ns** |
+
+The gap is gone. On the literal form the same change reads 14.1 ns → 1.93 ns,
+because `convert` can now fold exactly as its neighbours already did.
+
+## The artifact: literal sources fold, and the suite was measuring the fold
+
+`@b T8(1.3)` and `@b Convert($F8, RTE_SN, 1.3)` write the value as a **literal**.
+Chairmarks interpolates `$F8` but not the number, so the compiler constant-folds
+the entire projection and the row reports the fold. `Convert(F8, RTE_SN, 1.3)`
+read **1.3 ns** — for a projection that actually costs 6.3.
+
+That is why the 14.1/3.5 gap looked like a 4× defect: one of the two was
+inlinable and therefore foldable and the other was not, so the row was
+comparing folding against not-folding rather than work against work.
+
+**Fix: every measured value in the scalar suite is now interpolated.** The
+construction and projection rows changed accordingly, and now agree with each
+other arithmetically:
+
+```
+project Float64 → K=8            6.3 ns     the projection itself
+Convert(F8, RTE_SN, v)           6.3 ns     explicit ρ, no default read
+T8(v)        (Float64 value)     7.6 ns     + the scoped-default guard
+convert(T8, v)                   7.6 ns     identical, as it should be
+fromcode(T8, c)  (code point)    2.1 ns     no projection at all
+```
+
+6.3 + ~1.3 = 7.6. Before the change those five rows could not be reconciled at
+all, which is itself the tell.
+
+## The generalizable rule, now twice-earned
+
+This is the same trap as the allocation isolation, from the other side.
+**`const` or literal arguments** let the compiler hoist boxes and fold work, so
+such a measurement **understates** cost — for allocations and for time alike.
+
+Neither honest method is exact on its own, and they bracket the truth from
+opposite sides:
+
+| Method | Bias | Why |
+|---|---|---|
+| loop difference, `(t(n₂) − t(n₁)) / (n₂ − n₁)` | **under** | anything loop-invariant hoists out — including the `ScopedValue` read |
+| Chairmarks with interpolated values | **over** | the harness reloads each interpolated value from closure state per iteration |
+
+Measured spread on the scoped `Add(x, y)` seam: 36 ns by loop difference, 77 ns
+by interpolated Chairmarks. Both are *correct* for a real caller — the first
+describes a loop over many calls, the second an isolated one. Quote which was
+used; do not treat either as the number.
+
+What neither method distorts is a **ratio between two rows measured the same
+way**, which is why the benchmark page says to read it that way and why the
+`convert`/constructor comparison above is trustworthy at 7.6 ns against 7.6.
+
+# The guard ladder: what it took, and what it could not reach (2026-09-01)
+
+Question asked: can a scoped `RoundToOdd` or `RoundTowardZero` `Add` run nearly
+as fast as the `RTE` one? Built it and measured, because the previous entry's
+argument against it was an unmeasured one.
+
+## What it is
+
+`_GUARDED_PROJECTIONS` in [`ops/scalar.jl`](../src/ops/scalar.jl) lists all 27
+exported projection constants. The generator emits one identity arm each:
+
+```julia
+ρ === RTZ_SN && return Add(BinaryFormatOf(T), RTZ_SN, x1, x2; rng, R)::T
+```
+
+A matched arm is a **static** call, so there is no dynamic dispatch and
+therefore none of the `arity + 1` boxes it entailed.
+
+## Measured, per call in a loop
+
+| | before | after |
+|---|---|---|
+| scoped `Add(x, y)` | 76.5 ns, 48 B | 26.9 ns, **0 B** |
+| unscoped RTE `Add(x, y)` | 8.8 ns, 0 B | 9.2 ns, 0 B |
+| explicit `Add(F, ρ, x, y)` | 7.7 ns, 0 B | 7.6 ns, 0 B |
+| precompilation | 9.5–11 s | 9.6 s |
+| first scoped `Log` (TTFX) | 404 ms | 369 ms |
+
+Allocations are gone on every laddered projection, including the stochastic
+ones. Nothing else regressed.
+
+## The residual is `Base.ScopedValues`, not us
+
+Subtracting the scoped read from the seam leaves a constant:
+
+| | read | `Add` | difference |
+|---|---:|---:|---:|
+| unbound | 0.53 ns | 9.22 ns | 8.7 |
+| bound `RTZ_SN` | 16.96 ns | 26.91 ns | 9.9 |
+| bound `RTO_SN` | 48.07 ns | 58.88 ns | 10.8 |
+| bound `RTA_SP` | 35.11 ns | 43.44 ns | 8.3 |
+| explicit ρ | — | 7.57 ns | 7.6 |
+
+~8–11 ns in every case, against the explicit call's 7.6. **The arithmetic is
+already at explicit-projection speed.** All of the remaining gap is
+`ScopedValue` walking its scope: 0.53 ns unbound against 17–48 ns bound, a
+30–90× difference that also varies per projection *identity* rather than per
+arm position (`RTZ_SN` measured 17 ns in one run and 48 in another, with the
+ladder unchanged).
+
+So the answer to the question as asked is **no, and not for a reason this
+package can fix**: a scoped non-RTE call cannot match the unscoped RTE one
+while the bound read costs 20–90× the arithmetic. What the ladder does achieve
+is that everything *after* the read is now identical to the explicit path.
+
+For callers who need the explicit-ρ floor, that spelling still exists, is
+1.2 ns faster than even the unscoped default, and does not depend on scope at
+all.
+
+## Would a `Ref` be faster than the `ScopedValue`?
+
+Asked because the answer bears on whether Phase 2 traded away throughput.
+Measured with the *same* two-arm ladder on both, so only the read differs:
+
+| | read | full `Add` seam |
+|---|---:|---:|
+| `Ref[]`, holding the default | ~0 ns (hoisted) | 8.67 ns |
+| `ScopedValue[]`, unbound | 0.53 ns | 9.03 ns |
+| `Ref[]`, set to `RTZ_SN` | ~0 ns (hoisted) | 8.09 ns |
+| `ScopedValue[]`, bound to `RTZ_SN` | 23.47 ns | 32.90 ns |
+
+**At the default the two are the same** — 8.7 against 9.0 ns, noise. That is the
+path the overwhelming majority of calls take.
+
+**Under a non-default projection the `Ref` is ~4× faster**, entirely because its
+read is a plain memory load the optimizer can hoist, while a `ScopedValue` read
+goes through `Core.current_scope()`, which is opaque to it. So Phase 2 did cost
+throughput, but only on the path a caller reaches by explicitly asking for a
+non-default projection.
+
+That cost was known and is not the deciding term. A projection changes numeric
+**results**, so a process-global `Ref` lets two concurrently running tasks fight
+over what arithmetic means — silently, and with no way for either to notice.
+Correctness of concurrent work is not tradeable against 24 ns.
+
+A caller who needs both task safety and the floor has the explicit spelling,
+which reads nothing at all: 7.6 ns, less than either default path.
+
+## Why the compile-cost objection was wrong
+
+The earlier entry argued 27 arms × 51 ops would explode inference. Measured:
+precompilation unchanged, TTFX slightly better. Two reasons the estimate failed:
+
+1. **Every arm carries `::T`.** Inference takes the assertion rather than
+   descending into the callee, so an arm costs almost nothing to type.
+2. **Julia compiles method bodies lazily.** An arm nobody reaches costs one
+   pointer compare in the emitted code and no compilation at all.
+
+The general lesson is the one this log keeps re-learning: an argument from
+plausible mechanism is not evidence. This one was stated with more confidence
+than it had earned.
+
+## Test
+
+`test-ops.jl` pins the ladder as a pure performance device: for all 18
+deterministic constants, five unary and five binary ops over five operands and
+three second operands, the scoped call must be `===` the explicit spelling; the
+laddered scoped calls must allocate nothing; and the non-default-budget
+`ρRSA{4}` fallback must still be correct through the barrier.
+
 # Where the scoped seam's allocations come from (2026-09-01)
 
 Isolation run, after the Phase 2 entry left two of three allocations
@@ -115,20 +304,19 @@ amortized survives that subtraction.
 
 ## What this does and does not change
 
-The ladder would reach 0 B. It would not touch the dominant cost: of the 77 ns
-scoped seam, ~46 ns is the `ScopedValue` read itself, which no amount of
-dispatch work removes. And it still could not be total — `ρRSA{N}` at a
-non-default budget has no constant to match against, so a dynamic fallback arm
-stays.
+The ladder reaches 0 B. It does not touch the dominant cost: most of the scoped
+seam is the `ScopedValue` read itself, which no amount of dispatch work removes.
+And it cannot be total — `ρRSA{N}` at a non-default budget has no constant to
+match against, so a dynamic fallback arm stays.
 
-Against that: 27 arms in each of 51 generated scalar ops, plus the array
-convenience surface and the constructor. The arms are in the source, so
-inference walks all 27 when first compiling a convenience call — including the
-MPFR enclosure ladders under Group B ops. The RTE guard exists precisely so the
-common path compiles once; the ladder inverts that for every call site.
-
-**Decision: not implemented.** Recorded here so the next reader does not have to
-re-derive it, and so the 48 B is understood rather than merely observed.
+> **Superseded 2026-09-01 — the ladder was built and measured; see "The guard
+> ladder" below.** The paragraph that stood here argued against it on
+> compile-time grounds: 27 arms in each of 51 generated ops, with inference
+> walking all 27 on first compile. **That was wrong, and measurement refuted
+> it.** Precompilation is unchanged and first-call latency slightly improves.
+> The reasoning failed to account for the `::T` assertion on each arm, which
+> lets inference take the assertion instead of descending into the callee, and
+> for Julia compiling method bodies lazily.
 
 # Final verification (2026-09-01)
 

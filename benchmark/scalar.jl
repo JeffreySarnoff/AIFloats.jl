@@ -8,15 +8,21 @@ const T12 = BinaryValue(Binary(12, 6, SIGNED, EXTENDED))   # rung 1, UInt16 code
 const T16 = BinaryValue(Binary(16, 4, SIGNED, EXTENDED))   # rung 2, Float128 carrier
 const F8, F12, F16 = BinaryFormatOf(T8), BinaryFormatOf(T12), BinaryFormatOf(T16)
 
-let x8 = T8(1.5), x12 = T12(1.5), x16 = T16(1.5)
+# Every measured VALUE is interpolated, never written as a literal. A literal
+# source lets the compiler fold the whole projection to a constant, and the row
+# then reports the fold rather than the work: `convert(T8, 1.3)` once read
+# 14.1 ns against `T8(1.3)`'s 3.5 purely because one of the two was inlinable
+# and therefore foldable and the other was not. Interpolated values come from
+# the harness's closure state each iteration, so nothing folds.
+let x8 = T8(1.5), x12 = T12(1.5), x16 = T16(1.5), v = 1.3, vhuge = 1e30
     row("decode K=8 (generated table)",  @b decode($x8))
     row("decode K=12 (computed)",        @b decode($x12))
     row("decode K=16 (rung 2)",          @b decode($x16))
     row("codepoint",                     @b codepoint($x8))
-    row("project Float64 → K=8",         @b AIFloats.project($F8, RTE_SN, 1.3))
-    row("project Float64 → K=12",        @b AIFloats.project($F12, RTE_SN, 1.3))
-    row("project Float64 → K=8 RTZ_SF",  @b AIFloats.project($F8, RTZ_SF, 1e30))
-    row("project Float64 → K=8 RSA_SN",  @b AIFloats.project($F8, RSA_SN, 1.3; R = 7))
+    row("project Float64 → K=8",         @b AIFloats.project($F8, RTE_SN, $v))
+    row("project Float64 → K=12",        @b AIFloats.project($F12, RTE_SN, $v))
+    row("project Float64 → K=8 RTZ_SF",  @b AIFloats.project($F8, RTZ_SF, $vhuge))
+    row("project Float64 → K=8 RSA_SN",  @b AIFloats.project($F8, RSA_SN, $v; R = 7))
     q = decode(x16)
     row("project Float128 → K=16",       @b AIFloats.project($F16, RTE_SN, $q))
     row("binary128 → exact Dyadic",      @b AIFloats._dyadic128($q))
@@ -30,12 +36,14 @@ end
 
 section("scalar — construction")
 
-row("T8(1.3)      (Float64 value)",     @b T8(1.3))
-row("T8(1.3f0)    (Float32 value)",     @b T8(1.3f0))
-row("T8(3)        (Integer value)",     @b T8(3))
-row("convert(T8, 1.3)",                 @b convert(T8, 1.3))
-row("fromcode(T8, 0x05)     (code point)",        @b fromcode(T8, 0x05))
-row("Convert(F8, RTE_SN, 1.3)",         @b Convert($F8, RTE_SN, 1.3))
+let v = 1.3, v32 = 1.3f0, vi = 3, c = 0x05
+    row("T8(v)        (Float64 value)",  @b T8($v))
+    row("T8(v)        (Float32 value)",  @b T8($v32))
+    row("T8(v)        (Integer value)",  @b T8($vi))
+    row("convert(T8, v)",                @b convert(T8, $v))
+    row("fromcode(T8, c)   (code point)",@b fromcode(T8, $c))
+    row("Convert(F8, RTE_SN, v)",        @b Convert($F8, RTE_SN, $v))
+end
 
 section("scalar — operations by registry group, K=8")
 

@@ -81,6 +81,43 @@ end
 @noinline _finish_slow(::Type{F}, ρ::Projection, R::Int, res) where {F<:Binary} =
     _finish(F, ρ, R, res)
 
+# The projections the same-format convenience seam recognizes by IDENTITY.
+#
+# Each name becomes one `ρ === CONST && return Op(F, CONST, ...)` arm, so the
+# call is STATIC: no dynamic dispatch, hence no argument or return boxing, and
+# the whole op chain specializes on a concrete projection. Measured on
+# `Add(x, y)` under `with_projection`, per call in a loop:
+#
+#     before      76.5 ns   48 B   (dispatch + arity+1 boxes)
+#     after       26.9 ns    0 B
+#
+# and what remains is not ours: subtracting the `ScopedValue` read leaves
+# 8-11 ns in every case, against the explicit-projection call's 7.6. The
+# arithmetic is already at explicit-ρ speed; the residual is `Base.ScopedValues`
+# walking its scope (0.5 ns unbound, 17-48 ns bound, and the spread is per
+# projection identity, not per arm position).
+#
+# THE OBJECTION THAT DID NOT SURVIVE MEASUREMENT: 27 arms in each of 51
+# generated ops sounds like a compile-time explosion, and is not one.
+# Precompilation is 9.6 s with the full ladder against 9.5-11 s without it, and
+# first-call latency for a scoped `Log` is 369 ms against 404. Two reasons:
+# every arm carries `::T`, so inference takes the assertion instead of
+# descending into the callee, and Julia compiles method bodies lazily, so an
+# arm nobody reaches costs nothing beyond one pointer compare.
+#
+# All 27 exported constants are listed. A `Projection` with no constant to
+# match — `ρRSA{N}` at a non-default budget — falls through to the barrier
+# below and pays the dispatch, which is why the barrier still exists.
+const _GUARDED_PROJECTIONS = (:RTE_SN, :RTE_SF, :RTE_SP,
+                              :RTZ_SN, :RTZ_SF, :RTZ_SP,
+                              :RTO_SN, :RTO_SF, :RTO_SP,
+                              :RTP_SN, :RTP_SF, :RTP_SP,
+                              :RTN_SN, :RTN_SF, :RTN_SP,
+                              :RTA_SN, :RTA_SF, :RTA_SP,
+                              :RSA_SN, :RSA_SF, :RSA_SP,
+                              :RSB_SN, :RSB_SF, :RSB_SP,
+                              :RSC_SN, :RSC_SF, :RSC_SP)
+
 # ---- the generated spec register --------------------------------------------
 # For each registry op:
 #   Op(F, ρ, x::BinaryValue...; rng, R)   — the draft form (F a format or a
@@ -95,6 +132,8 @@ for op in OP_REGISTRY
     same = [:($(x)::T) for x in xs]
     dec = [:(decode($x)) for x in xs]
     bar = Symbol(:_default_, name)          # the projection-typed barrier
+    guards = [:(ρ === $g && return $name(BinaryFormatOf(T), $g, $(xs...); rng, R)::T)
+              for g in _GUARDED_PROJECTIONS]
     @eval begin
         @inline function $name(fr::Type{<:Binary}, ρ::Projection, $(spec...);
                                rng::MaybeRNG = nothing, R::MaybeR = nothing)
@@ -137,7 +176,7 @@ for op in OP_REGISTRY
         @inline function $name($(same...); rng::MaybeRNG = nothing,
                                R::MaybeR = nothing) where {T<:BinaryValue}
             ρ = DefaultProjection()
-            ρ === RTE_SN && return $name(BinaryFormatOf(T), RTE_SN, $(xs...); rng, R)::T
+            $(guards...)
             $bar(ρ, $(xs...), rng, R)::T
         end
         export $name

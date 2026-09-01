@@ -399,3 +399,50 @@ end
         end
     end
 end
+
+@testset "the scoped-projection guard ladder" begin
+    # Every exported projection constant has an identity arm in the convenience
+    # seam, so a scoped call is a STATIC call: same answer as the explicit
+    # spelling, and no allocation. The arms are a performance device, so what
+    # has to be pinned is that they changed nothing observable.
+    F = Binary8p4se
+    T = BinaryValue(F)
+    ops1 = (Sqrt, Exp, Log, Negate, Abs)
+    ops2 = (Add, Subtract, Multiply, Divide, Hypot)
+    xs = (F(1.3), F(-2.7), F(0.0), MinPositiveOf(F), MaxFiniteOf(F))
+    ys = (F(0.25), F(3.0), F(-1.0))
+
+    for ρ in (RTE_SN, RTE_SF, RTE_SP, RTZ_SN, RTZ_SF, RTZ_SP,
+              RTO_SN, RTO_SF, RTO_SP, RTP_SN, RTP_SF, RTP_SP,
+              RTN_SN, RTN_SF, RTN_SP, RTA_SN, RTA_SF, RTA_SP)
+        for a in xs
+            for f in ops1
+                @test with_projection(() -> f(a), ρ) === f(F, ρ, a)
+            end
+            for b in ys, f in ops2
+                @test with_projection(() -> f(a, b), ρ) === f(F, ρ, a, b)
+            end
+            @test with_projection(() -> T(1.3), ρ) === Convert(T, ρ, 1.3)
+            @test with_projection(() -> F(1.3), ρ) === Convert(F, ρ, 1.3)
+        end
+    end
+
+    # a laddered scoped call allocates nothing; the arms exist for exactly this
+    let a = F(1.3), b = F(0.25)
+        g() = Add(a, b)
+        for ρ in (RTZ_SN, RTO_SF, RTA_SP, RSA_SN)
+            with_projection(ρ) do
+                g()
+                @test (@allocated g()) == 0
+            end
+        end
+    end
+
+    # the ladder cannot be total: a stochastic projection at a non-default
+    # budget has no constant to match, so it falls through to the barrier.
+    # That path must still be correct — only slower.
+    let ρ4 = Projection(AIFloats.ρRSA(4), SN), a = F(1.3), b = F(0.25)
+        r = with_projection(() -> Add(a, b; R = 3), ρ4)
+        @test r === Add(F, ρ4, a, b; R = 3)
+    end
+end

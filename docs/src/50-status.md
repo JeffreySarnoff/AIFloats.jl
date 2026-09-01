@@ -109,15 +109,27 @@ lanes, or a lane spread beyond `Dyadic`'s exact alignment band fall back to
 leaves the exact fixed-point band almost immediately.
 
 **Default projection.** `DefaultProjection()` reads a
-`ScopedValue{Projection}`: 4.1 ns unbound, 31 ns inside a `with_projection`
+`ScopedValue{Projection}`: ~4 ns unbound, ~46 ns inside a `with_projection`
 block. The convenience methods and value constructors speculate on the
 untouched default (`RTE_SN`), so the overwhelmingly common path is a static,
-allocation-free call — 4.1 ns for `Add(x, y)`, 3.1 ns for `F(1.35)`. Under a
-bound non-`RTE_SN` projection those seams cost ~61 ns and one small allocation,
-because the projection's type is not known until run time: the call crosses a
-dynamic dispatch, and Julia's generic calling convention boxes its return.
-A projection-typed function barrier recovers everything after that boundary
-(without it the same call is 272 ns).
+allocation-free call: the guard itself costs about **0.5 ns** over passing the
+projection explicitly (8.8 ns against 8.3 ns for `Add(x, y)`, measured in a
+loop so nothing folds).
+
+Under a **bound** projection the seam recognizes all 27 exported projection
+constants by identity, so the call stays static and allocates nothing. What
+remains is the scoped read: subtracting it leaves 8–11 ns in every case,
+against an explicit-projection call's 7.6 — the arithmetic is already at
+explicit-projection speed, and the gap is `Base.ScopedValues` walking its
+scope.
+
+A `Projection` with no constant to match — `ρRSA{N}` at a non-default
+stochastic budget — falls through to a projection-typed function barrier and
+pays one dynamic dispatch, which also costs `arity + 1` small boxes: Julia's
+generic calling convention boxes the isbits return value and every isbits
+argument it cannot constant-fold. The barrier recovers everything *after* that
+boundary (without it the same call is 272 ns); the boxes are inherent to the
+boundary itself.
 
 Three details of that barrier were each worth more than they look, and are
 commented at the seam in `ops/scalar.jl`: it must not be `@inline`d; it must
@@ -127,8 +139,20 @@ abstract `Projection` argument *satisfies* the latter and Julia then binds
 from a datum rather than from a leading `::Type{F}` argument, which alone
 cost 120 ns in a dynamically dispatched call.
 
-Where that matters, pass the projection explicitly. `Add(F, ρ, x, y)` is
-1.3 ns and never reads the default at all.
+Where that matters, pass the projection explicitly. `Add(F, ρ, x, y)` never
+reads the default at all, allocates nothing under any projection, and is the
+only form whose cost does not depend on the caller's scope — it is faster than
+even the unscoped default, because it skips the read entirely.
+
+!!! note "Reading the benchmark numbers"
+    Absolute times on the [benchmark page](@ref benchmarks) include the
+    harness's per-iteration overhead, and a tight loop can hoist work that an
+    isolated call cannot. A literal argument is worse still: it lets the
+    compiler fold the whole projection, which is why `convert(T8, 1.3)` once
+    read 14.1 ns against `T8(1.3)`'s 3.5 — one of the two was inlinable and
+    therefore foldable and the other was not. Every measured value in the suite
+    is interpolated now, and the two spellings agree at 7.6 ns. Compare rows
+    against each other, not against an absolute budget.
 
 Array operations resolve the default **once per call**, never per element:
 a four-element `Add(A, B)` is 140 ns unbound and 178 ns bound, and the
