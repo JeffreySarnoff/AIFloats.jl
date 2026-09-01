@@ -66,6 +66,70 @@ site; do not rewrite mechanically.
 
 ---
 
+# Where the scoped seam's allocations come from (2026-09-01)
+
+Isolation run, after the Phase 2 entry left two of three allocations
+unexplained. Two findings, one of which corrects a measurement.
+
+## The rule: `arity + 1` boxes
+
+A dynamic call goes through `jl_apply_generic`, whose ABI passes and returns
+`jl_value_t*`. So it boxes the isbits **return value** *and* every isbits
+**argument** it cannot constant-fold. Measured per call, arguments read from a
+`Vector` so nothing folds:
+
+| Seam | Operands | Measured |
+|---|---:|---|
+| `Negate(x)` | 1 | 32 B, 2 allocs |
+| `Add(x, y)` | 2 | 48 B, 3 allocs |
+| `FMA(x, y, z)` | 3 | 64 B, 4 allocs |
+| `F(v)` constructor | 1 (the `Real`) | 32 B, 2 allocs |
+| `Add(F, ρ, x, y)` explicit ρ | — | 0 B, 0 allocs |
+| `Add(x, y)` unscoped RTE | — | 0 B, 0 allocs |
+
+`arity + 1`, exactly, with the constructor fitting too: its barrier's format
+witness and its `nothing` keywords are compile-time constants, so only the
+`Float64` argument and the return box.
+
+**This answers the open question.** The three allocations are not three
+separate causes with two of them unaccounted for; they are one cause. A static
+ladder would remove all of them, because a static call passes isbits arguments
+and returns in registers — which is what the explicit-ρ row already
+demonstrates at 0 B.
+
+## The measurement trap: constant arguments hide argument boxes
+
+`@allocated` over a closure on `const` globals reports **1 alloc, 16 B** for the
+same `Add(x, y)` that costs 3 allocs and 48 B with ordinary arguments. The
+`const` values are loop-invariant, so the compiler hoists their boxes out of the
+measurement loop and only the return box remains.
+
+That makes the benchmark suite's `@b Add($a, $b)` the *honest* form here and my
+ad-hoc `const`-global probes the misleading ones — the opposite of the usual
+advice, and the reason the earlier "3 allocs" and "1 alloc" readings disagreed.
+The published row in `60-benchmarks.md` was right all along.
+
+The generalizable check, used above: run the call in a loop `n` times, measure
+at two values of `n`, and divide the difference. Nothing that is hoisted or
+amortized survives that subtraction.
+
+## What this does and does not change
+
+The ladder would reach 0 B. It would not touch the dominant cost: of the 77 ns
+scoped seam, ~46 ns is the `ScopedValue` read itself, which no amount of
+dispatch work removes. And it still could not be total — `ρRSA{N}` at a
+non-default budget has no constant to match against, so a dynamic fallback arm
+stays.
+
+Against that: 27 arms in each of 51 generated scalar ops, plus the array
+convenience surface and the constructor. The arms are in the source, so
+inference walks all 27 when first compiling a convenience call — including the
+MPFR enclosure ladders under Group B ops. The RTE guard exists precisely so the
+common path compiles once; the ladder inverts that for every call site.
+
+**Decision: not implemented.** Recorded here so the next reader does not have to
+re-derive it, and so the 48 B is understood rather than merely observed.
+
 # Final verification (2026-09-01)
 
 **Full suite, all 16 focused files: green.** 38,518,000+ assertions, zero
@@ -412,15 +476,16 @@ measurement after the obvious spelling failed:
    where there is no datum argument, the barrier takes a witness — the zero
    datum of `F`, isbits and free to make (169 ns → 24 ns).
 
-**The residual allocation is the dynamic call's return box** and is not
-removable at this seam. Confirmed by an A/B: the identical barrier returning
-`nothing` allocates 0 B and the one returning the datum allocates 16 B, with
-inference proving the concrete return type in both. Julia's generic calling
-convention boxes the result of `jl_apply_generic`. Removing it would mean
-replacing the dispatch with a static ladder over all 27 projections in each of
-~30 generated ops. The plan's §9.2 gate accepts "the one dynamic dispatch and
-measured latency of the non-RTE convenience seam"; this is the allocation that
-dispatch entails. Stated rather than papered over.
+**The residual allocations are `arity + 1` boxes, all entailed by the single
+dynamic dispatch.** *(Corrected 2026-09-01 after a dedicated isolation run —
+see "Where the scoped seam's allocations come from" below. The first account
+here identified only the return box and called the rest unexplained.)* Julia's
+generic calling convention passes and returns through `jl_value_t*`, so a
+dynamic call boxes its isbits return **and** every isbits argument it cannot
+constant-fold. Removing them means removing the dispatch: a static ladder over
+all 27 projections in each of the 51 generated ops. The plan's §9.2 gate
+accepts "the one dynamic dispatch and measured latency of the non-RTE
+convenience seam"; these are the allocations that dispatch entails.
 
 Array kernels and broadcasting resolve the default **once per public call**,
 never per element — the four-element figures above differ by 37 ns, and the
