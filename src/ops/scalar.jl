@@ -206,6 +206,18 @@ end
 @inline Convert(fr::Binary, ρ::Projection, x; kw...) = Convert(typeof(fr), ρ, x; kw...)
 export Convert
 
+# ---- a format type constructs a datum ----------------------------------------
+# `Binary8p4se(1.5)` is the convenient spelling and must keep working now that
+# the named aliases ARE format types (improveapi.md §4.1.2, Phase 1.4).
+#
+# Note what this means: `F(x) isa F` is FALSE — a format type's constructor
+# returns a `BinaryValue`, not a `Binary`. That is deliberate and is the price
+# of the convenience; a format is not a number and cannot be one. Anyone who
+# wants the datum TYPE writes `BinaryValue(F)`, which is the only spelling that
+# yields something `x isa` answers true for.
+@inline (::Type{F})(x::Real; kw...) where {F<:Binary} =
+    BinaryValue{F, CodeType(F)}(x; kw...)::BinaryValue{F, CodeType(F)}
+
 # ---- construction from a value ----------------------------------------------
 # the BinaryValue value constructor: an Unsigned is a code point (defined with
 # the struct); every other Real is a value and goes through Convert — under an

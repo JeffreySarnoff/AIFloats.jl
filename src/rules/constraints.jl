@@ -5,10 +5,16 @@
 # each cell its P3109 name.
 #
 # The name is spelled in exactly one place: Binary⟨K⟩p⟨P⟩⟨u|s⟩⟨f|e⟩. All 504
-# aliases are DEFINED (each names the concrete datum type, so it serves as an
-# array element type and a constructor); only the 120 at K ≤ 8 are EXPORTED —
-# exporting more later is non-breaking, un-exporting is not. The rest are
-# reachable qualified (AIFloats.Binary16p6se) or via `using AIFloats.Formats`.
+# aliases are DEFINED; only the 120 at K ≤ 8 are EXPORTED — exporting more later
+# is non-breaking, un-exporting is not. The rest are reachable qualified
+# (AIFloats.Binary16p6se) or via `using AIFloats.Formats`.
+#
+# Each alias names the FORMAT type, not the datum type (improveapi.md §4.1.2).
+# The two readings cannot coexist: `Binary(K,P,S,D)` already returns a format, so
+# letting the standard names return datum types would give "format" two meanings
+# in one vocabulary. The convenient constructor role survives — `Binary8p4se(x)`
+# still builds a datum, because `(::Type{F})(x::Real)` does — but an ARRAY
+# ELEMENT TYPE must now be written `BinaryValue(Binary8p4se)`.
 
 _formatname(K::Integer, P::Integer, S::Bool, D::Bool) =
     Symbol("Binary", Int(K), "p", Int(P), S ? "s" : "u", D ? "e" : "f")
@@ -31,16 +37,15 @@ formatname(b::Binary) = formatname(typeof(b))
 formatname(::Type{BV}) where {BV<:BinaryValue} = formatname(BinaryFormatOf(BV))
 formatname(x::BinaryValue) = formatname(BinaryFormatOf(x))
 
-# the registry of named formats: Symbol → datum type
+# the registry of named formats: Symbol → format type
 const _NAMED = Dict{Symbol, DataType}()
 
 for K in Int(KMIN):Int(KMAX), P in 1:K, S in (true, false), E in (true, false)
     S && P >= K && continue
     name = _formatname(K, P, S, E)
     F = Binary(K, P, S, E)                     # canonical Int8-parameter type
-    BV = BinaryValue(F)
-    @eval const $name = $BV
-    _NAMED[name] = BV
+    @eval const $name = $F
+    _NAMED[name] = F
 end
 
 """

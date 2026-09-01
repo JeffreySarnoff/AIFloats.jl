@@ -4,7 +4,7 @@
 
 section("arrays — vmap! and broadcasting")
 
-const AT8  = Binary8p4se
+const AT8  = BinaryValue(Binary8p4se)
 const AT12 = BinaryValue(Binary(12, 6, SIGNED, EXTENDED))
 const AF8, AF12 = BinaryFormatOf(AT8), BinaryFormatOf(AT12)
 
@@ -69,7 +69,7 @@ end
 
 section("arrays — blocks")
 
-let S = Binary8p3se, E = Binary8p4se
+let S = BinaryValue(Binary8p3se), E = BinaryValue(Binary8p4se)
     for B in (16, 32)
         xs = ntuple(i -> E(UInt8((7i + 3) & 0x7f)), B)
         ys = ntuple(i -> E(UInt8((5i + 1) & 0x7f)), B)
@@ -85,7 +85,7 @@ let S = Binary8p3se, E = Binary8p4se
     row("ScaledAdd (scalar lanes)",       @b ScaledAdd($E, RTE_SN, one($S), $(E(1.5)), one($S), $(E(0.25))))
 end
 
-let S = Binary8p3se, E = BinaryValue(Binary(16, 4, SIGNED, EXTENDED)), B = 16
+let S = BinaryValue(Binary8p3se), E = BinaryValue(Binary(16, 4, SIGNED, EXTENDED)), B = 16
     xs = ntuple(i -> E(isodd(i) ? 1.5 : 0.25), B)
     b = Block(one(S), xs)
     row("BlockReduceAdd rung 2 B=16",      @b BlockReduceAdd($E, RTE_SN, $b))

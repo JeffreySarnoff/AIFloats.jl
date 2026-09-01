@@ -87,9 +87,15 @@ function _bv_format(T::Type{<:BinaryValue})
     F
 end
 
+# The datum type prints as the EXPRESSION that produces it, not as the format's
+# name. Since improveapi.md §4.1.2 the alias `Binary8p4se` names the FORMAT, so
+# printing a datum type as `Binary8p4se` would name something that evaluates to
+# a different type — the same "two meanings for format" the alias change exists
+# to remove, reappearing in the display layer. `BinaryValue(Binary8p4se)` is
+# what a reader can paste back to get this type.
 function Base.show(io::IO, T::Type{<:BinaryValue})
     F = _bv_format(T)
     F === nothing && return invoke(show, Tuple{IO, Type}, io, T)
-    print(io, formatname(F))
+    print(io, "BinaryValue(", formatname(F), ")")
     nothing
 end

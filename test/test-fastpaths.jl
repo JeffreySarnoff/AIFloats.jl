@@ -155,7 +155,10 @@ end
 end
 
 @testset "warm path allocates nothing on the fast layers" begin
-    T = Binary8p4se
+    # `convert(T, x)` below needs the DATUM type; the format spelling is
+    # exercised separately, since `F(x)` must carry the same guarantee
+    F = Binary8p4se
+    T = BinaryValue(F)
     a, b = T(1.5), T(0.25)
     Add(a, b); Exp(a); FMA(a, b, a)
     T(1.3); T(1.3f0); T(3); convert(T, 1.3); convert(T, 0x03)   # warm the constructors too
@@ -170,6 +173,12 @@ end
     # taking Convert's BigFloat route
     @test (@allocated T(3)) == 0
     @test (@allocated convert(T, 0x03)) == 0
+    # the format-alias spelling introduced with improveapi.md §4.1.2 is one
+    # inlined delegation to the same seam, so it allocates nothing either
+    F(1.3); F(1.3f0); F(3); F(0x03)
+    @test (@allocated F(1.3)) == 0
+    @test (@allocated F(3)) == 0
+    @test F(1.3) === T(1.3) && F(0x03) === T(0x03)
     let saved = DefaultProjection()
         try
             DefaultProjection!(RTZ_SF)

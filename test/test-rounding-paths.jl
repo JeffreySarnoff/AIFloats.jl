@@ -18,7 +18,10 @@ rs(μ) = isstochastic(μ) ? (nrandbits(μ) <= 3 ? collect(0:(2^nrandbits(μ) - 1
 function cells()
     seen = Set{Tuple{Int, Int}}()
     out = Tuple{Int, Int}[]
-    for (_, BV) in AIFloats._NAMED
+    for (_, F) in AIFloats._NAMED
+        # _NAMED holds FORMAT types (improveapi.md §4.1.2); these
+        # assertions are about the datum type
+        BV = BinaryValue(F)
         c = (Int(PrecisionOf(BV)), ExponentBiasOf(BV))
         c in seen || (push!(seen, c); push!(out, c))
     end

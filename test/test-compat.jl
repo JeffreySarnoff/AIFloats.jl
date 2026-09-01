@@ -106,7 +106,10 @@ end
 end
 
 @testset "AbstractFloat contract: constants on all 504 formats" begin
-    for (_, BV) in AIFloats._NAMED
+    for (_, F) in AIFloats._NAMED
+        # _NAMED holds FORMAT types (improveapi.md §4.1.2); these
+        # assertions are about the datum type
+        BV = BinaryValue(F)
         @test iszero(decode(zero(BV))) && codepoint(zero(BV)) == 0
         @test isone(decode(one(BV)))
         @test BigFloat(decode(eps(BV))) == 2.0^(1 - Int(PrecisionOf(BV)))

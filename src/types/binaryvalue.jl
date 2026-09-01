@@ -124,6 +124,14 @@ Binary{8, 4, ±, ⏥}
 ```
 """
 BinaryFormatOf(::Type{BinaryValue{F,U}}) where {F,U} = F
+# A format normalizes to itself, so internal code has ONE total query for "what
+# format is this?" whatever it is handed (improveapi.md §4.3.3). Without it,
+# every such call site needs a branch, and the branch is what eventually gets
+# written wrongly. Placed AFTER the documented method on purpose: a docstring
+# attaches to the next method defined, so leading with these would silently
+# retarget it and the `@ref` in docs/src/50-status.md would stop resolving.
+BinaryFormatOf(::Type{F}) where {F<:Binary} = F
+BinaryFormatOf(f::Binary) = typeof(f)
 BinaryFormatOf(::Type{BinaryValue{F}}) where {F} = F
 BinaryFormatOf(x::BinaryValue) = BinaryFormatOf(typeof(x))
 # the bottom type satisfies `<: BinaryValue` and has no format; a stated

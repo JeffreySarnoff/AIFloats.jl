@@ -143,19 +143,24 @@ end
 # for a different type parameter and buys nothing.
 @setup_workload begin
     @compile_workload begin
-        T = Binary8p4se; S = Binary8p3se
-        a, b = T(1.5), T(0.25)
-        Add(T, RTE_SN, a, b); Multiply(T, RTE_SF, a, b)
-        Exp(T, RTE_SN, a); Convert(S, RTE_SN, a)
+        # F/S are FORMAT types (the named aliases); T is the datum type. Keeping
+        # the two apart is required now that the aliases name formats, and it is
+        # also what the workload should have said all along (improveapi.md §4.1.2,
+        # Phase 1.9).
+        F = Binary8p4se; S = Binary8p3se
+        T = BinaryValue(F); SV = BinaryValue(S)
+        a, b = F(1.5), F(0.25)
+        Add(F, RTE_SN, a, b); Multiply(F, RTE_SF, a, b)
+        Exp(F, RTE_SN, a); Convert(S, RTE_SN, a)
         Add(a, b); Exp(a)
         a + b; exp(b); fma(a, b, a); min(a, b); a < b; round(a); eps(a)
-        # the value constructors: T(::Float64) is the single most common entry
-        # point and was 15 ms of first-call latency uncompiled
-        T(1.3); T(1.3f0); T(3); convert(T, 1.3)
+        # the value constructors, in both spellings: the format alias is the
+        # convenient one, the datum type is what an array element must be
+        F(1.3); F(1.3f0); F(3); T(1.3); convert(T, 1.3)
         # one Group B ladder row — the enclosure machinery is shared, and Log
         # alone was ~103 ms cold
-        Log(T, RTE_SN, a); Log(a); log(a)
-        get_table(:Exp, BinaryFormatOf(T), BinaryFormatOf(T), RTE_SN)
+        Log(F, RTE_SN, a); Log(a); log(a)
+        get_table(:Exp, F, F, RTE_SN)
         A = [a, b, a, b]; B = [b, a, b, a]; d = similar(A)
         vmap!(d, Val(:Add), RTE_SN, A, B)
         vmap!(d, Val(:Exp), RTE_SN, A)
@@ -163,24 +168,24 @@ end
         # the broadcast route (arrays/broadcast.jl): binary, unary, and the
         # in-place form all land in distinct copyto! methods
         A .+ B; exp.(A); d .= A .+ B
-        ScaledAdd(T, RTE_SN, one(S), a, one(S), b)
-        bx = Block(one(S), (a, b, a, b)); by = Block(one(S), (b, a, b, a))
-        BlockDotProduct(T, RTE_SN, bx, by)
-        BlockAdd(T, RTE_SN, bx, by, one(S))
-        BlockReduceAdd(T, RTE_SN, bx)          # the Dyadic accumulator path
+        ScaledAdd(F, RTE_SN, one(SV), a, one(SV), b)
+        bx = Block(one(SV), (a, b, a, b)); by = Block(one(SV), (b, a, b, a))
+        BlockDotProduct(F, RTE_SN, bx, by)
+        BlockAdd(F, RTE_SN, bx, by, one(SV))
+        BlockReduceAdd(F, RTE_SN, bx)          # the Dyadic accumulator path
         # Block{B} specializes on B — precompiling B = 4 does nothing for a
         # B = 16 caller. Cover the two MX-standard block sizes; anything else
         # a caller picks compiles on first use, as it must.
         for BSZ in (16, 32)
-            m = Block(one(S), ntuple(_ -> a, BSZ))
-            n = Block(one(S), ntuple(_ -> b, BSZ))
-            BlockReduceAdd(T, RTE_SN, m); BlockDotProduct(T, RTE_SN, m, n)
+            m = Block(one(SV), ntuple(_ -> a, BSZ))
+            n = Block(one(SV), ntuple(_ -> b, BSZ))
+            BlockReduceAdd(F, RTE_SN, m); BlockDotProduct(F, RTE_SN, m, n)
         end
         collect(PackedVector(A))
         for WF in (Binary16p5se, Binary16p1uf)          # rung 2, rung 3
             w1 = WF(1.5); w2 = WF(0.25)
             Add(WF, RTE_SN, w1, w2); Multiply(WF, RTE_SF, w1, w2)
-            Exp(WF, RTE_SN, w1); Convert(T, RTE_SN, w1)
+            Exp(WF, RTE_SN, w1); Convert(F, RTE_SN, w1)
             decode(w1); codepoint(w1); w1 < w2
         end
         empty_tables!()

@@ -14,7 +14,7 @@ storage unit.
 ```@example advanced_pack
 using AIFloats
 
-T = Binary5p2se
+T = BinaryValue(Binary5p2se)
 A = T[0.0, 0.5, 1.0, 1.5, 2.0, 3.0]
 P = PackedVector(A)
 
@@ -26,7 +26,7 @@ Packed unary operations return an ordinary vector:
 ```@example advanced_packed_op
 using AIFloats
 
-T = Binary5p2se
+T = BinaryValue(Binary5p2se)
 A = T[0.0, 0.5, 1.0, 1.5, 2.0, 3.0]
 P = PackedVector(A)
 F = BinaryFormatOf(T)
@@ -47,8 +47,8 @@ using AIFloats
 S = Binary8p1uf   # 8-bit scale, 1 bit of precision
 E = Binary5p2se   # 5-bit elements, 2 bits of precision
 
-bx = Block(one(S), (E(1.5), E(0.25), E(-0.5), E(2.0)))
-by = Block(one(S), (E(0.5), E(0.75), E(1.0), E(-1.0)))
+bx = Block(S(1.0), (E(1.5), E(0.25), E(-0.5), E(2.0)))
+by = Block(S(1.0), (E(0.5), E(0.75), E(1.0), E(-1.0)))
 
 (blocksize(bx), scaleformat(bx), elemformat(bx))
 ```
@@ -61,9 +61,9 @@ using AIFloats
 
 S = Binary8p1uf
 E = Binary5p2se
-bx = Block(one(S), (E(1.5), E(0.25), E(-0.5), E(2.0)))
-by = Block(one(S), (E(0.5), E(0.75), E(1.0), E(-1.0)))
-bz = BlockAdd(E, RTE_SN, bx, by, one(S))
+bx = Block(S(1.0), (E(1.5), E(0.25), E(-0.5), E(2.0)))
+by = Block(S(1.0), (E(0.5), E(0.75), E(1.0), E(-1.0)))
+bz = BlockAdd(E, RTE_SN, bx, by, S(1.0))
 (bz, AIFloats.blockdecode(bz))
 ```
 
@@ -83,8 +83,8 @@ using AIFloats
 
 S = Binary8p1uf
 E = Binary5p2se
-bx = Block(one(S), (E(1.5), E(0.25), E(-0.5), E(2.0)))
-by = Block(one(S), (E(0.5), E(0.75), E(1.0), E(-1.0)))
+bx = Block(S(1.0), (E(1.5), E(0.25), E(-0.5), E(2.0)))
+by = Block(S(1.0), (E(0.5), E(0.75), E(1.0), E(-1.0)))
 (
     sum = BlockReduceAdd(E, RTE_SN, bx),
     product = BlockReduceMultiply(E, RTE_SN, bx),
@@ -100,7 +100,7 @@ using AIFloats
 S = Binary8p1uf
 E = Binary5p2se
 values = (E(0.5), E(1.0), E(1.5), E(2.0))
-block = ConvertToBlock(E, RTE_SN, values, one(S))
+block = ConvertToBlock(E, RTE_SN, values, S(1.0))
 roundtrip = ConvertFromBlock(E, RTE_SN, block)
 (block, roundtrip)
 ```
@@ -113,9 +113,9 @@ using AIFloats
 
 S = Binary8p1uf
 E = Binary5p2se
-bx = Block(one(S), (E(1.5), E(0.25), E(-0.5), E(2.0)))
-by = Block(one(S), (E(0.5), E(0.75), E(1.0), E(-1.0)))
-bz = BlockAdd(E, RTE_SN, bx, by, one(S))
+bx = Block(S(1.0), (E(1.5), E(0.25), E(-0.5), E(2.0)))
+by = Block(S(1.0), (E(0.5), E(0.75), E(1.0), E(-1.0)))
+bz = BlockAdd(E, RTE_SN, bx, by, S(1.0))
 blocks = [bx, by, bz]
 storage = BlockVector(blocks)
 (size(storage), storage[2] == by)

@@ -82,7 +82,10 @@ end
     @test rung(Val(:Abs), W) === HeadF128()                    # operand bound dominates
     @test rung(Val(:Multiply), W, Binary(16, 1, SIGNED, EXTENDED)) === HeadExact()
     @test rung(Val(:Multiply), F8, Binary(16, 1, SIGNED, EXTENDED)) === HeadExact()
-    for (_, BV) in AIFloats._NAMED
+    for (_, F) in AIFloats._NAMED
+        # _NAMED holds FORMAT types (improveapi.md §4.1.2); these
+        # assertions are about the datum type
+        BV = BinaryValue(F)
         F = BinaryFormatOf(BV)
         @test rung(Val(:Multiply), F, F) === rung(F)
         @test AIFloats.carriertype(rung(F)) === AIFloats.datumcarrier(F)

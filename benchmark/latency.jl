@@ -7,8 +7,8 @@ section("latency — load and first call (fresh process each)")
 const _LAT_PROBE = raw"""
 t0 = time_ns(); using AIFloats; t1 = time_ns()
 println("load\t", (t1 - t0) / 1e6)
-const T = Binary8p4se
-const S = Binary8p3se
+const T = BinaryValue(Binary8p4se)
+const S = BinaryValue(Binary8p3se)
 const F = BinaryFormatOf(T)
 macro first(label, ex)
     quote

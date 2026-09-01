@@ -3,7 +3,7 @@
 
 section("scalar — codec and projection")
 
-const T8  = Binary8p4se                      # rung 1, UInt8 code, table decode
+const T8  = BinaryValue(Binary8p4se)                      # rung 1, UInt8 code, table decode
 const T12 = BinaryValue(Binary(12, 6, SIGNED, EXTENDED))   # rung 1, UInt16 code
 const T16 = BinaryValue(Binary(16, 4, SIGNED, EXTENDED))   # rung 2, Float128 carrier
 const F8, F12, F16 = BinaryFormatOf(T8), BinaryFormatOf(T12), BinaryFormatOf(T16)

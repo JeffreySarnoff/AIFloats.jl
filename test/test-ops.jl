@@ -182,17 +182,17 @@ end
 end
 
 @testset "rand / randn" begin
-    v = rand(Xoshiro(7), Binary8p4uf)
-    @test v isa Binary8p4uf
+    v = rand(Xoshiro(7), BinaryValue(Binary8p4uf))
+    @test v isa BinaryValue(Binary8p4uf)
     @test 0.0 <= decode(v) < 1.0
-    @test rand(Xoshiro(7), Binary8p4uf) === v                    # reproducible
-    A = rand(Xoshiro(9), Binary8p4uf, 100)
-    @test eltype(A) === Binary8p4uf
+    @test rand(Xoshiro(7), BinaryValue(Binary8p4uf)) === v                    # reproducible
+    A = rand(Xoshiro(9), BinaryValue(Binary8p4uf), 100)
+    @test eltype(A) === BinaryValue(Binary8p4uf)
     @test all(x -> 0.0 <= decode(x) < 1.0, A)
-    r = randn(Xoshiro(3), Binary8p4se)
+    r = randn(Xoshiro(3), BinaryValue(Binary8p4se))
     @test isfinite(decode(r))                                    # RTE_SF clamps tails
-    @test randn(Xoshiro(3), Binary8p4se) === r
-    @test_throws ArgumentError randn(Binary8p4uf)
+    @test randn(Xoshiro(3), BinaryValue(Binary8p4se)) === r
+    @test_throws ArgumentError randn(BinaryValue(Binary8p4uf))
     # stochastic conversion draws from the supplied rng: seeded streams agree
     a = Convert(Binary8p4se, Projection(AIFloats.ρRSA(8), SF), 1.3; rng = Xoshiro(1))
     b = Convert(Binary8p4se, Projection(AIFloats.ρRSA(8), SF), 1.3; rng = Xoshiro(1))

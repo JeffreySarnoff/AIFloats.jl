@@ -98,7 +98,7 @@ transcendental result is assumed to be correctly rounded.
 ```@example technical_codes
 using AIFloats
 
-T = Binary8p4se
+T = BinaryValue(Binary8p4se)
 samples = T[T(UInt8(c)) for c in (0x00, 0x01, 0x40, 0x7f, 0x80, 0xff)]
 [(codepoint(x), decode(x), Class(x), AIFloats.order_key(x)) for x in samples]
 ```
@@ -108,7 +108,7 @@ Sorting uses the draft's NaN-first total order:
 ```@example technical_sort
 using AIFloats
 
-T = Binary8p4se
+T = BinaryValue(Binary8p4se)
 samples = T[T(UInt8(c)) for c in (0x00, 0x01, 0x40, 0x7f, 0x80, 0xff)]
 sort(samples)
 ```

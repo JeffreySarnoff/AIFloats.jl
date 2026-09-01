@@ -5,8 +5,12 @@ using Test
     F = AIFloats.Binary(8, 4, SIGNED, FINITE)
     BV = BinaryValue(F)
 
-    # the alias, the normalized spelling, and the full type coincide
-    @test BV === Binary8p4sf
+    # the alias names the FORMAT (improveapi.md §4.1.2); the datum type is
+    # reached through it, and the two must not be confused
+    @test Binary8p4sf === F
+    @test BV === BinaryValue(Binary8p4sf)
+    @test !(Binary8p4sf <: BinaryValue)
+    @test Binary8p4sf(1.5) isa BV          # the convenient constructor survives
     @test BV === BinaryValue{F, UInt8}
     @test BinaryValue{F}(0x45) === BV(0x45)
     @test BinaryValue(F, 0x45) === BV(0x45)
@@ -168,17 +172,21 @@ end
     finally
         set_show_style!(old)
     end
-    # the datum type shows as its alias name
-    @test sprint(show, Binary8p4sf) == "Binary8p4sf"
+    # the alias names the format, so the DATUM type must not print as that
+    # name -- it would name something that evaluates to a different type. It
+    # prints as the expression that reproduces it, and round-trips.
+    @test sprint(show, BinaryValue(Binary8p4sf)) == "BinaryValue(Binary8p4sf)"
+    @test eval(Meta.parse(sprint(show, BinaryValue(Binary8p4sf)))) === BinaryValue(Binary8p4sf)
 end
 
 @testset "Aliases" begin
-    @test Binary8p4se === BinaryValue(AIFloats.Binary(8, 4, SIGNED, EXTENDED))
-    @test Binary3p1uf === BinaryValue(AIFloats.Binary(3, 1, UNSIGNED, FINITE))
+    @test Binary8p4se === AIFloats.Binary(8, 4, SIGNED, EXTENDED)
+    @test Binary3p1uf === AIFloats.Binary(3, 1, UNSIGNED, FINITE)
+    @test all(n -> AIFloats._NAMED[n] <: Binary, keys(AIFloats._NAMED))
     @test !isdefined(AIFloats, :binary8p4se)
     # K > 8 aliases are defined but not exported
     @test !isdefined(Main, :Binary16p8se)
-    @test AIFloats.Binary16p8se === BinaryValue(AIFloats.Binary(16, 8, SIGNED, EXTENDED))
+    @test AIFloats.Binary16p8se === AIFloats.Binary(16, 8, SIGNED, EXTENDED)
     @test AIFloats._NAMED[:Binary16p1uf] === AIFloats.Binary16p1uf
     @test length(AIFloats._NAMED) == 504
     @test formatname(Binary8p4se) === :Binary8p4se
