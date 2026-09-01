@@ -36,9 +36,9 @@ by SmallFloats' flat-file organization.
 3. **One new core type, not a parallel hierarchy.** The datum type `BinaryValue`
    (§4) is the single structural addition at the type level. Everything else is
    functions and traits over `Binary` and `BinaryValue`.
-4. **Every accessor and predicate works on both the type and an instance** — the
-   promise the docs already make for `Binary` extends to every new trait, and the
-   value-flavored subset extends to `BinaryValue` datums.
+4. **Every accessor and predicate works on the format type, the datum type, and
+   a datum.** *(Superseded 2026-09-01 — see §9.2a. This originally read "on both
+   the type and an instance"; formats no longer have instances at all.)*
 5. **The projection engine is the only writer of code points** (SmallFloats
    invariant 1). Every constructor-from-value, every operation, every table entry
    goes through `project`.
@@ -390,7 +390,17 @@ anywhere in `src/` or `test/`, so nothing propagated, no test changed, and the
 benchmark suite was unmoved. The API break is the removal of the exported name
 `BinaryFloat`, which named the wrong thing and was otherwise inert.
 
-**9.2a Type-canonical vs value-canonical, and the bridge rule (2026-09-01).**
+**9.2a Type-canonical vs value-canonical, and why the bridge rule is gone
+(2026-09-01, revised the same day by improveapi3.md Phase 1c).**
+
+> **Superseded.** The rule below was the right fix for a surface that had two
+> spellings of a format. improveapi3 removed the second spelling instead:
+> `Binary{K,P,S,D}` suppresses its zero-argument constructor, `F()` raises, and
+> every `::Binary` instance method is deleted. There is no bridge left to write
+> wrongly. The original text is kept because the *reasoning* is what justifies
+> the removal, and because the failure it describes is a real one that any
+> future two-spelling surface will reproduce.
+
 Two opposite conventions live in the package, and both are right:
 
 - A **format is a TYPE**. `Binary(K,P,S,D)` returns `Binary{K,P,S,D}`, not an
@@ -402,10 +412,11 @@ Two opposite conventions live in the package, and both are right:
   `Type{Projection{R,S}}` — and is not a licence to double every other
   signature.
 
-Formats are nonetheless instantiable, and every format accessor accepts an
-instance. That must stay total. A PARTIAL instance surface is worse than either
-extreme, because the missing method is discovered as a `MethodError` and
-"fixed" by writing the bridge, and the obvious bridge is an infinite recursion:
+*(Original text follows.)* Formats are nonetheless instantiable, and every
+format accessor accepts an instance. That must stay total. A PARTIAL instance
+surface is worse than either extreme, because the missing method is discovered
+as a `MethodError` and "fixed" by writing the bridge, and the obvious bridge is
+an infinite recursion:
 
 ```julia
 BinaryValue(fmt::Binary, code) = BinaryValue(fmt, code)              # StackOverflowError
@@ -422,6 +433,20 @@ it is a `StackOverflowError` rather than an ambiguity.
 `test-binary-format.jl` asserts the surface is total in both directions — which
 is how the missing `validformat(::Type{Binary{...}})` was found, the mirror of
 the missing `BinaryValue(::Binary, code)`.
+
+**What replaced it.** Keeping an instance surface total is a standing
+obligation on every method anyone adds. Removing the instances discharges it
+once. `Binary{K,P,S,D}` now declares an inner zero-argument constructor that
+throws — which is what suppresses Julia's generated one — and `F()` says so by
+name, offering `F` for the format, `F(x)` for the number, `fromcode(F, c)` for
+the code point, and `BinaryValue(F)` for the datum type. Thirty-one one-hop
+`::Binary` adapters went with it. `test-binary-format.jl`'s testset became "a
+format is type-level information: one spelling, no instances", and asserts that
+every accessor is `applicable` to the format type.
+
+The type/value split in the bullets above still stands, and so does the reason:
+a format must be a type because it is `BinaryValue{F,U}`'s first parameter,
+while a projection must be a value because it is a runtime argument.
 
 **9.3 Stochastic N without breaking the 27 constants.** `ρRSA{N}` etc. carry N in
 the type (tabulability and randomness budget must be static). The existing

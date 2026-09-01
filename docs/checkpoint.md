@@ -24,7 +24,66 @@ green; anything short of that is recorded as in progress with what is missing.
 | 5 — table service | **done** | coherent snapshots under concurrency |
 | 6 — packed serialization and collections | **done** | round trips, aliasing, Aqua ambiguities |
 | 7 — registry validation and error taxonomy | **done** | one validation per call, not per element |
-| 8 — residue removal and consumer alignment | not started | zero residual deleted forms |
+| 8 — residue removal and consumer alignment | **done** | zero residual deleted forms |
+
+## Phase 8 — done (2026-09-01)
+
+**Residue scan.** Every deleted form is at zero in live code; the only remaining
+matches are comments explaining the removal and negative assertions pinning it:
+
+| Form | Live occurrences |
+|---|---|
+| `BinarySpecifier`, `_formattype` | 0 |
+| `::Binary` instance methods | 0 |
+| `F()` format tokens | 0 |
+| public `rawvalue` | 0 |
+| projection setters | 0 (3 `@test !isdefined` + 1 docstring mention) |
+| `table_bytes`/`table_count`/`ternary_count`/`table_keys` | 0 (1 `@test !isdefined` loop + 1 comment) |
+| `PackedVector{T}(words, n)` | 0 (1 `@test_throws MethodError`) |
+
+**`docs/structuralplan.md` is revised, not silently left wrong.** It recorded
+the total instance surface and the bridge rule as *deliberate design*; leaving
+that would have made the documented interface contradict itself. Invariant 4
+and §9.2a are now marked superseded, with the original text kept — the
+reasoning is what justifies the removal, and the failure it describes (a bridge
+written as a self-recursion Julia cannot diagnose) is real and will recur in
+any future two-spelling surface. A "What replaced it" note states the trade
+plainly: keeping an instance surface total is a standing obligation on every
+method anyone adds; removing the instances discharges it once.
+
+**Examples.** Every code literal is now visibly introduced by `fromcode` —
+`40-technical.md`'s `T[T(UInt8(c)) for c in …]` was the last site where an
+unsigned literal silently meant a code point. `40-technical.md`'s cache example
+uses the one `table_stats()` snapshot, and `30-advanced.md` gained a portable
+wire-form section.
+
+**Version 0.2.0 and a CHANGELOG that names every break** with its direct
+replacement, grouped by the reason for the break, plus a five-step migration
+checklist. The entry states the one thing a reader most needs: the `Unsigned`
+change is the most likely to be *silently* wrong, because both spellings still
+compile — `T(codepoint(y))` used to reinterpret and now converts. Classify each
+site; do not rewrite mechanically.
+
+---
+
+# Final verification (2026-09-01)
+
+**Full suite, all 16 focused files: green.** 38,518,000+ assertions, zero
+failures.
+
+| File | Assertions | Time |
+|---|---:|---:|
+| `rounding-paths` | 35,538,086 | 1m57s |
+| `compat` | 1,833,844 | 48s |
+| `ops` | 913,318 | 1m41s |
+| `blocks` | 26,391 | 3m09s |
+| `fastpaths` | 7,787 | 2m42s |
+| `tables` | 1,056 | 8s |
+| `governance` | 381 | 5s |
+| `singletons` | 334 | 3s |
+| `kernels` | 197 | 16s |
+| `quality` (Aqua + JET) | 35 | 40s |
+| plus `binary-format`, `binaryvalue`, `traits`, `codec`, `dyadic`, `projection` | | |
 
 ## Phase 7 — done (2026-09-01)
 

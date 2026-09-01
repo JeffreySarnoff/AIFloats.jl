@@ -60,10 +60,24 @@ signature, and `threshold` is the count required to earn its table. Supplying
 `nelems` asks what a future call of that size would do without incrementing
 `cumulative` or changing the cache.
 
+One snapshot answers both "how many" and "how big", and the two are guaranteed
+to describe the same moment — the reason `table_stats` exists rather than a
+pair of separate queries:
+
 ```@example technical_cache
 using AIFloats
 
-(AIFloats.table_count(), AIFloats.table_bytes())
+s = AIFloats.table_stats()
+(s.entries, s.bytes, s.by_arity)
+```
+
+`AIFloats.table_entries()` gives the same snapshot per entry, naming format
+types and the mode names you write:
+
+```@example technical_cache
+AIFloats.empty_tables!()
+AIFloats.get_table(:Negate, Binary(3, 2, SIGNED, FINITE), Binary(3, 2, SIGNED, FINITE), RTE_SN)
+AIFloats.table_entries()
 ```
 
 ## Compare the fast enclosure with the rigorous ladder
@@ -99,7 +113,7 @@ transcendental result is assumed to be correctly rounded.
 using AIFloats
 
 T = BinaryValue(Binary8p4se)
-samples = T[T(UInt8(c)) for c in (0x00, 0x01, 0x40, 0x7f, 0x80, 0xff)]
+samples = T[fromcode(T, c) for c in (0x00, 0x01, 0x40, 0x7f, 0x80, 0xff)]
 [(codepoint(x), decode(x), Class(x), AIFloats.order_key(x)) for x in samples]
 ```
 
@@ -109,7 +123,7 @@ Sorting uses the draft's NaN-first total order:
 using AIFloats
 
 T = BinaryValue(Binary8p4se)
-samples = T[T(UInt8(c)) for c in (0x00, 0x01, 0x40, 0x7f, 0x80, 0xff)]
+samples = T[fromcode(T, c) for c in (0x00, 0x01, 0x40, 0x7f, 0x80, 0xff)]
 sort(samples)
 ```
 

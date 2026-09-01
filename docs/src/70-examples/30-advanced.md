@@ -37,6 +37,32 @@ negated = vmap(:Negate, F, RTE_SN, P)
 Use packed storage to reduce memory traffic or retained size, not automatically
 for compute speed; bit extraction has a cost.
 
+### Serialize packed storage portably
+
+`packedwords`/`packedbytes` and their inverses are the wire forms. Both are
+*logical* — defined on the bit stream, not on this host's byte order — so what
+one machine writes another reads. The byte form is the minimal `cld(n*K, 8)`
+bytes and is the shorter of the two whenever the payload does not fill its last
+64-bit word:
+
+```@example advanced_pack_wire
+using AIFloats
+
+T = BinaryValue(Binary5p2se)
+A = T[0.0, 0.5, 1.0, 1.5, 2.0, 3.0]
+P = PackedVector(A)
+
+bytes = AIFloats.packedbytes(P)
+back = AIFloats.packedfrombytes(T, bytes, length(A))
+
+(length(bytes), 8 * length(AIFloats.packedwords(P)), collect(back) == A)
+```
+
+Both readers validate: a wrong length is a `DimensionMismatch`, and nonzero
+padding in the unused high bits of the final unit is an `ArgumentError`. A
+reader cannot tell a corrupt stream from a differently-conventioned writer, so
+it refuses rather than guessing.
+
 ## Build shared-scale blocks
 
 A [`Block`](@ref) combines one scale datum with a fixed tuple of element datums.
