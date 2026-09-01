@@ -38,6 +38,11 @@ domain `D`.
 This returns the parameterized **type**, not an instance. Append `()` when you need a value.
 Invalid combinations throw an `ArgumentError` — see [`validformat`](@ref) for the rules.
 
+The type is the canonical spelling: it is what [`BinaryValue`](@ref) takes as its first
+parameter. An instance is accepted everywhere a format is, and every accessor and
+constructor answers identically for both — see `docs/structuralplan.md` §9.2a for why that
+surface must stay total, and for the rule any new instance-form method has to follow.
+
 # Examples
 
 ```jldoctest
@@ -257,6 +262,7 @@ ERROR: ArgumentError: Invalid format: K=8, P=8, S=SIGNED, D=FINITE
 validformat(K::I, P::I, S::Union{Signedness,Bool}, D::Union{Domain,Bool}) where {I<:Integer} =
      ((KMIN <= K <= KMAX) && (P > 0) && (P <= K - convert(Bool, S)) && (S isa Signedness || S isa Bool) && (D isa Domain || D isa Bool)) ? nothing : throw(ArgumentError("Invalid format: K=$K, P=$P, S=$S, D=$D"))
 
+validformat(::Type{Binary{K,P,S,D}}) where {K,P,S,D} = validformat(K, P, S, D)
 validformat(b::Binary{K,P,S,D}) where {K,P,S,D} = validformat(K, P, S, D)  
 
 # format-level accessors

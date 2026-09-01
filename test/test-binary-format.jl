@@ -190,3 +190,52 @@ end
     # the name that described the old, inverted hierarchy is gone
     @test !isdefined(AIFloats, :BinaryFloat)
 end
+
+@testset "format type vs format instance: one convention, no holes" begin
+    # A format is canonically a TYPE: Binary(K,P,S,D) returns one, and it must,
+    # because it is BinaryValue{F,U}'s first parameter. Instances are still
+    # constructible and every accessor takes one. This testset pins that the
+    # instance surface has NO HOLES, because a hole is what invites a bridge to
+    # be written wrongly -- see the recursion note in types/binaryvalue.jl.
+    A = AIFloats
+    for F in (Binary(5, 3, SIGNED, FINITE), Binary(8, 4, SIGNED, EXTENDED),
+              Binary(16, 5, SIGNED, EXTENDED), Binary(4, 1, UNSIGNED, FINITE))
+        i = F()
+        @test i isa F && typeof(i) === F
+        # every accessor answers identically for the type and for an instance
+        for f in (BitwidthOf, PrecisionOf, SignednessOf, DomainOf, CodeType, ValueType,
+                  is_signed, is_unsigned, is_finite, is_extended,
+                  TrailingSignificantBitsOf, ExponentBiasOf, ExponentBitwidthOf,
+                  A.codemask, A.signmask, A.rung, A.datumcarrier, A.promotecarrier,
+                  A.bigprec, A.orderkeytype, A.decodepolicy, A.validformat)
+            @test f(i) == f(F)
+        end
+        # the constructors too -- these were the last hole
+        @test BinaryValue(i) === BinaryValue(F)
+        for c in (0x00, 0x01, 0x05)
+            u = CodeType(F)(c)
+            @test BinaryValue(i, u) === BinaryValue(F, u)
+        end
+    end
+
+    # The bridges must TERMINATE. `typeof` changes the argument's kind, so the
+    # forwarded call lands on the ::Type{F} method and cannot re-enter. Written
+    # instead as a delegation that hands back a Binary value, this is an
+    # infinite recursion Julia cannot warn about -- the signature matches itself
+    # -- and it presents as StackOverflowError, not as an ambiguity. A timeout
+    # is not needed: if these recurse the test process dies, which is the signal.
+    let F = Binary(5, 3, SIGNED, FINITE), i = F()
+        @test (@inferred BinaryValue(i, 0x05)) isa BinaryValue
+        @test @inferred(A.bigprec(i)) isa Integer
+    end
+
+    # The singleton families run the OPPOSITE convention -- the value is
+    # canonical -- and that is role-justified, not an oversight: they are
+    # runtime arguments, while a format is a type parameter. Their types appear
+    # only where dispatch or tabulability needs them, which is why isstochastic
+    # deliberately answers for both and its neighbours do not.
+    @test is_signed(SIGNED) && !is_signed(UNSIGNED)
+    @test isstochastic(RSA) && isstochastic(AIFloats.ρRSA)      # value and type, on purpose
+    @test isstochastic(RSA_SN) && isstochastic(typeof(RSA_SN))
+    @test !isstochastic(RTE) && !isstochastic(RTE_SN)
+end

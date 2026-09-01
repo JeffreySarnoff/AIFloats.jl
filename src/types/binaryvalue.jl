@@ -49,6 +49,24 @@ BinaryValue{F}(code::Unsigned) where {F<:Binary} = BinaryValue{F, CodeType(F)}(c
 BinaryValue(::Type{F}) where {F<:Binary} = BinaryValue{F, CodeType(F)}
 BinaryValue(::Type{F}, code::Unsigned) where {F<:Binary} = BinaryValue{F, CodeType(F)}(code)
 
+# ---- accepting a format INSTANCE ---------------------------------------------
+# A format is canonically a TYPE here — `Binary(K,P,S,D)` returns one, and it has
+# to, because it is `BinaryValue{F,U}`'s first parameter. Instances are still
+# constructible (`Binary(5,3,SIGNED,FINITE)()`) and every format accessor
+# already accepts one, so these two were the last hole in that surface. A hole
+# is worse than either extreme: it is what invites the fix below to be written
+# wrongly.
+#
+# THE RULE, and the reason these are one-liners: an instance-form method must
+# change its argument's KIND, never merely its value. `typeof` does that, so the
+# forwarded call provably lands on the `::Type{F}` method above and cannot
+# re-enter this one. Delegating through anything that hands back a `Binary`
+# value instead — including an identity-like helper — is an infinite recursion
+# that Julia cannot warn about, because the signature legitimately matches
+# itself. It is a StackOverflowError, not an ambiguity.
+BinaryValue(fmt::Binary) = BinaryValue(typeof(fmt))
+BinaryValue(fmt::Binary, code::Unsigned) = BinaryValue(typeof(fmt), code)
+
 """
     codepoint(x::BinaryValue)
 

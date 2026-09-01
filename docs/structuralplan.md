@@ -390,6 +390,39 @@ anywhere in `src/` or `test/`, so nothing propagated, no test changed, and the
 benchmark suite was unmoved. The API break is the removal of the exported name
 `BinaryFloat`, which named the wrong thing and was otherwise inert.
 
+**9.2a Type-canonical vs value-canonical, and the bridge rule (2026-09-01).**
+Two opposite conventions live in the package, and both are right:
+
+- A **format is a TYPE**. `Binary(K,P,S,D)` returns `Binary{K,P,S,D}`, not an
+  instance, because the format has to be `BinaryValue{F,U}`'s first parameter.
+- A **projection component is a VALUE**. `SIGNED`, `RTE`, `SN`, `RTE_SN` are
+  constants passed as runtime arguments; their types surface only where
+  dispatch or tabulability needs them. `isstochastic` answering for both a
+  value and a type is deliberate — table policy asks the question of
+  `Type{Projection{R,S}}` — and is not a licence to double every other
+  signature.
+
+Formats are nonetheless instantiable, and every format accessor accepts an
+instance. That must stay total. A PARTIAL instance surface is worse than either
+extreme, because the missing method is discovered as a `MethodError` and
+"fixed" by writing the bridge, and the obvious bridge is an infinite recursion:
+
+```julia
+BinaryValue(fmt::Binary, code) = BinaryValue(fmt, code)              # StackOverflowError
+BinaryValue(fmt::Binary, code) = BinaryValue(some_identity(fmt), c)  # StackOverflowError
+```
+
+Julia cannot warn about either: the signature legitimately matches itself, so
+it is a `StackOverflowError` rather than an ambiguity.
+
+> **Rule.** An instance-form method must change its argument's KIND, not merely
+> its value: `f(x::T) = f(typeof(x))`. Never delegate through anything that
+> hands back the same kind you were given.
+
+`test-binary-format.jl` asserts the surface is total in both directions — which
+is how the missing `validformat(::Type{Binary{...}})` was found, the mirror of
+the missing `BinaryValue(::Binary, code)`.
+
 **9.3 Stochastic N without breaking the 27 constants.** `ρRSA{N}` etc. carry N in
 the type (tabulability and randomness budget must be static). The existing
 `RSA`, `RSA_SF`, … remain **instances** at the default N = 8, so all current
