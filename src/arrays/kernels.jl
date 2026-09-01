@@ -214,6 +214,9 @@ end
 @inline vmap(op::Symbol, fr::Type{<:BinaryValue}, ρ::Projection,
              As::AbstractArray{<:BinaryValue}...; rng::MaybeRNG = nothing) =
     vmap(op, BinaryFormatOf(fr), ρ, As...; rng)
+@inline vmap(op::Symbol, fr::Binary, ρ::Projection,
+             As::AbstractArray{<:BinaryValue}...; rng::MaybeRNG = nothing) =
+    vmap(op, typeof(fr), ρ, As...; rng)
 
 # ---- registry-generated array surface: Op(fr, ρ, A...) mirrors the scalar
 # signature, plus the same-format convenience under the session default ρ
@@ -229,6 +232,8 @@ for op in OP_REGISTRY
             vmap($(QuoteNode(name)), fr, ρ, $(xs...); rng)
         @inline $name(fr::Type{<:BinaryValue}, ρ::Projection, $(spec...); kw...) =
             $name(BinaryFormatOf(fr), ρ, $(xs...); kw...)
+        @inline $name(fr::Binary, ρ::Projection, $(spec...); kw...) =
+            $name(typeof(fr), ρ, $(xs...); kw...)
         @inline function $name($(same...); kw...) where {T<:BinaryValue}
             ρ = DefaultProjection()                     # the speculation guard, as in scalar.jl
             ρ === RTE_SN && return $name(BinaryFormatOf(T), RTE_SN, $(xs...); kw...)
@@ -245,18 +250,31 @@ end
 Convert(fr::Type{<:Binary}, ρ::Projection, A::AbstractArray{<:BinaryValue};
         rng::MaybeRNG = nothing) = vmap(:Convert, fr, ρ, A; rng)
 
+@inline _array_convert_value(::Type{F}, ρ::Projection,
+                             x::Union{Float16,Float32,Float64,BFloat16}, R::Int) where {F<:Binary} =
+    project(F, ρ, Float64(x); R)
+@inline _array_convert_value(::Type{F}, ρ::Projection, x::Float128, R::Int) where {F<:Binary} =
+    project(F, ρ, x; R)
+@inline _array_convert_value(::Type{F}, ρ::Projection, x::BigFloat, R::Int) where {F<:Binary} =
+    project(F, ρ, x; R)
+@inline _array_convert_value(::Type{F}, ρ::Projection, x::Integer, R::Int) where {F<:Binary} =
+    Convert(F, ρ, x; R)
+
 function Convert(fr::Type{<:Binary}, ρ::Projection,
-                 A::AbstractArray{<:Union{Float16,Float32,Float64,BFloat16}};
+                 A::AbstractArray{<:Union{Float16,Float32,Float64,BFloat16,
+                                          Float128,BigFloat,Integer}};
                  rng::MaybeRNG = nothing)
     dest = similar(A, BinaryValue(fr))
-    rr = _resolve_rng(rng)                      # hoisted, as in _vmap_scalar!
+    rr = isstochastic(ρ) ? _resolve_rng(rng) : nothing
     @inbounds for i in eachindex(dest, A)
-        dest[i] = project(fr, ρ, Float64(A[i]); R = _drawR(ρ, rr, nothing))
+        dest[i] = _array_convert_value(fr, ρ, A[i], _drawR(ρ, rr, nothing))
     end
     dest
 end
 Convert(fr::Type{<:BinaryValue}, ρ::Projection, A::AbstractArray; kw...) =
     Convert(BinaryFormatOf(fr), ρ, A; kw...)
+Convert(fr::Binary, ρ::Projection, A::AbstractArray; kw...) =
+    Convert(typeof(fr), ρ, A; kw...)
 
 export vmap, vmap!
 

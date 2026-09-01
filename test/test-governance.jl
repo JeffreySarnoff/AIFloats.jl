@@ -32,6 +32,13 @@ const T5 = Binary5p2se
     @test κs == 0.0 && !exhs
     @test_throws ArgumentError measure_kappa(exact_exp, :Exp, T8, (T8,), Projection(AIFloats.ρRSA(2), SN))
     @test_throws ArgumentError measure_kappa(exact_exp, :Nope, T8, (T8,), RTE_SN)
+    @test_throws ArgumentError measure_kappa(exact_exp, :Exp, T8, (T8,), RTE_SN;
+                                             max_exhaustive = -1)
+    @test_throws ArgumentError measure_kappa(exact_exp, :Exp, T8, (T8,), RTE_SN;
+                                             max_exhaustive = 0, samples = -1)
+    @test_throws ArgumentError measure_kappa(exact_exp, :Exp, T8, (T8,), RTE_SN;
+                                             max_exhaustive = 0, samples = 0)
+    @test_throws ArgumentError measure_kappa((x, y) -> x, :Exp, T8, (T8, T8), RTE_SN)
 end
 
 @testset "FTZ worked example (draft Annex)" begin
@@ -82,12 +89,16 @@ end
     AIFloats.empty_tables!()
     AIFloats.get_table(:Exp, BinaryFormatOf(T8), BinaryFormatOf(T8), RTE_SN)
     AIFloats.get_table(:Add, BinaryFormatOf(T5), BinaryFormatOf(T5), BinaryFormatOf(T5), RTE_SN)
+    T3 = Binary3p2sf
+    AIFloats.get_table(:FMA, BinaryFormatOf(T3), BinaryFormatOf(T3),
+                       BinaryFormatOf(T3), BinaryFormatOf(T3), RTE_SN)
     c = conformance()
     @test length(c.formats) == sum(4K - 2 for K in Int(AIFloats.KMIN):Int(AIFloats.KMAX)) == 504
     @test :Binary8p4se in c.formats && :Binary16p8se in c.formats
     @test length(c.operations) == length(AIFloats.OP_REGISTRY) == 52
     @test count(o -> o.arity == 3, c.operations) == 3
-    @test length(c.cached_specializations) == 2
+    @test length(c.cached_specializations) == 3
+    @test any(k -> k isa AIFloats.TernaryKey && k.op === :FMA, c.cached_specializations)
     @test :BlockDotProduct in c.block_surface && :ScaledFMA in c.block_surface && :BlockTanh in c.block_surface
     @test length(c.block_surface) == 51 * 2 + 6
     @test any(a -> a.name === :exp_ftz_8p4 && a.exhaustive, c.approximate)
@@ -97,6 +108,7 @@ end
     @test d["package"] == "AIFloats.jl $(Base.pkgversion(AIFloats))"
     @test length(d["formats"]) == 504 && d["draft_identity"]["designation"] == "IEEE P3109/D1"
     @test any(s -> s["op"] == "Add" && s["saturation"] == "ρSN", d["cached_specializations"])
+    @test any(s -> s["op"] == "FMA" && s["f3"] !== nothing, d["cached_specializations"])
     buf = IOBuffer(); conformance_report(buf, c); rep = String(take!(buf))
     @test occursin("κ verified exhaustively", rep) && occursin("Exp⟨", rep)
     @test occursin("Scalar operations (52)", rep) && occursin("K ∈ 3:16", rep)

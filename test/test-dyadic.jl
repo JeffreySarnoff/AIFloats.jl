@@ -1,9 +1,16 @@
 using AIFloats
 using Test
+
 using Random
 using Quadmath: Float128
 using BFloat16s: BFloat16
 using AIFloats: DyadicNumbers, Dyadic, lift, rung, HeadF64, HeadF128, HeadExact, fma128, faa128
+
+@testset "constructor invariants" begin
+    @test_throws ArgumentError Dyadic(Int128(0), Int64(0), UInt8(0xff))
+    @test_throws ArgumentError Dyadic(Int128(1), Int64(0), AIFloats.DyadicNumbers.DY_NAN)
+    @test isnan(Dyadic(AIFloats.DyadicNumbers.DY_NAN))
+end
 
 # The adapted Dyadic carrier is the ORIGINAL: golden digests captured from
 # SmallFloats' DyadicNumbers (test/support/dyadic_golden.sha256) must match

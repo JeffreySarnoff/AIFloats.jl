@@ -25,6 +25,13 @@ See also [`BitwidthOf`](@ref), [`PrecisionOf`](@ref), [`SignednessOf`](@ref),
 """
 struct Binary{K,P,S,D} end
 
+# The one normalization seam for public methods that accept either canonical
+# format types or their zero-field instances. Type-based methods remain the hot
+# implementation; instance methods are one-hop adapters into them.
+const BinarySpecifier = Union{Type{<:Binary},Binary}
+@inline _formattype(::Type{F}) where {F<:Binary} = F
+@inline _formattype(f::Binary) = typeof(f)
+
 """
     Binary(K, P, S, D)
 
@@ -83,8 +90,10 @@ julia> CodeType(Binary(16, 10, SIGNED, EXTENDED))
 UInt16
 ```
 """
-CodeType(K::IntParam) = K <= IntParam(8) ? UInt8 : UInt16
-CodeType(K::Integer) = CodeType(K % IntParam)
+function CodeType(K::Integer)
+    KMIN <= K <= KMAX || throw(ArgumentError("bitwidth K must be in $(Int(KMIN)):$(Int(KMAX)), got $K"))
+    K <= 8 ? UInt8 : UInt16
+end
 CodeType(::Type{Binary{K,P,S,D}}) where {K,P,S,D} = CodeType(K)
 CodeType(B::Binary) = CodeType(typeof(B))
 
@@ -107,8 +116,10 @@ julia> ValueType(Binary(8, 4, SIGNED, FINITE))
 Float32
 ```
 """
-ValueType(K::IntParam) = K <= IntParam(8) ? Float32 : K <= IntParam(10) ? Float64 : Float128
-ValueType(K::Integer) = ValueType(K % IntParam)
+function ValueType(K::Integer)
+    KMIN <= K <= KMAX || throw(ArgumentError("bitwidth K must be in $(Int(KMIN)):$(Int(KMAX)), got $K"))
+    K <= 8 ? Float32 : K <= 10 ? Float64 : Float128
+end
 ValueType(::Type{Binary{K,P,S,D}}) where {K,P,S,D} = ValueType(K)
 ValueType(B::Binary) = ValueType(typeof(B))
 
@@ -133,11 +144,13 @@ julia> AIFloats.resolve_fields(16, 10, true, false)
 ```
 """
 function resolve_fields(K::I, P::I, S::ΣBool, D::ΔBool) where {I<:Integer}
+    # Validate in the caller's integer domain. Narrowing first turned an
+    # ordinary invalid format such as K=128 into an unrelated InexactError.
+    validformat(K, P, S, D)
     bitwidth = Int8(K)
     bitprecision = Int8(P)
     signedness = convert(Bool, S)
     domain = convert(Bool, D)
-    validformat(bitwidth, bitprecision, signedness, domain)
     (bitwidth, bitprecision, signedness, domain)
 end
 

@@ -10,6 +10,11 @@ using Test
     @test BV === BinaryValue{F, UInt8}
     @test BinaryValue{F}(0x45) === BV(0x45)
     @test BinaryValue(F, 0x45) === BV(0x45)
+    fmt = F()
+    @test BinaryValue(fmt, 0x45) === BV(0x45)
+    @test BinaryValue(fmt, 1.625) === BV(0x45)
+    @test project(fmt, RTE_SN, 1.625) === BV(0x45)
+    @test Convert(fmt, RTE_SN, 1.625) === BV(0x45)
 
     # Unsigned argument = code point, range-checked against 2^K
     @test codepoint(BV(0xff)) === 0xff

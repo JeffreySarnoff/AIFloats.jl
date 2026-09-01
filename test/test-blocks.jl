@@ -278,6 +278,27 @@ end
     end
 end
 
+@testset "packed constructor invariants" begin
+    T = Binary8p4se
+    @test_throws ArgumentError PackedVector{T}(UInt64[], -1)
+    @test_throws ArgumentError PackedVector{T}(UInt64[], 1)
+    @test_throws ArgumentError PackedVector{T}(UInt64[0, 0], 1)
+    pv = PackedVector(fill(T(1.0), 9))
+    @test pv.data isa Memory{UInt64}
+    @test_throws MethodError resize!(pv.data, 0)
+    @test collect(pv) == fill(T(1.0), 9)
+end
+
+
+@testset "format-instance block adapters" begin
+    F = Binary(5, 2, SIGNED, EXTENDED); T = BinaryValue(F)
+    S = Binary(8, 1, UNSIGNED, FINITE); ST = BinaryValue(S)
+    b = Block(ST(1.0), (T(1.0), T(2.0)))
+    @test BlockReduceAdd(F(), RTE_SN, b) == BlockReduceAdd(F, RTE_SN, b)
+    @test ConvertFromBlock(F(), RTE_SN, b) == ConvertFromBlock(F, RTE_SN, b)
+    @test packing_saves(F()) == packing_saves(F)
+end
+
 @testset "block reductions: Dyadic accumulation ≡ BigFloat oracle" begin
     # implmentplan.md Step 8. The BigFloat path stays live as both the fallback
     # (wide lane spreads leave Dyadic's exact band) and the reference here.

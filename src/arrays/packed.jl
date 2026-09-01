@@ -19,8 +19,31 @@ says so — a query, not a refusal, because both widths are equally the identity
 and remain correct.
 """
 struct PackedVector{T<:BinaryValue} <: AbstractVector{T}
-    data::Vector{UInt64}
+    # `Memory` is fixed-size. A `Vector` field would let a caller resize the
+    # backing store after construction and invalidate the bounds proof used by
+    # `_unpack_codes!`'s unsafe loads.
+    data::Memory{UInt64}
     n::Int
+
+    function PackedVector{T}(data::Memory{UInt64}, n::Int) where {T<:BinaryValue}
+        n >= 0 || throw(ArgumentError("packed length must be nonnegative, got $n"))
+        K = Int(BitwidthOf(T))
+        nbits = Base.checked_mul(n, K)
+        required = cld(nbits, 64)
+        length(data) == required || throw(ArgumentError(
+            "packed storage for $n $(formatname(T)) values needs $required UInt64 word(s), " *
+            "got $(length(data))"))
+        new{T}(data, n)
+    end
+end
+
+# Checked copying adapter for callers that already hold packed words. Copying
+# into fixed-size `Memory` prevents later `resize!` from breaking the invariant.
+function PackedVector{T}(data::AbstractVector{UInt64}, n::Integer) where {T<:BinaryValue}
+    ni = Int(n)
+    mem = Memory{UInt64}(undef, length(data))
+    copyto!(mem, data)
+    PackedVector{T}(mem, ni)
 end
 
 # element i at K bits/element begins at bit p = (i-1)K: word w = p ÷ 64
@@ -120,7 +143,8 @@ end
 function PackedVector(A::AbstractVector{T}) where {T<:BinaryValue}
     K = Int(BitwidthOf(T))
     n = length(A)
-    words = zeros(UInt64, cld(n * K, 64))
+    words = Memory{UInt64}(undef, cld(Base.checked_mul(n, K), 64))
+    fill!(words, zero(UInt64))
     @inbounds for (i, v) in enumerate(A)
         w, off = _wordpos(K, i)
         c = UInt64(codepoint(v))
@@ -183,6 +207,7 @@ Whether `PackedVector{T}` is smaller than `Vector{T}`: `false` exactly when
 """
 packing_saves(::Type{T}) where {T<:BinaryValue} = Int(BitwidthOf(T)) < 8 * sizeof(CodeType(T))
 packing_saves(::Type{F}) where {F<:Binary} = packing_saves(BinaryValue(F))
+packing_saves(F::Binary) = packing_saves(typeof(F))
 packing_saves(pv::PackedVector{T}) where {T} = packing_saves(T)
 
 const PACK_TILE = 256
@@ -201,6 +226,8 @@ function vmap(op::Symbol, fr::Type{<:Binary}, ρ::Projection, pv::PackedVector;
 end
 vmap(op::Symbol, fr::Type{<:BinaryValue}, ρ::Projection, pv::PackedVector; kw...) =
     vmap(op, BinaryFormatOf(fr), ρ, pv; kw...)
+vmap(op::Symbol, fr::Binary, ρ::Projection, pv::PackedVector; kw...) =
+    vmap(op, typeof(fr), ρ, pv; kw...)
 
 function _vmap_packed(v::Val{op}, ::Type{OUT}, ρ::Projection, pv::PackedVector{T},
                       rng::MaybeRNG) where {op, OUT<:BinaryValue, T<:BinaryValue}

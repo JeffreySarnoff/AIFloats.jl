@@ -37,18 +37,8 @@ function _finish(::Type{F}, ρ::Projection, R::Int, e::Enclosure) where {F<:Bina
             du = project(F, ρ, yd + Ed; R, sticky = -1)
             codepoint(dd) == codepoint(du) && return dd
         end
-        # stage 2: the Float128 estimate inside its 2^-90 envelope
-        if e.fq !== nothing
-            y = _try128(e.fq)
-            if isfinite(y) && !iszero(y)
-                E = ldexp(abs(y), _F128_RELEXP)
-                cd = project(F, ρ, y - E; R, sticky = +1)
-                cu = project(F, ρ, y + E; R, sticky = -1)
-                codepoint(cd) == codepoint(cu) && return cd
-            end
-        end
     end
-    project_interval(F, ρ, e.f; R)                 # stage 3 always decides
+    project_interval(F, ρ, e.f; R)                 # rigorous fallback always decides
 end
 @inline _finish(::Type{F}, ρ::Projection, R::Int, res::Dyadic) where {F<:Binary} =
     project(F, ρ, res; R)
@@ -111,6 +101,8 @@ for op in OP_REGISTRY
         end
         @inline $name(fr::Type{<:BinaryValue}, ρ::Projection, $(spec...); kw...) =
             $name(BinaryFormatOf(fr), ρ, $(xs...); kw...)
+        @inline $name(fr::Binary, ρ::Projection, $(spec...); kw...) =
+            $name(typeof(fr), ρ, $(xs...); kw...)
         # same-format convenience under the session default projection. The
         # SPECULATION GUARD: the default is read from a Ref{Projection} (an
         # abstract slot, so the call through it is dynamic and boxes); the
@@ -211,6 +203,7 @@ end
     throw(ArgumentError("Convert does not accept Irrational: supply a rounded float, or use the interval route"))
 @inline Convert(fr::Type{<:BinaryValue}, ρ::Projection, x; kw...) =
     Convert(BinaryFormatOf(fr), ρ, x; kw...)
+@inline Convert(fr::Binary, ρ::Projection, x; kw...) = Convert(typeof(fr), ρ, x; kw...)
 export Convert
 
 # ---- construction from a value ----------------------------------------------

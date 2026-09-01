@@ -30,6 +30,7 @@ function codetable(::Type{F}; by::Symbol = :code) where {F<:Binary}
     [(code = codepoint(x), value = decode(x)) for x in xs]
 end
 codetable(::Type{BV}; kw...) where {BV<:BinaryValue} = codetable(BinaryFormatOf(BV); kw...)
+codetable(F::Binary; kw...) = codetable(typeof(F); kw...)
 
 """
     printcodetable([io,] F; by = :code)
@@ -45,6 +46,8 @@ function printcodetable(io::IO, ::Type{F}; by::Symbol = :code) where {F<:Binary}
     nothing
 end
 printcodetable(::Type{F}; kw...) where {F<:Binary} = printcodetable(stdout, F; kw...)
+printcodetable(io::IO, F::Binary; kw...) = printcodetable(io, typeof(F); kw...)
+printcodetable(F::Binary; kw...) = printcodetable(stdout, typeof(F); kw...)
 printcodetable(io::IO, ::Type{BV}; kw...) where {BV<:BinaryValue} =
     printcodetable(io, BinaryFormatOf(BV); kw...)
 printcodetable(::Type{BV}; kw...) where {BV<:BinaryValue} =

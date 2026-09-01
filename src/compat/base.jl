@@ -389,6 +389,7 @@ Base.Bool(x::BinaryValue) = Bool(decode(x))
 # the same ~2 ns.
 @inline BinaryValue(::Type{F}, x::Real; kw...) where {F<:Binary} =
     BinaryValue{F, CodeType(F)}(x; kw...)
+@inline BinaryValue(fmt::Binary, x::Real; kw...) = BinaryValue(typeof(fmt), x; kw...)
 Base.convert(::Type{T}, x::T) where {T<:BinaryValue} = x
 Base.convert(::Type{T}, x::BinaryValue) where {T<:BinaryValue} = T(x)
 Base.convert(::Type{T}, x::Real) where {T<:BinaryValue} = T(x)

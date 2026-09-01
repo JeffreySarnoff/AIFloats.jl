@@ -137,7 +137,7 @@ function table_policy(op::Symbol, ::Type{fr}, Fs::Vararg{Any};
                       nelems::Int = 0) where {fr<:Binary}
     nelems >= 0 || throw(ArgumentError("nelems must be nonnegative"))
     ρ = last(Fs)
-    fs = Base.front(Fs)
+    fs = map(f -> f isa Binary ? typeof(f) : f, Base.front(Fs))
     bits = _sumK(fs...)
     entries = bits >= 63 ? typemax(Int) : 1 << bits
     bytes = tablebits(fr, fs...) >= 63 ? typemax(Int) : 1 << tablebits(fr, fs...)
@@ -182,6 +182,8 @@ function table_policy(op::Symbol, ::Type{fr}, Fs::Vararg{Any};
        reason=earned ? "prospective call earns adaptive table" :
                        "adaptive table needs $(threshold - used) more cumulative elements")
 end
+table_policy(op::Symbol, fr::Binary, Fs...; kw...) =
+    table_policy(op, typeof(fr), Fs...; kw...)
 
 # ---- fetch -------------------------------------------------------------------
 
@@ -200,6 +202,16 @@ Callers that can fall back want [`table_for`](@ref).
 the returned table in their hot loop.
 """
 function get_table end
+
+# Checked public adapters normalize any mixture of canonical format types and
+# zero-field format instances before dispatching to the type-specialized cache
+# implementation. The all-type case selects the more-specific methods below.
+for n in 1:3
+    fs = [Symbol(:f, i) for i in 1:n]
+    specs = [:($(f)::BinarySpecifier) for f in fs]
+    @eval @inline get_table(op::Symbol, fr::BinarySpecifier, $(specs...), ρ::Projection) =
+        get_table(op, _formattype(fr), $(map(f -> :(_formattype($f)), fs)...), ρ)
+end
 
 # Double-checked pattern: probe under lock, build OUTSIDE the lock (builds may
 # run MPFR escalations), insert under lock; a racing duplicate build is benign
@@ -255,12 +267,17 @@ call it once per array operation and branch outside the loop.
     (_sumK(f1) <= TABLE_EAGER_BITS[] && within_byte_budget(fr, f1)) || return nothing
     get_table(op, fr, f1, ρ)
 end
+@inline table_for(op::Symbol, fr::BinarySpecifier, f1::BinarySpecifier, ρ::Projection) =
+    table_for(op, _formattype(fr), _formattype(f1), ρ)
 @noinline function table_for(op::Symbol, ::Type{fr}, ::Type{f1}, ::Type{f2},
                              ρ::Projection)::Union{Nothing,Memory{CodeType(fr)}} where {fr<:Binary,f1<:Binary,f2<:Binary}
     isstochastic(ρ) && return nothing
     (_sumK(f1, f2) <= TABLE_EAGER_BITS[] && within_byte_budget(fr, f1, f2)) || return nothing
     get_table(op, fr, f1, f2, ρ)
 end
+@inline table_for(op::Symbol, fr::BinarySpecifier, f1::BinarySpecifier,
+                  f2::BinarySpecifier, ρ::Projection) =
+    table_for(op, _formattype(fr), _formattype(f1), _formattype(f2), ρ)
 
 """
     table_for(op, fr, f1, f2, ρ, nelems) -> Union{Nothing, Memory}
@@ -303,6 +320,9 @@ admit signatures whose tables cost milliseconds.
     n >= TABLE_BUILD_ELEMS[] || return nothing
     get_table(op, fr, f1, f2, ρ)                  # builds and caches under the lock
 end
+@inline table_for(op::Symbol, fr::BinarySpecifier, f1::BinarySpecifier,
+                  f2::BinarySpecifier, ρ::Projection, nelems::Int) =
+    table_for(op, _formattype(fr), _formattype(f1), _formattype(f2), ρ, nelems)
 
 """
     _ternary_table_for(op, fr, f1, f2, f3, ρ, nelems) -> Union{Nothing, Memory}

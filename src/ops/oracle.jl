@@ -13,44 +13,37 @@
 #                    fma residual) before escalating to exact BigFloat, and the
 #                    wide-spread `Sticky` escape past _STICKY_MIN binades;
 #   FAST_ENCLOSURE — Group B/quotients: an eager Float64 estimate (faithful
-#                    libm, envelope 2^-45) then a Float128 estimate (envelope
-#                    2^-90), each accepted only when the two-sided sticky
-#                    projection of its envelope agrees on one code point.
+#                    libm, envelope 2^-45), accepted only when the two-sided
+#                    sticky projection of its envelope agrees on one code
+#                    point. Everything else uses the rigorous MPFR ladder.
 # Disabling either costs speed, never correctness.
 const FAST_ARITH = Ref(true)
 const FAST_ENCLOSURE = Ref(true)
 
 """
-    Enclosure(f[, fq, yd])
+    Enclosure(f[, yd])
 
 A deferred enclosure of a true value. `f(prec)` returns directed MPFR
 endpoints `(lo, hi)` with the true value in `[lo, hi]` — the rigorous ladder.
-`fq` (or `nothing`) is a zero-argument Float128 estimator with
-`|truth − fq()| ≤ |fq()|·2^-90`; `yd` (NaN when absent) a faithful Float64
-estimate with `|truth − yd| ≤ |yd|·2^-45`. Both are structurally Float64-tier:
-built only for Float64 operands. Not exported.
+`yd` (NaN when absent) is a faithful Float64 estimate with
+`|truth − yd| ≤ |yd|·2^-45`, built only for Float64 operands. Float128
+transcendentals are deliberately not used as an acceptance proof because
+libquadmath does not assure a suitable error bound. Not exported.
 """
-struct Enclosure{F, G}
+struct Enclosure{F}
     f::F
-    fq::G
     yd::Float64
 end
-Enclosure(f) = Enclosure(f, nothing, NaN)
-const _F128_RELEXP = -90            # envelope exponent: E = |y|·2^-90
+Enclosure(f) = Enclosure(f, NaN)
 const _F64_RELEXP  = -45            # Float64 envelope: E = |y|·2^-45 (≥ 2^7 over faithful libm)
 const _F64_MINNORMISH = 6.7e-290    # ≈ 2^-960: keep the relative model clear of subnormals
 # 2^-915: above this, a nonzero exact FMA residual cannot underflow, so
 # `fma(x, y, -p) == 0` proves `p == x·y` (derivation at the use site)
 const _FMA_EXACT_FLOOR = ldexp(1.0, -915)
 
-# the Float64-tier estimators. Built only for Float64 operands; a Float128 or
-# Dyadic operand may not survive narrowing, so the wide rows drop both and hand
-# the ladder the whole job. `fq` is deferred and guarded (a generic closure may
-# lack a Float128 method inside); `yd` is eager and guarded the same way.
-@inline _fq1(f, x::Float64) = () -> f(Float128(x))
-@inline _fq1(f, x) = nothing
-@inline _fq2(f, x::Float64, y::Float64) = () -> f(Float128(x), Float128(y))
-@inline _fq2(f, x, y) = nothing
+# The Float64-tier estimator. Built only for Float64 operands; a Float128 or
+# Dyadic operand may not survive narrowing, so wide rows hand the rigorous
+# ladder the whole job.
 @inline _yd1(f, x::Float64) = _f64guard(f, x)
 @inline _yd1(f, x) = NaN
 @inline _yd2(f, x::Float64, y::Float64) = _f64guard(f, x, y)
@@ -62,14 +55,6 @@ const _FMA_EXACT_FLOOR = ldexp(1.0, -915)
         NaN
     end
 end
-@inline function _try128(fq)
-    try
-        Float128(fq())
-    catch
-        Float128(NaN)
-    end
-end
-
 # exact BigFloat image of any carrier value, at its own width
 _exactbig(x::Float64)  = setprecision(() -> BigFloat(x), BigFloat, 64)
 _exactbig(x::Float128) = setprecision(() -> BigFloat(x), BigFloat, 128)
@@ -97,14 +82,14 @@ _ladderprec(prec::Int, xs...) = max(prec, _sigfloor(xs...) + 8)
 # allocations for Log against 22 ns and none for Exp, whose libm row happens
 # to inline. Inlined, the Enclosure stays in registers and the whole Group B
 # lands at Exp's cost (implmentplan.md Step 5).
-@inline _mpfr1(f, x) = Enclosure(_ladder1(f, x), _fq1(f, x), _yd1(f, x))
+@inline _mpfr1(f, x) = Enclosure(_ladder1(f, x), _yd1(f, x))
 _ladder1(f, x) = prec -> setprecision(BigFloat, _ladderprec(prec, x)) do
     b = _exactbig(x)
     (setrounding(() -> f(b), BigFloat, RoundDown),
      setrounding(() -> f(b), BigFloat, RoundUp))
 end
 
-@inline @inline _mpfr2(f, x, y) = Enclosure(_ladder2(f, x, y), _fq2(f, x, y), _yd2(f, x, y))
+@inline @inline _mpfr2(f, x, y) = Enclosure(_ladder2(f, x, y), _yd2(f, x, y))
 
 # ---- the correctly-rounded variants -----------------------------------------
 # MPFR computes every one of its primitives with CORRECT rounding, so a single
@@ -125,7 +110,7 @@ end
 # enclosure contains the directed one — rather than only its usual consequence.
 #
 # This is also precisely the guarantee libquadmath does NOT publish for
-# binary128, which is why the Float128 estimators stay deferred.
+# binary128, which is why Float128 transcendental estimates are not accepted.
 # FIRST RUNG ONLY, and that restriction is load-bearing rather than cautious.
 # [prevfloat(r), nextfloat(r)] is always two ulps wide and NEVER collapses to a
 # point, but `_project_interval` detects an exactly-representable result by the
@@ -152,8 +137,8 @@ end
         end :
         _ladder2(f, x, y)(prec)
 end
-@inline _mpfr1_cr(f, x) = Enclosure(_ladder1_cr(f, x), _fq1(f, x), _yd1(f, x))
-@inline _mpfr2_cr(f, x, y) = Enclosure(_ladder2_cr(f, x, y), _fq2(f, x, y), _yd2(f, x, y))
+@inline _mpfr1_cr(f, x) = Enclosure(_ladder1_cr(f, x), _yd1(f, x))
+@inline _mpfr2_cr(f, x, y) = Enclosure(_ladder2_cr(f, x, y), _yd2(f, x, y))
 _ladder2(f, x, y) = prec -> setprecision(BigFloat, _ladderprec(prec, x, y)) do
     bx, by = _exactbig(x), _exactbig(y)
     (setrounding(() -> f(bx, by), BigFloat, RoundDown),
@@ -174,10 +159,10 @@ end
     b1 = setrounding(() -> g(ml), BigFloat, RoundUp)
     b2 = setrounding(() -> g(mh), BigFloat, RoundUp)
     (min(a1, a2), max(b1, b2))
-end, _fq1(v -> g(Float128(π) * v), r), yd)
+end, yd)
 
 # g(x)/π, sign-aware in the denominator direction
-@inline _mpfr_divpi(g, x) = Enclosure(_ladder_divpi(g, x), _fq1(v -> g(v) / Float128(π), x), _yd1(v -> g(v) / π, x))
+@inline _mpfr_divpi(g, x) = Enclosure(_ladder_divpi(g, x), _yd1(v -> g(v) / π, x))
 _ladder_divpi(g, x) = prec -> setprecision(BigFloat, _ladderprec(prec, x)) do
     bx = _exactbig(x)
     lo = setrounding(BigFloat, RoundDown) do
@@ -651,7 +636,7 @@ function ωeval(::Val{:Divide}, x::Float64, y::Float64)
     iszero(x) && return 0.0
     q = x / y
     (isfinite(q) && fma(q, y, -x) == 0.0) && return q
-    Enclosure(_ladder2(/, x, y), () -> Float128(x) / Float128(y), isfinite(q) ? q : NaN)
+    Enclosure(_ladder2(/, x, y), isfinite(q) ? q : NaN)
 end
 function ωeval(::Val{:Divide}, x::Float128, y::Float128)
     (isnan(x) | isnan(y)) && return _cnan(Float128)
@@ -685,7 +670,7 @@ function ωeval(::Val{:Recip}, x::C) where {C<:AbstractFloat}
     if x isa Float64
         q = 1.0 / x
         (isfinite(q) && fma(q, x, -1.0) == 0.0) && return q
-        return Enclosure(_ladder1(inv, x), () -> inv(Float128(x)), isfinite(q) ? q : NaN)
+        return Enclosure(_ladder1(inv, x), isfinite(q) ? q : NaN)
     elseif x isa Float128
         q = _try_recip128(x)
         q === nothing || return q
@@ -701,7 +686,7 @@ function ωeval(::Val{:Sqrt}, x::C) where {C<:AbstractFloat}
     if x isa Float64
         s = sqrt(x)
         fma(s, s, -x) == 0.0 && return s
-        return Enclosure(_ladder1(sqrt, x), () -> sqrt(Float128(x)), s)
+        return Enclosure(_ladder1(sqrt, x), s)
     elseif x isa Float128
         s = _try_sqrt128(x)
         s === nothing || return s
@@ -720,7 +705,7 @@ function ωeval(::Val{:RSqrt}, x::C) where {C<:AbstractFloat}
             r = 1.0 / s
             fma(r, s, -1.0) == 0.0 && return r
         end
-        return Enclosure(_ladder1(b -> inv(sqrt(b)), x), () -> inv(sqrt(Float128(x))), 1.0 / s)
+        return Enclosure(_ladder1(b -> inv(sqrt(b)), x), 1.0 / s)
     elseif x isa Float128
         s = _try_sqrt128(x)                     # both stages, as at rung 1
         if s !== nothing
@@ -1006,8 +991,7 @@ function ωeval(::Val{:ArcTan2Pi}, y::C, x::C) where {C<:AbstractFloat}
     _arctan2pi_general(y, x)
 end
 function _arctan2pi_general(y, x)
-    Enclosure(_ladder_atan2pi(y, x), _fq2((a, b) -> atan(a, b) / Float128(π), y, x),
-              _yd2((a, b) -> atan(a, b) / π, y, x))
+    Enclosure(_ladder_atan2pi(y, x), _yd2((a, b) -> atan(a, b) / π, y, x))
 end
 function _ladder_atan2pi(y, x)
     prec -> setprecision(BigFloat, _ladderprec(prec, x, y)) do

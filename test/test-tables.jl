@@ -158,6 +158,22 @@ end
     AIFloats.empty_tables!()
 end
 
+
+@testset "complete deterministic cache introspection" begin
+    AIFloats.empty_tables!()
+    F = Binary(3, 2, SIGNED, FINITE)
+    AIFloats.get_table(:Negate, F(), F, RTE_SN)
+    AIFloats.get_table(:FMA, F, F(), F, F(), RTE_SN)
+    keys1 = AIFloats.table_keys()
+    keys2 = AIFloats.table_keys()
+    @test keys1 == keys2
+    @test length(keys1) == AIFloats.table_count() == 2
+    @test count(k -> k isa AIFloats.TernaryKey, keys1) == AIFloats.ternary_count() == 1
+    @test AIFloats.TERNARY_TICK[] > 0
+    AIFloats.empty_tables!()
+    @test AIFloats.TERNARY_TICK[] == 0
+end
+
 @testset "ternary LRU spans both code widths" begin
     AIFloats.empty_tables!()
     old = AIFloats.TERNARY_CACHE_BYTES[]

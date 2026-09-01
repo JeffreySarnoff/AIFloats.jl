@@ -44,6 +44,7 @@ function project(::Type{F}, ρ::Projection{RM,SM}, X;
 end
 project(::Type{BV}, ρ::Projection, X; kw...) where {BV<:BinaryValue} =
     project(BinaryFormatOf(BV), ρ, X; kw...)
+@inline project(f::Binary, ρ::Projection, X; kw...) = project(typeof(f), ρ, X; kw...)
 
 # ---- the interval oracle ----------------------------------------------------
 #
@@ -71,6 +72,8 @@ Not exported.
 function project_interval(::Type{F}, ρ::Projection, f; R::Int = 0) where {F<:Binary}
     _project_interval(F, ρ, f, R, _intervalcap(F))
 end
+@inline project_interval(F::Binary, ρ::Projection, f; kw...) =
+    project_interval(typeof(F), ρ, f; kw...)
 
 """
     _project_endpoint(F, ρ, x::BigFloat, R, sticky)

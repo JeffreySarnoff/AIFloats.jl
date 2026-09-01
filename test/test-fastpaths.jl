@@ -143,11 +143,12 @@ end
     end
     # the eager stages are actually built for Float64 operands and dropped for wide ones
     e = AIFloats.ωeval(Val(:Exp), 0.75)
-    @test e isa Enclosure && e.fq !== nothing && isfinite(e.yd)
+    @test e isa Enclosure && isfinite(e.yd)
+    @test fieldnames(typeof(e)) == (:f, :yd)       # no uncertified Float128 proof closure
     e2 = AIFloats.ωeval(Val(:Exp), Float128(0.75))
-    @test e2 isa Enclosure && e2.fq === nothing && isnan(e2.yd)
+    @test e2 isa Enclosure && isnan(e2.yd)
     e3 = AIFloats.ωeval(Val(:Exp), AIFloats.Dyadic(3, -2))
-    @test e3 isa Enclosure && e3.fq === nothing
+    @test e3 isa Enclosure && isnan(e3.yd)
     # a Float64 quotient that is not exact carries its CR quotient as the estimate
     q = AIFloats.ωeval(Val(:Divide), 1.0, 3.0)
     @test q isa Enclosure && q.yd == 1 / 3

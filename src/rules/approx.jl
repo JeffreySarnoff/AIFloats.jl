@@ -44,14 +44,22 @@ function measure_kappa(fn::Fn, op::Symbol, fr::Type{<:Binary},
                        max_exhaustive::Int = 1 << 22,
                        rng::Random.AbstractRNG = Random.default_rng(),
                        samples::Int = 1 << 20) where {Fn, N}
+    max_exhaustive >= 0 || throw(ArgumentError("max_exhaustive must be nonnegative"))
+    samples >= 0 || throw(ArgumentError("samples must be nonnegative"))
     isstochastic(ρ) &&
         throw(ArgumentError("κ is defined against deterministic defined results; stochastic ρ is not measurable"))
     any(o -> o.name === op, OP_REGISTRY) || throw(ArgumentError("unknown draft operation :$op"))
+    arity = opinfo(op).arity
+    arity == N || throw(ArgumentError(":$op has arity $arity, got $N argument formats"))
+    all(f -> f <: Binary || f <: BinaryValue, argformats) ||
+        throw(ArgumentError("argument formats must be Binary formats or concrete BinaryValue types"))
     FR = BinaryValue(fr)
     fmts = map(f -> f <: BinaryValue ? BinaryFormatOf(f) : f, argformats)
     Ks = map(f -> Int(BitwidthOf(f)), fmts)
     total = prod(1 .<< Ks)
     exhaustive = total <= max_exhaustive
+    !exhaustive && samples == 0 &&
+        throw(ArgumentError("samples must be positive when the input space is not examined exhaustively"))
     κ = 0.0
     defined = (args...) -> op === :Convert ?
         project(fr, ρ, decode(args[1])) :
@@ -85,6 +93,8 @@ function measure_kappa(fn::Fn, op::Symbol, fr::Type{<:Binary},
 end
 measure_kappa(fn, op::Symbol, fr::Type{<:BinaryValue}, args::Tuple, ρ::Projection; kw...) =
     measure_kappa(fn, op, BinaryFormatOf(fr), args, ρ; kw...)
+measure_kappa(fn, op::Symbol, fr::Binary, args::Tuple, ρ::Projection; kw...) =
+    measure_kappa(fn, op, typeof(fr), map(a -> a isa Binary ? typeof(a) : a, args), ρ; kw...)
 
 """
     ApproxImpl
@@ -147,6 +157,8 @@ function register_approx!(name::Symbol, op::Symbol, fr::Type{<:Binary},
 end
 register_approx!(name::Symbol, op::Symbol, fr::Type{<:BinaryValue}, args::Tuple, ρ::Projection, fn; kw...) =
     register_approx!(name, op, BinaryFormatOf(fr), args, ρ, fn; kw...)
+register_approx!(name::Symbol, op::Symbol, fr::Binary, args::Tuple, ρ::Projection, fn; kw...) =
+    register_approx!(name, op, typeof(fr), map(a -> a isa Binary ? typeof(a) : a, args), ρ, fn; kw...)
 
 """Retrieve a registered approximate implementation (callable via `.fn`)."""
 approx(name::Symbol) = lock(APPROX_LOCK) do
@@ -188,3 +200,5 @@ function ftz_variant(op::Symbol, fr::Type{<:Binary}, f1::Type{<:Binary}, ρ::Pro
 end
 ftz_variant(op::Symbol, fr::Type{<:BinaryValue}, f1::Type{<:BinaryValue}, ρ::Projection) =
     ftz_variant(op, BinaryFormatOf(fr), BinaryFormatOf(f1), ρ)
+ftz_variant(op::Symbol, fr::BinarySpecifier, f1::BinarySpecifier, ρ::Projection) =
+    ftz_variant(op, _formattype(fr), _formattype(f1), ρ)

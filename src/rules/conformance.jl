@@ -46,7 +46,7 @@ struct ConformanceDeclaration
     rounding_modes::Vector{String}
     saturation_modes::Vector{Symbol}
     block_surface::Vector{Symbol}
-    cached_specializations::Vector{TableKey}
+    cached_specializations::Vector{CachedTableKey}
     approximate::Vector{NamedTuple{(:name, :op, :kappa, :exhaustive), Tuple{Symbol, Symbol, Float64, Bool}}}
 end
 
@@ -113,6 +113,7 @@ function conformance_dict(c::ConformanceDeclaration = conformance())
         "block_surface" => String.(c.block_surface),
         "cached_specializations" => [Dict("op" => String(k.op), "fr" => collect(k.fr),
                                           "f1" => collect(k.f1), "f2" => collect(k.f2),
+                                          "f3" => k isa TernaryKey ? collect(k.f3) : nothing,
                                           "rounding" => String(k.rm), "saturation" => String(k.sm))
                                      for k in c.cached_specializations],
         "approximate" => [Dict("name" => String(a.name), "op" => String(a.op),
@@ -147,7 +148,9 @@ function conformance_report(io::IO = stdout, c::ConformanceDeclaration = conform
     println(io, "\nInstantiated pure-ρ table specializations: ", length(c.cached_specializations),
             " (", table_bytes(), " bytes)")
     for k in c.cached_specializations
-        println(io, "  ", k.op, "⟨", k.f1, k.f2 == (0, 0, 0, 0) ? "" : string(" × ", k.f2),
+        f2 = k.f2 == (0, 0, 0, 0) ? "" : string(" × ", k.f2)
+        f3 = k isa TernaryKey ? string(" × ", k.f3) : ""
+        println(io, "  ", k.op, "⟨", k.f1, f2, f3,
                 " → ", k.fr, ", (", k.rm, ", ", k.sm, ")⟩")
     end
     if isempty(c.approximate)

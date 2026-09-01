@@ -79,7 +79,7 @@ public resolve_fields, rawvalue, encode, order_key,
        round_to_precision, saturate, project_interval, bigprec,
        blockdecode, blockproject, PACK_TILE, codedistance, ApproxImpl, ConformanceDeclaration,
        get_table, table_for, table_policy,
-       table_bytes, table_count, table_keys, empty_tables!
+       table_bytes, table_count, ternary_count, table_keys, empty_tables!
 
 # working with other Julia packages
 using Quadmath

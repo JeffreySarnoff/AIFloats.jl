@@ -47,15 +47,30 @@ struct Dyadic <: Real
     S::Int128
     Q::Int64
     kind::UInt8
+
+    # Public three-field construction is checked because every operation below
+    # assumes exactly four tags and canonical zero payloads for special values.
+    @inline function Dyadic(S::Int128, Q::Int64, kind::UInt8)
+        kind <= DY_NAN || throw(ArgumentError(
+            "invalid Dyadic kind $kind: expected one of DY_FINITE, DY_POSINF, " *
+            "DY_NEGINF, DY_NAN (0x00 through 0x03)"))
+        kind == DY_FINITE || (iszero(S) && iszero(Q)) || throw(ArgumentError(
+            "non-finite Dyadic values require the canonical zero payload"))
+        new(S, Q, kind)
+    end
+
+    # Arithmetic has already established the tag and payload invariants. Keep
+    # that hot implementation path explicit and free of repeated validation.
+    global @inline _rawdyadic(S::Int128, Q::Int64, kind::UInt8) = new(S, Q, kind)
 end
-Dyadic(S::Integer, Q::Integer) = Dyadic(Int128(S), Int64(Q), DY_FINITE)
+Dyadic(S::Integer, Q::Integer) = _rawdyadic(Int128(S), Int64(Q), DY_FINITE)
 
 # the tag is range-checked: constructors check, kernels assume
 function Dyadic(kind::UInt8)
     kind <= DY_NAN || throw(ArgumentError(
         "invalid Dyadic kind $kind: expected one of DY_FINITE, DY_POSINF, " *
         "DY_NEGINF, DY_NAN (0x00 through 0x03)"))
-    Dyadic(Int128(0), Int64(0), kind)
+    _rawdyadic(Int128(0), Int64(0), kind)
 end
 
 const DYADIC_ZERO   = Dyadic(Int128(0), Int64(0))
@@ -96,7 +111,7 @@ Base.signbit(x::Dyadic) = sign_dy(x) < 0
     Q <= typemax(Int64) - 127 || throw(OverflowError(
         "Dyadic: negating a typemin(Int128) significand needs exponent " *
         "$Q + 127, which exceeds Int64"))
-    Dyadic(one(Int128), Q + 127, DY_FINITE)
+    _rawdyadic(one(Int128), Q + 127, DY_FINITE)
 end
 
 @inline function Base.abs(x::Dyadic)
@@ -104,7 +119,7 @@ end
         s = x.S
         s >= 0 && return x
         s == typemin(Int128) && return _negate_typemin(x.Q)
-        return Dyadic(-s, x.Q, DY_FINITE)
+        return _rawdyadic(-s, x.Q, DY_FINITE)
     end
     x.kind == DY_NEGINF ? DYADIC_POSINF : x
 end
@@ -112,7 +127,7 @@ end
     if isfinite_dy(x)
         s = x.S
         s == typemin(Int128) && return _negate_typemin(x.Q)
-        return Dyadic(-s, x.Q, DY_FINITE)
+        return _rawdyadic(-s, x.Q, DY_FINITE)
     end
     x.kind == DY_POSINF && return DYADIC_NEGINF
     x.kind == DY_NEGINF && return DYADIC_POSINF
@@ -168,7 +183,7 @@ end
 
 # the aligned exact sum: `big`/`small` ordered by EXPONENT, not magnitude
 @inline _add_aligned(big::Dyadic, small::Dyadic, d::Integer) =
-    Dyadic((big.S << d) + small.S, small.Q, DY_FINITE)
+    _rawdyadic((big.S << d) + small.S, small.Q, DY_FINITE)
 
 @noinline _add_wide(::Dyadic, ::Dyadic, d::Int) = throw(ArgumentError(
     "Dyadic add with ΔQ = $d exceeds the exact alignment band " *
@@ -232,7 +247,7 @@ which every operand the engine forms satisfies (a datum carries ≤ 16 bits).
         (iszero_dy(x) | iszero_dy(y)) && return DYADIC_NAN          # 0 · ∞
         return sign_dy(x) * sign_dy(y) > 0 ? DYADIC_POSINF : DYADIC_NEGINF
     end
-    Dyadic(x.S * y.S, x.Q + y.Q, DY_FINITE)
+    _rawdyadic(x.S * y.S, x.Q + y.Q, DY_FINITE)
 end
 
 @noinline _throw_mul_wide(nx::Int, ny::Int) = throw(ArgumentError(
@@ -252,7 +267,7 @@ rather than wrapping when the significand product would leave `Int128`.
     end
     nx, ny = nbits_dy(x.S), nbits_dy(y.S)
     nx + ny <= 96 || _throw_mul_wide(nx, ny)
-    Dyadic(x.S * y.S, x.Q + y.Q, DY_FINITE)
+    _rawdyadic(x.S * y.S, x.Q + y.Q, DY_FINITE)
 end
 
 # ---- ordering by VALUE (fields are not normalized). Total; no band: sign,
@@ -321,7 +336,7 @@ end
 """`x · 2^n`, exactly and unconditionally: an exponent-field add, no range to leave."""
 @inline function Base.ldexp(x::Dyadic, n::Integer)
     isfinite_dy(x) || return x
-    Dyadic(x.S, x.Q + Int64(n), DY_FINITE)
+    _rawdyadic(x.S, x.Q + Int64(n), DY_FINITE)
 end
 
 @inline _exponent_raw(x::Dyadic) = x.Q + nbits_dy(x.S) - 1
@@ -346,7 +361,7 @@ const _DY_TINY = -1
     q = x.S >> sh                                          # arithmetic shift floors
     (q, x.S - (q << sh), sh)
 end
-@inline _int_dy(q::Int128) = Dyadic(q, 0, DY_FINITE)
+@inline _int_dy(q::Int128) = _rawdyadic(q, Int64(0), DY_FINITE)
 @inline _rounds_to_self(x::Dyadic) = !isfinite_dy(x) || x.Q >= 0 || iszero(x.S)
 
 function Base.floor(x::Dyadic)
@@ -500,7 +515,7 @@ function dyadic_from(x::Base.IEEEFloat)
     num, pow, den = Base.decompose(x)
     n = Int128(num) * sign(den)             # den is ±1; its SIGN is the value's
     tz = trailing_zeros(n)
-    Dyadic(n >> tz, Int64(pow) + tz, DY_FINITE)
+    _rawdyadic(n >> tz, Int64(pow) + tz, DY_FINITE)
 end
 function dyadic_from(x::AbstractFloat)
     isnan(x) && return DYADIC_NAN
@@ -519,7 +534,7 @@ function dyadic_from(x::AbstractFloat)
         "significand needs $(ndigits(n; base=2)) bits after normalization, " *
         "which exceeds Int128; Dyadic is the carrier for P3109 datums (≤ 16 " *
         "significand bits) and their exact combinations, not for arbitrary reals"))
-    Dyadic(Int128(n), Int64(pow), DY_FINITE)
+    _rawdyadic(Int128(n), Int64(pow), DY_FINITE)
 end
 @inline _fits_int128(n::BigInt) = ndigits(n; base=2) <= 127
 Dyadic(x::AbstractFloat) = dyadic_from(x)

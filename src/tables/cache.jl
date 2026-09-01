@@ -53,6 +53,13 @@ struct TernaryKey
     sm::Symbol
 end
 
+const CachedTableKey = Union{TableKey,TernaryKey}
+
+@inline _cache_key_sort(k::TableKey) =
+    (String(k.op), k.fr, k.f1, k.f2, (0, 0, 0, 0), String(k.rm), String(k.sm))
+@inline _cache_key_sort(k::TernaryKey) =
+    (String(k.op), k.fr, k.f1, k.f2, k.f3, String(k.rm), String(k.sm))
+
 mutable struct TernaryEntry{U<:Unsigned}
     const tbl::Memory{U}
     tick::Int                  # LRU stamp (monotone; larger = more recent)
@@ -144,18 +151,24 @@ table_bytes() = lock(TABLE_LOCK) do
     _bytes_of(TABLE_CACHE8) + _bytes_of(TABLE_CACHE16) +
     _bytes_of(TERNARY_CACHE8) + _bytes_of(TERNARY_CACHE16)
 end
-"""Number of cached unary/binary specializations, both code units."""
-table_count() = lock(() -> length(TABLE_CACHE8) + length(TABLE_CACHE16), TABLE_LOCK)
+"""Number of cached specializations of every arity and code unit."""
+table_count() = lock(() -> length(TABLE_CACHE8) + length(TABLE_CACHE16) +
+                               length(TERNARY_CACHE8) + length(TERNARY_CACHE16), TABLE_LOCK)
 """Number of cached ternary specializations, both code units."""
 ternary_count() = lock(() -> length(TERNARY_CACHE8) + length(TERNARY_CACHE16), TABLE_LOCK)
-"""Keys of every cached unary/binary specialization, in a deterministic order."""
-table_keys() = lock(() -> vcat(collect(keys(TABLE_CACHE8)), collect(keys(TABLE_CACHE16))),
-                    TABLE_LOCK)
+"""Keys of every cached specialization, in a deterministic order."""
+table_keys() = lock(TABLE_LOCK) do
+    ks = CachedTableKey[]
+    append!(ks, keys(TABLE_CACHE8), keys(TABLE_CACHE16),
+            keys(TERNARY_CACHE8), keys(TERNARY_CACHE16))
+    sort!(ks; by = _cache_key_sort)
+end
 
 """Drop every cached table and adaptive counter (they rebuild lazily on next use)."""
 empty_tables!() = lock(TABLE_LOCK) do
     empty!(TABLE_CACHE8); empty!(TABLE_CACHE16); empty!(TABLE_USE)
     empty!(TERNARY_CACHE8); empty!(TERNARY_CACHE16); empty!(TERNARY_USE)
+    TERNARY_TICK[] = 0
     nothing
 end
 

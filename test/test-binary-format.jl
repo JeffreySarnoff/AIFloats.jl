@@ -25,6 +25,10 @@ using Test
         @test_throws ArgumentError AIFloats.resolve_fields(2, 1, SIGNED, FINITE)
         @test_throws ArgumentError AIFloats.resolve_fields(8, 0, SIGNED, FINITE)
         @test_throws ArgumentError AIFloats.resolve_fields(8, 8, SIGNED, FINITE)
+        # validation precedes Int8 narrowing, so all invalid fields have the
+        # format layer's error contract rather than leaking InexactError
+        @test_throws ArgumentError AIFloats.resolve_fields(128, 4, SIGNED, FINITE)
+        @test_throws ArgumentError AIFloats.resolve_fields(256, 4, SIGNED, FINITE)
     end
 
     @testset "Binary" begin
@@ -37,6 +41,9 @@ using Test
 
         @test_throws ArgumentError AIFloats.Binary(2, 1, SIGNED, FINITE)
         @test_throws ArgumentError AIFloats.Binary(8, 8, SIGNED, FINITE)
+        @test_throws ArgumentError AIFloats.Binary(128, 4, SIGNED, FINITE)
+        @test_throws ArgumentError AIFloats.CodeType(256)
+        @test_throws ArgumentError AIFloats.ValueType(256)
     end
 
     @testset "Field accessors" begin

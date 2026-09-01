@@ -1,6 +1,7 @@
 using AIFloats
 using Test
 using Random
+using Quadmath: Float128
 
 # Phase 4 gate, kernels side: Shape A ≡ Shape B measured (not assumed);
 # threading changes nothing; the stochastic kernel is a reproducible single
@@ -118,6 +119,19 @@ end
     @test decode.(c) == [decode(Convert(F, RTE_SN, Float64(v))) for v in x]
     c64 = Convert(BinaryValue(F), RTZ_SF, [0.1, 0.7])
     @test c64 == [Convert(F, RTZ_SF, 0.1), Convert(F, RTZ_SF, 0.7)]
+    # every external scalar input family has the matching array surface and
+    # preserves the scalar carrier route rather than narrowing through Float64
+    for W in (Float128[Float128(1.1), Float128(-2.3)],
+              BigFloat[BigFloat("1.1"), BigFloat("-2.3")],
+              BigInt[big(1) << 200, -(big(1) << 200)])
+        got = Convert(F, RTE_SN, W)
+        @test got == [Convert(F, RTE_SN, v) for v in W]
+    end
+    # format instances are one-hop adapters over the same type-specialized path
+    @test Convert(F(), RTE_SN, x) == c
+    @test codepoint.(Negate(F(), RTE_SN, r)) == codepoint.(Negate(F, RTE_SN, r))
+    @test codepoint.(vmap(:Negate, F(), RTE_SN, r)) ==
+          codepoint.(vmap(:Negate, F, RTE_SN, r))
     # stochastic Convert draws per element, reproducibly
     s1 = Convert(F, RSA_SN, A; rng = Xoshiro(5))
     s2 = Convert(F, RSA_SN, A; rng = Xoshiro(5))
