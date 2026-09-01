@@ -176,11 +176,14 @@ end
         # per CONCRETE PROJECTION TYPE, and nothing precompiles it unless the
         # workload names that projection: measured, a first scoped `A .+ B`
         # costs ~280 ms for a projection not named here and ~5 ms for one that
-        # is. The four below are the directed rounding modes in both saturation
-        # flavours — what `with_projection` is mostly for. Each costs ~0.33 s of
-        # precompilation, which is the knob to turn if this list should grow or
-        # shrink; naming all 27 would cost roughly 9 s and is not worth it.
-        for ρbc in (RTZ_SF, RTZ_SN, RTP_SN, RTN_SF)
+        # is.
+        #
+        # This tuple is therefore a POLICY KNOB, not a derived constant — it
+        # says which scoped projections a user should not have to wait for.
+        # Each entry cost ~0.33 s of precompilation when measured at four
+        # entries; naming all 27 would cost roughly 9 s and is not worth it.
+        # Everything unnamed still works, and pays the ~280 ms once per session.
+        for ρbc in (RTZ_SF, RTZ_SN, RTP_SP, RTN_SP, RTO_SF, RSB_SF, RSB_SP)
             with_projection(ρbc) do
                 A .+ B; exp.(A); d .= A .+ B
             end
