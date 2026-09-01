@@ -33,7 +33,8 @@ const _SATURATION_MODE_DECLARATIONS = (:SF, :SP, :SN)
 The package's draft-§4.6-style conformance declaration. Fields: `package`,
 `package_version`, `draft`, `draft_identity`, `interpretations`, `formats`,
 `operations`, `rounding_modes`, `saturation_modes`, `block_surface`,
-`cached_specializations`, `approximate`. Build with [`conformance`](@ref).
+`cached_specializations`, `cached_bytes`, `approximate`. Build with
+[`conformance`](@ref).
 """
 struct ConformanceDeclaration
     package::String
@@ -46,7 +47,8 @@ struct ConformanceDeclaration
     rounding_modes::Vector{String}
     saturation_modes::Vector{Symbol}
     block_surface::Vector{Symbol}
-    cached_specializations::Vector{CachedTableKey}
+    cached_specializations::Vector{TableEntry}
+    cached_bytes::Int
     approximate::Vector{NamedTuple{(:name, :op, :kappa, :exhaustive), Tuple{Symbol, Symbol, Float64, Bool}}}
 end
 
@@ -61,7 +63,8 @@ const _INTERPRETATIONS = (
 
 The live conformance declaration: formats from the alias grid, operations
 from `OP_REGISTRY`, the block surface generated from it, the pure-ρ table
-specializations actually instantiated (`table_keys()` — both code-unit caches),
+specializations actually instantiated (`AIFloats.table_entries()` — both
+code-unit caches, in one locked snapshot alongside their total bytes),
 and the κ registry. Serialize with [`conformance_dict`](@ref) or render with
 [`conformance_report`](@ref).
 """
@@ -74,7 +77,12 @@ function conformance()
     end
     append!(blocknames, (:BlockReduceAdd, :BlockReduceMultiply, :BlockDotProduct,
                          :ConvertFromBlock, :ConvertToBlock, :ConvertToBlockMaxAbsFinite))
-    cached = table_keys()
+    # ONE snapshot: the entries and their byte total must describe the same
+    # moment. Reading them through two separately locked queries let another
+    # task's build land between them, and the report then printed a count and a
+    # size that did not correspond (improveapi3.md §6 Phase 5.7).
+    cached = table_entries()
+    cached_bytes = sum(e -> e.bytes, cached; init = 0)
     apx = lock(() -> [(name = a.name, op = a.op, kappa = a.kappa_declared, exhaustive = a.exhaustive)
                       for a in values(APPROX_REGISTRY)], APPROX_LOCK)
     version = something(Base.pkgversion(@__MODULE__), v"0.0.0-DEV")
@@ -86,7 +94,7 @@ function conformance()
         collect(String, _ROUNDING_MODE_DECLARATIONS),
         collect(Symbol, _SATURATION_MODE_DECLARATIONS),
         sort!(blocknames),
-        cached, sort!(apx; by = a -> a.name))
+        cached, cached_bytes, sort!(apx; by = a -> a.name))
 end
 
 """
@@ -111,11 +119,15 @@ function conformance_dict(c::ConformanceDeclaration = conformance())
         "rounding_modes" => copy(c.rounding_modes),
         "saturation_modes" => String.(c.saturation_modes),
         "block_surface" => String.(c.block_surface),
-        "cached_specializations" => [Dict("op" => String(k.op), "fr" => collect(k.fr),
-                                          "f1" => collect(k.f1), "f2" => collect(k.f2),
-                                          "f3" => k isa TernaryKey ? collect(k.f3) : nothing,
-                                          "rounding" => String(k.rm), "saturation" => String(k.sm))
-                                     for k in c.cached_specializations],
+        "cached_specializations" => [Dict("op" => String(e.op),
+                                          "arity" => String(e.arity),
+                                          "result" => string(e.result),
+                                          "operands" => [string(f) for f in e.operands],
+                                          "rounding" => String(e.rounding),
+                                          "saturation" => String(e.saturation),
+                                          "bytes" => e.bytes)
+                                     for e in c.cached_specializations],
+        "cached_bytes" => c.cached_bytes,
         "approximate" => [Dict("name" => String(a.name), "op" => String(a.op),
                                "kappa" => a.kappa, "exhaustive" => a.exhaustive)
                           for a in c.approximate])
@@ -145,13 +157,13 @@ function conformance_report(io::IO = stdout, c::ConformanceDeclaration = conform
     println(io, "\nRounding modes: ", join(c.rounding_modes, ", "))
     println(io, "Saturation modes: ", join(String.(c.saturation_modes), ", "))
     println(io, "\nBlock/scaled surface (", length(c.block_surface), " operations), any B ≥ 1")
+    # `c.cached_bytes`, not a fresh `table_stats()` call: the count and the
+    # size printed here must describe the same moment the declaration captured
     println(io, "\nInstantiated pure-ρ table specializations: ", length(c.cached_specializations),
-            " (", table_bytes(), " bytes)")
-    for k in c.cached_specializations
-        f2 = k.f2 == (0, 0, 0, 0) ? "" : string(" × ", k.f2)
-        f3 = k isa TernaryKey ? string(" × ", k.f3) : ""
-        println(io, "  ", k.op, "⟨", k.f1, f2, f3,
-                " → ", k.fr, ", (", k.rm, ", ", k.sm, ")⟩")
+            " (", c.cached_bytes, " bytes)")
+    for e in c.cached_specializations
+        println(io, "  ", e.op, "⟨", join(string.(e.operands), " × "),
+                " → ", e.result, ", (", e.rounding, ", ", e.saturation, ")⟩")
     end
     if isempty(c.approximate)
         println(io, "\nApproximate implementations: none (all default paths are bit-exact)")

@@ -85,7 +85,7 @@ end
     # stochastic never builds a table
     AIFloats.empty_tables!()
     Add(F, ρ, A, B; rng = Xoshiro(1))
-    @test AIFloats.table_count() == 0
+    @test AIFloats.table_stats().entries == 0
 end
 
 @testset "vmap / vmap! surface" begin

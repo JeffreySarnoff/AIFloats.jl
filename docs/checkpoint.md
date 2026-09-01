@@ -21,10 +21,52 @@ green; anything short of that is recorded as in progress with what is missing.
 | 2 — scoped projection default | **done** | zero alloc steady state; scoped/nested/task tests |
 | 3 — scalar/array conversion parity | **done** | edge-population code-point equality |
 | 4 — queries and `formatinfo` | **done** | type stability, no Base shadowing |
-| 5 — table service | not started | coherent snapshots under concurrency |
+| 5 — table service | **done** | coherent snapshots under concurrency |
 | 6 — packed serialization and collections | not started | round trips, aliasing, Aqua ambiguities |
 | 7 — registry validation and error taxonomy | not started | one validation per call, not per element |
 | 8 — residue removal and consumer alignment | not started | zero residual deleted forms |
+
+## Phase 5 — done (2026-09-01)
+
+**Gate.** `tables` (with the new snapshot testset) · `governance` · `kernels` ·
+`quality` · doctests — green.
+
+**Four introspection functions became two coherent ones.** `table_bytes`,
+`table_count`, `ternary_count` and `table_keys` each took `TABLE_LOCK`
+separately, so a caller assembling a report from several of them could describe
+three different moments of a cache another task was filling, and then print
+totals that do not add up. `table_stats()` and `table_entries()` each take the
+lock **once** and read everything inside it. The test asserts the property
+directly: `by_arity` and `by_codeunit` each sum to `entries`, and the per-entry
+`bytes` sum to `bytes`.
+
+`table_entries()` returns public named tuples — `(op, arity, result, operands,
+rounding, saturation, bytes)` — naming **format types** and the mode names a
+caller actually writes. The internal key struct stores `(K,P,S,D)` tuples and
+the singleton's *type* name (`:ρRTE`); both are now unmapped at the boundary
+rather than leaked through it.
+
+`get_table`, `table_for`, and the key structs left the `public` list. The
+kernels still call them; they are simply no longer part of the surface.
+
+`table_policy` now **validates the operation and its arity before computing a
+key**. A key built from an unregistered symbol, or from the wrong operand
+count, is a well-formed key for a signature that can never be built — and the
+policy answer derived from it would be a confident lie rather than an error.
+
+**`conformance()` had the coherence bug this phase exists to fix.** It captured
+`table_keys()` into the declaration, and then `conformance_report` called
+`table_bytes()` again *at print time* — so the count and the size it printed
+came from two different moments. The declaration now carries `cached_bytes`
+from the same snapshot, and the report prints that field. `conformance_dict`
+and `ConformanceDeclaration.cached_specializations` moved to the public named
+tuples with it.
+
+One placement note worth keeping: `const TableEntry` had to be introduced
+*before* `table_entries`'s docstring, and with a plain comment rather than a
+docstring of its own. Inserted after, it sat between that docstring and its
+function and silently retargeted it — the same failure mode already recorded
+twice in this log.
 
 ## Phase 4 — done (2026-09-01)
 

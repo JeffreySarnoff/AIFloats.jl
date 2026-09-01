@@ -88,7 +88,7 @@ end
     BV = BinaryValue(F)
     A = [fromcode(BV, c % 16) for c in 0:99]
     FMA(F, RTE_SN, A, A, A)
-    @test AIFloats.ternary_count() == 1
+    @test AIFloats.table_stats().by_arity.ternary == 1
     # adaptive band: 3×7 = 21 bits — no table until the signature earns it
     F7 = Binary(7, 3, SIGNED, EXTENDED); BV7 = BinaryValue(F7)
     A7 = [fromcode(BV7, c % 128) for c in 0:999]
@@ -96,11 +96,11 @@ end
     try
         AIFloats.TERNARY_BUILD_ELEMS[] = 2500
         FMA(F7, RTE_SN, A7, A7, A7)             # 1000 elements: not yet
-        @test AIFloats.ternary_count() == 1
+        @test AIFloats.table_stats().by_arity.ternary == 1
         FMA(F7, RTE_SN, A7, A7, A7)             # 2000: not yet
-        @test AIFloats.ternary_count() == 1
+        @test AIFloats.table_stats().by_arity.ternary == 1
         r = FMA(F7, RTE_SN, A7, A7, A7)         # 3000: earned — builds
-        @test AIFloats.ternary_count() == 2
+        @test AIFloats.table_stats().by_arity.ternary == 2
         # the table agrees with the scalar path on every probed element
         @test all(i -> codepoint(r[i]) == codepoint(FMA(F7, RTE_SN, A7[i], A7[i], A7[i])),
                   eachindex(A7))
@@ -115,7 +115,7 @@ end
         G = Binary(3, 1, UNSIGNED, FINITE); BG = BinaryValue(G)
         Ag = [fromcode(BG, c % 8) for c in 0:49]
         FMA(G, RTE_SN, Ag, Ag, Ag)                 # eager insert triggers eviction
-        @test AIFloats.ternary_count() < 3
+        @test AIFloats.table_stats().by_arity.ternary < 3
     finally
         AIFloats.TERNARY_CACHE_BYTES[] = oldB
     end
@@ -126,10 +126,10 @@ end
         AIFloats.TERNARY_CACHE_BYTES[] = 6 * 1024
         W = Binary(9, 4, SIGNED, EXTENDED)          # UInt16 result: 2^12 entries × 2 B = 8 KiB
         FMA(W, RTE_SN, A, A, A)                     # inserts alone over budget (earned)
-        @test AIFloats.ternary_count() == 1
+        @test AIFloats.table_stats().by_arity.ternary == 1
         FMA(F, RTE_SN, A, A, A)                     # UInt8 result, 4 KiB: must evict W's
-        @test AIFloats.ternary_count() == 1
-        @test AIFloats.table_bytes() == 4096            # only ternary tables are cached here
+        @test AIFloats.table_stats().by_arity.ternary == 1
+        @test AIFloats.table_stats().bytes == 4096            # only ternary tables are cached here
         @test isempty(AIFloats.TERNARY_CACHE16) && length(AIFloats.TERNARY_CACHE8) == 1
         # and the other direction
         FMA(W, RTE_SN, A, A, A)
@@ -138,8 +138,8 @@ end
         AIFloats.TERNARY_CACHE_BYTES[] = oldB
     end
     AIFloats.empty_tables!()
-    @test AIFloats.table_count() == 0 && AIFloats.ternary_count() == 0
-    @test AIFloats.table_bytes() == 0
+    @test AIFloats.table_stats().entries == 0 && AIFloats.table_stats().by_arity.ternary == 0
+    @test AIFloats.table_stats().bytes == 0
 end
 
 @testset "cache accounting" begin
@@ -148,9 +148,9 @@ end
     W = Binary(9, 4, SIGNED, EXTENDED)
     AIFloats.get_table(:Exp, F, F, RTE_SN)         # 32 × UInt8
     AIFloats.get_table(:Negate, W, W, RTE_SN)      # 512 × UInt16
-    @test AIFloats.table_count() == 2
-    @test AIFloats.table_bytes() == 32 + 1024      # both code units counted
-    @test length(AIFloats.table_keys()) == 2
+    @test AIFloats.table_stats().entries == 2
+    @test AIFloats.table_stats().bytes == 32 + 1024      # both code units counted
+    @test length(AIFloats.table_entries()) == 2
     # a repeat fetch is a cache hit, not a rebuild
     t1 = AIFloats.get_table(:Exp, F, F, RTE_SN)
     t2 = AIFloats.get_table(:Exp, F, F, RTE_SN)
@@ -164,11 +164,11 @@ end
     F = Binary(3, 2, SIGNED, FINITE)
     AIFloats.get_table(:Negate, F, F, RTE_SN)
     AIFloats.get_table(:FMA, F, F, F, F, RTE_SN)
-    keys1 = AIFloats.table_keys()
-    keys2 = AIFloats.table_keys()
+    keys1 = AIFloats.table_entries()
+    keys2 = AIFloats.table_entries()
     @test keys1 == keys2
-    @test length(keys1) == AIFloats.table_count() == 2
-    @test count(k -> k isa AIFloats.TernaryKey, keys1) == AIFloats.ternary_count() == 1
+    @test length(keys1) == AIFloats.table_stats().entries == 2
+    @test count(e -> e.arity === :ternary, keys1) == AIFloats.table_stats().by_arity.ternary == 1
     @test AIFloats.TERNARY_TICK[] > 0
     AIFloats.empty_tables!()
     @test AIFloats.TERNARY_TICK[] == 0
@@ -185,11 +185,11 @@ end
         F16 = Binary(9, 4, SIGNED, EXTENDED); F8 = Binary(8, 4, SIGNED, EXTENDED)
         F3 = Binary(4, 2, SIGNED, EXTENDED); F4 = Binary(3, 2, SIGNED, EXTENDED)
         AIFloats.get_table(:FMA, F16, F3, F3, F4, RTE_SN)
-        @test AIFloats.table_bytes() == 4096
+        @test AIFloats.table_stats().bytes == 4096
         AIFloats.get_table(:FMA, F8, F3, F3, F4, RTE_SN)
-        @test AIFloats.table_bytes() == 2048
+        @test AIFloats.table_stats().bytes == 2048
         @test isempty(AIFloats.TERNARY_CACHE16)
-        @test AIFloats.table_bytes() <= AIFloats.TERNARY_CACHE_BYTES[]
+        @test AIFloats.table_stats().bytes <= AIFloats.TERNARY_CACHE_BYTES[]
     finally
         AIFloats.TERNARY_CACHE_BYTES[] = old
         AIFloats.empty_tables!()
@@ -215,21 +215,21 @@ end
         AIFloats.empty_tables!()
         X, Y = mk(100); D = similar(X)
         vmap!(D, Val(:ArcTan2), RTE_SN, X, Y)
-        @test AIFloats.table_count() == 0
+        @test AIFloats.table_stats().entries == 0
 
         # results are identical whether the table exists or not
         AIFloats.empty_tables!()
         AIFloats.TABLE_ADAPTIVE_BITS[] = -1                   # force compute
         Xb, Yb = mk(4096); ref = similar(Xb); got = similar(Xb)
         vmap!(ref, Val(:ArcTan2), RTE_SN, Xb, Yb)
-        @test AIFloats.table_count() == 0
+        @test AIFloats.table_stats().entries == 0
         AIFloats.TABLE_ADAPTIVE_BITS[] = oldbits
         AIFloats.TABLE_BUILD_ELEMS[] = 8192                   # earn it in two calls
         AIFloats.empty_tables!()
         vmap!(got, Val(:ArcTan2), RTE_SN, Xb, Yb)
-        @test AIFloats.table_count() == 0                     # 4096 < 8192
+        @test AIFloats.table_stats().entries == 0                     # 4096 < 8192
         vmap!(got, Val(:ArcTan2), RTE_SN, Xb, Yb)             # 8192 ≥ 8192: builds
-        @test AIFloats.table_count() == 1
+        @test AIFloats.table_stats().entries == 1
         vmap!(got, Val(:ArcTan2), RTE_SN, Xb, Yb)             # now a gather
         @test codepoint.(got) == codepoint.(ref)
 
@@ -237,20 +237,20 @@ end
         AIFloats.empty_tables!()
         Xs, Ys = mk(1024); Ds = similar(Xs)
         for _ in 1:7; vmap!(Ds, Val(:Add), RTE_SN, Xs, Ys); end
-        @test AIFloats.table_count() == 0                     # 7168 < 8192
+        @test AIFloats.table_stats().entries == 0                     # 7168 < 8192
         vmap!(Ds, Val(:Add), RTE_SN, Xs, Ys)
-        @test AIFloats.table_count() == 1                     # 8192 ≥ 8192
+        @test AIFloats.table_stats().entries == 1                     # 8192 ≥ 8192
 
         # stochastic ρ is never tabled, however hot
         AIFloats.empty_tables!()
         for _ in 1:8; vmap!(Ds, Val(:Add), RSA_SN, Xs, Ys; rng = MersenneTwister(1)); end
-        @test AIFloats.table_count() == 0
+        @test AIFloats.table_stats().entries == 0
 
         # above the adaptive band nothing is ever built
         AIFloats.TABLE_ADAPTIVE_BITS[] = 16
         AIFloats.empty_tables!()
         for _ in 1:8; vmap!(Ds, Val(:Add), RTE_SN, Xs, Ys); end
-        @test AIFloats.table_count() == 0
+        @test AIFloats.table_stats().entries == 0
 
         # empty_tables! clears the counters too, or a signature would stay hot
         AIFloats.TABLE_ADAPTIVE_BITS[] = oldbits
@@ -258,10 +258,78 @@ end
         for _ in 1:7; vmap!(Ds, Val(:Add), RTE_SN, Xs, Ys); end
         AIFloats.empty_tables!()
         vmap!(Ds, Val(:Add), RTE_SN, Xs, Ys)
-        @test AIFloats.table_count() == 0                     # counter was reset
+        @test AIFloats.table_stats().entries == 0                     # counter was reset
     finally
         AIFloats.TABLE_BUILD_ELEMS[] = oldelems
         AIFloats.TABLE_ADAPTIVE_BITS[] = oldbits
         AIFloats.empty_tables!()
+    end
+end
+
+@testset "table service: coherent snapshots (improveapi3 Phase 5)" begin
+    A = AIFloats
+    A.empty_tables!()
+    s = A.table_stats()
+    @test s.entries == 0 && s.bytes == 0
+    @test s.by_arity == (unary = 0, binary = 0, ternary = 0)
+    @test s.by_codeunit == (uint8 = 0, uint16 = 0)
+    @test s.adaptive_signatures == 0
+    @test isempty(A.table_entries())
+
+    F3 = Binary(3, 2, SIGNED, FINITE)          # UInt8 codes
+    F9 = Binary(9, 3, SIGNED, EXTENDED)        # UInt16 codes
+    A.get_table(:Negate, F3, F3, RTE_SN)
+    A.get_table(:Add, F3, F3, F3, RTZ_SF)
+    A.get_table(:FMA, F3, F3, F3, F3, RTE_SN)
+    A.get_table(:Negate, F9, F9, RTE_SN)
+
+    s = A.table_stats(); es = A.table_entries()
+    # the details SUM to the totals — the property that separate, separately
+    # locked queries could not guarantee
+    @test s.by_arity.unary + s.by_arity.binary + s.by_arity.ternary == s.entries
+    @test s.by_codeunit.uint8 + s.by_codeunit.uint16 == s.entries
+    @test sum(e -> e.bytes, es) == s.bytes
+    @test length(es) == s.entries == 4
+    @test s.by_arity == (unary = 2, binary = 1, ternary = 1)
+    @test s.by_codeunit == (uint8 = 3, uint16 = 1)
+
+    # entries are sorted by op, then arity, result, operands, rounding, saturation
+    @test issorted(es; by = e -> (String(e.op), length(e.operands)))
+    # and they name PUBLIC things: format types and the mode names a caller
+    # writes, never the internal key struct or its `ρ`-prefixed type names
+    @test all(e -> e.result isa Type && e.result <: Binary, es)
+    @test all(e -> all(f -> f isa Type && f <: Binary, e.operands), es)
+    @test all(e -> !startswith(String(e.rounding), 'ρ'), es)
+    @test :RTE in [e.rounding for e in es] && :SN in [e.saturation for e in es]
+    @test :RTZ in [e.rounding for e in es] && :SF in [e.saturation for e in es]
+    @test all(e -> length(e.operands) == (e.arity === :unary ? 1 :
+                                          e.arity === :binary ? 2 : 3), es)
+
+    # a prospective policy query READS the counter and never increments it
+    big2 = Binary(10, 4, SIGNED, EXTENDED)
+    before = A.table_stats().adaptive_signatures
+    p1 = A.table_policy(:Add, big2, big2, big2, RTE_SN; nelems = 1 << 20)
+    p2 = A.table_policy(:Add, big2, big2, big2, RTE_SN; nelems = 1 << 20)
+    @test p1 == p2
+    @test A.table_stats().adaptive_signatures == before
+
+    # the operation and its arity are validated BEFORE a key is computed: a key
+    # built from an unregistered symbol is well formed for a signature that can
+    # never be built, and its answer would be a confident lie
+    @test_throws ArgumentError A.table_policy(:NotAnOp, F3, F3, F3, RTE_SN)
+    @test_throws ArgumentError A.table_policy(:Add, F3, F3, RTE_SN)          # arity 1, not 2
+    @test_throws ArgumentError A.table_policy(:Add, F3, F3, F3, F3)          # no projection
+    @test_throws ArgumentError A.table_policy(:Add, F3, F3, F3, RTE_SN; nelems = -1)
+
+    # reset clears tables, adaptive counters, and the LRU tick together
+    A.empty_tables!()
+    s = A.table_stats()
+    @test s.entries == 0 && s.bytes == 0 && s.adaptive_signatures == 0
+    @test A.TERNARY_TICK[] == 0
+    @test isempty(A.table_entries())
+
+    # the removed introspection is gone, not merely unexported
+    for n in (:table_bytes, :table_count, :ternary_count, :table_keys)
+        @test !isdefined(AIFloats, n)
     end
 end

@@ -98,7 +98,10 @@ end
     @test length(c.operations) == length(AIFloats.OP_REGISTRY) == 52
     @test count(o -> o.arity == 3, c.operations) == 3
     @test length(c.cached_specializations) == 3
-    @test any(k -> k isa AIFloats.TernaryKey && k.op === :FMA, c.cached_specializations)
+    # the declaration reports PUBLIC named tuples, not the internal key struct
+    @test any(e -> e.arity === :ternary && e.op === :FMA, c.cached_specializations)
+    @test all(e -> e.result isa Type && e.result <: Binary, c.cached_specializations)
+    @test c.cached_bytes == sum(e -> e.bytes, c.cached_specializations)
     @test :BlockDotProduct in c.block_surface && :ScaledFMA in c.block_surface && :BlockTanh in c.block_surface
     @test length(c.block_surface) == 51 * 2 + 6
     @test any(a -> a.name === :exp_ftz_8p4 && a.exhaustive, c.approximate)
@@ -107,8 +110,9 @@ end
     d = conformance_dict(c)
     @test d["package"] == "AIFloats.jl $(Base.pkgversion(AIFloats))"
     @test length(d["formats"]) == 504 && d["draft_identity"]["designation"] == "IEEE P3109/D1"
-    @test any(s -> s["op"] == "Add" && s["saturation"] == "ρSN", d["cached_specializations"])
-    @test any(s -> s["op"] == "FMA" && s["f3"] !== nothing, d["cached_specializations"])
+    @test any(s -> s["op"] == "Add" && s["saturation"] == "SN", d["cached_specializations"])
+    @test any(s -> s["op"] == "FMA" && length(s["operands"]) == 3, d["cached_specializations"])
+    @test d["cached_bytes"] == c.cached_bytes
     buf = IOBuffer(); conformance_report(buf, c); rep = String(take!(buf))
     @test occursin("κ verified exhaustively", rep) && occursin("Exp⟨", rep)
     @test occursin("Scalar operations (52)", rep) && occursin("K ∈ 3:16", rep)

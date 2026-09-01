@@ -21,6 +21,11 @@ struct TableKey
 end
 
 _fkey(::Type{Binary{K,P,S,D}}) where {K,P,S,D} = (Int(K), Int(P), Int(S), Int(D))
+# and back: the snapshot functions report FORMAT TYPES, never the stored tuple
+_unfkey(t::NTuple{4,Int}) = Binary(Int8(t[1]), Int8(t[2]), Bool(t[3]), Bool(t[4]))
+# the key stores the singleton's TYPE name (`:ρRTE`); a public snapshot reports
+# the name a caller actually writes (`:RTE`)
+_publicmode(n::Symbol) = (s = String(n); Symbol(startswith(s, 'ρ') ? chop(s; head = 1, tail = 0) : s))
 _rmname(ρ::Projection) = nameof(typeof(RoundOf(ρ)))
 _smname(ρ::Projection) = nameof(typeof(SatOf(ρ)))
 
@@ -146,22 +151,112 @@ _bytes_of(d::Dict{TableKey,<:Memory}) =
 _bytes_of(d::Dict{TernaryKey,<:TernaryEntry}) =
     sum(e -> length(e.tbl) * sizeof(eltype(e.tbl)), values(d); init = 0)
 
-"""Total bytes currently held by every table cache."""
-table_bytes() = lock(TABLE_LOCK) do
-    _bytes_of(TABLE_CACHE8) + _bytes_of(TABLE_CACHE16) +
-    _bytes_of(TERNARY_CACHE8) + _bytes_of(TERNARY_CACHE16)
+# ---- the two coherent snapshots ---------------------------------------------
+# ONE lock per snapshot, not one per component. `table_bytes()`,
+# `table_count()` and `ternary_count()` each took the lock separately, so a
+# caller assembling a report from all three could describe three different
+# moments of a cache that another task was filling — and then print totals that
+# do not add up. Both functions below take the lock once and read everything
+# inside it (improveapi3.md §6 Phase 5.7).
+
+# a unary entry is stored in the binary cache with an all-zero f2 sentinel
+_binary_arity(k::TableKey) = k.f2 === (0, 0, 0, 0) ? :unary : :binary
+
+"""
+    table_stats() -> NamedTuple
+
+One coherent snapshot of the table caches, taken under a single lock.
+
+```julia
+(entries, bytes, by_arity = (unary, binary, ternary),
+ by_codeunit = (uint8, uint16), adaptive_signatures, ternary_budget)
+```
+
+`entries` is the number of cached specializations and `bytes` the memory they
+hold; the `by_arity` and `by_codeunit` breakdowns each sum to `entries`.
+`adaptive_signatures` counts signatures with a nonzero cumulative-use counter,
+which is what the adaptive band builds against. `ternary_budget` is the current
+per-table byte cap.
+
+For per-entry detail, see [`table_entries`](@ref); to clear, [`empty_tables!`](@ref).
+
+# Examples
+
+```jldoctest
+julia> AIFloats.empty_tables!();
+
+julia> AIFloats.table_stats().entries
+0
+```
+"""
+function table_stats()
+    lock(TABLE_LOCK) do
+        u8 = length(TABLE_CACHE8) + length(TERNARY_CACHE8)
+        u16 = length(TABLE_CACHE16) + length(TERNARY_CACHE16)
+        tern = length(TERNARY_CACHE8) + length(TERNARY_CACHE16)
+        un = count(k -> _binary_arity(k) === :unary, keys(TABLE_CACHE8)) +
+             count(k -> _binary_arity(k) === :unary, keys(TABLE_CACHE16))
+        bin = (length(TABLE_CACHE8) + length(TABLE_CACHE16)) - un
+        (entries = u8 + u16,
+         bytes = _bytes_of(TABLE_CACHE8) + _bytes_of(TABLE_CACHE16) +
+                 _bytes_of(TERNARY_CACHE8) + _bytes_of(TERNARY_CACHE16),
+         by_arity = (unary = un, binary = bin, ternary = tern),
+         by_codeunit = (uint8 = u8, uint16 = u16),
+         adaptive_signatures = count(>(0), values(TABLE_USE)) +
+                               count(>(0), values(TERNARY_USE)),
+         ternary_budget = 1 << TABLE_MAX_BITS[])
+    end
 end
-"""Number of cached specializations of every arity and code unit."""
-table_count() = lock(() -> length(TABLE_CACHE8) + length(TABLE_CACHE16) +
-                               length(TERNARY_CACHE8) + length(TERNARY_CACHE16), TABLE_LOCK)
-"""Number of cached ternary specializations, both code units."""
-ternary_count() = lock(() -> length(TERNARY_CACHE8) + length(TERNARY_CACHE16), TABLE_LOCK)
-"""Keys of every cached specialization, in a deterministic order."""
-table_keys() = lock(TABLE_LOCK) do
-    ks = CachedTableKey[]
-    append!(ks, keys(TABLE_CACHE8), keys(TABLE_CACHE16),
-            keys(TERNARY_CACHE8), keys(TERNARY_CACHE16))
-    sort!(ks; by = _cache_key_sort)
+
+_entry_nt(k::TableKey, nbytes::Int) =
+    (op = k.op, arity = _binary_arity(k), result = _unfkey(k.fr),
+     operands = _binary_arity(k) === :unary ? (_unfkey(k.f1),) :
+                                              (_unfkey(k.f1), _unfkey(k.f2)),
+     rounding = _publicmode(k.rm), saturation = _publicmode(k.sm), bytes = nbytes)
+_entry_nt(k::TernaryKey, nbytes::Int) =
+    (op = k.op, arity = :ternary, result = _unfkey(k.fr),
+     operands = (_unfkey(k.f1), _unfkey(k.f2), _unfkey(k.f3)),
+     rounding = _publicmode(k.rm), saturation = _publicmode(k.sm), bytes = nbytes)
+
+# The public shape of one cached-table record. A plain comment, not a
+# docstring: a docstring here would sit between `table_entries`'s own
+# docstring and its definition and silently retarget it.
+const TableEntry = @NamedTuple{op::Symbol, arity::Symbol, result::DataType,
+                               operands::Tuple, rounding::Symbol,
+                               saturation::Symbol, bytes::Int}
+
+"""
+    table_entries() -> Vector{AIFloats.TableEntry}
+
+Per-entry detail for every cached table, taken under a single lock and sorted
+by operation, arity, result format, operand formats, rounding, then saturation.
+
+Each element is a public named tuple naming FORMAT TYPES, not the internal key
+struct:
+
+```julia
+(op, arity, result, operands, rounding, saturation, bytes)
+```
+
+The `bytes` field sums to [`table_stats`](@ref)`().bytes`.
+"""
+function table_entries()::Vector{TableEntry}
+    lock(TABLE_LOCK) do
+        out = Any[]
+        for d in (TABLE_CACHE8, TABLE_CACHE16)
+            for (k, t) in d
+                push!(out, (_cache_key_sort(k), _entry_nt(k, length(t) * sizeof(eltype(t)))))
+            end
+        end
+        for d in (TERNARY_CACHE8, TERNARY_CACHE16)
+            for (k, e) in d
+                push!(out, (_cache_key_sort(k),
+                            _entry_nt(k, length(e.tbl) * sizeof(eltype(e.tbl)))))
+            end
+        end
+        sort!(out; by = first)
+        TableEntry[nt for (_, nt) in out]
+    end
 end
 
 """Drop every cached table and adaptive counter (they rebuild lazily on next use)."""

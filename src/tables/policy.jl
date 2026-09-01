@@ -136,8 +136,23 @@ the kernels do, so it cannot drift from them.
 function table_policy(op::Symbol, ::Type{fr}, Fs::Vararg{Any};
                       nelems::Int = 0) where {fr<:Binary}
     nelems >= 0 || throw(ArgumentError("nelems must be nonnegative"))
+    # Validate the OPERATION and its ARITY before computing a key
+    # (improveapi3.md §6 Phase 5.2). A key built from an unregistered symbol or
+    # the wrong operand count is a well-formed key for a signature that can
+    # never be built, and the answer it produces would be a confident lie.
+    i = findfirst(o -> o.name === op, OP_REGISTRY)
+    i === nothing && throw(ArgumentError(
+        "$op is not a registry operation; see AIFloats.OP_REGISTRY"))
+    entry = OP_REGISTRY[i]
+    isempty(Fs) && throw(ArgumentError("table_policy needs a projection as its last argument"))
     ρ = last(Fs)
-    fs = map(f -> f isa Binary ? typeof(f) : f, Base.front(Fs))
+    ρ isa Projection || throw(ArgumentError(
+        "table_policy's last argument must be a Projection, got $(typeof(ρ))"))
+    fs = Base.front(Fs)
+    all(f -> f isa Type && f <: Binary, fs) || throw(ArgumentError(
+        "table_policy's operand arguments must be Binary format types"))
+    length(fs) == entry.arity || throw(ArgumentError(
+        "$op takes $(entry.arity) operand format$(entry.arity == 1 ? "" : "s"), got $(length(fs))"))
     bits = _sumK(fs...)
     entries = bits >= 63 ? typemax(Int) : 1 << bits
     bytes = tablebits(fr, fs...) >= 63 ? typemax(Int) : 1 << tablebits(fr, fs...)
