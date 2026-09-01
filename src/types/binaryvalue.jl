@@ -16,13 +16,39 @@ The representation invariant: the code point occupies the low `K` bits of the
 storage unit and the high bits are zero. Constructors enforce it.
 
 An `Unsigned` constructor argument means **code point** (range-checked against
-`2^K`); construction *from a value* goes through the projection engine and
-arrives with `Convert` (plan Phase 3).
+`2^K`); every other `Real` means a **value**, and goes through the projection
+engine under a [`Projection`](@ref) — the session default unless a `projection`
+keyword says otherwise.
 
-```julia
-BinaryValue{F}(0x45)      # code point 0x45 of format F
-codepoint(x)              # the code point back
-decode(x)                 # the value the datum denotes
+The format may be given as a type or as an instance, and either may be spelled
+as a parameter or passed as an argument. All four spellings agree.
+
+# Examples
+
+```jldoctest
+julia> F = Binary(8, 4, SIGNED, EXTENDED)
+Binary{8, 4, ±, ∞}
+
+julia> x = BinaryValue(F, 0x45)          # an Unsigned is a CODE POINT
+1.625
+
+julia> codepoint(x), decode(x)
+(0x45, 1.625)
+
+julia> BinaryValue(F, 1.625) === x       # any other Real is a VALUE
+true
+
+julia> BinaryValue{F}(1.625) === x       # the parameter spelling
+true
+
+julia> BinaryValue(F(), 0x45) === x      # a format instance also works
+true
+
+julia> BinaryValue(F, 1.7)               # a value off the lattice is projected
+1.75
+
+julia> BinaryValue(F, 1.7; projection = RTZ_SN)
+1.625
 ```
 """
 struct BinaryValue{F<:Binary, U<:Unsigned} <: AbstractFloat
