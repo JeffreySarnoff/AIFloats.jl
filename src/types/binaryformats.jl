@@ -1,13 +1,4 @@
 """
-    BinaryFloat
-
-Supertype of every binary format specifier. [`Binary`](@ref) is its one subtype.
-
-`BinaryFloat <: AbstractFloat`.
-"""
-abstract type BinaryFloat <: AbstractFloat end
-
-"""
     Binary{K,P,S,D}
 
 A 3109 complete binary format specifier.
@@ -22,10 +13,17 @@ The four parameters fully determine a format, so `Binary{K,P,S,D}` carries no fi
 Binary(::Integer, ::Integer, ::AIFloats.ΣBool, ::AIFloats.ΔBool)) rather than writing the
 parameters out, so that they are canonicalized and validated.
 
+A format has NO supertype, and in particular is not an `AbstractFloat`: it
+describes a value set rather than belonging to one. Its datums are
+[`BinaryValue`](@ref), and those are the `AbstractFloat`s. The distinction is
+not cosmetic — while `Binary` was an `AbstractFloat`, Base's fallbacks applied
+to format instances and `isnan` of a *format* returned `false` instead of
+failing. `test-binary-format.jl` pins this.
+
 See also [`BitwidthOf`](@ref), [`PrecisionOf`](@ref), [`SignednessOf`](@ref),
 [`DomainOf`](@ref).
 """
-struct Binary{K,P,S,D} <: BinaryFloat end
+struct Binary{K,P,S,D} end
 
 """
     Binary(K, P, S, D)

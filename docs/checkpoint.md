@@ -4,6 +4,58 @@
 [structuralplan.md](structuralplan.md) and, for the current work,
 [implmentplan.md](implmentplan.md). Newest entry first.*
 
+## Type hierarchy: a format is no longer a number (2026-09-01)
+
+Gate: full `Pkg.test()` green, docs build and doctests clean, benchmarks
+unmoved.
+
+```julia
+struct Binary{K,P,S,D} end                                  # was <: BinaryFloat
+struct BinaryValue{F<:Binary,U<:Unsigned} <: AbstractFloat  # unchanged
+```
+
+`abstract type BinaryFloat <: AbstractFloat end` is deleted, and with it the
+export.
+
+### Why, since the original decision was to keep it
+
+`docs/structuralplan.md` §9.2 had considered and deferred this, on the grounds
+that it "breaks documented API for zero computational gain". The gain is not
+computational, which is why that framing missed it:
+
+- While a format was an `AbstractFloat`, Base's numeric fallbacks applied to
+  format instances and **`isnan(Binary{8,4,SIGNED,EXTENDED}())` returned
+  `false`** — the generic method is `x != x`, so a meaningless question got a
+  confident answer instead of an error.
+- The hierarchy contradicted its own names. `Binary`, the format *specifier*,
+  was a subtype of something called `BinaryFloat`; `BinaryValue`, the actual
+  number, was not.
+
+### The predicted cost did not appear
+
+`BinaryFloat` had **zero uses as a bound** anywhere in `src/` or `test/` — it
+was declared, exported, documented and otherwise inert. So "propagate the
+change throughout the source and tests" required no propagation: five line
+edits in two files, no test changed, no doc page changed, and the benchmark
+suite unmoved (`decode` 1.4 ns, `Add` 8.7, `T(1.3)` 1.4, `Exp` 22.2, `vmap!`
+14.9 µs — all at baseline). `BinaryValue` stays concrete, so dispatch is
+untouched.
+
+The API break is the removal of the exported name `BinaryFloat`. It named the
+wrong thing and nothing used it.
+
+### Pinned, not left implicit
+
+`test/test-binary-format.jl` gains "a format is not a number": `supertype(F)
+=== Any`, `!(F <: AbstractFloat/Real/Number)`, the datum of the same format
+still `<: AbstractFloat` and `isbits`, `isnan`/`zero` on a format instance
+throwing `MethodError`, and `!isdefined(AIFloats, :BinaryFloat)`. Without this
+the category error can silently return — re-adding a numeric supertype would
+otherwise fail no test anywhere.
+
+`docs/structuralplan.md` §4 and §9.2 record the reversal rather than hiding it;
+§9.2 keeps the original reasoning above the revision.
+
 ## implmentplan.md Step 10 done — documentation close-out (2026-08-28)
 
 Gate: full `Pkg.test()` green, docs build clean.

@@ -159,3 +159,34 @@ using Test
         end
     end
 end
+
+@testset "a format is not a number" begin
+    # Binary has NO supertype. It describes a value set; it does not belong to
+    # one. Its datums are the AbstractFloats.
+    #
+    # This is pinned rather than left implicit because the failure it prevents
+    # is silent. While `Binary <: BinaryFloat <: AbstractFloat`, Base's numeric
+    # fallbacks applied to format instances and `isnan` of a FORMAT returned
+    # `false` -- the generic method is `x != x` -- rather than failing. Anyone
+    # re-adding a numeric supertype here would reintroduce that with no test
+    # failing anywhere else. See docs/structuralplan.md §9.2.
+    for F in (Binary(8, 4, SIGNED, EXTENDED), Binary(3, 1, UNSIGNED, FINITE),
+              Binary(16, 5, SIGNED, EXTENDED))
+        @test supertype(F) === Any
+        @test !(F <: AbstractFloat)
+        @test !(F <: Real)
+        @test !(F <: Number)
+        # the datum of that same format IS a number
+        T = BinaryValue(F)
+        @test T <: AbstractFloat
+        @test T <: Real && T <: Number
+        @test isconcretetype(T) && isbitstype(T)
+        # and the numeric predicates answer about datums, never about formats
+        @test isnan(T(AIFloats.nan_code(F))) isa Bool
+        @test_throws MethodError isnan(F())
+        @test_throws MethodError zero(F())
+    end
+    @test !(Binary <: AbstractFloat)
+    # the name that described the old, inverted hierarchy is gone
+    @test !isdefined(AIFloats, :BinaryFloat)
+end

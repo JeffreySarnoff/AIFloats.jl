@@ -124,7 +124,8 @@ end
   propagate the received type.
 - Subtyping: `BinaryValue <: AbstractFloat` directly. No new abstract root is
   needed — the `BinaryValue` UnionAll itself serves dispatch (`::BinaryValue`).
-  `BinaryFloat`/`Binary` remain untouched (see §9.2).
+  `Binary` has no supertype at all: a format describes a value set rather than
+  belonging to one (§9.2, revised).
 
 ## 5. Directory plan
 
@@ -370,11 +371,24 @@ abstract-format/concrete-representation split; review rejected it as forcing
 SmallFloats' structure. `BinaryValue{F,U}` keeps AIFloats' format/datum separation
 and is simpler (no abstract-rebuild hazard).
 
-**9.2 `Binary <: BinaryFloat <: AbstractFloat` stays.** Re-parenting the format
-token out of `AbstractFloat` once real numbers exist was considered and deferred:
-it breaks documented API for zero computational gain. `BinaryValue` subtypes
-`AbstractFloat` directly. Revisit only if method ambiguities actually
-materialize.
+**9.2 `Binary <: BinaryFloat <: AbstractFloat` — REVISED, 2026-09-01.** The
+original decision was to keep it: re-parenting the format token out of
+`AbstractFloat` "breaks documented API for zero computational gain", to be
+revisited "only if method ambiguities actually materialize".
+
+The gain turned out not to be computational, which is why that framing missed
+it. While a format was an `AbstractFloat`, Base's numeric fallbacks applied to
+format instances, and `isnan(Binary{8,4,SIGNED,EXTENDED}())` returned **`false`**
+— a confident answer to a meaningless question — because the generic method is
+`x != x`. The hierarchy also contradicted its own names: the format specifier
+was a subtype of something called `BinaryFloat`, while `BinaryValue`, the actual
+number, was not.
+
+`Binary` now has no supertype and `BinaryValue <: AbstractFloat` as before. The
+predicted cost did not appear either: `BinaryFloat` had no uses as a bound
+anywhere in `src/` or `test/`, so nothing propagated, no test changed, and the
+benchmark suite was unmoved. The API break is the removal of the exported name
+`BinaryFloat`, which named the wrong thing and was otherwise inert.
 
 **9.3 Stochastic N without breaking the 27 constants.** `ρRSA{N}` etc. carry N in
 the type (tabulability and randomness budget must be static). The existing

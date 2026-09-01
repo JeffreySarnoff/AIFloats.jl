@@ -18,7 +18,7 @@ and packed storage ([`PackedVector`](@ref)). See the documentation's status page
 """
 module AIFloats
 
-export BinaryFloat, Binary,
+export Binary,
 # Binary format signedness
 ΣBool, UNSIGNED, SIGNED, is_unsigned, is_signed,
 # Binary  format domain
