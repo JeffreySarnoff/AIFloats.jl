@@ -17,7 +17,7 @@
 @inline _operand_datums(::Type{F}) where {F<:Binary} = _opdat(decodepolicy(F), F)
 @inline _opdat(::TableDecode, ::Type{F}) where {F<:Binary} = _decode_table(F)
 @inline _opdat(::ComputeDecode, ::Type{F}) where {F<:Binary} =
-    [decode(rawvalue(F, CodeType(F)(c))) for c in 0:(1 << Int(BitwidthOf(F))) - 1]
+    [decode(_rawvalue(F, CodeType(F)(c))) for c in 0:(1 << Int(BitwidthOf(F))) - 1]
 
 # ---- parallel builds ---------------------------------------------------------
 # A build is embarrassingly parallel: every entry is one independent trip
@@ -57,11 +57,11 @@ const THREADED_TABLE_BUILDS = Ref(true)
     V = Val(op)
     if threaded
         Threads.@threads for c in 0:n - 1
-            @inbounds tbl[c + 1] = _scalar_code(V, fr, ρ, decode(rawvalue(f1, U1(c))))
+            @inbounds tbl[c + 1] = _scalar_code(V, fr, ρ, decode(_rawvalue(f1, U1(c))))
         end
     else
         @inbounds for c in 0:n - 1
-            tbl[c + 1] = _scalar_code(V, fr, ρ, decode(rawvalue(f1, U1(c))))
+            tbl[c + 1] = _scalar_code(V, fr, ρ, decode(_rawvalue(f1, U1(c))))
         end
     end
     tbl
@@ -78,7 +78,7 @@ end
     X2 = _operand_datums(f2)                 # shared, read-only
     if threaded
         Threads.@threads for c1 in 0:(1 << K1) - 1
-            x1 = decode(rawvalue(f1, U1(c1)))
+            x1 = decode(_rawvalue(f1, U1(c1)))
             base = c1 << K2
             @inbounds for c2 in 0:(1 << K2) - 1
                 tbl[base + c2 + 1] = _scalar_code(V, fr, ρ, x1, X2[c2 + 1])
@@ -86,7 +86,7 @@ end
         end
     else
         @inbounds for c1 in 0:(1 << K1) - 1
-            x1 = decode(rawvalue(f1, U1(c1)))
+            x1 = decode(_rawvalue(f1, U1(c1)))
             base = c1 << K2
             for c2 in 0:(1 << K2) - 1
                 tbl[base + c2 + 1] = _scalar_code(V, fr, ρ, x1, X2[c2 + 1])
@@ -106,7 +106,7 @@ end
     X2, X3 = _operand_datums(f2), _operand_datums(f3)
     if threaded
         Threads.@threads for c1 in 0:(1 << K1) - 1
-            x1 = decode(rawvalue(f1, U1(c1)))
+            x1 = decode(_rawvalue(f1, U1(c1)))
             for c2 in 0:(1 << K2) - 1
                 x2 = @inbounds X2[c2 + 1]
                 base = ((c1 << K2) | c2) << K3
@@ -117,7 +117,7 @@ end
         end
     else
         @inbounds for c1 in 0:(1 << K1) - 1
-            x1 = decode(rawvalue(f1, U1(c1)))
+            x1 = decode(_rawvalue(f1, U1(c1)))
             for c2 in 0:(1 << K2) - 1
                 x2 = X2[c2 + 1]
                 base = ((c1 << K2) | c2) << K3

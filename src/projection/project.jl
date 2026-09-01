@@ -36,11 +36,11 @@ julia> decode(project(F, RTE_SF, 1.0e9))   # saturates at the max finite datum
 function project(::Type{F}, ρ::Projection{RM,SM}, X;
                  R::Int = 0, sticky::Int = 0) where
         {F<:Binary, RM<:RoundingMode, SM<:SaturationMode}
-    isnan(X) && return rawvalue(F, nan_code(F))
+    isnan(X) && return _rawvalue(F, nan_code(F))
     P = Int(PrecisionOf(F))
     B = ExponentBiasOf(F)
     r = round_to_precision(P, B, RoundOf(ρ), X, R, sticky)
-    rawvalue(F, saturate(F, ρ, r))
+    _rawvalue(F, saturate(F, ρ, r))
 end
 project(::Type{BV}, ρ::Projection, X; kw...) where {BV<:BinaryValue} =
     project(BinaryFormatOf(BV), ρ, X; kw...)

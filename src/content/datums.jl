@@ -126,20 +126,20 @@ lattice returns NaN; `NextGreaterThan(NaN)` is the bottom datum — NaN sits
 below everything in the total order.
 """
 function NextGreaterThan(x::BinaryValue{F,U}) where {F,U}
-    isnan(x) && return rawvalue(F, _bottom_datum_code(F))       # NaN is first
+    isnan(x) && return _rawvalue(F, _bottom_datum_code(F))       # NaN is first
     c = codepoint(x)
     if is_unsigned(F)
         # ascending order IS ascending code; the top datum sits just below NaN
-        return c >= nan_code(F) - one(U) ? rawvalue(F, nan_code(F)) :
-                                           rawvalue(F, c + one(U))
+        return c >= nan_code(F) - one(U) ? _rawvalue(F, nan_code(F)) :
+                                           _rawvalue(F, c + one(U))
     end
     sm = signmask(F)
     if c > sm                               # negative half: up means magnitude down
-        c == sm + one(U) && return rawvalue(F, zero(U))         # −MinPositive → 0
-        rawvalue(F, c - one(U))
+        c == sm + one(U) && return _rawvalue(F, zero(U))         # −MinPositive → 0
+        _rawvalue(F, c - one(U))
     else                                    # non-negative half (c < sm; c == sm is NaN)
-        c == sm - one(U) && return rawvalue(F, nan_code(F))     # off the top
-        rawvalue(F, c + one(U))
+        c == sm - one(U) && return _rawvalue(F, nan_code(F))     # off the top
+        _rawvalue(F, c + one(U))
     end
 end
 
@@ -150,18 +150,18 @@ The next datum below `x` in the total order; the step below the bottom datum —
 and below NaN itself — is NaN, the order's floor.
 """
 function NextLessThan(x::BinaryValue{F,U}) where {F,U}
-    isnan(x) && return rawvalue(F, nan_code(F))                 # nothing below NaN
+    isnan(x) && return _rawvalue(F, nan_code(F))                 # nothing below NaN
     c = codepoint(x)
     if is_unsigned(F)
-        return iszero(c) ? rawvalue(F, nan_code(F)) : rawvalue(F, c - one(U))
+        return iszero(c) ? _rawvalue(F, nan_code(F)) : _rawvalue(F, c - one(U))
     end
     sm = signmask(F)
     if c > sm                               # negative half: down means magnitude up
-        c == codemask(F) && return rawvalue(F, nan_code(F))     # below the bottom
-        rawvalue(F, c + one(U))
+        c == codemask(F) && return _rawvalue(F, nan_code(F))     # below the bottom
+        _rawvalue(F, c + one(U))
     else                                    # non-negative half
-        iszero(c) && return rawvalue(F, sm + one(U))            # 0 → −MinPositive
-        rawvalue(F, c - one(U))
+        iszero(c) && return _rawvalue(F, sm + one(U))            # 0 → −MinPositive
+        _rawvalue(F, c - one(U))
     end
 end
 

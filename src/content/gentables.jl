@@ -25,7 +25,7 @@ julia> codetable(Binary(3, 1, UNSIGNED, FINITE))
 function codetable(::Type{F}; by::Symbol = :code) where {F<:Binary}
     by in (:code, :value) || throw(ArgumentError("by must be :code or :value, got :$by"))
     U = CodeType(F)
-    xs = [rawvalue(F, U(c)) for c in 0:(1 << Int(BitwidthOf(F))) - 1]
+    xs = [_rawvalue(F, U(c)) for c in 0:(1 << Int(BitwidthOf(F))) - 1]
     by === :value && sort!(xs; by = order_key)      # total order: NaN first
     [(code = codepoint(x), value = decode(x)) for x in xs]
 end

@@ -7,7 +7,7 @@
 # signed) the top code on −Inf.
 #
 # The CODE is primary and the value is built from it: MaxFiniteOf is
-# rawvalue(F, _maxfinite_code(F)), never the reverse. One definition of the
+# _rawvalue(F, _maxfinite_code(F)), never the reverse. One definition of the
 # layout, defined here and imported everywhere — decode does not re-derive it.
 
 _cu(::Type{F}, x) where {F<:Binary} = CodeType(F)(x)
@@ -66,14 +66,14 @@ julia> decode(MaxFiniteOf(Binary(8, 4, SIGNED, FINITE)))
 240.0
 ```
 """
-MaxFiniteOf(::Type{F}) where {F<:Binary} = rawvalue(F, _maxfinite_code(F))
+MaxFiniteOf(::Type{F}) where {F<:Binary} = _rawvalue(F, _maxfinite_code(F))
 
 """
     MinFiniteOf(F)
 
 The smallest (most negative for signed; zero for unsigned) finite datum of `F`.
 """
-MinFiniteOf(::Type{F}) where {F<:Binary} = rawvalue(F, _minfinite_code(F))
+MinFiniteOf(::Type{F}) where {F<:Binary} = _rawvalue(F, _minfinite_code(F))
 
 """
     MinPositiveOf(F)
@@ -81,7 +81,7 @@ MinFiniteOf(::Type{F}) where {F<:Binary} = rawvalue(F, _minfinite_code(F))
 The smallest positive datum: code point 1. The least subnormal when `P > 1`,
 the least normal when `P == 1`.
 """
-MinPositiveOf(::Type{F}) where {F<:Binary} = rawvalue(F, _cu(F, 1))
+MinPositiveOf(::Type{F}) where {F<:Binary} = _rawvalue(F, _cu(F, 1))
 
 """
     MaxSubnormalOf(F)
@@ -90,7 +90,7 @@ The largest subnormal datum, code `2^(P-1) - 1`. For `P == 1` that code is 0 —
 the format has no subnormals and this returns its zero.
 """
 MaxSubnormalOf(::Type{F}) where {F<:Binary} =
-    rawvalue(F, _cu(F, (1 << (Int(PrecisionOf(F)) - 1)) - 1))
+    _rawvalue(F, _cu(F, (1 << (Int(PrecisionOf(F)) - 1)) - 1))
 
 """
     MinNormalOf(F)
@@ -98,7 +98,7 @@ MaxSubnormalOf(::Type{F}) where {F<:Binary} =
 The smallest normal datum, code `2^(P-1)`.
 """
 MinNormalOf(::Type{F}) where {F<:Binary} =
-    rawvalue(F, _cu(F, 1 << (Int(PrecisionOf(F)) - 1)))
+    _rawvalue(F, _cu(F, 1 << (Int(PrecisionOf(F)) - 1)))
 
 for f in (:MaxFiniteOf, :MinFiniteOf, :MinPositiveOf, :MaxSubnormalOf, :MinNormalOf)
     @eval $f(::Type{Union{}}) = throw(ArgumentError("Union{} has no datums"))   # analysis totality

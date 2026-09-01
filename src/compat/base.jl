@@ -145,7 +145,7 @@ function Base.sort!(v::AbstractVector{T}, lo::Int, hi::Int, ::CodeCountingSort,
     key2code = Vector{U}(undef, nk)
     bucket(k) = Int(k) + 1
     for c in zero(U):U((1 << K) - 1)               # key ↔ code inversion
-        key2code[bucket(order_key(rawvalue(BinaryFormatOf(T), c)))] = c
+        key2code[bucket(order_key(_rawvalue(BinaryFormatOf(T), c)))] = c
     end
     @inbounds for i in lo:hi
         counts[bucket(order_key(v[i]))] += 1
@@ -158,7 +158,7 @@ function Base.sort!(v::AbstractVector{T}, lo::Int, hi::Int, ::CodeCountingSort,
         c == 0 && continue
         # ascending buckets emitted backward under Reverse puts the NaN bucket
         # at the back — exactly Base's rev=true isless semantics
-        val = rawvalue(BinaryFormatOf(T), key2code[b])
+        val = _rawvalue(BinaryFormatOf(T), key2code[b])
         for _ in 1:c
             v[i] = val
             i += step
@@ -187,7 +187,7 @@ Base.prevfloat(x::BinaryValue) = NextLessThan(x)
     throw(ArgumentError("$(f) is not defined for $(formatname(T)): $why"))
 
 # ---- constants of the type
-Base.zero(::Type{T}) where {T<:BinaryValue} = rawvalue(BinaryFormatOf(T), zero(CodeType(T)))
+Base.zero(::Type{T}) where {T<:BinaryValue} = _rawvalue(BinaryFormatOf(T), zero(CodeType(T)))
 Base.zero(::T) where {T<:BinaryValue} = zero(T)
 # 1 = 2^0 is a datum of every format in the grid (exponent 0 is always in
 # range, and the extended top code is never it); the suite asserts so on all
@@ -195,9 +195,9 @@ Base.zero(::T) where {T<:BinaryValue} = zero(T)
 Base.one(::Type{T}) where {T<:BinaryValue} = project(BinaryFormatOf(T), RTE_SN, 1.0)
 Base.one(::T) where {T<:BinaryValue} = one(T)
 Base.typemax(::Type{T}) where {T<:BinaryValue} =
-    is_extended(T) ? rawvalue(BinaryFormatOf(T), posinf_code(T)) : MaxFiniteOf(T)
+    is_extended(T) ? _rawvalue(BinaryFormatOf(T), posinf_code(T)) : MaxFiniteOf(T)
 Base.typemin(::Type{T}) where {T<:BinaryValue} =
-    (is_signed(T) && is_extended(T)) ? rawvalue(BinaryFormatOf(T), neginf_code(T)) :
+    (is_signed(T) && is_extended(T)) ? _rawvalue(BinaryFormatOf(T), neginf_code(T)) :
                                        MinFiniteOf(T)
 Base.floatmax(::Type{T}) where {T<:BinaryValue} = MaxFiniteOf(T)
 Base.floatmin(::Type{T}) where {T<:BinaryValue} = MinNormalOf(T)
@@ -278,7 +278,7 @@ end
 # a floatmin guard; this needs neither. The result is always a datum (every
 # power of two in range is), so the projection cannot round.
 function Base.eps(x::T) where {T<:BinaryValue}
-    isfinite(x) || return rawvalue(BinaryFormatOf(T), nan_code(T))   # Base's oftype(x, NaN)
+    isfinite(x) || return _rawvalue(BinaryFormatOf(T), nan_code(T))   # Base's oftype(x, NaN)
     iszero(x) && return MinPositiveOf(T)                           # Base's nextfloat(zero)
     r = _canonical_rounded(x)
     project(BinaryFormatOf(T), RTE_SN, ldexp(one(datumcarrier(T)), Int(r.Q)))
@@ -461,5 +461,5 @@ function Base.reinterpret(::Type{T}, u::U) where {T<:BinaryValue, U<:Unsigned}
                             "must occupy the low $(Int(BitwidthOf(T))) bits (representation " *
                             "invariant); high bits are set. Use `T(u)` for a range-checked " *
                             "code point."))
-    rawvalue(BinaryFormatOf(T), CodeType(T)(u))
+    _rawvalue(BinaryFormatOf(T), CodeType(T)(u))
 end

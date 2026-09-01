@@ -85,7 +85,7 @@ function vmap!(dest::AbstractArray{BinaryValue{FR,UR}}, v::Val{op}, ρ::Projecti
     tbl = table_for(op, FR, F1, ρ)                       # hoisted; @noinline
     tbl === nothing && return _vmap_compute!(dest, v, FR, ρ, A)
     @inbounds for i in eachindex(dest, A)
-        dest[i] = rawvalue(FR, tbl[Int(codepoint(A[i])) + 1])
+        dest[i] = _rawvalue(FR, tbl[Int(codepoint(A[i])) + 1])
     end
     dest
 end
@@ -101,7 +101,7 @@ function vmap!(dest::AbstractArray{BinaryValue{FR,UR}}, v::Val{op}, ρ::Projecti
     tbl === nothing && return _vmap_compute!(dest, v, FR, ρ, A, B)
     K2 = Int(BitwidthOf(F2))
     @inbounds for i in eachindex(dest, A, B)
-        dest[i] = rawvalue(FR, tbl[(Int(codepoint(A[i])) << K2) + Int(codepoint(B[i])) + 1])
+        dest[i] = _rawvalue(FR, tbl[(Int(codepoint(A[i])) << K2) + Int(codepoint(B[i])) + 1])
     end
     dest
 end
@@ -120,7 +120,7 @@ function vmap!(dest::AbstractArray{BinaryValue{FR,UR}}, v::Val{op}, ρ::Projecti
         @inbounds for i in eachindex(dest, A, B, C)
             idx = ((Int(codepoint(A[i])) << K2 | Int(codepoint(B[i]))) << K3) +
                   Int(codepoint(C[i])) + 1
-            dest[i] = rawvalue(FR, tbl[idx])
+            dest[i] = _rawvalue(FR, tbl[idx])
         end
         return dest
     end

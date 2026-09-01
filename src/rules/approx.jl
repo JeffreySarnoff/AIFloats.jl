@@ -65,7 +65,7 @@ function measure_kappa(fn::Fn, op::Symbol, fr::Type{<:Binary},
         project(fr, ρ, decode(args[1])) :
         apply_op(Val(op), fr, ρ, 0, map(decode, args)...)
     function visit(codes::NTuple{N, Int})
-        args = ntuple(i -> rawvalue(fmts[i], CodeType(fmts[i])(codes[i])), Val(N))
+        args = ntuple(i -> _rawvalue(fmts[i], CodeType(fmts[i])(codes[i])), Val(N))
         want = defined(args...)
         got = fn(args...)::FR
         if isnan(want) || isinf(want)

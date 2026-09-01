@@ -166,7 +166,7 @@ Base.@propagate_inbounds function Base.getindex(pv::PackedVector{T}, i::Int) whe
     if _crosses_word(off, K)
         c |= @inbounds(pv.data[w + 1]) << (64 - off)
     end
-    rawvalue(BinaryFormatOf(T), CodeType(T)(c & _packmask(K)))
+    _rawvalue(BinaryFormatOf(T), CodeType(T)(c & _packmask(K)))
 end
 Base.@propagate_inbounds function Base.setindex!(pv::PackedVector{T}, v::T, i::Int) where {T}
     @boundscheck checkbounds(pv, i)
@@ -193,7 +193,7 @@ Base.similar(pv::PackedVector{T}) where {T} = PackedVector(Vector{T}(undef, pv.n
 function _unpack_into!(dest::AbstractVector{T}, pv::PackedVector{T}) where {T<:BinaryValue}
     length(dest) >= pv.n || throw(BoundsError(dest, pv.n))
     F = BinaryFormatOf(T); U = CodeType(T)
-    _unpack_codes!((i, c) -> (@inbounds dest[i] = rawvalue(F, U(c)); nothing), pv)
+    _unpack_codes!((i, c) -> (@inbounds dest[i] = _rawvalue(F, U(c)); nothing), pv)
     dest
 end
 Base.collect(pv::PackedVector{T}) where {T} = _unpack_into!(Vector{T}(undef, pv.n), pv)
@@ -249,7 +249,7 @@ function _vmap_packed(v::Val{op}, ::Type{OUT}, ρ::Projection, pv::PackedVector{
             # loop-carried dependency, and the out-of-order engine loses more to
             # the serial chain than the arithmetic ever cost — 26.9 µs
             # recomputed vs 65.1 µs carried at K = 5, N = 65,536.
-            _unpack_codes!((i, c) -> (@inbounds out[i] = rawvalue(FR, tbl[Int(c) + 1]); nothing), pv)
+            _unpack_codes!((i, c) -> (@inbounds out[i] = _rawvalue(FR, tbl[Int(c) + 1]); nothing), pv)
             return out
         end
     end

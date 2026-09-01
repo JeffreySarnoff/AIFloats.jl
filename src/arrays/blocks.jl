@@ -191,7 +191,7 @@ end
 
 # one element of ωBlockProject: the draft's S-special rows, then ωDivide ∘ ωProject
 function _bp_element(::Type{FR}, ρ::Projection, R::Int, res, Sdat) where {FR<:Binary}
-    (isnan(Sdat) || _res_isnan(res)) && return rawvalue(FR, nan_code(FR))
+    (isnan(Sdat) || _res_isnan(res)) && return _rawvalue(FR, nan_code(FR))
     iszero(Sdat) && return project(FR, ρ, 0.0; R)
     if isinf(Sdat)
         # sgn(Xᵢ) · sgn(S) ∈ {−1, 0, +1}

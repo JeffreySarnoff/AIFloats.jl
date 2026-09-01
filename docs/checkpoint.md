@@ -15,7 +15,7 @@ green; anything short of that is recorded as in progress with what is missing.
 | Phase | State | Gate |
 |---|---|---|
 | 0 — freeze contract, inventory | **done** | inventory recorded below |
-| 1a — add `fromcode`/`_rawvalue`, migrate callers | **in progress** | seam added and gated; caller migration pending |
+| 1a — add `fromcode`/`_rawvalue`, migrate callers | **done** | 10 focused test files green |
 | 1b — diagnostic trap for missed unsigned construction | not started | focused groups + doctests, never committed |
 | 1c — canonical format/datum model | **partly done** | ambiguity + inference clean |
 | 2 — scoped projection default | not started | zero alloc steady state; scoped/nested/task tests |
@@ -26,7 +26,7 @@ green; anything short of that is recorded as in progress with what is missing.
 | 7 — registry validation and error taxonomy | not started | one validation per call, not per element |
 | 8 — residue removal and consumer alignment | not started | zero residual deleted forms |
 
-## Phase 1a — seam added, caller migration pending (2026-09-01)
+## Phase 1a — done (2026-09-01)
 
 Gate for what is done: `test-binary-format` 273 · `binaryvalue` 133,055 ·
 `codec` 66,700 · `kernels` 62 · `tables` 1,025 · `quality` 35 (Aqua + JET).
@@ -49,9 +49,27 @@ instead — `new` converts into the field type, so an out-of-range code raises
 `rawvalue`'s `%` truncates silently, and this checks the representation
 invariant rather than merely the storage width.
 
-Still to do in 1a: migrate the 56 `rawvalue` call sites by classification, then
-re-run the `T(codepoint(x))` search (already zero at Phase 0, to be re-checked
-after migration).
+**Caller migration, classified.** All 45 `rawvalue` sites in `src/` are proven
+internal raw construction — the code comes from `nan_code(F)`,
+`_maxfinite_code(F)`, a table index, code arithmetic already in `CodeType(F)`,
+or an explicit narrowing — so all became `_rawvalue`. The migration checks its
+own classification: `_rawvalue` raises `InexactError` where `rawvalue`'s `%`
+truncated, so a site that was NOT canonical would now fail loudly.
+
+The 9 sites in `test/test-blocks.jl` import known code points
+(`nan_code`/`posinf_code`/`neginf_code`) and became `fromcode`, per 1a.2's
+split between implementation loops and tests.
+
+`rawvalue` is no longer `public` (starting 1c.6). Its definition stays until
+Phase 1c, when the code-point constructor is deleted with it.
+
+**1a.4 re-run: zero residual.** No `T(codepoint(x))` reconstruction anywhere.
+The two `codepoint` occurrences inside calls are `UInt64(codepoint(v))` in the
+packing kernels — a code being written into a word, not a datum being rebuilt.
+
+Gate: `binary-format` 273 · `binaryvalue` 133,055 · `codec` 66,700 · `blocks`
+23,528 · `tables` 1,025 · `ops` 913,307 · `compat` 1,833,843 · `kernels` 62 ·
+`governance` 336 · `quality` 35 (Aqua + JET).
 
 ## Phase 0 — done (2026-09-01)
 

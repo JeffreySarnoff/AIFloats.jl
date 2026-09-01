@@ -329,9 +329,9 @@ end
 
     # special-value lanes must stay entirely on the generic fold
     let E = BinaryValue(Binary8p4se), S = BinaryValue(Binary8p3se), FE = BinaryFormatOf(E)
-        nan  = AIFloats.rawvalue(FE, AIFloats.nan_code(FE))
-        pinf = AIFloats.rawvalue(FE, AIFloats.posinf_code(FE))
-        ninf = AIFloats.rawvalue(FE, AIFloats.neginf_code(FE))
+        nan  = fromcode(FE, AIFloats.nan_code(FE))
+        pinf = fromcode(FE, AIFloats.posinf_code(FE))
+        ninf = fromcode(FE, AIFloats.neginf_code(FE))
         mx, mn, mp = MaxFiniteOf(E), MinFiniteOf(E), MinPositiveOf(E)
         pats = (ntuple(_ -> E(0.0), 8),
                 ntuple(i -> i == 3 ? nan  : E(1.0), 8),
@@ -408,9 +408,9 @@ end
     end
     # every special-value shape the fold algebra has to preserve
     let E = BinaryValue(Binary8p4se), FE = BinaryFormatOf(E), Sf = BinaryValue(Binary8p3se)
-        nan  = AIFloats.rawvalue(FE, AIFloats.nan_code(FE))
-        pinf = AIFloats.rawvalue(FE, AIFloats.posinf_code(FE))
-        ninf = AIFloats.rawvalue(FE, AIFloats.neginf_code(FE))
+        nan  = fromcode(FE, AIFloats.nan_code(FE))
+        pinf = fromcode(FE, AIFloats.posinf_code(FE))
+        ninf = fromcode(FE, AIFloats.neginf_code(FE))
         pats = (ntuple(_ -> nan, 8), ntuple(_ -> pinf, 8), ntuple(_ -> ninf, 8),
                 ntuple(i -> i == 1 ? nan  : E(1.0), 8),
                 ntuple(i -> i == 1 ? pinf : E(1.0), 8),
@@ -470,9 +470,9 @@ end
     # every shape of the fold algebra: NaN, 0·∞, sign parity over infinities,
     # a zero lane, and the extremes
     let E = BinaryValue(Binary8p4se), FE = BinaryFormatOf(E), Sf = BinaryValue(Binary8p3se)
-        nan  = AIFloats.rawvalue(FE, AIFloats.nan_code(FE))
-        pinf = AIFloats.rawvalue(FE, AIFloats.posinf_code(FE))
-        ninf = AIFloats.rawvalue(FE, AIFloats.neginf_code(FE))
+        nan  = fromcode(FE, AIFloats.nan_code(FE))
+        pinf = fromcode(FE, AIFloats.posinf_code(FE))
+        ninf = fromcode(FE, AIFloats.neginf_code(FE))
         pats = (ntuple(_ -> E(0.0), 8),
                 ntuple(i -> i == 1 ? nan  : E(1.5), 8),
                 ntuple(i -> i == 1 ? pinf : E(1.5), 8),

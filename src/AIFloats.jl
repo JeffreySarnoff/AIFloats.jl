@@ -71,7 +71,7 @@ IntParam,
 CodeType, ValueType
 
 # published, must be imported explicitly
-public resolve_fields, rawvalue, encode, order_key,
+public resolve_fields, encode, order_key,
        nan_code, posinf_code, neginf_code, codemask, signmask, orderkeytype,
        rung, datumcarrier, promotecarrier, decodepolicy, Formats, CodeCountingSort,
        Dyadic, DyadicNumbers, lift, CarrierValue, fma128, faa128, Sticky, Enclosure,
