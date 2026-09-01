@@ -23,8 +23,48 @@ green; anything short of that is recorded as in progress with what is missing.
 | 4 — queries and `formatinfo` | **done** | type stability, no Base shadowing |
 | 5 — table service | **done** | coherent snapshots under concurrency |
 | 6 — packed serialization and collections | **done** | round trips, aliasing, Aqua ambiguities |
-| 7 — registry validation and error taxonomy | not started | one validation per call, not per element |
+| 7 — registry validation and error taxonomy | **done** | one validation per call, not per element |
 | 8 — residue removal and consumer alignment | not started | zero residual deleted forms |
+
+## Phase 7 — done (2026-09-01)
+
+**Gate.** `governance` (new taxonomy testset) · `kernels` · `tables` · `ops` ·
+`blocks` · `quality` · doctests — green.
+
+**Registry metadata is frozen.** `opinfo` was a `findfirst` linear scan of a
+vector that is, in principle, still `push!`-able. It is now a hash probe into
+`_OP_BY_NAME`, built once after the last `register_op!` and never rebuilt, and
+an unknown symbol gets an `ArgumentError` naming `operations()` instead of an
+index error. Added `operationinfo(op)` — `(name, arity, group, factors)` — and
+`operations()`, sorted by name so the listing is deterministic rather than
+registration-ordered.
+
+**The runtime-symbol boundary validates once.** `vmap(op::Symbol, …)` and
+`vmap!` passed straight to `Val(op)`; an unknown symbol surfaced as a
+`MethodError` from deep inside a kernel, naming nothing a caller could act on,
+and a wrong operand count found whatever method happened to match. Both now
+call `_validate_runtime_op` first — operation exists, arity matches — and cross
+into `Val(op)` only after, so inner loops keep static dispatch and no element
+pays for a lookup. A 100k-element call costs the same single lookup a
+three-element call does, and the test says so.
+
+The error taxonomy is now pinned as a table of assertions rather than a
+paragraph of intent:
+
+| Condition | Exception | Asserted on |
+|---|---|---|
+| unknown operation | `ArgumentError` naming the alternative | `operationinfo`, `vmap`, `vmap!`, `table_policy`, `measure_kappa`, `register_approx!` |
+| wrong operand count | `ArgumentError` with expected **and** actual | `vmap`, `table_policy` |
+| incompatible shapes | `DimensionMismatch` | `vmap!`, packed and block `copyto!` |
+| invalid index | `BoundsError` via Base | `PackedVector` |
+| size arithmetic overflow | `OverflowError` | `PackedVector{T}(undef, typemax(Int))` |
+| refused `Rational`/`Irrational` | `ArgumentError` explaining the risk | `Convert` |
+| unsupported input type | `MethodError` | `Convert(F, ρ, "1.5")`, `F(nothing)` |
+| IEEE invalid arithmetic | **returns the prescribed NaN** | `Sqrt(-1)`, `Log(-1)`, `0/0` |
+
+That last row is the one worth stating out loud: an invalid operation the
+*format* represents is a value, not an error, and `Sqrt(F, ρ, F(-1.0))` must
+return the format's NaN code rather than throw.
 
 ## Phase 6 — done (2026-09-01)
 

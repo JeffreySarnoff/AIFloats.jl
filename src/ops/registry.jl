@@ -18,7 +18,14 @@ end
 const OP_REGISTRY = OpInfo[]
 register_op!(name::Symbol, arity::Int, group::Symbol, factors::Int = 1) =
     push!(OP_REGISTRY, OpInfo(name, arity, group, factors))
-opinfo(name::Symbol) = OP_REGISTRY[findfirst(o -> o.name === name, OP_REGISTRY)]
+# Metadata is FROZEN after module construction: `_OP_BY_NAME` is built once,
+# at the end of this file, and every lookup afterwards is a hash probe rather
+# than a linear scan of a vector that is, in principle, still push-able
+# (improveapi3.md §6 Phase 7.1). Registration happens only during load.
+opinfo(name::Symbol) = get(_OP_BY_NAME, name) do
+    throw(ArgumentError("$name is not a registry operation; " *
+                        "see AIFloats.operations() for the $(length(OP_REGISTRY)) that are"))
+end
 
 const _UNARY_OPS = (:Abs, :Negate, :Sqrt, :RSqrt, :Recip,
                     :Exp, :Exp2, :ExpMinusOne, :Log, :Log2, :LogOnePlus,
@@ -95,3 +102,61 @@ recorded subtle error. For one format at two factors this equals `rung(F)`.
 end
 @inline rung(op::Val, x::BinaryValue, xs::BinaryValue...) =
     rung(op, BinaryFormatOf(x), map(BinaryFormatOf, xs)...)
+
+# ---- the frozen name lookup and the public introspection ---------------------
+# Built AFTER every register_op! call above, so it is complete and never
+# rebuilt. `opinfo` above closes over it.
+const _OP_BY_NAME = Dict{Symbol,OpInfo}(o.name => o for o in OP_REGISTRY)
+
+"""
+    operationinfo(op::Symbol) -> NamedTuple
+
+What the registry knows about `op`: `(name, arity, group, factors)`.
+
+- `arity` is the operand count.
+- `group` is `:A` (exact arithmetic and selection), `:B` (enclosure), `:C`
+  (extremum), or `:conv`.
+- `factors` is the largest number of datum factors in any monomial of the exact
+  result — the carrier-width driver, and *not* the arity: `FAA` has three
+  operands and one factor.
+
+Throws `ArgumentError` naming [`operations`](@ref) for an unknown symbol.
+
+# Examples
+
+```jldoctest
+julia> AIFloats.operationinfo(:Add)
+(name = :Add, arity = 2, group = :A, factors = 1)
+
+julia> AIFloats.operationinfo(:FAA).factors     # three operands, one factor
+1
+```
+"""
+function operationinfo(op::Symbol)
+    o = opinfo(op)
+    (name = o.name, arity = o.arity, group = o.group, factors = o.factors)
+end
+
+"""
+    operations() -> Vector{NamedTuple}
+
+Every registry operation, sorted by name — a deterministic listing, never
+registration order.
+"""
+operations() = sort!([(name = o.name, arity = o.arity, group = o.group,
+                       factors = o.factors) for o in OP_REGISTRY]; by = x -> String(x.name))
+
+"""
+    _validate_runtime_op(fn::Symbol, op::Symbol, nargs::Int)
+
+The runtime-symbol boundary check (improveapi3.md §6 Phase 7.2): the operation
+exists, and the operand count matches its arity. Callers cross into `Val(op)`
+only after this, so the inner loops keep static dispatch and no element ever
+pays for a registry lookup.
+"""
+@noinline function _validate_runtime_op(fn::Symbol, op::Symbol, nargs::Int)
+    o = opinfo(op)                                  # ArgumentError if unknown
+    o.arity == nargs || throw(ArgumentError(
+        "$fn: :$op takes $(o.arity) operand$(o.arity == 1 ? "" : "s"), got $nargs"))
+    o
+end

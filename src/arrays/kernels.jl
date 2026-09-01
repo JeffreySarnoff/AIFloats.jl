@@ -72,9 +72,11 @@ and never depend on the scheduler.
 """
 function vmap! end
 
-@inline vmap!(dest::AbstractArray{<:BinaryValue}, op::Symbol, ρ::Projection,
-              As::AbstractArray{<:BinaryValue}...; rng::MaybeRNG = nothing) =
+@inline function vmap!(dest::AbstractArray{<:BinaryValue}, op::Symbol, ρ::Projection,
+                       As::AbstractArray{<:BinaryValue}...; rng::MaybeRNG = nothing)
+    _validate_runtime_op(:vmap!, op, length(As))     # the same boundary as `vmap`
     vmap!(dest, Val(op), ρ, As...; rng)
+end
 
 # ---- Shape A: unary gather
 function vmap!(dest::AbstractArray{BinaryValue{FR,UR}}, v::Val{op}, ρ::Projection,
@@ -206,8 +208,16 @@ function _vmap_scalar!(dest, v::Val, ::Type{FR}, ρ::Projection, A, B, C;
     dest
 end
 
+# The runtime-symbol boundary. Validate ONCE here — the operation exists and
+# the operand count matches its arity — then cross into `Val(op)`, after which
+# every inner loop is statically dispatched and no element pays for a lookup.
+# Without this, an unknown symbol reached `Val(op)` and surfaced as a
+# MethodError from somewhere deep in the kernel, naming nothing a caller could
+# act on (improveapi3.md §6 Phase 7.2/7.3).
 @inline function vmap(op::Symbol, fr::Type{<:Binary}, ρ::Projection,
                       As::AbstractArray{<:BinaryValue}...; rng::MaybeRNG = nothing)
+    _validate_runtime_op(:vmap, op, length(As))
+    isempty(As) && throw(ArgumentError("vmap needs at least one operand array"))
     dest = similar(first(As), BinaryValue(fr))
     vmap!(dest, Val(op), ρ, As...; rng)
 end

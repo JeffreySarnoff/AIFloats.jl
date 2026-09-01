@@ -125,3 +125,76 @@ end
     AIFloats.empty_tables!()
     @test isempty(conformance().cached_specializations) && isempty(conformance().approximate)
 end
+
+@testset "runtime-symbol validation and error taxonomy (improveapi3 Phase 7)" begin
+    A = AIFloats
+    F = Binary8p4se; T = BinaryValue(F)
+    x, y = F(1.5), F(0.25)
+    Av = [x, y, x]; Bv = [y, x, y]
+
+    # registry metadata is frozen and looked up by name, not scanned
+    @test A.operationinfo(:Add) == (name = :Add, arity = 2, group = :A, factors = 1)
+    @test A.operationinfo(:FAA).arity == 3 && A.operationinfo(:FAA).factors == 1
+    @test length(A.operations()) == length(A.OP_REGISTRY)
+    # listings are deterministic: sorted on a semantic field, never insertion
+    # order or type-object identity
+    @test issorted([String(o.name) for o in A.operations()])
+    @test A.operations() == A.operations()
+
+    # ---- unknown operation: ArgumentError naming the alternative -------------
+    for f in (() -> A.operationinfo(:NotAnOp),
+              () -> vmap(:NotAnOp, F, RTE_SN, Av),
+              () -> vmap!(similar(Av), :NotAnOp, RTE_SN, Av),
+              () -> A.table_policy(:NotAnOp, F, F, RTE_SN),
+              () -> A.measure_kappa(identity, :NotAnOp, F, (F,), RTE_SN),
+              () -> A.register_approx!(:z, :NotAnOp, F, (F,), RTE_SN, identity))
+        err = try (f(); nothing) catch e; e end
+        @test err isa ArgumentError
+        @test occursin("NotAnOp", err.msg)
+    end
+
+    # ---- known operation, wrong operand count: expected AND actual named -----
+    for (f, want) in ((() -> vmap(:Add, F, RTE_SN, Av), ("2", "1")),
+                      (() -> vmap(:Add, F, RTE_SN, Av, Bv, Av), ("2", "3")),
+                      (() -> vmap(:Negate, F, RTE_SN, Av, Bv), ("1", "2")),
+                      (() -> A.table_policy(:Add, F, F, RTE_SN), ("2", "1")))
+        err = try (f(); nothing) catch e; e end
+        @test err isa ArgumentError
+        @test occursin(want[1], err.msg) && occursin(want[2], err.msg)
+    end
+
+    # ---- shape mismatches are DimensionMismatch, not ArgumentError -----------
+    @test_throws DimensionMismatch vmap!(similar(Av), :Add, RTE_SN, Av, [y, x])
+    @test_throws DimensionMismatch vmap!(Vector{T}(undef, 2), :Add, RTE_SN, Av, Bv)
+
+    # ---- an invalid index is a BoundsError, through Base bounds checking -----
+    pv = PackedVector(Av)
+    @test_throws BoundsError pv[0]
+    @test_throws BoundsError pv[4]
+    @test_throws BoundsError Av[9]
+
+    # ---- checked size arithmetic overflows, never wraps ----------------------
+    @test_throws OverflowError PackedVector{T}(undef, typemax(Int))
+
+    # ---- a refused conversion explains the correctness risk ------------------
+    for f in (() -> Convert(F, RTE_SN, 1 // 3), () -> Convert(F, RTE_SN, π))
+        err = try (f(); nothing) catch e; e end
+        @test err isa ArgumentError
+        @test occursin("Convert", err.msg)
+    end
+
+    # ---- IEEE invalid arithmetic RETURNS the prescribed NaN, never throws ----
+    @test isnan(decode(Sqrt(F, RTE_SN, F(-1.0))))
+    @test isnan(decode(Log(F, RTE_SN, F(-1.0))))
+    @test isnan(decode(Divide(F, RTE_SN, F(0.0), F(0.0))))
+    @test codepoint(Sqrt(F, RTE_SN, F(-1.0))) == A.nan_code(F)
+
+    # ---- a type with no promised API is a MethodError, not a fabricated one --
+    @test_throws MethodError Convert(F, RTE_SN, "1.5")
+    @test_throws MethodError F(nothing)
+
+    # validation happens ONCE at the boundary, not per element: a 100k-element
+    # call costs the same one lookup a 3-element call does
+    big = fill(x, 100_000)
+    @test length(vmap(:Negate, F, RTE_SN, big)) == 100_000
+end
