@@ -19,12 +19,55 @@ green; anything short of that is recorded as in progress with what is missing.
 | 1b — diagnostic trap for missed unsigned construction | **done** (not committed, by design) | focused groups + doctests |
 | 1c — canonical format/datum model | **done** | ambiguity + inference clean |
 | 2 — scoped projection default | **done** | zero alloc steady state; scoped/nested/task tests |
-| 3 — scalar/array conversion parity | not started | edge-population code-point equality |
+| 3 — scalar/array conversion parity | **done** | edge-population code-point equality |
 | 4 — queries and `formatinfo` | not started | type stability, no Base shadowing |
 | 5 — table service | not started | coherent snapshots under concurrency |
 | 6 — packed serialization and collections | not started | round trips, aliasing, Aqua ambiguities |
 | 7 — registry validation and error taxonomy | not started | one validation per call, not per element |
 | 8 — residue removal and consumer alignment | not started | zero residual deleted forms |
+
+## Phase 3 — done (2026-09-01)
+
+**Gate.** `kernels` (with the new §8.3 parity testset) · `ops` · `compat` ·
+`fastpaths` · `projection` · `codec` · `quality` — green.
+
+The array surface carried a **private copy of the carrier ladder**,
+`_array_convert_value`, alongside the scalar one in `Convert`. The two agreed
+today; nothing made them agree tomorrow. Both now call one
+`_convert_value(F, ρ, x, R)` family, and the scalar `Convert` collapsed from
+six near-identical methods to one:
+
+```julia
+Convert(fr::Type{<:Binary}, ρ::Projection, x::ConvertSource; rng, R) =
+    _convert_value(fr, ρ, x, _drawR(ρ, rng, R))
+```
+
+`ConvertNumber` and `ConvertSource` name the closed accepted set. Closed
+deliberately: a generic `Real` fallback would reach `BigFloat` through
+`convert`, and for a type whose own conversion rounds, that is a double
+rounding this package can prove nothing about. `Rational` and `Irrational`
+keep their explicit refusals, and an array whose element type is outside the
+set is refused by message rather than by `MethodError` — spelled on bare
+`AbstractArray` so `Vector{Any}` gets the message too, not just `Vector{Real}`.
+
+Added `Convert(F, A)`, the default-projection array convenience, which resolves
+`DefaultProjection()` **once before the loop** and never per element.
+
+**The parity testset is the point of the phase.** For every accepted source
+type — `Float64`, `Float32`, `Float16`, `BFloat16`, `Float128`, `BigFloat`,
+`Integer`, `BinaryValue` — over edge populations (signed zeros, subnormal
+boundaries, lattice ties, finite extrema, infinities, NaN, `typemin`/`typemax`,
+`Int128(1) << 100` which needs `Float128`, `big(2)^600 + 1` which needs
+`BigFloat`) and five projections, every element of the array conversion must
+equal the scalar conversion of that element **by code point**. Comparing
+decoded values would pass even if the two ladders picked different carriers,
+since both answers decode near the source; the code point is what distinguishes
+them. Shape, axes, a `view` source, the identical refusals at both boundaries,
+and the stochastic one-draw-per-element-in-index-order property are pinned in
+the same testset.
+
+Also removed here: a dead `Convert(fr::Binary, ρ, A)` instance adapter that
+Phase 1c's sweep missed.
 
 ## Phase 2 — done (2026-09-01)
 

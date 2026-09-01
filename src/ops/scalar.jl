@@ -169,24 +169,6 @@ julia> Convert(Binary(8, 4, SIGNED, EXTENDED), RTE_SF, 1.6)
 1.625
 ```
 """
-@inline function Convert(fr::Type{<:Binary}, ρ::Projection, x::BinaryValue;
-                         rng::MaybeRNG = nothing, R::MaybeR = nothing)
-    project(fr, ρ, decode(x); R = _drawR(ρ, rng, R))
-end
-@inline function Convert(fr::Type{<:Binary}, ρ::Projection, x::Float64;
-                         rng::MaybeRNG = nothing, R::MaybeR = nothing)
-    project(fr, ρ, x; R = _drawR(ρ, rng, R))
-end
-@inline Convert(fr::Type{<:Binary}, ρ::Projection, x::Union{Float32, Float16, BFloat16}; kw...) =
-    Convert(fr, ρ, Float64(x); kw...)           # exact widening
-@inline function Convert(fr::Type{<:Binary}, ρ::Projection, x::Float128;
-                         rng::MaybeRNG = nothing, R::MaybeR = nothing)
-    project(fr, ρ, x; R = _drawR(ρ, rng, R))
-end
-@inline function Convert(fr::Type{<:Binary}, ρ::Projection, x::BigFloat;
-                         rng::MaybeRNG = nothing, R::MaybeR = nothing)
-    project(fr, ρ, x; R = _drawR(ρ, rng, R))
-end
 # an Integer with |x| ≤ 2^53 is EXACT in Float64, so the widening is not a
 # rounding and the projection below is still the one and only rounding. The
 # BigFloat route stays for everything wider (BigInt, the top of Int64/UInt64).
@@ -216,15 +198,61 @@ end
 # The carrier ladder for an integer value, cheapest gate first. Each rung is
 # EXACT, so the projection below it remains the one and only rounding — none of
 # this is a double rounding.
-@inline function Convert(fr::Type{<:Binary}, ρ::Projection, x::Integer;
-                         rng::MaybeRNG = nothing, R::MaybeR = nothing)
-    -_F64_EXACT_INT <= x <= _F64_EXACT_INT && return Convert(fr, ρ, Float64(x); rng, R)
-    _exact_in_float128(x) && return project(fr, ρ, Float128(x); R = _drawR(ρ, rng, R))
+# ---- the one conversion seam ------------------------------------------------
+# `_convert_value(F, ρ, x, R)` is the single implementation of "project this
+# source value into F". Scalar `Convert` resolves `R` once and calls it; the
+# array loop resolves the RNG once and calls it per element. There is no second
+# ladder to drift from this one (improveapi3.md §6 Phase 3.3) — the array
+# surface used to carry a private copy, and a copy of a carrier ladder is
+# exactly the kind of duplicate that stays right until the day it does not.
+#
+# Every rung is EXACT, so the `project` below it remains the one and only
+# rounding. That is the property the whole family exists to preserve.
+@inline _convert_value(::Type{F}, ρ::Projection, x::BinaryValue,
+                       R::Int) where {F<:Binary} = project(F, ρ, decode(x); R)
+@inline _convert_value(::Type{F}, ρ::Projection, x::Float64,
+                       R::Int) where {F<:Binary} = project(F, ρ, x; R)
+@inline _convert_value(::Type{F}, ρ::Projection, x::Union{Float32,Float16,BFloat16},
+                       R::Int) where {F<:Binary} = project(F, ρ, Float64(x); R)
+@inline _convert_value(::Type{F}, ρ::Projection, x::Float128,
+                       R::Int) where {F<:Binary} = project(F, ρ, x; R)
+@inline _convert_value(::Type{F}, ρ::Projection, x::BigFloat,
+                       R::Int) where {F<:Binary} = project(F, ρ, x; R)
+@inline function _convert_value(::Type{F}, ρ::Projection, x::Integer,
+                                R::Int) where {F<:Binary}
+    -_F64_EXACT_INT <= x <= _F64_EXACT_INT && return project(F, ρ, Float64(x); R)
+    _exact_in_float128(x) && return project(F, ρ, Float128(x); R)
     b = setprecision(BigFloat, max(64, ndigits(x, base = 2) + 8)) do
         BigFloat(x)                             # exact at this width
     end
-    project(fr, ρ, b; R = _drawR(ρ, rng, R))
+    project(F, ρ, b; R)
 end
+
+"""
+    AIFloats.ConvertNumber
+
+The closed set of non-datum sources `Convert` accepts: `Float16`, `Float32`,
+`Float64`, `BFloat16`, `Float128`, `BigFloat`, and any `Integer`.
+
+Closed on purpose. A generic `Real` fallback would have to reach `BigFloat`
+through `convert`, and for a type whose own conversion already rounds, that is
+a double rounding this package cannot prove anything about.
+"""
+const ConvertNumber = Union{Float16, Float32, Float64, BFloat16,
+                            Float128, BigFloat, Integer}
+
+"""
+    AIFloats.ConvertSource
+
+[`AIFloats.ConvertNumber`](@ref) together with `BinaryValue` — everything the
+scalar and array `Convert` surfaces accept.
+"""
+const ConvertSource = Union{BinaryValue, ConvertNumber}
+
+@inline Convert(fr::Type{<:Binary}, ρ::Projection, x::ConvertSource;
+                rng::MaybeRNG = nothing, R::MaybeR = nothing) =
+    _convert_value(fr, ρ, x, _drawR(ρ, rng, R))
+
 @noinline Convert(fr::Type{<:Binary}, ρ::Projection, x::Rational; kw...) =
     throw(ArgumentError("Convert does not accept Rational: its exact projection is not a single float rounding — convert explicitly and own the double rounding"))
 @noinline Convert(fr::Type{<:Binary}, ρ::Projection, x::Irrational; kw...) =

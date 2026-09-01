@@ -2,6 +2,8 @@ using AIFloats
 using Test
 using Random
 using Quadmath: Float128
+using BFloat16s: BFloat16
+include(joinpath(@__DIR__, "support", "helpers.jl"))
 
 # Phase 4 gate, kernels side: Shape A ≡ Shape B measured (not assumed);
 # threading changes nothing; the stochastic kernel is a reproducible single
@@ -208,4 +210,79 @@ end
         @test codepoint.(A .+ B) == codepoint.(vmap(:Add, F, RTZ_SF, A, B))
         @test codepoint.(exp.(A)) == codepoint.(vmap(:Exp, F, RTZ_SF, A))
     end
+end
+
+@testset "scalar/array Convert parity (improveapi3 §8.3)" begin
+    # One `_convert_value` family serves both surfaces, so this asserts that
+    # the seam really is shared: every element of an array conversion must
+    # equal the scalar conversion of that element, by CODE POINT. Comparing
+    # decoded values would pass even if the two ladders disagreed about which
+    # carrier to use, since both answers decode to something near the source.
+    F = Binary(8, 4, SIGNED, EXTENDED)
+    G = Binary(6, 2, UNSIGNED, FINITE)
+
+    # edge populations, per accepted source type
+    f64 = [0.0, -0.0, 1.0, -1.0, 1.6, -1.6,
+           nextfloat(0.0), prevfloat(0.0),          # subnormal boundaries
+           1.0625, 1.1875,                          # ties in F's lattice
+           decode(MaxFiniteOf(F)), -decode(MaxFiniteOf(F)),
+           decode(MinPositiveOf(F)), decode(MinNormalOf(F)),
+           Inf, -Inf, NaN,
+           1e300, -1e300]                           # far past the finite extrema
+    f32  = Float32.(f64[1:16])
+    f16  = Float16[0.0, -0.0, 1.0, -1.0, Inf, -Inf, NaN, 6.104e-5]
+    bf16 = BFloat16.(f16)
+    f128 = vcat(Float128.(f64[1:16]),
+                Float128(1) / Float128(3),          # not representable below
+                ldexp(Float128(1), -16000))         # far below Float64's range
+    bigs = vcat(BigFloat.(f64[1:16]), BigFloat(1) / BigFloat(3))
+    ints = Integer[0, 1, -1, 3, typemax(Int64), typemin(Int64),
+                   Int128(1) << 100,                # needs Float128
+                   big(2)^600, -big(2)^600,         # needs BigFloat
+                   big(2)^600 + 1,                  # 601 significant bits
+                   UInt64(typemax(UInt64)), true]
+    bvs  = allcodes(G)                              # a BinaryValue source
+
+    for ρ in (RTE_SN, RTZ_SF, RTP_SN, RTN_SF, RTA_SP)
+        for src in (f64, f32, f16, bf16, f128, bigs, ints, bvs)
+            arr = Convert(F, ρ, src)
+            @test axes(arr) == axes(src)
+            @test eltype(arr) === BinaryValue(F)
+            @test codepoint.(arr) == [codepoint(Convert(F, ρ, x)) for x in src]
+        end
+    end
+
+    # shape is preserved, not just length
+    M = reshape(collect(range(-2.0, 2.0; length = 12)), 3, 4)
+    @test axes(Convert(F, RTE_SN, M)) == axes(M)
+    @test codepoint.(Convert(F, RTE_SN, M)) ==
+          [codepoint(Convert(F, RTE_SN, x)) for x in M]
+
+    # an offset-index source: `eachindex(dest, A)` must agree with `similar`
+    V = view(f64, 3:8)
+    @test codepoint.(Convert(F, RTE_SN, V)) == [codepoint(Convert(F, RTE_SN, x)) for x in V]
+
+    # refusals are identical at both boundaries
+    @test_throws ArgumentError Convert(F, RTE_SN, 1 // 3)
+    @test_throws ArgumentError Convert(F, RTE_SN, [1 // 3, 2 // 3])
+    @test_throws ArgumentError Convert(F, RTE_SN, π)
+    @test_throws ArgumentError Convert(F, RTE_SN, Real[1.0, 2.0])
+    @test_throws ArgumentError Convert(F, RTE_SN, Any[1.0, 2.0])
+
+    # stochastic: one draw per element, in index order, from the resolved RNG
+    for ρ in (RSA_SN, RSB_SN)
+        a = Convert(F, ρ, f64; rng = Xoshiro(11))
+        b = Convert(F, ρ, f64; rng = Xoshiro(11))
+        @test codepoint.(a) == codepoint.(b)                # reproducible
+        # the same stream, drawn one at a time, must reproduce it exactly
+        r = Xoshiro(11)
+        @test codepoint.(a) == [codepoint(Convert(F, ρ, x; rng = r)) for x in f64]
+    end
+
+    # the default-projection array convenience resolves ONCE, before the loop
+    @test codepoint.(Convert(F, f64)) == codepoint.(Convert(F, RTE_SN, f64))
+    with_projection(RTZ_SF) do
+        @test codepoint.(Convert(F, f64)) == codepoint.(Convert(F, RTZ_SF, f64))
+    end
+    @test codepoint.(Convert(BinaryValue(F), f64)) == codepoint.(Convert(F, f64))
 end

@@ -245,31 +245,45 @@ end
 Convert(fr::Type{<:Binary}, ρ::Projection, A::AbstractArray{<:BinaryValue};
         rng::MaybeRNG = nothing) = vmap(:Convert, fr, ρ, A; rng)
 
-@inline _array_convert_value(::Type{F}, ρ::Projection,
-                             x::Union{Float16,Float32,Float64,BFloat16}, R::Int) where {F<:Binary} =
-    project(F, ρ, Float64(x); R)
-@inline _array_convert_value(::Type{F}, ρ::Projection, x::Float128, R::Int) where {F<:Binary} =
-    project(F, ρ, x; R)
-@inline _array_convert_value(::Type{F}, ρ::Projection, x::BigFloat, R::Int) where {F<:Binary} =
-    project(F, ρ, x; R)
-@inline _array_convert_value(::Type{F}, ρ::Projection, x::Integer, R::Int) where {F<:Binary} =
-    Convert(F, ρ, x; R)
-
+# The value-array loop calls the SAME `_convert_value` family the scalar
+# surface calls (ops/scalar.jl), so the two cannot disagree about a carrier
+# rung. `similar` preserves the source's axes and shape; the RNG is resolved
+# once and drawn exactly once per element, in `eachindex` order.
 function Convert(fr::Type{<:Binary}, ρ::Projection,
-                 A::AbstractArray{<:Union{Float16,Float32,Float64,BFloat16,
-                                          Float128,BigFloat,Integer}};
-                 rng::MaybeRNG = nothing)
+                 A::AbstractArray{<:ConvertNumber}; rng::MaybeRNG = nothing)
     dest = similar(A, BinaryValue(fr))
     rr = isstochastic(ρ) ? _resolve_rng(rng) : nothing
     @inbounds for i in eachindex(dest, A)
-        dest[i] = _array_convert_value(fr, ρ, A[i], _drawR(ρ, rr, nothing))
+        dest[i] = _convert_value(fr, ρ, A[i], _drawR(ρ, rr, nothing))
     end
     dest
 end
+
+# An element type that is not one of the accepted sources is REFUSED, not
+# silently accommodated: accepting it would put a dynamic dispatch inside the
+# element loop and, for a type whose own conversion rounds, an unproved double
+# rounding inside each element (improveapi3.md §6 Phase 3.6). Spelled on bare
+# `AbstractArray` so `Vector{Any}` and `Vector{Real}` alike get the message
+# rather than a MethodError that names no alternative.
+@noinline Convert(fr::Type{<:Binary}, ρ::Projection, A::AbstractArray; kw...) =
+    throw(ArgumentError(
+        "Convert does not accept an array of $(eltype(A)): the accepted element " *
+        "types are BinaryValue, Float16/Float32/Float64/BFloat16, Float128, " *
+        "BigFloat, and Integer. Convert the array to one of those first, so the " *
+        "rounding you get is one you chose."))
+
 Convert(fr::Type{<:BinaryValue}, ρ::Projection, A::AbstractArray; kw...) =
     Convert(BinaryFormatOf(fr), ρ, A; kw...)
-Convert(fr::Binary, ρ::Projection, A::AbstractArray; kw...) =
-    Convert(typeof(fr), ρ, A; kw...)
+
+# same-format array convenience under the task's default projection. The
+# default is resolved ONCE, before the loop, and never per element.
+@inline function Convert(fr::Type{<:Binary}, A::AbstractArray; rng::MaybeRNG = nothing)
+    ρ = DefaultProjection()
+    ρ === RTE_SN && return Convert(fr, RTE_SN, A; rng)
+    Convert(fr, ρ, A; rng)
+end
+@inline Convert(fr::Type{<:BinaryValue}, A::AbstractArray; kw...) =
+    Convert(BinaryFormatOf(fr), A; kw...)
 
 export vmap, vmap!
 
