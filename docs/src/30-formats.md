@@ -75,7 +75,7 @@ true
 
 ```jldoctest formats
 julia> Binary(2, 1, SIGNED, FINITE)
-ERROR: ArgumentError: Invalid format: K=2, P=1, S=true, D=false
+ERROR: ArgumentError: Invalid format: K=2, P=1, S=SIGNED, D=FINITE
 [...]
 ```
 

@@ -116,7 +116,7 @@ Not every set of four numbers describes a real format. The constructor checks:
 
 ```jldoctest started
 julia> Binary(8, 8, SIGNED, FINITE)
-ERROR: ArgumentError: Invalid format: K=8, P=8, S=true, D=false
+ERROR: ArgumentError: Invalid format: K=8, P=8, S=SIGNED, D=FINITE
 [...]
 ```
 

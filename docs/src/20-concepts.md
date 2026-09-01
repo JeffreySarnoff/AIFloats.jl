@@ -87,7 +87,7 @@ julia> Binary(8, 8, UNSIGNED, FINITE)   # no sign, so P may reach K
 Binary{8, 8, +, ⏥}
 
 julia> Binary(8, 8, SIGNED, FINITE)     # would need 9 bits
-ERROR: ArgumentError: Invalid format: K=8, P=8, S=true, D=false
+ERROR: ArgumentError: Invalid format: K=8, P=8, S=SIGNED, D=FINITE
 [...]
 ```
 
