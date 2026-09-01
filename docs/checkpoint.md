@@ -85,6 +85,38 @@ failures.
 | `quality` (Aqua + JET) | 35 | 40s |
 | plus `binary-format`, `binaryvalue`, `traits`, `codec`, `dyadic`, `projection` | | |
 
+**Docs build with benchmarks: clean.** Doctests, cross-references, and document
+checks all pass; the only two warnings are the local-environment ones (no CI
+repo URL, no deployment context). `docs/src/60-benchmarks.md` is regenerated
+from a live `benchmark/runbenchmarks.jl` run during the build, and the page's
+header records the commit, CPU, thread count, and policy defaults.
+
+Two defects the final build caught, both introduced by earlier phases of this
+same plan:
+
+* **`withflags` restored a 5-tuple from a 4-tuple.** Phase 2 removed the
+  projection from `benchmark/runbenchmarks.jl`'s saved state and took
+  `THREAD_MIN_ELEMS` with it, while the `finally` block still indexed
+  `saved[1:5]`. Nothing but a real benchmark run reaches that path.
+* **`Convert`'s docstring detached — the third time this failure has appeared
+  in this log.** Phase 3 collapsed six `Convert` methods into one, and the
+  docstring that had sat above the first of them ended up above a comment and
+  then `const _F64_EXACT_INT`. Documenter caught it as four unresolvable
+  `@ref`s. The docstring is now immediately above the single method and
+  documents the array forms too.
+
+The benchmark suite gained the scoped-projection rows Phase 2's measurements
+justify, so the seam's cost is recorded in the published page rather than only
+in this log:
+
+```
+Add       explicit ρ                                 15.5 ns
+Add       task default ρ                             16.6 ns
+Add       scoped non-RTE ρ                           77.2 ns  allocs=3 bytes=48
+DefaultProjection() bound                            46.3 ns
+DefaultProjection() unbound                           4.1 ns
+```
+
 ## Phase 7 — done (2026-09-01)
 
 **Gate.** `governance` (new taxonomy testset) · `kernels` · `tables` · `ops` ·

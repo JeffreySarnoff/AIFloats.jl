@@ -41,7 +41,15 @@ section("scalar — operations by registry group, K=8")
 
 let x = T8(1.5), y = T8(0.25), z = T8(0.75)
     row("Add       explicit ρ",         @b Add($F8, RTE_SN, $x, $y))
-    row("Add       session default ρ",  @b Add($x, $y))
+    row("Add       task default ρ",     @b Add($x, $y))
+    # the scoped seam (improveapi3 §4.3): the unscoped RTE_SN default is a
+    # static call, a bound non-RTE projection costs one dynamic dispatch and
+    # the return box that Julia's generic calling convention entails
+    with_projection(RTZ_SF) do
+        row("Add       scoped non-RTE ρ",   @b Add($x, $y))
+        row("DefaultProjection() bound",    @b DefaultProjection())
+    end
+    row("DefaultProjection() unbound",      @b DefaultProjection())
     row("Subtract  explicit ρ",         @b Subtract($F8, RTE_SN, $x, $y))
     row("Multiply  explicit ρ",         @b Multiply($F8, RTE_SN, $x, $y))
     row("Divide    explicit ρ",         @b Divide($F8, RTE_SN, $x, $y))

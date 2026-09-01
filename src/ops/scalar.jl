@@ -149,24 +149,6 @@ end
 # after an EXACT widening. Rational and Irrational inputs are rejected rather
 # than double-rounded silently.
 
-"""
-    Convert(F, ρ, x; rng, R) -> BinaryValue
-
-Project `x` into format `F` under projection `ρ` — the draft's Convert.
-Accepts a `BinaryValue` (any format), `Float64`/`Float32`/`Float16`/`BFloat16`
-(exact widening), `Float128`, `BigFloat`, or an `Integer` (widened exactly).
-
-`Rational` and `Irrational` inputs are refused: their exact projection is not
-representable as a single rounding of a float, and silently double-rounding
-would be a lie.
-
-# Examples
-
-```jldoctest
-julia> Convert(Binary(8, 4, SIGNED, EXTENDED), RTE_SF, 1.6)
-1.625
-```
-"""
 # an Integer with |x| ≤ 2^53 is EXACT in Float64, so the widening is not a
 # rounding and the projection below is still the one and only rounding. The
 # BigFloat route stays for everything wider (BigInt, the top of Int64/UInt64).
@@ -247,6 +229,45 @@ scalar and array `Convert` surfaces accept.
 """
 const ConvertSource = Union{BinaryValue, ConvertNumber}
 
+"""
+    Convert(F, ρ, x; rng, R) -> BinaryValue
+    Convert(F, ρ, A::AbstractArray; rng) -> Array
+    Convert(F, A::AbstractArray; rng) -> Array
+
+Project `x` into format `F` under projection `ρ` — the draft's Convert.
+
+The accepted sources are the closed set [`AIFloats.ConvertSource`](@ref): a
+`BinaryValue` of any format, `Float64`/`Float32`/`Float16`/`BFloat16` (exact
+widening), `Float128`, `BigFloat`, or any `Integer` (widened exactly). Every
+one of them reaches the same `_convert_value` seam, so the scalar and array
+surfaces cannot disagree about which carrier a value takes.
+
+`Unsigned` is **not** special: `Convert(F, ρ, 0x03)` projects the *number*
+three. For the datum at code point three, write `fromcode(F, 3)`.
+
+`Rational` and `Irrational` inputs are refused: their exact projection is not
+representable as a single rounding of a float, and silently double-rounding
+would be a lie. An array whose element type is outside the accepted set is
+refused for the same reason, rather than hiding a dynamic dispatch and an
+unproved double rounding inside the element loop.
+
+The array form allocates with `similar`, preserving axes and shape, resolves
+the RNG once, and draws exactly once per element in `eachindex` order. The
+two-argument form resolves the task's [`DefaultProjection`](@ref) once, before
+the loop.
+
+# Examples
+
+```jldoctest
+julia> Convert(Binary(8, 4, SIGNED, EXTENDED), RTE_SF, 1.6)
+1.625
+
+julia> F = Binary8p4se;
+
+julia> codepoint.(Convert(F, RTE_SN, [1.6, 0.25])) == [codepoint(Convert(F, RTE_SN, x)) for x in (1.6, 0.25)]
+true
+```
+"""
 @inline Convert(fr::Type{<:Binary}, ρ::Projection, x::ConvertSource;
                 rng::MaybeRNG = nothing, R::MaybeR = nothing) =
     _convert_value(fr, ρ, x, _drawR(ρ, rng, R))
