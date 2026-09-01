@@ -305,6 +305,10 @@ rule the two results together give: a ladder arm is free when it ends in a
 concrete return assertion and expensive when it does not — which is a property
 of the callee, not of the number of arms.
 
+**Revisited and settled — see "TTFX, the workload, and why the ladder was the
+wrong lever" below. The revert stands, but the reasoning below was aiming at
+the wrong target: the workload, not the ladder, is what buys the latency.**
+
 **Caveat on that revert, and it is a real one.** Precompilation time is a
 one-time cost paid into a cache, and it is partly a *choice* — what
 `@compile_workload` in `AIFloats.jl` names is what gets compiled ahead of
@@ -320,6 +324,72 @@ revert is settled rather than merely defensible:
 Recorded as open rather than closed. The gain itself is not large — 3–9% of a
 whole scoped broadcast call, ~20–27% of its scoped *overhead* — and no reverted
 change exceeded 15% of total call time at any array size.
+
+## TTFX, the workload, and why the ladder was the wrong lever (2026-09-01)
+
+Measured cold, deleting `~/.julia/compiled/v1.12/AIFloats` before each run,
+because `touch` does not invalidate the cache.
+
+| Config | cold precompile | first scoped `A .+ B` | second, different ρ |
+|---|---:|---:|---:|
+| baseline | 10.85 s | 283.6 ms | 230.7 ms |
+| broadcast ladder | 13.02 s | 160.0 ms | 221.9 ms |
+| workload names 1 ρ | 11.22 s | **6.9 ms** (that ρ) | 278 ms (others) |
+| workload names 4 ρ | 12.19 s | **4.0–6.9 ms** (those) | 274 ms (others) |
+
+### The finding that reframes everything
+
+**A first scoped broadcast costs ~280 ms**, and the workload never covered it.
+That is a far bigger number than any of the throughput deltas argued over
+above, and it was invisible until measured.
+
+**The specialization is per CONCRETE PROJECTION TYPE.** The decisive probe:
+with `RTZ_SF` in the workload and nothing else,
+
+```
+RTZ_SF    6.9 ms     ← named in the workload
+RTZ_SN  282.2 ms     ← not named
+RTZ_SF    0.0 ms     ← cached
+RTP_SN  231.4 ms     ← not named
+```
+
+40× on the named one, nothing for its neighbours. So precompiling one
+projection does not help another, and no ladder changes that — the ladder only
+caches *inference*, which is why it bought 124 ms on the very first call and
+nothing on the second.
+
+### The comparison that decides it
+
+| Lever | precompile cost | latency bought |
+|---|---:|---|
+| broadcast ladder | +2.17 s | −124 ms, once |
+| workload, 4 projections | +1.34 s | −275 ms **each**, ≈ −1.1 s |
+
+The workload is roughly **7× better value**, costs less, and is a data change
+rather than 27 arms in every veneer. The two are not complementary: the
+ladder's benefit was inference caching, which the workload also provides.
+
+### Decisions
+
+1. **Broadcast and array ladders stay reverted.** Their unique contribution is
+   7–10 ns per call of steady-state throughput, for 2.17 s of precompilation.
+   That trade is bad on its own terms, and worse once the workload is doing the
+   latency job better.
+2. **Four scoped projections added to `@compile_workload`** — `RTZ_SF`,
+   `RTZ_SN`, `RTP_SN`, `RTN_SF`, the directed rounding modes in both saturation
+   flavours, which is what `with_projection` is mostly for. Cost ~0.33 s each,
+   1.34 s total; those first uses drop from ~280 ms to ~5 ms.
+3. The list is a **policy knob**, documented as such at the workload. Naming all
+   27 would cost roughly 9 s of precompilation and is not worth it; a caller
+   scoping some other projection pays the ~280 ms once per session.
+
+### Correction to the record
+
+The earlier entry treated 3.4 s of precompilation as decisive against a
+measured runtime gain, and flagged that as the weaker half of its own argument.
+It was — but not in the direction it guessed. The workload was not a way to
+*absorb the ladder's cost*; it was a better lever than the ladder for a much
+larger cost nobody had measured. The prompt to go and measure it was the user's.
 
 ## Why the compile-cost objection was wrong
 

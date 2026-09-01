@@ -172,6 +172,19 @@ end
         # the broadcast route (arrays/broadcast.jl): binary, unary, and the
         # in-place form all land in distinct copyto! methods
         A .+ B; exp.(A); d .= A .+ B
+        # SCOPED broadcasts. The specialization behind a broadcast veneer is
+        # per CONCRETE PROJECTION TYPE, and nothing precompiles it unless the
+        # workload names that projection: measured, a first scoped `A .+ B`
+        # costs ~280 ms for a projection not named here and ~5 ms for one that
+        # is. The four below are the directed rounding modes in both saturation
+        # flavours — what `with_projection` is mostly for. Each costs ~0.33 s of
+        # precompilation, which is the knob to turn if this list should grow or
+        # shrink; naming all 27 would cost roughly 9 s and is not worth it.
+        for ρbc in (RTZ_SF, RTZ_SN, RTP_SN, RTN_SF)
+            with_projection(ρbc) do
+                A .+ B; exp.(A); d .= A .+ B
+            end
+        end
         ScaledAdd(F, RTE_SN, one(SV), a, one(SV), b)
         bx = Block(one(SV), (a, b, a, b)); by = Block(one(SV), (b, a, b, a))
         BlockDotProduct(F, RTE_SN, bx, by)
