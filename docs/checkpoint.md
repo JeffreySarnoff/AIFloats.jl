@@ -233,6 +233,94 @@ Correctness of concurrent work is not tradeable against 24 ns.
 A caller who needs both task safety and the floor has the explicit spelling,
 which reads nothing at all: 7.6 ns, less than either default path.
 
+## Coverage: which seams get the ladder, and which do not
+
+`_GUARDED_PROJECTIONS` lists **all 27 exported projection constants** — every
+one of the 9 rounding modes (`RTA`, `RTE`, `RTN`, `RTO`, `RTP`, `RTZ`, `RSA`,
+`RSB`, `RSC`) crossed with all 3 saturation modes. Nothing exported is missing.
+What cannot be covered is `Projection(ρRSA(n), σ)` at a non-default stochastic
+budget: that is an unbounded family with no constant to match, so it falls
+through to the barrier, which is why the barrier still exists.
+
+Applying it to every *seam* is a separate question, and the answer is not
+uniform:
+
+| Seam | Laddered | Why |
+|---|---|---|
+| 51 generated scalar ops | **yes** | per-value; 76.5 ns/48 B → 26.9 ns/0 B |
+| value constructor (`F(x)`, `T(x)`, `convert`) | **yes** | per-value; 35.9 ns/32 B → 25.8 ns/0 B |
+| array op convenience `Op(A...)` | no | resolves once per call |
+| `Convert(F, A)` | no | resolves once per call |
+| broadcast `copyto!` veneers | no | resolves once per call |
+
+### The constructor gap, and two ways to get it wrong
+
+The constructor was the real omission — a per-value seam like the ops, still
+paying 35.9 ns and 32 B under a bound projection. Two attempts failed first,
+both instructive:
+
+1. **A shared helper taking `::Type{F}`, asserting `::BinaryValue{F, CodeType(F)}`.**
+   6.5 → **101 ns**. `CodeType(F)` in the assertion is a call the assertion
+   cannot fold, so every arm paid a runtime type computation.
+2. **The same helper with the witness argument, asserting `::BinaryValue{F,U}`.**
+   101 → 15.5 ns, still allocating: a 27-arm body exceeds the inliner's budget,
+   so the helper stayed an out-of-line call.
+
+What works is what the op seam already does: **the arms written directly in the
+method body**, with one ladder serving both the scoped default and the
+`projection` keyword — which needed it too, being declared
+`Union{Nothing,Projection}` and therefore just as abstract. Result: 25.8 ns,
+0 B scoped; 6.7 ns, 0 B unscoped, unchanged.
+
+### Broadcast: built, measured, reverted
+
+Prototyped the ladder in the broadcast veneers and the two array seams.
+
+**Benefit**, per call, stable across runs — a constant, because those seams
+already resolve the default once:
+
+| n | scoped overhead before | after | recovered |
+|---:|---:|---:|---:|
+| 16 | 28.1 ns | 21.3–23.3 ns | ~6 ns |
+| 64 | 33.1 ns | 24.1–25.6 ns | ~8 ns |
+| 256 | 33.5 ns | 25.3–27.4 ns | ~7 ns |
+| 1024 | 37.5 ns | 27.9–29.0 ns | ~9 ns |
+
+As a share of the whole call that is 9% at n = 64 and 3% at n = 1024. The
+residue is the ~20 ns `ScopedValue` read, which no ladder touches.
+
+**Cost**: precompilation **9.6 s → 13.0 s**, and isolating the two showed
+broadcast alone accounts for essentially all of it (13.25 s with the array
+seams reverted).
+
+That is the compile-time explosion the scalar ladder was wrongly accused of, in
+the one place it is real — and for the same reason the scalar case escaped it.
+A scalar arm ends in `::T`, so inference takes the assertion. A broadcast arm
+ends in `vmap!(dest, Val(op), ρ, args...)`, which has no cheap assertion
+available, so inference descends into the Shape-A gather and its table lookups,
+27 times per veneer.
+
+**Reverted.** 7–10 ns per array call does not buy 3.4 s of precompilation. The
+rule the two results together give: a ladder arm is free when it ends in a
+concrete return assertion and expensive when it does not — which is a property
+of the callee, not of the number of arms.
+
+**Caveat on that revert, and it is a real one.** Precompilation time is a
+one-time cost paid into a cache, and it is partly a *choice* — what
+`@compile_workload` in `AIFloats.jl` names is what gets compiled ahead of
+time. Treating 3.4 s of it as decisive against a measured runtime gain is the
+weaker half of this argument. Two things would have to be measured before the
+revert is settled rather than merely defensible:
+
+* whether the 3.4 s buys back **TTFX** on the first scoped broadcast — the
+  arms are compiled either way, just earlier;
+* whether trimming or re-shaping the workload absorbs the cost, since the
+  broadcast veneers are in it (`A .+ B`, `exp.(A)`, `d .= A .+ B`).
+
+Recorded as open rather than closed. The gain itself is not large — 3–9% of a
+whole scoped broadcast call, ~20–27% of its scoped *overhead* — and no reverted
+change exceeded 15% of total call time at any array size.
+
 ## Why the compile-cost objection was wrong
 
 The earlier entry argued 27 arms × 51 ops would explode inference. Measured:

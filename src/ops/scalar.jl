@@ -342,12 +342,17 @@ export Convert
 # ask carries the same SPECULATION GUARD the generated op methods use — the
 # untouched default RTE_SN is tested by identity and passed as the literal
 # constant, so the common construction is a static, allocation-free call.
-@inline function (::Type{BinaryValue{F,U}})(x::Real;
+@eval @inline function (::Type{BinaryValue{F,U}})(x::Real;
         projection::Union{Nothing, Projection} = nothing,
         rng::MaybeRNG = nothing, R::MaybeR = nothing) where {F<:Binary, U<:Unsigned}
-    projection === nothing || return _default_convert(_witness(F), projection, x, rng, R)
-    ρ = DefaultProjection()
-    ρ === RTE_SN && return Convert(F, RTE_SN, x; rng, R)::BinaryValue{F,U}
+    # ONE ladder serves both entry points. The `projection` KEYWORD is as
+    # abstractly typed as the scoped default — it is declared
+    # `Union{Nothing,Projection}` — so a caller passing a projection held in a
+    # variable was paying exactly the dispatch a scoped caller pays. Normalizing
+    # first means the arms are written once.
+    ρ = projection === nothing ? DefaultProjection() : projection
+    $([:(ρ === $g && return Convert(F, $g, x; rng, R)::BinaryValue{F,U})
+       for g in _GUARDED_PROJECTIONS]...)
     _default_convert(_witness(F), ρ, x, rng, R)
 end
 
