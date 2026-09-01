@@ -37,7 +37,7 @@ ExponentBiasOf, ExponentBitwidthOf, TrailingSignificantBitsOf,
 # stochastic-mode queries
 isstochastic, nrandbits,
 # the datum type and its codec (codepoint extends Base.codepoint)
-BinaryValue, BinaryFormatOf, decode, formatname,
+BinaryValue, BinaryFormatOf, decode, formatname, fromcode,
 # special-value accessors
 MaxFiniteOf, MinFiniteOf, MinPositiveOf, MaxSubnormalOf, MinNormalOf,
 # classification and neighbors

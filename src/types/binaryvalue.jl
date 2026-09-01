@@ -68,6 +68,20 @@ struct BinaryValue{F<:Binary, U<:Unsigned} <: AbstractFloat
     # around the checks.
     global @inline rawvalue(::Type{F}, code::Unsigned) where {F<:Binary} =
         new{F, CodeType(F)}(code % CodeType(F))
+
+    # improveapi3.md §4.2.5: the internal fast path. Precondition: the code is
+    # already canonical for F (high bits zero). No range check.
+    #
+    # The plan spells the contract `code::CodeType(F)`, which Julia cannot
+    # express -- a signature is evaluated at definition time, where F is still
+    # a TypeVar. It is enforced by CONVERSION instead: `new` converts into the
+    # field type, so a value that does not fit raises InexactError. That is
+    # strictly better than `rawvalue`'s `%`, which truncates silently, and it
+    # checks the representation invariant rather than merely the storage width.
+    # Never exported, never `public`. `rawvalue` is its lenient predecessor and
+    # is deleted once every internal caller has moved (Phase 1c.6).
+    global @inline _rawvalue(::Type{F}, code::Unsigned) where {F<:Binary} =
+        new{F, CodeType(F)}(code)
 end
 
 # normalize the one-parameter spellings to the full type
@@ -92,6 +106,54 @@ BinaryValue(::Type{F}, code::Unsigned) where {F<:Binary} = BinaryValue{F, CodeTy
 # itself. It is a StackOverflowError, not an ambiguity.
 BinaryValue(fmt::Binary) = BinaryValue(typeof(fmt))
 BinaryValue(fmt::Binary, code::Unsigned) = BinaryValue(typeof(fmt), code)
+
+"""
+    fromcode(F, code) -> BinaryValue
+    fromcode(T, code) -> BinaryValue
+
+The datum of format `F` (or datum type `T`) whose code point is `code`,
+checked.
+
+This is the ONLY public way to say "the datum at this code point". Ordinary
+construction means a numeric VALUE: `F(3)` is the number three projected into
+`F`, while `fromcode(F, 3)` is the datum stored as code point three. Keeping
+those apart in the spelling is the point — they used to be told apart by the
+argument's type, which made `T(codepoint(y))` a silent reinterpretation.
+
+`code` may be any `Integer`, of any width, independent of `CodeType(F)`: the
+range is checked first and narrowed only after, so `fromcode(F, UInt16(3))` is
+safe for an eight-bit format rather than silently truncating. Negative values
+and values above `codemask(F)` throw `ArgumentError`.
+
+The guaranteed round trip is `fromcode(typeof(x), codepoint(x)) === x`.
+
+# Examples
+
+```jldoctest
+julia> F = Binary(8, 4, SIGNED, EXTENDED);
+
+julia> x = fromcode(F, 0x45)
+1.625
+
+julia> codepoint(x)
+0x45
+
+julia> fromcode(typeof(x), codepoint(x)) === x
+true
+
+julia> fromcode(F, 3) === fromcode(BinaryValue(F), UInt16(3))
+true
+```
+"""
+function fromcode(::Type{F}, code::Integer) where {F<:Binary}
+    (code >= 0) & (code <= codemask(F)) ||
+        throw(ArgumentError("code point $code is outside 0:$(codemask(F)) for " *
+                            "$(string(F)); for the numeric VALUE $code write " *
+                            "$(formatname(F))($code)"))
+    _rawvalue(F, CodeType(F)(code))          # narrowed only after the check
+end
+fromcode(::Type{BV}, code::Integer) where {BV<:BinaryValue} =
+    fromcode(BinaryFormatOf(BV), code)
 
 """
     codepoint(x::BinaryValue)

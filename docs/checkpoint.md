@@ -1,8 +1,103 @@
-# Enactment checkpoint — structuralplan.md
+# Enactment checkpoint
 
-*Session log for picking up without redoing work. Read together with
-[structuralplan.md](structuralplan.md) and, for the current work,
-[implmentplan.md](implmentplan.md). Newest entry first.*
+*Session log for picking up without redoing work. Two plans are tracked here:
+[improveapi3.md](improveapi3.md), in progress, and
+[structuralplan.md](structuralplan.md) with
+[implmentplan.md](implmentplan.md), complete. Newest entry first within each.*
+
+---
+
+# improveapi3.md — progress
+
+Updated as each step completes. A step is "done" only when its own gate is
+green; anything short of that is recorded as in progress with what is missing.
+
+| Phase | State | Gate |
+|---|---|---|
+| 0 — freeze contract, inventory | **done** | inventory recorded below |
+| 1a — add `fromcode`/`_rawvalue`, migrate callers | **in progress** | seam added and gated; caller migration pending |
+| 1b — diagnostic trap for missed unsigned construction | not started | focused groups + doctests, never committed |
+| 1c — canonical format/datum model | **partly done** | ambiguity + inference clean |
+| 2 — scoped projection default | not started | zero alloc steady state; scoped/nested/task tests |
+| 3 — scalar/array conversion parity | not started | edge-population code-point equality |
+| 4 — queries and `formatinfo` | not started | type stability, no Base shadowing |
+| 5 — table service | not started | coherent snapshots under concurrency |
+| 6 — packed serialization and collections | not started | round trips, aliasing, Aqua ambiguities |
+| 7 — registry validation and error taxonomy | not started | one validation per call, not per element |
+| 8 — residue removal and consumer alignment | not started | zero residual deleted forms |
+
+## Phase 1a — seam added, caller migration pending (2026-09-01)
+
+Gate for what is done: `test-binary-format` 273 · `binaryvalue` 133,055 ·
+`codec` 66,700 · `kernels` 62 · `tables` 1,025 · `quality` 35 (Aqua + JET).
+
+**`fromcode(F, code)` / `fromcode(T, code)`** — the checked public code seam,
+exported. Any `Integer` of any width: the range is checked against
+`codemask(F)` *before* narrowing, so `fromcode(F, UInt16(300))` on an eight-bit
+format raises rather than truncating to 44. Negative and over-range throw
+`ArgumentError` naming the numeric alternative, since the whole point is that
+`F(3)` and `fromcode(F, 3)` now differ. Round trip
+`fromcode(typeof(x), codepoint(x)) === x` is asserted in the docstring as a
+doctest.
+
+**`_rawvalue(F, code)`** — the internal fast path (§4.2.5). The plan spells its
+contract `code::CodeType(F)`, which **Julia cannot express**: a signature is
+evaluated at definition time, where `F` is still a `TypeVar`, so
+`CodeType(::TypeVar)` is a `MethodError` at load. Enforced by CONVERSION
+instead — `new` converts into the field type, so an out-of-range code raises
+`InexactError`. That is stricter than the plan's intent, not weaker:
+`rawvalue`'s `%` truncates silently, and this checks the representation
+invariant rather than merely the storage width.
+
+Still to do in 1a: migrate the 56 `rawvalue` call sites by classification, then
+re-run the `T(codepoint(x))` search (already zero at Phase 0, to be re-checked
+after migration).
+
+## Phase 0 — done (2026-09-01)
+
+Baseline `cb45103`, clean tree.
+
+**Already satisfied by earlier work** (commit `cb45103`, which enacted §4.1.2
+before this revision of the plan existed), so Phase 1c items 2, 4, 7 and 8 are
+complete:
+
+- `_NAMED` maps each name to its **format** type; the 504 aliases are format
+  types (`Binary8p4se <: Binary`).
+- `(::Type{F})(x::Real)` constructs a datum, so `Binary8p4se(1.5)` still works.
+- Named-format use sites migrated by classification; precompile workload names
+  `F` and `T` separately.
+- Additionally, and not in the plan: the datum type prints as
+  `BinaryValue(Binary8p4se)` so both kinds round-trip, and
+  `BinaryFormatOf(::Type{F}) = F` makes normalization total (§4.3.3).
+
+**Inventory of forms this plan deletes or rewrites** (occurrences across
+`src/`, `test/`, `benchmark/`):
+
+| Form | Count | Plan disposition |
+|---|---:|---|
+| `::Binary` (instance-accepting) | 56 | remove (§4.1.3) |
+| `rawvalue` | 56 | rename `_rawvalue`, drop from `public` (§4.2.5) |
+| `get_table` | 40 | make internal (§5 Phase 5.1) |
+| `DefaultProjection!` | 21 | delete (§4.3) |
+| `BinarySpecifier` | 10 | remove (§4.1.3) |
+| `_formattype` | 8 | remove (§4.1.3) |
+| `.data` / `.scales` / `.elems` direct access | 16 | behind accessors (§6 Phase 6) |
+| `table_keys` | 7 | delete, subsumed by snapshots (§5.6) |
+| `PackedVector{T}(words,n)` | 7 | replace with `packedfromwords` (§6.2) |
+| `DefaultRoundingMode!` / `DefaultSaturationMode!` | 8 | delete (§4.3) |
+
+**The silent-hazard search** the plan calls for specifically (§6 Phase 0.4):
+`T(codepoint(x))` and equivalents, which keep compiling while changing meaning
+once `Unsigned` becomes a value. **Zero found** in `src/` or `test/`. The one
+`codepoint` occurrence inside a call, `kernels.jl:122`, is
+`Int(codepoint(C[i])) + 1` — a table index, not a reconstruction.
+
+Note `BinarySpecifier`, `_formattype` and most of the 56 `::Binary` methods
+were added by `bcf5852`, which this plan removes again. That commit and this
+plan pull in opposite directions; the plan wins here by the author's
+instruction to implement it.
+
+
 
 ## Type hierarchy: a format is no longer a number (2026-09-01)
 
