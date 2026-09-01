@@ -14,7 +14,7 @@ storage unit.
 ```@example advanced_pack
 using AIFloats
 
-T = binary5p2se
+T = Binary5p2se
 A = T[0.0, 0.5, 1.0, 1.5, 2.0, 3.0]
 P = PackedVector(A)
 
@@ -26,7 +26,7 @@ Packed unary operations return an ordinary vector:
 ```@example advanced_packed_op
 using AIFloats
 
-T = binary5p2se
+T = Binary5p2se
 A = T[0.0, 0.5, 1.0, 1.5, 2.0, 3.0]
 P = PackedVector(A)
 F = BinaryFormatOf(T)
@@ -44,8 +44,8 @@ A [`Block`](@ref) combines one scale datum with a fixed tuple of element datums.
 ```@example advanced_block
 using AIFloats
 
-S = binary8p1uf   # 8-bit scale, 1 bit of precision
-E = binary5p2se   # 5-bit elements, 2 bits of precision
+S = Binary8p1uf   # 8-bit scale, 1 bit of precision
+E = Binary5p2se   # 5-bit elements, 2 bits of precision
 
 bx = Block(one(S), (E(1.5), E(0.25), E(-0.5), E(2.0)))
 by = Block(one(S), (E(0.5), E(0.75), E(1.0), E(-1.0)))
@@ -59,8 +59,8 @@ the result scale:
 ```@example advanced_block_add
 using AIFloats
 
-S = binary8p1uf
-E = binary5p2se
+S = Binary8p1uf
+E = Binary5p2se
 bx = Block(one(S), (E(1.5), E(0.25), E(-0.5), E(2.0)))
 by = Block(one(S), (E(0.5), E(0.75), E(1.0), E(-1.0)))
 bz = BlockAdd(E, RTE_SN, bx, by, one(S))
@@ -81,8 +81,8 @@ once into the requested result format.
 ```@example advanced_reductions
 using AIFloats
 
-S = binary8p1uf
-E = binary5p2se
+S = Binary8p1uf
+E = Binary5p2se
 bx = Block(one(S), (E(1.5), E(0.25), E(-0.5), E(2.0)))
 by = Block(one(S), (E(0.5), E(0.75), E(1.0), E(-1.0)))
 (
@@ -97,8 +97,8 @@ by = Block(one(S), (E(0.5), E(0.75), E(1.0), E(-1.0)))
 ```@example advanced_block_convert
 using AIFloats
 
-S = binary8p1uf
-E = binary5p2se
+S = Binary8p1uf
+E = Binary5p2se
 values = (E(0.5), E(1.0), E(1.5), E(2.0))
 block = ConvertToBlock(E, RTE_SN, values, one(S))
 roundtrip = ConvertFromBlock(E, RTE_SN, block)
@@ -111,8 +111,8 @@ structure-of-arrays layout:
 ```@example advanced_block_vector
 using AIFloats
 
-S = binary8p1uf
-E = binary5p2se
+S = Binary8p1uf
+E = Binary5p2se
 bx = Block(one(S), (E(1.5), E(0.25), E(-0.5), E(2.0)))
 by = Block(one(S), (E(0.5), E(0.75), E(1.0), E(-1.0)))
 bz = BlockAdd(E, RTE_SN, bx, by, one(S))

@@ -6,7 +6,7 @@ using Test
     BV = BinaryValue(F)
 
     # the alias, the normalized spelling, and the full type coincide
-    @test BV === binary8p4sf
+    @test BV === Binary8p4sf
     @test BV === BinaryValue{F, UInt8}
     @test BinaryValue{F}(0x45) === BV(0x45)
     @test BinaryValue(F, 0x45) === BV(0x45)
@@ -150,7 +150,7 @@ end
         set_show_style!(:datum)
         @test repr(x) == "(1.625 ⇆ 0x45)"
         set_show_style!(:typed)
-        @test repr(x) == "binary8p4sf(1.625 ⇆ 0x45)"
+        @test repr(x) == "Binary8p4sf(1.625 ⇆ 0x45)"
         # IOContext overrides the process default
         @test sprint(show, x; context = :binary_show_style => :value) == "1.625"
         # NaN prints as NaN, never throws, in every style
@@ -164,19 +164,20 @@ end
         set_show_style!(old)
     end
     # the datum type shows as its alias name
-    @test sprint(show, binary8p4sf) == "binary8p4sf"
+    @test sprint(show, Binary8p4sf) == "Binary8p4sf"
 end
 
 @testset "Aliases" begin
-    @test binary8p4se === BinaryValue(AIFloats.Binary(8, 4, SIGNED, EXTENDED))
-    @test binary3p1uf === BinaryValue(AIFloats.Binary(3, 1, UNSIGNED, FINITE))
+    @test Binary8p4se === BinaryValue(AIFloats.Binary(8, 4, SIGNED, EXTENDED))
+    @test Binary3p1uf === BinaryValue(AIFloats.Binary(3, 1, UNSIGNED, FINITE))
+    @test !isdefined(AIFloats, :binary8p4se)
     # K > 8 aliases are defined but not exported
-    @test !isdefined(Main, :binary16p8se) || true   # not in Main via using
-    @test AIFloats.binary16p8se === BinaryValue(AIFloats.Binary(16, 8, SIGNED, EXTENDED))
-    @test AIFloats._NAMED[:binary16p1uf] === AIFloats.binary16p1uf
+    @test !isdefined(Main, :Binary16p8se)
+    @test AIFloats.Binary16p8se === BinaryValue(AIFloats.Binary(16, 8, SIGNED, EXTENDED))
+    @test AIFloats._NAMED[:Binary16p1uf] === AIFloats.Binary16p1uf
     @test length(AIFloats._NAMED) == 504
-    @test formatname(binary8p4se) === :binary8p4se
-    @test formatname(AIFloats.Binary(8, 4, SIGNED, EXTENDED)()) === :binary8p4se
+    @test formatname(Binary8p4se) === :Binary8p4se
+    @test formatname(AIFloats.Binary(8, 4, SIGNED, EXTENDED)()) === :Binary8p4se
 end
 
 @testset "two-argument value construction" begin

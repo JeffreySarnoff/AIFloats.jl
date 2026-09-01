@@ -6,15 +6,15 @@ using SHA
 # Phase 7 gate: the conformance report derives from the registry live; κ
 # registration rejects understatement; the retained draft's digest matches.
 
-const T8 = binary8p4se
-const T5 = binary5p2se
+const T8 = Binary8p4se
+const T5 = Binary5p2se
 
 @testset "κ measurement" begin
     exact_exp(x) = Exp(T8, RTE_SN, x)
     @test measure_kappa(exact_exp, :Exp, T8, (T8,), RTE_SN) === (0.0, true)
     exact_add(x, y) = Add(T5, RTE_SN, x, y)
     @test measure_kappa(exact_add, :Add, T5, (T5, T5), RTE_SN) === (0.0, true)
-    T4 = binary4p2se
+    T4 = Binary4p2se
     exact_fma(x, y, z) = FMA(T4, RTE_SN, x, y, z)
     @test measure_kappa(exact_fma, :FMA, T4, (T4, T4, T4), RTE_SN) === (0.0, true)
     @test measure_kappa(x -> Convert(T5, RTE_SN, x), :Convert, T5, (T8,), RTE_SN) === (0.0, true)
@@ -50,7 +50,7 @@ end
     end
     κf, exhf = measure_kappa(ftz, :Exp, T8, (T8,), ρf)
     @test exhf && κf == 1 << (P - 2)
-    U1 = binary8p1uf                                   # no subnormals: FTZ is exact
+    U1 = Binary8p1uf                                   # no subnormals: FTZ is exact
     @test measure_kappa(ftz_variant(:Convert, U1, T8, ρf), :Convert, U1, (T8,), ρf) === (0.0, true)
     # signed negative subnormal results flush symmetrically
     ftzn = ftz_variant(:Negate, T5, T5, RTE_SN)
@@ -84,7 +84,7 @@ end
     AIFloats.get_table(:Add, BinaryFormatOf(T5), BinaryFormatOf(T5), BinaryFormatOf(T5), RTE_SN)
     c = conformance()
     @test length(c.formats) == sum(4K - 2 for K in Int(AIFloats.KMIN):Int(AIFloats.KMAX)) == 504
-    @test :binary8p4se in c.formats && :binary16p8se in c.formats
+    @test :Binary8p4se in c.formats && :Binary16p8se in c.formats
     @test length(c.operations) == length(AIFloats.OP_REGISTRY) == 52
     @test count(o -> o.arity == 3, c.operations) == 3
     @test length(c.cached_specializations) == 2

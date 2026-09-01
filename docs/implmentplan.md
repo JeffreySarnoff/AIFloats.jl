@@ -29,7 +29,7 @@ where the plan placed it; and raising `TABLE_EAGER_BITS` was declined.
 
 Conventions used below:
 
-- `T` = `binary8p4se`, `F` = `BinaryFormatOf(T)`, `x = T(1.5)`, `y = T(0.25)`,
+- `T` = `Binary8p4se`, `F` = `BinaryFormatOf(T)`, `x = T(1.5)`, `y = T(0.25)`,
   `z = T(0.75)`.
 - "reference" = the path that stays authoritative for the change; every fast
   path must agree with it bit-for-bit on the stated sweep.
@@ -559,8 +559,8 @@ there and the row stays as it is.
 live as both fallback and oracle:
 
 - 2,000 pseudo-random blocks at B ∈ {1, 4, 16, 32}, over a P=1 power-of-two
-  scale and a general non-power-of-two scale, elements `binary8p4se` and
-  `binary5p2se`: `BlockReduceAdd` and `BlockDotProduct` must equal the result
+  scale and a general non-power-of-two scale, elements `Binary8p4se` and
+  `Binary5p2se`: `BlockReduceAdd` and `BlockDotProduct` must equal the result
   with the fast path disabled.
 - Blocks containing NaN, +∞, −∞, all-zero, and max-magnitude lanes.
 - A wide-spread block that must *reject* the Dyadic path (assert it still

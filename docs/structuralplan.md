@@ -71,7 +71,7 @@ one that appears in code.
 | `expbias`, `expbitwidth`, `trailingsigbits` | `ExponentBiasOf`, `ExponentBitwidthOf`, `TrailingSignificantBitsOf` | new public traits, `*Of` style |
 | `MaxFiniteOf`, `MinPositiveOf`, … | same names | SmallFloats already uses the `*Of` style here |
 | `codeunit_type` | `CodeType` | exists; K ≤ 8 → `UInt8`, else `UInt16` |
-| `Binary8p4se` alias | `binary8p4se` | lowercase, matching `binary16/32/64` |
+| `Binary8p4se` alias | `Binary8p4se` | capitalized, following Julia's convention for type names |
 | `format(K,P,Σ,Δ)` | `Binary(K,P,S,D)` | already exists — the runtime route to a format; `BinaryValue(Binary(K,P,S,D))` is the runtime route to the datum type |
 | `set_show_style!` styles | same | fits AIFloats' existing string/String duality |
 
@@ -115,7 +115,7 @@ end
   `convert(::Type{BinaryValue{F}}, x)` is the value-preserving exception.
   Phasing note: the code-point constructor exists from Phase 1; the
   value constructor requires the projection engine and `Convert`, so
-  `binary8p4se(1.5)` becomes available in Phase 3 (explicit-`Projection` form and
+  `Binary8p4se(1.5)` becomes available in Phase 3 (explicit-`Projection` form and
   session-default form together — see Phase 3).
 - `BinaryValue{F,U}` is concrete and `isbits` — a valid array element type. The
   invariant-8 hazard from SmallFloats (rebuilding an abstract format in a method
@@ -209,7 +209,7 @@ src/
     rand.jl                 rand (RTZ_SN default) / randn (RTE_SF, signed only)
   rules/                    (existing empty dir → filled) policy & governance
     constraints.jl          (promised by the commented include) the format grid:
-                            KMIN/KMAX walk, alias generation (binary⟨K⟩p⟨P⟩…),
+                            KMIN/KMAX walk, alias generation (Binary⟨K⟩p⟨P⟩…),
                             opt-in Formats submodule. Validity itself stays in
                             validformat (types/binaryformats.jl) — one validator,
                             one place
@@ -298,7 +298,7 @@ documented divergence from Base convention. Same-format-only Base operators
 (`rem`/`mod`/`Rational` inputs refuse rather than round outside `project`).
 
 **rules/**: session defaults use the coupled-setter/speculation-guard pattern; the
-alias grid defines all 504 lowercase names, exports only the K ≤ 8 subset (120)
+alias grid defines all 504 capitalized names, exports only the K ≤ 8 subset (120)
 with the rest reachable qualified or via an opt-in `AIFloats.Formats` submodule —
 exporting more later is non-breaking, un-exporting is not.
 
@@ -445,8 +445,9 @@ suffices, and `datumcarrier` (new, B-derived) answers `Dyadic`. `ValueType`'s
 docstring gains that caveat; internal code uses `datumcarrier`, never `ValueType`,
 for evaluation decisions.
 
-**9.6 Aliases lowercase, narrow export.** `binary8p4se` (P3109 spelling, matching
-AIFloats' existing `binary16`), all 504 defined, 120 (K ≤ 8) exported.
+**9.6 Aliases capitalized, narrow export.** `Binary8p4se` follows Julia's type-name
+convention; all 504 are defined and the 120 with K ≤ 8 are exported. The
+distinct IEEE aliases `binary16`/`binary32`/`binary64`/`binary128` remain lowercase.
 
 **9.7 Naming translations are total** (§3) — no SmallFloats spelling survives in
 AIFloats' public surface; ω-internals and draft op names pass through.
@@ -562,10 +563,10 @@ operations page after Phase 3. The README's scope caveat shrinks as phases land.
 1. **Datum type name: `BinaryValue`.** Pairs explicitly with `Binary`: the format
    is `Binary`, a member of its value set is a `BinaryValue`. (`AIFloat` and
    `Datum` were considered and declined.)
-2. **The 504 lowercase aliases name the datum type**:
-   `binary8p4se === BinaryValue{Binary(8,4,SIGNED,EXTENDED), UInt8}` (constructor
-   spelling — see §3's canonical-parameters rule). So `binary8p4se(1.5)`
-   constructs a value and `Vector{binary8p4se}` is a concrete array — mirroring
+2. **The 504 capitalized aliases name the datum type**:
+   `Binary8p4se === BinaryValue{Binary(8,4,SIGNED,EXTENDED), UInt8}` (constructor
+   spelling — see §3's canonical-parameters rule). So `Binary8p4se(1.5)`
+   constructs a value and `Vector{Binary8p4se}` is a concrete array — mirroring
    how `binary16 === Float16` already works. The format is reached via
    `Binary(8,4,SIGNED,EXTENDED)` or from the alias by its `F` parameter.
 3. **Show-style default is `:value`** — a datum prints as the number it denotes;

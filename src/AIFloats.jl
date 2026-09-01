@@ -143,7 +143,7 @@ end
 # for a different type parameter and buys nothing.
 @setup_workload begin
     @compile_workload begin
-        T = binary8p4se; S = binary8p3se
+        T = Binary8p4se; S = Binary8p3se
         a, b = T(1.5), T(0.25)
         Add(T, RTE_SN, a, b); Multiply(T, RTE_SF, a, b)
         Exp(T, RTE_SN, a); Convert(S, RTE_SN, a)
@@ -177,7 +177,7 @@ end
             BlockReduceAdd(T, RTE_SN, m); BlockDotProduct(T, RTE_SN, m, n)
         end
         collect(PackedVector(A))
-        for WF in (binary16p5se, binary16p1uf)          # rung 2, rung 3
+        for WF in (Binary16p5se, Binary16p1uf)          # rung 2, rung 3
             w1 = WF(1.5); w2 = WF(0.25)
             Add(WF, RTE_SN, w1, w2); Multiply(WF, RTE_SF, w1, w2)
             Exp(WF, RTE_SN, w1); Convert(T, RTE_SN, w1)

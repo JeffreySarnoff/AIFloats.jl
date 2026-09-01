@@ -154,7 +154,7 @@ end
 end
 
 @testset "warm path allocates nothing on the fast layers" begin
-    T = binary8p4se
+    T = Binary8p4se
     a, b = T(1.5), T(0.25)
     Add(a, b); Exp(a); FMA(a, b, a)
     T(1.3); T(1.3f0); T(3); convert(T, 1.3); convert(T, 0x03)   # warm the constructors too

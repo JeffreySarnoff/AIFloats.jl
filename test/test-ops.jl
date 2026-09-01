@@ -123,7 +123,7 @@ end
 
 @testset "Known values" begin
     F = AIFloats.Binary(8, 4, SIGNED, EXTENDED)
-    BV = binary8p4se
+    BV = Binary8p4se
     @test decode(Add(F, RTE_SN, BV(1.5), BV(0.25))) == 1.75
     @test decode(Divide(F, RTE_SN, BV(1.0), BV(8.0))) == 0.125
     @test isnan(decode(Divide(F, RTE_SN, BV(1.0), BV(0x00))))   # x/0: one zero, no sign
@@ -160,7 +160,7 @@ end
 @testset "Session defaults and value construction" begin
     old = DefaultProjection()
     try
-        BV = binary8p4se
+        BV = Binary8p4se
         @test DefaultProjection() === RTE_SN
         @test decode(Add(BV(1.5), BV(0.25))) == 1.75            # same-format convenience
         DefaultRoundingMode!(RTZ)
@@ -182,20 +182,20 @@ end
 end
 
 @testset "rand / randn" begin
-    v = rand(Xoshiro(7), binary8p4uf)
-    @test v isa binary8p4uf
+    v = rand(Xoshiro(7), Binary8p4uf)
+    @test v isa Binary8p4uf
     @test 0.0 <= decode(v) < 1.0
-    @test rand(Xoshiro(7), binary8p4uf) === v                    # reproducible
-    A = rand(Xoshiro(9), binary8p4uf, 100)
-    @test eltype(A) === binary8p4uf
+    @test rand(Xoshiro(7), Binary8p4uf) === v                    # reproducible
+    A = rand(Xoshiro(9), Binary8p4uf, 100)
+    @test eltype(A) === Binary8p4uf
     @test all(x -> 0.0 <= decode(x) < 1.0, A)
-    r = randn(Xoshiro(3), binary8p4se)
+    r = randn(Xoshiro(3), Binary8p4se)
     @test isfinite(decode(r))                                    # RTE_SF clamps tails
-    @test randn(Xoshiro(3), binary8p4se) === r
-    @test_throws ArgumentError randn(binary8p4uf)
+    @test randn(Xoshiro(3), Binary8p4se) === r
+    @test_throws ArgumentError randn(Binary8p4uf)
     # stochastic conversion draws from the supplied rng: seeded streams agree
-    a = Convert(binary8p4se, Projection(AIFloats.ρRSA(8), SF), 1.3; rng = Xoshiro(1))
-    b = Convert(binary8p4se, Projection(AIFloats.ρRSA(8), SF), 1.3; rng = Xoshiro(1))
+    a = Convert(Binary8p4se, Projection(AIFloats.ρRSA(8), SF), 1.3; rng = Xoshiro(1))
+    b = Convert(Binary8p4se, Projection(AIFloats.ρRSA(8), SF), 1.3; rng = Xoshiro(1))
     @test a === b
 end
 

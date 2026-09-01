@@ -129,15 +129,20 @@ is called the **prenormal** region, and it holds `2^(P-1)` values.
 
 ## Naming
 
-P3109 names a format `binary⟨K⟩p⟨P⟩⟨u|s⟩⟨f|e⟩` — bitwidth, `p`, precision, then `u`/`s` for
+P3109 names a format `Binary⟨K⟩p⟨P⟩⟨u|s⟩⟨f|e⟩` — bitwidth, `p`, precision, then `u`/`s` for
 unsigned/signed and `f`/`e` for finite/extended. Each name maps one-to-one onto a `Binary`:
 
 | P3109 name | AIFloats.jl |
 |:--|:--|
-| `binary8p4sf` | `Binary(8, 4, SIGNED, FINITE)` |
-| `binary8p4se` | `Binary(8, 4, SIGNED, EXTENDED)` |
-| `binary8p4uf` | `Binary(8, 4, UNSIGNED, FINITE)` |
-| `binary4p2ue` | `Binary(4, 2, UNSIGNED, EXTENDED)` |
+| `Binary8p4sf` | `Binary(8, 4, SIGNED, FINITE)` |
+| `Binary8p4se` | `Binary(8, 4, SIGNED, EXTENDED)` |
+| `Binary8p4uf` | `Binary(8, 4, UNSIGNED, FINITE)` |
+| `Binary4p2ue` | `Binary(4, 2, UNSIGNED, EXTENDED)` |
+
+The generated P3109 datum aliases begin with capital `Binary`, following
+Julia's convention for names that denote types. The separate IEEE 754 aliases
+[`binary16`](@ref), [`binary32`](@ref), [`binary64`](@ref), and
+[`binary128`](@ref) retain their standard lowercase spellings.
 
 ## Compared with IEEE 754
 

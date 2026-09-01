@@ -22,7 +22,7 @@ A P3109 block `(s, (x₁ … x_B))`: a scale datum of type `S` and `B ≥ 1` ele
 datums of type `E` (draft §5). `isbits`.
 
 ```julia
-Block(binary8p1uf(4.0), (binary5p2se(3.0), binary5p2se(0.5)))
+Block(Binary8p1uf(4.0), (Binary5p2se(3.0), Binary5p2se(0.5)))
 Block(s, x1, x2, x3)          # varargs form
 ```
 """

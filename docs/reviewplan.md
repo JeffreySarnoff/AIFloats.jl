@@ -36,7 +36,7 @@ expression in a fresh process, keep only if the gain clears the threshold in §5
 
 ## 2. What the evidence says (measured, this tree)
 
-Scalar, K=8 (`binary8p4se`), explicit projection unless noted:
+Scalar, K=8 (`Binary8p4se`), explicit projection unless noted:
 
 | Call | Result | Reading |
 |---|---:|---|

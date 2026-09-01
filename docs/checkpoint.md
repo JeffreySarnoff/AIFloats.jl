@@ -683,8 +683,8 @@ deliberate.
 - `src/compat/show.jl`: 4 styles (:value default), `set_show_style!`/
   `get_show_style`/`VALID_SHOW_STYLES`, IOContext override, ONE dispatcher
   behind both show methods; datum-type shows as alias name with TypeVar guard.
-- `src/rules/constraints.jl`: `formatname`, `_NAMED` registry, 504 lowercase
-  aliases = datum types (`binary8p4se === BinaryValue{Binary(8,4,SIGNED,EXTENDED),UInt8}`),
+- `src/rules/constraints.jl`: `formatname`, `_NAMED` registry, 504 capitalized
+  aliases = datum types (`Binary8p4se === BinaryValue{Binary(8,4,SIGNED,EXTENDED),UInt8}`),
   `Formats` opt-in submodule.
 - `src/content/gentables.jl`: real `codetable`/`printcodetable` (by=:code|:value).
 - `src/AIFloats.jl`: rewritten module root — include order per plan §7, new
@@ -694,7 +694,7 @@ deliberate.
   NextLessThan inverts), classification, show styles, aliases;
   `test-codec.jl` (66,700) — **exhaustive 7,602,160-code-point sweep of all 504
   formats**: `_canonical`∘`encode` round-trip + decode ≡ sign·S·2^Q in
-  Rational{BigInt}; layout spot checks (0x45→1.625 on binary8p4se); monotone
+  Rational{BigInt}; layout spot checks (0x45→1.625 on Binary8p4se); monotone
   decode.
 - `docs/src/50-status.md` rewritten to the new truth.
 - Suite totals: Binary Format 122 · Binaryvalue 132,857 · Codec 66,700 ·
@@ -703,9 +703,9 @@ deliberate.
 ### Corrections made mid-phase (worth knowing)
 
 - `codepoint` must EXTEND `Base.codepoint`, else export clash with Base.
-- binary3p1uf value table is [0,⅛,¼,½,1,2,4,NaN] (B=4) — an early docstring/
-  test had it shifted one octave up. binary8p4sf MaxFinite = 240 (not 248);
-  binary8p4uf MinPositive = 2^-18.
+- Binary3p1uf value table is [0,⅛,¼,½,1,2,4,NaN] (B=4) — an early docstring/
+  test had it shifted one octave up. Binary8p4sf MaxFinite = 240 (not 248);
+  Binary8p4uf MinPositive = 2^-18.
 
 ## Phase status
 
@@ -790,7 +790,7 @@ deliberate.
   reference over ALL code-point pairs of every K ≤ 5 format × 4 rounding × 3
   saturation modes (815,616 comparisons); G10-style totality sweep (every op ×
   every rung rep × datums incl specials — this is what caught Softplus);
-  known-value checks (e→2.75, ln2→11/16, sin1→13/16 on binary8p4se; peels;
+  known-value checks (e→2.75, ln2→11/16, sin1→13/16 on Binary8p4se; peels;
   extremum corners); defaults coupling; value construction; rand/randn.
 - `test/Project.toml`: + Random.
 - `docs/src/95-reference.md`: + explicit `@docs AIFloats.Formats` block

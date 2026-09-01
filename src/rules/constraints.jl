@@ -4,26 +4,26 @@
 # validator, one place. This file WALKS the grid validformat implies and gives
 # each cell its P3109 name.
 #
-# The name is spelled in exactly one place: binary⟨K⟩p⟨P⟩⟨u|s⟩⟨f|e⟩. All 504
+# The name is spelled in exactly one place: Binary⟨K⟩p⟨P⟩⟨u|s⟩⟨f|e⟩. All 504
 # aliases are DEFINED (each names the concrete datum type, so it serves as an
 # array element type and a constructor); only the 120 at K ≤ 8 are EXPORTED —
 # exporting more later is non-breaking, un-exporting is not. The rest are
-# reachable qualified (AIFloats.binary16p6se) or via `using AIFloats.Formats`.
+# reachable qualified (AIFloats.Binary16p6se) or via `using AIFloats.Formats`.
 
 _formatname(K::Integer, P::Integer, S::Bool, D::Bool) =
-    Symbol("binary", Int(K), "p", Int(P), S ? "s" : "u", D ? "e" : "f")
+    Symbol("Binary", Int(K), "p", Int(P), S ? "s" : "u", D ? "e" : "f")
 
 """
     formatname(F)
 
 The P3109 name of a format (or of its datum type / a datum), as a `Symbol`:
-`binary⟨K⟩p⟨P⟩⟨u|s⟩⟨f|e⟩`.
+`Binary⟨K⟩p⟨P⟩⟨u|s⟩⟨f|e⟩`.
 
 # Examples
 
 ```jldoctest
 julia> formatname(Binary(8, 4, SIGNED, EXTENDED))
-:binary8p4se
+:Binary8p4se
 ```
 """
 formatname(::Type{Binary{K,P,S,D}}) where {K,P,S,D} = _formatname(K, P, S, D)
@@ -48,7 +48,7 @@ end
 
 Opt-in namespace re-exporting **all 504** format aliases. `using AIFloats`
 exports the 120 names at `K <= 8`; `using AIFloats.Formats` adds the rest.
-Every alias is defined in `AIFloats` either way (`AIFloats.binary16p6se`).
+Every alias is defined in `AIFloats` either way (`AIFloats.Binary16p6se`).
 """
 module Formats
 import ..AIFloats

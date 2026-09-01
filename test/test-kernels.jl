@@ -144,7 +144,7 @@ end
     # implmentplan.md Step 7. `vmap!` is the reference; the point of the hook
     # is that the broadcast form now produces IDENTICAL results by taking the
     # same path, and that everything the hook declines still goes to Base.
-    T = binary8p4se; F = BinaryFormatOf(T)
+    T = Binary8p4se; F = BinaryFormatOf(T)
     A = [T(UInt8((7i + 1) & 0xff)) for i in 0:999]
     B = [T(UInt8((3i + 5) & 0xff)) for i in 0:999]
     C = [T(UInt8((5i + 2) & 0xff)) for i in 0:999]

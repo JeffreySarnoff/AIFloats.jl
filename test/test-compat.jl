@@ -205,7 +205,7 @@ end
     x, y = B8(3.0), B8(2.0)
     for (f, name) in ((rem, "rem"), (mod, "mod"))
         e = try f(x, y); nothing catch e; e end
-        @test e isa ArgumentError && occursin("not defined for binary8p4se", e.msg) &&
+        @test e isa ArgumentError && occursin("not defined for Binary8p4se", e.msg) &&
               occursin("project", e.msg)
     end
     for r in (RoundNearestTiesUp, RoundFromZero)

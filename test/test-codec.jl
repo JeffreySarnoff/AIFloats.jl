@@ -68,7 +68,7 @@ end
 end
 
 @testset "Layout spot checks" begin
-    # the worked example: binary8p4se, matching the P3109 slide table
+    # the worked example: Binary8p4se, matching the P3109 slide table
     F = AIFloats.Binary(8, 4, SIGNED, EXTENDED)
     @test AIFloats.nan_code(F) == 0x80          # NaN at the would-be −0
     @test AIFloats.posinf_code(F) == 0x7f
@@ -90,7 +90,7 @@ end
         @test z == 0.0 && !signbit(z)
     end
 
-    # tiny format, full table: binary3p1uf (B = 4) is [0, ⅛, ¼, ½, 1, 2, 4, NaN]
+    # tiny format, full table: Binary3p1uf (B = 4) is [0, ⅛, ¼, ½, 1, 2, 4, NaN]
     t = codetable(AIFloats.Binary(3, 1, UNSIGNED, FINITE))
     @test [r.value for r in t[1:7]] == [0.0, 0.125, 0.25, 0.5, 1.0, 2.0, 4.0]
     @test isnan(t[8].value)

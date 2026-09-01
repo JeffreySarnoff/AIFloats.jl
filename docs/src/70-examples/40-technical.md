@@ -33,7 +33,7 @@ operations, and [`project`](@ref) rather than depending on a particular rung.
 ```@example technical_policy
 using AIFloats
 
-F8 = BinaryFormatOf(binary8p4se)
+F8 = BinaryFormatOf(Binary8p4se)
 F9 = Binary(9, 4, SIGNED, EXTENDED)
 
 eager = AIFloats.table_policy(:Add, F8, F8, F8, RTE_SN)
@@ -74,7 +74,7 @@ produce the same final code point:
 ```@example technical_oracle
 using AIFloats
 
-T = binary8p4se
+T = Binary8p4se
 x = T(1.5)
 fast = Exp(T, RTE_SN, x)
 
@@ -98,7 +98,7 @@ transcendental result is assumed to be correctly rounded.
 ```@example technical_codes
 using AIFloats
 
-T = binary8p4se
+T = Binary8p4se
 samples = T[T(UInt8(c)) for c in (0x00, 0x01, 0x40, 0x7f, 0x80, 0xff)]
 [(codepoint(x), decode(x), Class(x), AIFloats.order_key(x)) for x in samples]
 ```
@@ -108,7 +108,7 @@ Sorting uses the draft's NaN-first total order:
 ```@example technical_sort
 using AIFloats
 
-T = binary8p4se
+T = Binary8p4se
 samples = T[T(UInt8(c)) for c in (0x00, 0x01, 0x40, 0x7f, 0x80, 0xff)]
 sort(samples)
 ```

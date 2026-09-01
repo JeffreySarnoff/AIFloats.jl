@@ -5,7 +5,7 @@ CurrentModule = AIFloats
 DocTestSetup = :(using AIFloats)
 ```
 
-These examples use the exported `binary8p4se` alias: an eight-bit, four-bit
+These examples use the exported `Binary8p4se` alias: an eight-bit, four-bit
 precision, signed, extended format.
 
 ## Construct and inspect values
@@ -13,7 +13,7 @@ precision, signed, extended format.
 ```@example basic_construct
 using AIFloats
 
-T = binary8p4se
+T = Binary8p4se
 x = T(1.5)
 y = T(0.25)
 
@@ -31,7 +31,7 @@ the session's [`DefaultProjection`](@ref), initially `RTE_SN`.
 ```@example basic_arithmetic
 using AIFloats
 
-T = binary8p4se
+T = Binary8p4se
 x, y = T(1.5), T(0.25)
 (x + y, x * y, x / y, sqrt(x), exp(y))
 ```
@@ -42,7 +42,7 @@ projection should be visible at the call site:
 ```@example basic_register
 using AIFloats
 
-T = binary8p4se
+T = Binary8p4se
 x, y = T(1.5), T(0.25)
 F = BinaryFormatOf(T)
 (Add(F, RTE_SN, x, y), Multiply(F, RTZ_SF, x, y))
@@ -56,7 +56,7 @@ projection explicit:
 ```@example basic_convert
 using AIFloats
 
-F = BinaryFormatOf(binary8p4se)
+F = BinaryFormatOf(Binary8p4se)
 value = 1.2
 nearest = Convert(F, RTE_SN, value)
 toward_zero = Convert(F, RTZ_SN, value)
@@ -72,8 +72,8 @@ Convert between AIFloats formats explicitly as well:
 ```@example basic_cross_format
 using AIFloats
 
-x = binary8p4se(1.5)
-Small = binary5p2se
+x = Binary8p4se(1.5)
+Small = Binary5p2se
 s = Convert(Small, RTE_SN, x)
 (s, decode(s), Float64(s))
 ```
@@ -83,7 +83,7 @@ s = Convert(Small, RTE_SN, x)
 ```@example basic_neighbors
 using AIFloats
 
-T = binary8p4se
+T = Binary8p4se
 x = T(1.5)
 (Class(x), NextLessThan(x), NextGreaterThan(x), eps(x))
 ```
@@ -93,7 +93,7 @@ Special accessors make important endpoints easy to name:
 ```@example basic_endpoints
 using AIFloats
 
-T = binary8p4se
+T = Binary8p4se
 (MinPositiveOf(T), MinNormalOf(T), MaxFiniteOf(T))
 ```
 

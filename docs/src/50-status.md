@@ -22,13 +22,13 @@ This page says plainly what exists and what the deliberate limits are.
 | **Datums** | [`BinaryValue`](@ref) — a format's member as its code point; `codepoint`, [`BinaryFormatOf`](@ref) |
 | **The codec** | [`decode`](@ref) (exact, on the format's carrier: `Float64` for B ≤ 512, `Float128` for B ≤ 8192, the exact dyadic carrier `AIFloats.Dyadic` above); the canonical field split and its encode inverse, verified over every code point of all 504 formats |
 | **Special values** | [`MaxFiniteOf`](@ref), [`MinFiniteOf`](@ref), [`MinPositiveOf`](@ref), [`MaxSubnormalOf`](@ref), [`MinNormalOf`](@ref); NaN/Inf/zero placement |
-| **Enumeration** | [`codetable`](@ref), [`printcodetable`](@ref); the 504 lowercase aliases (`binary8p4se`), K ≤ 8 exported, the rest via `AIFloats.Formats` |
+| **Enumeration** | [`codetable`](@ref), [`printcodetable`](@ref); the 504 capitalized aliases (`Binary8p4se`), K ≤ 8 exported, the rest via `AIFloats.Formats` |
 | **Total order** | NaN-first order keys, [`Class`](@ref)/[`FPClass`](@ref), [`NextGreaterThan`](@ref)/[`NextLessThan`](@ref) |
 | **Datum display** | four styles — `:value` (default), `:codepoint`, `:datum`, `:typed` — via [`set_show_style!`](@ref) |
 | Projection vocabulary | 9 rounding modes (stochastic ones carry their random-bit budget `N`; [`isstochastic`](@ref), [`nrandbits`](@ref)), 3 saturation modes, [`Projection`](@ref) and its 27 constants |
 | **Projection behavior** | [`project`](@ref) — the single write path: round to precision → saturate → encode, for every rounding mode (sticky protocol, stochastic at fixed `R`) and all three saturation modes, from `Float64`/`Float128`/`BigFloat`; the interval oracle `AIFloats.project_interval` |
 | **Operations** | the draft register — `Add`, `Subtract`, `Multiply`, `Divide`, `FMA`, `FAA`, `Sqrt`, `Exp`, `Log`, the trig/hyperbolic families and their π-scaled forms, `Hypot`, `Clamp`, the extremum family — correctly rounded via exact evaluation or interval enclosure; [`Convert`](@ref) from datums, floats, and integers |
-| **Value construction** | `binary8p4se(1.5)` (via `Convert` under the session default or an explicit `projection` keyword) |
+| **Value construction** | `Binary8p4se(1.5)` (via `Convert` under the session default or an explicit `projection` keyword) |
 | **Session defaults** | [`DefaultProjection`](@ref) and its coupled component setters |
 | **Random datums** | `rand` (default `RTZ_SN`, provably `< 1`) and `randn` (default `RTE_SF`, tails clamp; signed formats only) |
 | **Array kernels** | every register op elementwise over arrays — `Add(F, ρ, A, B)`, `Exp(A)` — via `vmap`/`vmap!`; pure projections gather from a memoized table when policy grants one, otherwise compute per element (same answer either way); stochastic projections run a sequential, seeded-reproducible loop |
@@ -115,7 +115,7 @@ on first use.
 
 ## Deliberate limits
 
-- **Cross-format arithmetic.** `binary8p4se(1) + binary8p3se(1)` does not promote
+- **Cross-format arithmetic.** `Binary8p4se(1) + Binary8p3se(1)` does not promote
   — mixing formats is an explicit [`Convert`](@ref).
 - **In-place packed arithmetic.** Packed vectors are storage; computation
   reads codes out of the bit stream, and the result is an ordinary vector.

@@ -7,10 +7,10 @@ using Random
 # high-precision references; the draft's five ConvertToBlockMaxAbsFinite
 # NOTEs; BlockVector layout; packed round-trip exhaustive over lengths.
 
-const T5 = binary5p2se
-const T8 = binary8p3se
-const U1 = binary8p1uf                      # E8M0: the MX scale format
-const T16 = AIFloats.binary16p1se           # rung-3 scale (B = 16384)
+const T5 = Binary5p2se
+const T8 = Binary8p3se
+const U1 = Binary8p1uf                      # E8M0: the MX scale format
+const T16 = AIFloats.Binary16p1se           # rung-3 scale (B = 16384)
 
 rnd(rng, T) = T(CodeType(T)(rand(rng, 0:(1 << Int(BitwidthOf(T))) - 1)))
 nanof(T) = T(AIFloats.nan_code(T)); pinf(T) = T(AIFloats.posinf_code(T))
@@ -159,7 +159,7 @@ end
     r = ConvertToBlockMaxAbsFinite(T5, T8, RTE_SN, RTE_SN, mixed)
     @test decode(r.s) == 2.0                                                 # NOTE 3: ∞ never sets the scale
     @test decode(r.x[1]) == Inf && decode(r.x[3]) == -Inf && decode(r.x[2]) == 1.0
-    T3 = binary3p1se
+    T3 = Binary3p1se
     rz = ConvertToBlockMaxAbsFinite(T3, T8, RTZ_SF, RTE_SN, ntuple(_ -> MinPositiveOf(T5), 3))
     iszero(rz.s) && @test all(iszero, rz.x)                                  # NOTE 4: zero scale ⇒ zeros
     r5 = ConvertToBlockMaxAbsFinite(U1, T8, RTP_SN, RTE_SF, (T5(3.0), T5(0.5), T5(-2.0)))
@@ -200,8 +200,8 @@ end
 
 @testset "packed round trip, exhaustive over lengths" begin
     rng = MersenneTwister(6)
-    for T in (binary3p1se, binary4p2se, binary5p2se, binary6p3se, binary7p3se, binary8p4se,
-              AIFloats.binary9p4se, AIFloats.binary13p5uf, AIFloats.binary16p8se)
+    for T in (Binary3p1se, Binary4p2se, Binary5p2se, Binary6p3se, Binary7p3se, Binary8p4se,
+              AIFloats.Binary9p4se, AIFloats.Binary13p5uf, AIFloats.Binary16p8se)
         K = Int(BitwidthOf(T))
         for n in 0:70
             A = [rnd(rng, T) for _ in 1:n]
@@ -287,8 +287,8 @@ end
                   A._lane_sum_prec(BinaryFormatOf(Sx), BinaryFormatOf(Ex), B)))
 
     rng = MersenneTwister(20260828)
-    scales = (binary8p1uf, binary8p3se, binary5p2se)
-    elems  = (binary8p4se, binary5p2se, binary6p1uf)
+    scales = (Binary8p1uf, Binary8p3se, Binary5p2se)
+    elems  = (Binary8p4se, Binary5p2se, Binary6p1uf)
     for Sf in scales, Ef in elems, B in (1, 4, 16, 32)
         KS = Int(BitwidthOf(Sf)); KE = Int(BitwidthOf(Ef))
         US = CodeType(BinaryFormatOf(Sf)); UE = CodeType(BinaryFormatOf(Ef))
@@ -307,7 +307,7 @@ end
     end
 
     # special-value lanes must stay entirely on the generic fold
-    let E = binary8p4se, S = binary8p3se, FE = BinaryFormatOf(E)
+    let E = Binary8p4se, S = Binary8p3se, FE = BinaryFormatOf(E)
         nan  = AIFloats.rawvalue(FE, AIFloats.nan_code(FE))
         pinf = AIFloats.rawvalue(FE, AIFloats.posinf_code(FE))
         ninf = AIFloats.rawvalue(FE, AIFloats.neginf_code(FE))
@@ -342,7 +342,7 @@ end
     end
 
     # and the payoff: no allocation on the common path
-    let E = binary8p4se, S = binary8p3se
+    let E = Binary8p4se, S = Binary8p3se
         b = Block(one(S), ntuple(i -> E(UInt8((7i + 3) & 0x7f)), 16))
         BlockReduceAdd(E, RTE_SN, b)
         @test (@allocated BlockReduceAdd(E, RTE_SN, b)) == 0
@@ -372,10 +372,10 @@ end
         A.blockproject(fr, ρ, project(fs, ρs, S), X)
     end
     rng = MersenneTwister(77)
-    elems = (binary8p4se, binary5p2se, binary6p1uf,
+    elems = (Binary8p4se, Binary5p2se, Binary6p1uf,
              BinaryValue(Binary(16, 5, SIGNED, EXTENDED)),   # rung 2: Float128 lanes
              BinaryValue(Binary(16, 1, SIGNED, EXTENDED)))   # rung 3: exact carrier
-    for Ef in elems, Sf in (binary8p1uf, binary8p3se), B in (1, 4, 16)
+    for Ef in elems, Sf in (Binary8p1uf, Binary8p3se), B in (1, 4, 16)
         KE = Int(BitwidthOf(Ef)); UE = CodeType(BinaryFormatOf(Ef))
         for _ in 1:6, ρ in (RTE_SN, RTZ_SF, RTP_SN)
             xs = ntuple(i -> Ef(UE(rand(rng, 0:2^min(KE, 16) - 1))), B)
@@ -386,7 +386,7 @@ end
         end
     end
     # every special-value shape the fold algebra has to preserve
-    let E = binary8p4se, FE = BinaryFormatOf(E), Sf = binary8p3se
+    let E = Binary8p4se, FE = BinaryFormatOf(E), Sf = Binary8p3se
         nan  = AIFloats.rawvalue(FE, AIFloats.nan_code(FE))
         pinf = AIFloats.rawvalue(FE, AIFloats.posinf_code(FE))
         ninf = AIFloats.rawvalue(FE, AIFloats.neginf_code(FE))
@@ -404,7 +404,7 @@ end
         end
     end
     # the MX shape (P = 1 power-of-two scale) is exact end to end and allocates nothing
-    let E = binary8p4se, S1 = binary8p1uf
+    let E = Binary8p4se, S1 = Binary8p1uf
         xs = ntuple(i -> E(UInt8((7i + 3) & 0x7f)), 16)
         ConvertToBlockMaxAbsFinite(BinaryFormatOf(S1), BinaryFormatOf(E), RTE_SN, RTE_SN, xs)
         @test (@allocated ConvertToBlockMaxAbsFinite(BinaryFormatOf(S1), BinaryFormatOf(E),
@@ -434,8 +434,8 @@ end
         A._finish(fr, ρ, 0, res)
     end
     rng = MersenneTwister(31)
-    for Sf in (binary8p1uf, binary8p3se, binary5p2se),
-        Ef in (binary8p4se, binary5p2se, BinaryValue(Binary(16, 5, SIGNED, EXTENDED))),
+    for Sf in (Binary8p1uf, Binary8p3se, Binary5p2se),
+        Ef in (Binary8p4se, Binary5p2se, BinaryValue(Binary(16, 5, SIGNED, EXTENDED))),
         B in (1, 2, 4, 16, 32)
         KS = Int(BitwidthOf(Sf)); KE = Int(BitwidthOf(Ef))
         US = CodeType(BinaryFormatOf(Sf)); UE = CodeType(BinaryFormatOf(Ef))
@@ -448,7 +448,7 @@ end
     end
     # every shape of the fold algebra: NaN, 0·∞, sign parity over infinities,
     # a zero lane, and the extremes
-    let E = binary8p4se, FE = BinaryFormatOf(E), Sf = binary8p3se
+    let E = Binary8p4se, FE = BinaryFormatOf(E), Sf = Binary8p3se
         nan  = AIFloats.rawvalue(FE, AIFloats.nan_code(FE))
         pinf = AIFloats.rawvalue(FE, AIFloats.posinf_code(FE))
         ninf = AIFloats.rawvalue(FE, AIFloats.neginf_code(FE))
@@ -468,7 +468,7 @@ end
     # the accumulator must decline rather than round when the band is exceeded
     @test AIFloats._dyadic_prod(ntuple(_ -> 1.0 + 2.0^-40, 32)) === nothing
     # and the common shape is allocation-free
-    let E = binary8p4se, S = binary8p3se
+    let E = Binary8p4se, S = Binary8p3se
         b = Block(one(S), ntuple(i -> E(UInt8((7i + 3) & 0x7f)), 16))
         BlockReduceMultiply(BinaryFormatOf(E), RTE_SN, b)
         @test (@allocated BlockReduceMultiply(BinaryFormatOf(E), RTE_SN, b)) == 0

@@ -41,8 +41,8 @@ end
 end
 
 @testset "JET (concrete entry points)" begin
-    T = binary8p4se
-    S = binary8p3se
+    T = Binary8p4se
+    S = Binary8p3se
     a, b = T(1.5), T(0.25)
     A = T.(randn(MersenneTwister(1), 64)); B = T.(randn(MersenneTwister(2), 64))
     D = similar(A)
@@ -67,7 +67,7 @@ end
     JET.@test_call AIFloats.vmap(:Exp, T, RTE_SN, pv)
     JET.@test_call AIFloats.vmap(:Exp, T, Projection(AIFloats.ρRSA(3), SN), pv; rng = MersenneTwister(1))
     # rung 2 and 3 entry points, the fast layers, and the block surface
-    W2 = AIFloats.binary16p5se; W3 = AIFloats.binary16p1se
+    W2 = AIFloats.Binary16p5se; W3 = AIFloats.Binary16p1se
     JET.@test_call Add(W2, RTE_SN, W2(1.5), W2(0.25))
     JET.@test_call Add(W3, RTE_SN, W3(2.0), W3(0.25))
     JET.@test_call Exp(W3, RTE_SN, W3(2.0))
