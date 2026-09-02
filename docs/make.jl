@@ -20,6 +20,7 @@ const PAGES = [
     "30-formats.md",
     "40-projections.md",
     "Operations" => "45-operations.md",
+    "Algorithms" => "47-algorithms.md",
     "Examples" => [
         "Basic examples" => "70-examples/10-basic.md",
         "Intermediate examples" => "70-examples/20-intermediate.md",

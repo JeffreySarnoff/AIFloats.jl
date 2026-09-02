@@ -77,6 +77,7 @@ Once the package is registered, `Pkg.add("AIFloats")` will be the short form.
 | [Binary formats](@ref formats) | The full `Binary` API — construction, accessors, validity, display |
 | [Projections](@ref projections) | Rounding and saturation modes, and the projections that pair them |
 | [Operations](@ref operations) | The register: signatures, result formats, refusals, correctness route |
+| [Algorithms](@ref algorithms) | How the results are obtained: stochastic rounding, interval enclosure, the sticky protocol |
 | [Basic examples](@ref examples-basic) | Construct datums, calculate, inspect, and convert |
 | [Intermediate examples](@ref examples-intermediate) | Explicit projections, stochastic rounding, and arrays |
 | [Advanced examples](@ref examples-advanced) | Packed storage, blocks, reductions, and block conversion |

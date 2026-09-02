@@ -85,9 +85,13 @@ suite — the group affects speed, never the result.
 | Group | Operations | Route |
 |:--|:--|:--|
 | `:A` | `Add`, `Subtract`, `Multiply`, `FMA`, `FAA`, `Abs`, `Negate`, `Clamp` | exact evaluation — an error-free transform or an exact escalation |
-| `:B` | `Exp`, `Log`, `Sqrt`, `Divide`, the trigonometric, hyperbolic, and π-scaled families, `Hypot`, `Softplus`, … | the correctly rounded interval-enclosure ladder |
+| `:B` | `Exp`, `Log`, `Sqrt`, `Divide`, the trigonometric, hyperbolic, and π-scaled families, `Hypot`, `Softplus`, … | the correctly rounded [interval-enclosure ladder](@ref alg-enclosure) |
 | `:C` | the extremum family (`Minimum`, `MaximumMagnitudeNumber`, `MinimumFinite`, …) | an exact selection among the operands |
 | `:conv` | [`Convert`](@ref) | a projection with no arithmetic of its own |
+
+[Algorithms](@ref alg-enclosure) explains how the enclosure route *proves* a result is
+correctly rounded rather than merely computing it carefully, and why no fixed working
+precision could do the same.
 
 !!! warning "Float128 is a carrier, not an oracle"
     `Quadmath.Float128` is used as a *value carrier*. libquadmath's elementary functions

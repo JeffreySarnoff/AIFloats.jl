@@ -77,42 +77,25 @@ significand bit to be even — falls back to the parity of the biased exponent.
 ### How the three stochastic variants differ
 
 All three consume exactly `N` random bits and differ only in **how the rounding
-probability is quantized** onto the grid of `2^N` steps. Counting the `R` values that
-satisfy each predicate gives the probability of rounding away:
+probability is quantized** onto the grid of `2^N` steps:
 
-| Mode | `P(round away)` | Quantization of `ν` |
-|:--|:--|:--|
-| [`RSA`](@ref)`{N}` | `⌊ν·2^N⌋ / 2^N` | truncated |
-| [`RSB`](@ref)`{N}` | `⌊ν·2^N + ½⌋ / 2^N` | nearest, ties up |
-| [`RSC`](@ref)`{N}` | `RNITE(ν·2^N) / 2^N` | nearest, ties to even |
+| Mode | `P(round away)` | Quantization of `ν` | Bias |
+|:--|:--|:--|:--|
+| [`RSA`](@ref)`{N}` | `⌊ν·2^N⌋ / 2^N` | truncated | one-signed, up to `2^-N` |
+| [`RSB`](@ref)`{N}` | `⌊ν·2^N + ½⌋ / 2^N` | nearest, ties up | centred, `2^-(N+1)` |
+| [`RSC`](@ref)`{N}` | `RNITE(ν·2^N) / 2^N` | nearest, ties to even | centred, `2^-(N+1)` |
 
-So `RSA` rounds away slightly less often than `ν` warrants — its bias is never positive
-and reaches `2^-N`. `RSB` and `RSC` centre the quantization, halving worst-case bias to
-`2^-(N+1)`; `RSB` buys that with a half-step offset evaluated at doubled resolution
-(`2R + 1`), which needs no extra random bits, while `RSC` computes an actual
-round-to-nearest-even and lets tie bias cancel over many roundings rather than always
-pushing up.
-
-`RSB` and `RSC` can only disagree where `ν·2^N` lands exactly halfway. Away from those
-points the two are identical:
-
-| `N` | `ν` | `RSA` | `RSB` | `RSC` |
-|--:|--:|--:|--:|--:|
-| 1 | 0.25 | 0 | ½ | 0 |
-| 1 | 0.75 | ½ | 1 | 1 |
-| 2 | 0.125 | 0 | ¼ | 0 |
-| 3 | 0.8 | ¾ | ¾ | ¾ |
-
-Cost runs opposite to accuracy: `RSA` is a shift, a floor and a compare; `RSB` adds one
-bit of intermediate width; `RSC` needs the round-to-nearest-even. That is the "balance
-between accuracy and complexity" of §4.7.4 NOTE 2.
+`RSB` and `RSC` can disagree only where `ν·2^N` lands exactly halfway. Cost runs opposite
+to accuracy — that is the "balance between accuracy and complexity" of §4.7.4 NOTE 2.
 
 !!! warning "None is exactly unbiased at finite `N`"
-    The last row above is the reason. `ν = 0.8` is not on the 3-bit grid, so every variant
-    rounds away with probability `¾`, not `0.8`. Stochastic rounding is unbiased only in
-    the limit of an exact probability; at a finite budget the grid is the bias floor.
-    Choose the variant for the accuracy/complexity balance, and `N` for how fine that grid
-    must be. AIFloats claims no bias figure beyond the bounds above.
+    Stochastic rounding is unbiased when `P(away) = ν`, which at a finite budget holds
+    only for the `ν` that land on the grid. `ν = 0.8` at `N = 3` is rounded away with
+    probability `¾` by all three. AIFloats claims no bias figure beyond the bounds above.
+
+[Algorithms](@ref alg-stochastic) derives these probabilities from the §4.7.4 predicates,
+works through where the variants diverge, and gives guidance on choosing between them and
+on choosing `N`.
 
 !!! note "Motivation, not contract"
     Round-to-odd's practical use is avoiding double rounding: round a wide intermediate to
