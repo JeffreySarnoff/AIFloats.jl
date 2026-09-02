@@ -15,9 +15,8 @@ includes the infinities. Those four make a [`Binary`](@ref) format specifier.
 !!! note "The normative source, and what it is not"
     Every semantic claim in this documentation conforms to: the
     **IEEE Working Group P3109 Interim Report on Arithmetic Formats for Machine
-    Learning**, version 4.0.3 (1 September 2026), at
+    Learning**, version 4.0.3 (1 September 2026), available here:
     [P3109/Public](https://github.com/P3109/Public/blob/main/IEEE%20P3109%20Interim%20Report.pdf).
-    [`draft_identity`](@ref) records its revision, date, URL, and PDF digest.
 
     That report is an **unapproved draft**; its cover states it must not be used for
     conformance or compliance purposes. [`conformance`](@ref) reports what this package
