@@ -95,7 +95,7 @@ V = Binary(8, 3, SIGNED, FINITE)       # no infinities at all
 | `SP` | clamps to the extremal finite | kept when representable, else clamped |
 | `SN` | extremal finite if the rounding direction points back into range; else the infinity if `EXTENDED`; else NaN | the infinity if `EXTENDED` and signed as needed, else NaN |
 
-## Change the default projection for a block
+## Change the projection for a block
 
 Convenience operations and constructors read the *task's* default projection.
 Bind it for a dynamic extent with `with_projection`; it is restored on return
