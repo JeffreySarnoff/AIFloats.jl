@@ -78,16 +78,20 @@ result format is ever chosen for you.
 
 ## How the result is computed
 
-The registry records which route each operation takes to a correctly rounded answer. Both
-routes project exactly once, and both are pinned equal to a rigorous reference by the test
+The registry records which route each operation takes to a correctly rounded answer. Every
+route projects exactly once, and each is pinned equal to a rigorous reference by the test
 suite — the group affects speed, never the result.
 
-| Group | Operations | Route |
-|:--|:--|:--|
-| `:A` | `Add`, `Subtract`, `Multiply`, `FMA`, `FAA`, `Abs`, `Negate`, `Clamp` | exact evaluation — an error-free transform or an exact escalation |
-| `:B` | `Exp`, `Log`, `Sqrt`, `Divide`, the trigonometric, hyperbolic, and π-scaled families, `Hypot`, `Softplus`, … | the correctly rounded [interval-enclosure ladder](@ref alg-enclosure) |
-| `:C` | the extremum family (`Minimum`, `MaximumMagnitudeNumber`, `MinimumFinite`, …) | an exact selection among the operands |
-| `:conv` | [`Convert`](@ref) | a projection with no arithmetic of its own |
+| Group | Kind | Operations | Route |
+|:--|:--|:--|:--|
+| `:A` | **Exact** | `Add`, `Subtract`, `Multiply`, `FMA`, `FAA`, `Abs`, `Negate`, `Clamp` | exact evaluation — an error-free transform or an exact escalation |
+| `:B` | **Enclosure** | `Exp`, `Log`, `Sqrt`, `Divide`, the trigonometric, hyperbolic, and π-scaled families, `Hypot`, `Softplus`, … | the correctly rounded [interval-enclosure ladder](@ref alg-enclosure) |
+| `:C` | **Selection** | the extremum family (`Minimum`, `MaximumMagnitudeNumber`, `MinimumFinite`, …) | an exact selection among the operands |
+| `:conv` | **Projection** | [`Convert`](@ref) | a projection with no arithmetic of its own |
+
+`:A` and `:C` are both exact and differ in how: `:A` *computes* the result, `:C` *chooses* it
+from the operands. The letters are what `AIFloats.operationinfo` returns; the names are this
+documentation's, for reading rather than for dispatch.
 
 [Algorithms](@ref alg-enclosure) explains how the enclosure route *proves* a result is
 correctly rounded rather than merely computing it carefully, and why no fixed working
