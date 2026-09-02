@@ -13,7 +13,7 @@ many of those carry the significand, whether it represents negative values, and 
 includes the infinities. Those four make a [`Binary`](@ref) format specifier.
 
 !!! note "The normative source, and what it is not"
-    Every semantic claim in this documentation is measured against one document: the
+    Every semantic claim in this documentation conforms to: the
     **IEEE Working Group P3109 Interim Report on Arithmetic Formats for Machine
     Learning**, version 4.0.3 (1 September 2026), at
     [P3109/Public](https://github.com/P3109/Public/blob/main/IEEE%20P3109%20Interim%20Report.pdf).
