@@ -53,7 +53,7 @@ where the projected value is `72.0`.
 | P1-12 | Conformance qualified as a query on every page that mentions it. |
 
 Reviewed exemptions: `DyadicNumbers` and `Dyadic`, documented on
-`96-internals.md` as explicitly unstable.
+`97-internals.md` as explicitly unstable.
 
 ## Gate 3 — examples
 

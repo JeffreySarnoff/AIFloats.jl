@@ -296,7 +296,7 @@ it succeeds in a clean depot.
 similar) and omits public bindings that carry no docstring. Replace it with
 curated, categorized `@docs` blocks generated or checked against
 `Base.isexported` and `Base.ispublic`. Keep implementation-only carrier material
-on `96-internals.md`, marked unstable.
+on `97-internals.md`, marked unstable.
 *Done when:* V-3's public-binding assertion passes and no private name appears
 in `95-reference.md`.
 
@@ -490,7 +490,7 @@ guarantees and should be described separately.
 | Advanced examples | Packed wire forms and copying; different-width and different-precision block formats; exact fast-path guards versus exact fallback, without promising a specific carrier | P0-10, P1-11 |
 | Technical examples | Public `formatinfo`, `operationinfo`, `table_policy`, cache snapshots, diagnostics with restoration, conformance; no private cache builder | P0-7, P0-8, P1-3, P1-12 |
 | `95-reference.md` | Curated, complete public API, categorized and mechanically checked; no incidental private docstrings | P1-1, P1-2 |
-| `96-internals.md` | Explicitly unstable implementation notes with provenance; not mixed into the public Reference | P1-1 |
+| `97-internals.md` | Explicitly unstable implementation notes with provenance; not mixed into the public Reference | P1-1 |
 | source docstrings | Same terminology and contracts as the narrative pages; no stale instance, default, snapshot, or performance statements | P0-2, P0-5, P1-2 |
 | `docs/make.jl` | Explicit page tree; planning documents unpublishable by construction | P2-7 |
 

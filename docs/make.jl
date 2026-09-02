@@ -20,7 +20,6 @@ const PAGES = [
     "30-formats.md",
     "40-projections.md",
     "Operations" => "45-operations.md",
-    "Algorithms" => "47-algorithms.md",
     "Examples" => [
         "Basic examples" => "70-examples/10-basic.md",
         "Intermediate examples" => "70-examples/20-intermediate.md",
@@ -36,7 +35,11 @@ const PAGES = [
         "95-reference/30-blocks.md",
         "95-reference/40-governance.md",
     ],
-    "96-internals.md",
+    # The deep material, last: how the results are obtained, then the carriers
+    # that obtain them. Both are mechanism rather than interface, and a reader
+    # reaches them after the pages that state the contracts.
+    "Algorithms" => "96-algorithms.md",
+    "97-internals.md",
     "90-contributing.md",
     "Developer docs" => "91-developer.md",
 ]
