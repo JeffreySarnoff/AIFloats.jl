@@ -1,0 +1,19 @@
+/* Companion to assets/sidebar.js — the accordion on the active page's own
+   section list. The chevron points down while the sections are shown and right
+   while they are hidden, matching the collapsible groups above and below it. */
+
+.docs-menu ul.internal.is-collapsed {
+  display: none;
+}
+
+.docs-menu a.tocitem.has-internal-toggle {
+  cursor: pointer;
+}
+
+.docs-menu a.tocitem.has-internal-toggle .docs-chevron::before {
+  content: "\f078";
+}
+
+.docs-menu a.tocitem.has-internal-toggle.is-closed .docs-chevron::before {
+  content: "\f054";
+}
