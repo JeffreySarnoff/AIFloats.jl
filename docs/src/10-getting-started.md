@@ -73,7 +73,7 @@ letters for them:
 A datum is not an instance of its format — `B(1.5) isa B` is `false`, because a format
 describes a value set rather than belonging to one.
 
-## Values and code points are different questions
+## Values and code points are distinct views
 
 Every constructor argument is a **number**, and that includes every `Unsigned`. To name a
 raw code point, use [`fromcode`](@ref) — a different question with a different spelling:
