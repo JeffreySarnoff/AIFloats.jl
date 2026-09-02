@@ -314,6 +314,13 @@ makedocs(;
         # a click exposes the directory and makes the reader select index.html.
         # README links must match this choice — they name `.html` files.
         prettyurls = false,
+        # Collapse the sidebar's top-level entries. At Documenter's default of 2
+        # only a page's own headings collapse, so the multi-page groups
+        # (Examples, Reference) list every child page at all times while a
+        # single-page entry like Algorithms shows its sections only when active
+        # — two behaviours in one menu. At 1 the groups behave like the pages:
+        # closed until the reader opens them.
+        collapselevel = 1,
         # 95-reference.md is one page holding every public docstring in the
         # package, several of which carry the measurement tables that justify a
         # policy constant. It exceeds Documenter's 200 KiB default on its own.
