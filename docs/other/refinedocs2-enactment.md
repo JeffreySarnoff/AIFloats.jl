@@ -71,10 +71,29 @@ cited reference; developer page rewritten around this repository (Julia 1.12,
 per-file tests, benchmark suites, `AIFLOATS_DOCS_BENCHMARKS=0`, generated pages,
 the real CI jobs).
 
-**Not done:** PERF-1. The benchmark suite has **not** been re-run, so
-`60-benchmarks.md` still describes the tree that produced it. Prose no longer
-quotes numbers from it, and the page header now says to check its commit before
-citing a row — but regenerating it from a clean commit remains outstanding.
+PERF-1 done: the suite was re-run from a clean tree and `60-benchmarks.md`
+regenerated. The page is tracked in git — it is a measurement, not a derivation,
+and it names the commit and machine it describes. The reference listing pages
+stay untracked, because those *are* derivations.
+
+What the fresh run settled:
+
+- **`BlockReduceMultiply` is not on a slow path.** At `B = 16` it is roughly
+  3.7x *faster* than `BlockReduceAdd`, which is only possible if its exact
+  `Dyadic` guard passes: the `BigFloat` fallback is far slower than either.
+  The old "always takes the `BigFloat` path" claim was not merely stale, it was
+  backwards. A product reduction accumulates one significand where a sum aligns
+  `B` of them, which is why it wins.
+- **"Wider formats ≈ 3 ns" was hiding a 4x spread.** `K = 8` decodes through
+  the generated table, `K = 12` computes, and `K = 16` on rung 2 costs several
+  times `K = 12`. The three are now three rows, not one figure.
+- **Packed access costs about 1.4x an unpacked kernel**, for both a cheap and
+  an expensive operation — not the "about 3x" the status page claimed.
+- **Load is ~68 ms, and the first block reduction is ~2 ms, not sub-millisecond.**
+  The removed claims were wrong in both directions.
+
+Prose remains free of hand-entered absolutes (PERF-2); the status page now names
+the rows to compare instead.
 
 ## Corrections to the plan itself
 
@@ -97,6 +116,7 @@ citing a row — but regenerating it from a clean commit remains outstanding.
 | V-3 `test-doc-contracts.jl` | 2043 assertions, all pass |
 | V-4 example isolation | every `@example` block imports what it uses and is executed by the build |
 | V-5 link check | `.lychee.toml` corrected; `lychee` is not installed on this machine, so CI runs it |
+| PERF-1 benchmark regeneration | suite re-run from a clean tree at `04903ca`; page regenerated and tracked |
 | V-6 focused tests | `test-quality`, `test-binary-format`, `test-traits`, `test-governance`, `test-binaryvalue`, `test-tables`, `test-kernels`, `test-compat` — all pass |
 
 `Pkg.test()` was deliberately not run, per the plan.

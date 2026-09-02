@@ -97,10 +97,12 @@ The gather is a flat indexed read and is dramatically cheaper than recomputing;
 see the array rows on the [benchmark page](@ref benchmarks) for the ratio on the
 machine that built them.
 
-**Threading.** Compute kernels thread above `AIFloats.THREAD_MIN_ELEMS[]`
-(1024), giving roughly 2.7–4x on four threads. The measured crossover is near
-256 elements for both cheap and expensive operations. The table gather is never
-threaded: it runs at memory bandwidth already. Threading costs a fixed ~1.6 KB
+**Threading.** Compute kernels thread above `AIFloats.THREAD_MIN_ELEMS[]`,
+which was fitted at four threads; ask the constant rather than assuming its
+value. The speedup there is a large fraction of the thread count, and holds for
+both cheap and expensive operations — compare the `compute` and `compute 1thr`
+rows on the [benchmark page](@ref benchmarks). The table gather is never
+threaded: it already runs at memory bandwidth. Threading costs a fixed ~1.6 KB
 of scheduler state per call, independent of length; the sequential kernels
 allocate nothing.
 
@@ -123,39 +125,45 @@ size and throughput together, against the packed rows on the
 [benchmark page](@ref benchmarks), rather than assuming a single ratio.
 
 **Blocks.** When a block's scale and elements both decode to `Float64` and
-every lane product is exact, [`BlockReduceAdd`](@ref) and
-[`BlockDotProduct`](@ref) accumulate exactly in the `Dyadic` carrier and
-allocate nothing (~270 ns and ~300 ns at `B = 16`). Wider carriers, non-finite
-lanes, or a lane spread beyond `Dyadic`'s exact alignment band fall back to
-`BigFloat` at a derived precision — always correct, roughly 10x slower.
-`BlockReduceMultiply` takes the same guarded route — it has a checked exact
-`Dyadic` fast path — but its guard fails sooner: accumulating products leaves
-the exact fixed-point band quickly, so in practice it reaches the `BigFloat`
-fallback more often than the sums do. Both paths form the same exact reduction
-and project once; the guard is a performance decision, never a correctness one.
+every lane product is exact, [`BlockReduceAdd`](@ref),
+[`BlockReduceMultiply`](@ref) and [`BlockDotProduct`](@ref) accumulate exactly
+in the `Dyadic` carrier and allocate nothing. Wider carriers, non-finite lanes,
+or a lane spread beyond `Dyadic`'s exact alignment band fall back to `BigFloat`
+at a derived precision — always correct, substantially slower.
+
+All three reductions take that same guarded route; none of them is committed to
+`BigFloat`. Cost scales with the block size and rises on a wider rung, and a
+product reduction is *cheaper* than a sum of the same length, because it
+accumulates one significand instead of aligning `B` of them. Both paths form
+the same exact reduction and project once — the guard is a performance
+decision, never a correctness one. Compare the block rows on the
+[benchmark page](@ref benchmarks) against each other.
 
 **Default projection.** `DefaultProjection()` reads a
-`ScopedValue{Projection}`: ~4 ns unbound, ~46 ns inside a `with_projection`
-block. The convenience methods and value constructors speculate on the
-untouched default (`RTE_SN`), so the overwhelmingly common path is a static,
-allocation-free call: the guard itself costs about **0.5 ns** over passing the
-projection explicitly (8.8 ns against 8.3 ns for `Add(x, y)`, measured in a
-loop so nothing folds).
+`ScopedValue{Projection}`. Reading it *unbound* is nearly free; reading it
+inside a `with_projection` block costs an order of magnitude more, because
+`Base.ScopedValues` walks its scope. That read, not the arithmetic, is the
+whole difference between the scoped and unscoped paths.
 
-Under a **bound** projection the seam recognizes all 27 exported projection
-constants by identity, so the call stays static and allocates nothing. What
-remains is the scoped read: subtracting it leaves 8–11 ns in every case,
-against an explicit-projection call's 7.6 — the arithmetic is already at
-explicit-projection speed, and the gap is `Base.ScopedValues` walking its
-scope.
+The convenience methods and value constructors speculate on the untouched
+default (`RTE_SN`) by identity, so the overwhelmingly common path is a static,
+allocation-free call, and the guard costs only a fraction of the operation it
+guards. Under a **bound** projection the same seam recognizes all 27 exported
+projection constants by identity, so the call stays static and allocates
+nothing: subtract the scoped read and the arithmetic is already at
+explicit-projection speed.
 
 A `Projection` with no constant to match — `ρRSA{N}` at a non-default
 stochastic budget — falls through to a projection-typed function barrier and
 pays one dynamic dispatch, which also costs `arity + 1` small boxes: Julia's
 generic calling convention boxes the isbits return value and every isbits
 argument it cannot constant-fold. The barrier recovers everything *after* that
-boundary (without it the same call is 272 ns); the boxes are inherent to the
-boundary itself.
+boundary — without it the same call is an order of magnitude slower — but the
+boxes are inherent to the boundary itself.
+
+The rows to compare on the [benchmark page](@ref benchmarks) are `Add explicit
+ρ`, `Add task default ρ`, `Add scoped non-RTE ρ`, and the two
+`DefaultProjection()` reads.
 
 Three details of that barrier were each worth more than they look, and are
 commented at the seam in `ops/scalar.jl`: it must not be `@inline`d; it must
@@ -175,14 +183,13 @@ even the unscoped default, because it skips the read entirely.
     harness's per-iteration overhead, and a tight loop can hoist work that an
     isolated call cannot. A literal argument is worse still: it lets the
     compiler fold the whole projection, which is why `convert(T8, 1.3)` once
-    read 14.1 ns against `T8(1.3)`'s 3.5 — one of the two was inlinable and
+    read far *slower* than `T8(1.3)` — one of the two was inlinable and
     therefore foldable and the other was not. Every measured value in the suite
-    is interpolated now, and the two spellings agree at 7.6 ns. Compare rows
+    is interpolated now, and the two spellings agree. Compare rows
     against each other, not against an absolute budget.
 
-Array operations resolve the default **once per call**, never per element:
-a four-element `Add(A, B)` is 140 ns unbound and 178 ns bound, and the
-difference does not grow with the array.
+Array operations resolve the default **once per call**, never per element, so
+the scoped-read penalty is a constant that does not grow with the array.
 
 **First call.** Package load and first-call compilation are measured in fresh
 processes by the `latency` suite and reported on the
