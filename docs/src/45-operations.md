@@ -72,9 +72,10 @@ julia> Add(F, RTE_SN, F(1.5), G(0.25))
 1.75
 ```
 
-There is no promotion. `Binary8p4se(1) + Binary8p3se(1)` is deliberately a `MethodError`:
-mixing formats is an explicit [`Convert`](@ref) or an explicit `Op(fr, ρ, …)` call, so no
-result format is ever chosen for you.
+There is no automatic promotion of different formats: `Binary8p4se(1) + Binary8p3se(1)`
+raises a `MethodError`. Working with mixed formats requires an explicit
+[`Convert`](@ref) or an explicit `Op(fr, ρ, …)` call. The computational system does not
+presume to know how you want to resolve operations with values of mixed formats.
 
 ## How the result is computed
 
