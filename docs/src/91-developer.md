@@ -134,7 +134,7 @@ link to the row instead.
 | Workflow | What it runs |
 |:--|:--|
 | `Test.yml` / `TestOnPRs.yml` | the package test suite via `ReusableTest.yml`, on Julia 1.12 and `1` |
-| `Docs.yml` | the documentation build, including doctests |
+| `Docs.yml` | the documentation build, including doctests and a full benchmark run (`AIFLOATS_DOCS_BENCHMARKS=1`) |
 | `Lint.yml` | pre-commit hooks and the `lychee` link check |
 | `CompatHelper.yml`, `TagBot.yml` | dependency bounds and release tagging |
 

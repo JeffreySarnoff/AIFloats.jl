@@ -51,6 +51,25 @@ jobs:
       - name: Generate and deploy documentation
         run: julia --project=docs docs/make.jl
         env:
+          # Run the benchmark suite as part of the build. docs/make.jl already
+          # treats "1" as its default; setting it here makes the choice visible
+          # and makes turning it off a one-character edit rather than a hunt
+          # through the builder.
+          #
+          # What this produces is a CI-runner measurement: shared hardware, so
+          # the absolute times mean little and only the ratios between rows on
+          # one run are informative — which is what the generated page says of
+          # itself. The suite runs in benchmark/Project.toml as a subprocess, so
+          # Chairmarks never becomes a dependency of the docs or the package,
+          # and it runs at four threads unless JULIA_NUM_THREADS says otherwise
+          # (the threading rows were fitted at four and are only comparable
+          # between builds at a fixed count).
+          #
+          # This regenerates docs/src/60-benchmarks.md on the runner and
+          # publishes it. It does NOT commit it back, so the measurements
+          # recorded in the repository — taken on known hardware from a clean
+          # tree — are untouched.
+          AIFLOATS_DOCS_BENCHMARKS: "1"
           JULIA_PKG_SERVER: ""
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
