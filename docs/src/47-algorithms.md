@@ -27,7 +27,7 @@ evaluated on carriers that cannot hold them.
 
 ## [Stochastic rounding](@id alg-stochastic)
 
-### Common aspects of the three variants
+### Common aspects
 
 A stochastic mode rounds the same value up sometimes and down other times, so
 that the *expected* result tracks the exact value instead of a fixed neighbour.
