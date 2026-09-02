@@ -11,10 +11,11 @@ ones without notice, and code should depend on the documented behaviour rather
 than on the mechanism producing it.
 
 What is *not* negotiable is the specification each algorithm implements. The
-normative source is the designated IEEE P3109 Interim Report [P3109]; where this
-page cites a section number, that is what it means. References to the wider
-literature are background and motivation — they explain why an approach is the
-usual one, and they never establish a guarantee this package makes.
+normative source is the designated IEEE P3109 Interim Report, cited throughout as
+**[P3109]** and listed with the other references at the foot of this page. Section
+numbers always belong to that document. References to the wider literature are
+background and motivation — they explain why an approach is the usual one, and
+they never establish a guarantee this package makes.
 
 Three algorithms earn a place here because a reader's trust or decisions depend
 on them: how a stochastic mode turns `N` random bits into a rounding decision,
@@ -26,12 +27,12 @@ evaluated on carriers that cannot hold them.
 
 ## [Stochastic rounding](@id alg-stochastic)
 
-### The shape all three share
+### Common aspects of the three variants
 
 A stochastic mode rounds the same value up sometimes and down other times, so
 that the *expected* result tracks the exact value instead of a fixed neighbour.
-It needs a source of randomness, and §4.7.4 fixes its form: an unsigned integer
-`R` of `N` bits, `0 ≤ R < 2^N`.
+It needs a source of randomness, and [P3109] §4.7.4 fixes its form: an unsigned
+integer `R` of `N` bits, `0 ≤ R < 2^N`.
 
 Everything else follows from one quantity. After truncating the exact
 significand onto the target grid, some fraction of an ulp is left over; call it
@@ -56,8 +57,8 @@ that is the whole of the difference between them.
 
 ### The three predicates
 
-§4.7.4 defines them directly. Counting the satisfying `R` gives the probability
-in the third column:
+[P3109] §4.7.4 defines them directly. Counting the satisfying `R` gives the
+probability in the third column:
 
 | Mode | `RoundAway` iff | `P(away)` | `ν` is snapped by |
 |:--|:--|:--|:--|
@@ -65,7 +66,8 @@ in the third column:
 | [`RSB`](@ref)`{N}` | `⌊ν·2^(N+1)⌋ + (2R + 1) ≥ 2^(N+1)` | `⌊ν·2^N + ½⌋ / 2^N` | nearest, ties up |
 | [`RSC`](@ref)`{N}` | `RNITE(ν·2^N) + R ≥ 2^N` | `RNITE(ν·2^N) / 2^N` | nearest, ties to even |
 
-`RNITE` is the round-to-nearest-ties-even the report defines alongside these.
+`RNITE` is the round-to-nearest-ties-even that [P3109] §4.7.4 defines alongside
+these predicates.
 
 **`RSA`** is the direct construction: compare the `N`-bit truncation of `ν`
 against a uniform draw. Simple, and one shift, one floor, one compare.
@@ -159,7 +161,7 @@ randomness are not in conflict here.
 ### Citations
 
 The three variants and the trade they represent are from **[Fitzgibbon2025]**,
-which the Interim Report cites at §4.7.4 NOTE 2 for exactly this point — the
+which [P3109] cites at its §4.7.4 NOTE 2 for exactly this point — the
 paper's subject is stochastic rounding on a small bit budget, which is why the
 `RSB` half-step construction exists at all. **[Croci2022]** is the standard
 survey of stochastic rounding, its error analysis and its applications.
@@ -310,8 +312,8 @@ make the 2-ulp bracket sound.
 
 ### The problem: the specification is written over exact reals
 
-Every rounding predicate in §4.7.4 is a statement about the exact leftover
-fraction `ν`. Read them literally:
+Every rounding predicate in [P3109] §4.7.4 is a statement about the exact
+leftover fraction `ν`. Read them literally:
 
 - `RoundAway(TowardPositive) = ν > 0 and X > 0`
 - `RoundAway(NearestTiesToEven) = ν > 0.5 or (ν = 0.5 and not CodeIsEven)`
@@ -376,7 +378,7 @@ situations, three different correct answers:
 | `0.5` | `0` | exactly ½ | consult `CodeIsEven` | a genuine tie |
 
 Without the direction all three collapse into the third row, and two of them are
-answered wrongly. With it, each gets the answer §4.7.4 specifies.
+answered wrongly. With it, each gets the answer [P3109] §4.7.4 specifies.
 
 The stochastic modes need the same care one level down, on the `2^N` sub-grid
 rather than on the ulp. When the scaled fraction `ν̃·2^N` lands exactly on a grid
@@ -416,7 +418,7 @@ provably irrelevant, so not carrying it costs nothing.
 
 ### The payoff
 
-The rounding core is a direct transcription of §4.7.4. There is no epsilon
+The rounding core is a direct transcription of [P3109] §4.7.4. There is no epsilon
 tolerance anywhere in it, no "close enough to a tie" heuristic, and no carrier-
 dependent behaviour — the same predicates, evaluated the same way, whether the
 value arrived as a `Float64`, a `Float128`, an exact `Dyadic`, or a bound from an
@@ -442,7 +444,7 @@ against an independent reference, which is how it is verified.
   with few random bits," in *IEEE 32nd Symposium on Computer Arithmetic (ARITH
   2025)*, El Paso, TX, USA, 4–7 May 2025, pp. 133–140.
   <https://doi.org/10.1109/ARITH64983.2025.00029> — reference [3] of [P3109],
-  cited at §4.7.4 NOTE 2 for the accuracy/complexity balance among
+  cited in its §4.7.4 NOTE 2 for the accuracy/complexity balance among
   `StochasticA`, `StochasticB` and `StochasticC`.
 - **[Higham2002]** N. J. Higham, *Accuracy and Stability of Numerical
   Algorithms*, 2nd ed., SIAM, 2002 — reference [6] of [P3109].

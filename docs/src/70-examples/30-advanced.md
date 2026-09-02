@@ -194,7 +194,8 @@ result format:
 ```@example advanced_block_mixed
 using AIFloats
 
-S = Binary8p1uf          # 8-bit scale, precision 1 — the §4.5 scale format
+S = Binary8p1uf          # 8-bit scale, precision 1 — the scale format the
+                         # Interim Report requires at its §4.5
 E = Binary4p2sf          # 4-bit elements, precision 2
 R = Binary8p4se          # a wider, more precise result format
 
