@@ -120,11 +120,19 @@ The last row is the one to remember. `ν = 0.8` is not representable on the
     are centred, so their errors tend to cancel — except at exact ties, where
     `RSB` always goes up and `RSC` alternates by parity.
 
+    So `RSC` is the most nearly unbiased of the three, and what bias it does
+    carry is directionally non-deterministic: with no preferred direction, it
+    does not accumulate. In a natural sense `RSC` is the **fairest** of the
+    three. `RSA` is the **fastest**. `RSB` sits between them — centred like
+    `RSC`, but with `RSA`'s one-signed behaviour where it matters most, at the
+    ties.
+
     AIFloats claims no bias figure beyond these bounds.
 
 ### Choosing a variant
 
-Start from what your budget is really constrained by.
+In one line: `RSC` is the fairest, `RSA` is the fastest, `RSB` sits between
+them. Start from what your budget is really constrained by.
 
 **`RSB` is the reasonable default.** It gets centred, nearest-quantization at
 `RSA`'s bit cost and close to `RSA`'s arithmetic cost. If nothing in your problem
