@@ -49,11 +49,16 @@ count of `R` values satisfying the predicate, divided by `2^N`:
 P(\text{away}) = \frac{\#\{R : \mathrm{RoundAway}(ν, R)\}}{2^N}
 ```
 
-That is the useful way to read the three variants. Ideally `P(away) = ν` exactly
-— then the expected result is the exact value and rounding is unbiased. But `R`
-takes only `2^N` values, so `P(away)` can only be a multiple of `2^-N`. **Each
-variant is a different way of snapping `ν` onto that grid of `2^N` steps**, and
-that is the whole of the difference between them.
+That is the useful way to read the three variants — `StochasticA`,
+`StochasticB` and `StochasticC`, abbreviated [`RSA`](@ref), [`RSB`](@ref) and
+[`RSC`](@ref). (Unlike the deterministic modes, these long names are the
+report's own; see [Report names and package names](@ref report-names).)
+
+Ideally `P(away) = ν` exactly — then the expected result is the exact value and
+rounding is unbiased. But `R` takes only `2^N` values, so `P(away)` can only be
+a multiple of `2^-N`. **Each variant is a different way of snapping `ν` onto
+that grid of `2^N` steps**, and that is the whole of the difference between
+them.
 
 ### The three predicates
 
