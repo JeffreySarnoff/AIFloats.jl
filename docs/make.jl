@@ -26,7 +26,6 @@ const PAGES = [
         "Advanced examples" => "70-examples/30-advanced.md",
         "Technical examples" => "70-examples/40-technical.md",
     ],
-    "50-status.md",
     "60-benchmarks.md",
     "Reference" => [
         # The landing page's own H1 stays "Reference"; in the menu it sits
@@ -38,17 +37,22 @@ const PAGES = [
         "95-reference/30-blocks.md",
         "95-reference/40-governance.md",
     ],
-    # The deep material, last: how the results are obtained, then the carriers
-    # that obtain them. Both are mechanism rather than interface, and a reader
-    # reaches them after the pages that state the contracts.
+    # The deep material, last: how the results are obtained, then everything
+    # about how they are obtained here. Mechanism rather than interface, and a
+    # reader reaches it after the pages that state the contracts.
     "Algorithms" => "96-algorithms.md",
-    "97-internals.md",
-    "Fused Ops (internal)" => [
-        "FMA" => "98-fma128.md",
-        "FAA" => "99-faa128.md",
+    "Internals" => [
+        "Implementation" => "50-status.md",
+        "Dyadic Numbers" => "97-internals.md",
+        "Fused Ops" => [
+            "FMA" => "98-fma128.md",
+            "FAA" => "99-faa128.md",
+        ],
     ],
-    "90-contributing.md",
-    "Developer docs" => "91-developer.md",
+    "Development Guidelines" => [
+        "Contributing" => "90-contributing.md",
+        "Development" => "91-developer.md",
+    ],
 ]
 
 # Every page named above must exist, and every page in `src/` must be named

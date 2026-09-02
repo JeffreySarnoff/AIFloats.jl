@@ -1,4 +1,4 @@
-# [Dyadic Numbers (internal)](@id dyadic-numbers)
+# [Dyadic Numbers](@id dyadic-numbers)
 
 ```@meta
 CurrentModule = AIFloats
