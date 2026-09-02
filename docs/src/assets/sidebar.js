@@ -118,6 +118,14 @@ document.addEventListener("DOMContentLoaded", function () {
     writeOpen(keys);
   }
 
+  // The home page is the fresh start. Arriving at index.html — by link, by the
+  // package name at the top of the sidebar, or by reload — clears what the visit
+  // had open, so the menu is always in the same state there: every section
+  // closed, every marker `>`. Anywhere else the memory is what makes one click
+  // one click.
+  var page = window.location.pathname.split("/").pop();
+  if (page === "" || page === "index.html") writeOpen([]);
+
   var openOnLoad = readOpen();
 
   // An entry is a page link (<a>) rather than a group label (<label>); the
