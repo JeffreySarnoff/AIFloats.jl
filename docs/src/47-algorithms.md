@@ -171,7 +171,7 @@ their own, for the reason stated immediately below the last one.
 `Add` and `Multiply` are tabulated over `K = 3…8`, `FMA` over `K = 3…6`; `P` runs
 `2, 4, 6` capped at `K-1`.
 
-#### `Add` (Signed formats)
+#### `Add`
 
 | Format | `N`=1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | inexact |
 |:--|--:|--:|--:|--:|--:|--:|--:|--:|--:|
@@ -188,7 +188,7 @@ their own, for the reason stated immediately below the last one.
 | `Binary8p4sδ` | 0.13 | 0.12 | 0.11 | 0.10 | 0.09 | 0.08 | 0.07 | 0.06 | 105928 |
 | `Binary8p6sδ` | 0.38 | 0.03 | 0 | 0 | 0 | 0 | 0 | 0 | 51976 |
 
-#### `Multiply` (Signed formats)
+#### `Multiply`
 
 | Format | `N`=1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | inexact |
 |:--|--:|--:|--:|--:|--:|--:|--:|--:|--:|
@@ -205,7 +205,7 @@ their own, for the reason stated immediately below the last one.
 | `Binary8p4sδ` | 0.28 | 0.30 | 0.20 | 0.03 | 0.03 | 0.02 | 0.02 | 0.01 | 95436 |
 | `Binary8p6sδ` | 0.12 | 0.17 | 0.24 | 0.25 | 0.15 | 0 | 0 | 0 | 117612 |
 
-#### `FMA` (Signed formats)
+#### `FMA`
 
 | Format | `N`=1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | inexact |
 |:--|--:|--:|--:|--:|--:|--:|--:|--:|--:|
