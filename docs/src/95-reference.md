@@ -23,5 +23,5 @@ For the narrative introduction to these names, start at
 [Operations](@ref operations).
 
 Implementation-only material — including the `AIFloats.DyadicNumbers` carrier and
-its `Dyadic` type — lives on [Internal carriers](@ref internals) and is explicitly
+its `Dyadic` type — lives on [Dyadic Numbers](@ref dyadic-numbers) and is explicitly
 unstable.

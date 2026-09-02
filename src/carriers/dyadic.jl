@@ -40,7 +40,7 @@ ten operations rather than the full `AbstractFloat` obligation.
 `AIFloats.promotecarrier` targets `BigFloat`, never this.
 
 Implementation detail, and unstable: it is documented on the
-[Internal carriers](@ref internals) page, not in the public reference. Vendored
+[Dyadic Numbers](@ref dyadic-numbers) page, not in the public reference. Vendored
 from SmallFloats.jl (provenance header in `src/carriers/dyadic.jl`) and
 verified against golden digests in `test/support/dyadic_golden.sha256`.
 

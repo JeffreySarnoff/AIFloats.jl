@@ -1,4 +1,4 @@
-# [Internal carriers](@id internals)
+# [Dyadic Numbers (internal type)](@id dyadic-numbers)
 
 ```@meta
 CurrentModule = AIFloats
@@ -9,24 +9,32 @@ CurrentModule = AIFloats
     change in any release without a deprecation, and nothing here is covered by the
     package's contract. The supported surface is the [Reference](@ref reference); use
     [`decode`](@ref), the register operations, and [`project`](@ref) rather than
-    depending on a particular carrier or rung.
+    depending on a particular carrier.
 
-The exact rung-3 carrier and the pure-Julia `Float128` fused operations, vendored
-from SmallFloats.jl (provenance headers in `src/carriers/`). Reach them as
-`AIFloats.Dyadic`, `AIFloats.fma128`, `AIFloats.faa128`.
+`AIFloats.Dyadic` is the exact carrier: an exact dyadic rational `S · 2^Q` in an
+`Int128` significand, together with the three non-finite rows. Every datum of every
+P3109 format is exactly `S · 2^Q` with `|S| < 2^16`, so arithmetic over datums is
+closed and exact here and allocation-free — MPFR buys nothing for it. Transcendental
+fallbacks still escalate to MPFR through an exact `BigFloat` image.
 
-Which carrier a format uses is its **rung**, chosen from the format's exponent span
-rather than its storage width. `Dyadic` is the exact fixed-point carrier above the
-`Float64` and `Float128` rungs; it is `<: Real` and deliberately not `<: AbstractFloat`.
-The `DyadicNumbers` module is verified against golden digests captured from the original
+It is the carrier of the widest **rung**, above `Float64` and `Float128`. Which rung a
+format uses follows from its exponent span rather than its storage width; see
+[Algorithms](@ref alg-enclosure) for where the carriers sit in the evaluation path.
+
+`Dyadic <: Real`, deliberately **not** `<: AbstractFloat`. Methods elsewhere written
+`::AbstractFloat` mean "a float carrier", and `Dyadic` implements about ten operations
+rather than the full `AbstractFloat` obligation. `AIFloats.promotecarrier` targets
+`BigFloat`, never this type.
+
+The exact fixed-point accumulator behind the block reductions is this type, and its
+alignment band — `DYADIC_ALIGN_MAX`, 94 bits — is what makes the
+[sticky protocol](@ref alg-sticky) sound: a tail discarded past that band lies below
+every rounding threshold in play, so recording its direction loses nothing.
+
+Vendored from SmallFloats.jl, with the provenance headers in `src/carriers/dyadic.jl`,
+and verified against golden digests captured from the original
 (`test/support/dyadic_golden.sha256`).
 
-`Quadmath.Float128` appears here as a value carrier only. libquadmath's elementary
-functions are **not** assumed to be correctly rounded; a fast result is accepted only
-under a proof or a two-sided enclosure check, and otherwise the operation escalates to
-the rigorous MPFR ladder. `fma128` and `faa128` are pure Julia and carry their own
-documented guarantees.
-
 ```@autodocs
-Modules = [AIFloats.DyadicNumbers, AIFloats.Float128FMA, AIFloats.Float128FAA]
+Modules = [AIFloats.DyadicNumbers]
 ```

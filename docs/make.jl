@@ -29,7 +29,10 @@ const PAGES = [
     "50-status.md",
     "60-benchmarks.md",
     "Reference" => [
-        "95-reference.md",
+        # The landing page's own H1 stays "Reference"; in the menu it sits
+        # under a group of that name, where "Reference > Reference" reads as a
+        # mistake rather than a hierarchy.
+        "Overview" => "95-reference.md",
         "95-reference/10-core.md",
         "95-reference/20-operations.md",
         "95-reference/30-blocks.md",
@@ -40,6 +43,10 @@ const PAGES = [
     # reaches them after the pages that state the contracts.
     "Algorithms" => "96-algorithms.md",
     "97-internals.md",
+    "Fused Ops" => [
+        "FMA" => "98-fma128.md",
+        "FAA" => "99-faa128.md",
+    ],
     "90-contributing.md",
     "Developer docs" => "91-developer.md",
 ]
