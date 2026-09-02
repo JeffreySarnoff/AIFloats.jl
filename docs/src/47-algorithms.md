@@ -152,175 +152,179 @@ to carry, against `N`. Two things supply those bits:
   to the exponent range rather than to `P`. This is what produces a small tie
   fraction that *persists* at every `N`.
 
-The tables below are exact counts, not samples: every ordered pair of finite
-operands of each format, keeping the pairs whose exact result is nonzero and
-inexact. Entries are the fraction of those results that tie; the final column is
-how many there were. All three format families are tabulated, over `K = 3…8` and
-`P = 2, 4, 6` (capped at `K-1`).
+The tables below are exact counts, not samples: every ordered pair — every
+ordered triple, for `FMA` — of finite operands, keeping the cases whose exact
+result is nonzero and inexact. Entries are the fraction of those results that
+tie; the final column is how many there were.
 
-#### Signed, extended — `Add`
+Each table **pools both domains**, `FINITE` and `EXTENDED`, because the choice
+barely moves the numbers: domain decides which code points exist at the top of
+the range, not the arithmetic that produces `ν`. Format labels therefore carry
+the report's own metavariable for the domain, `δ` ([P3109] §3.2), where an `e`
+or an `f` would otherwise go. `0` means exactly zero, and `<0.01` a nonzero
+fraction below one in two hundred — a distinction worth keeping, because *where
+ties stop entirely* is the useful boundary.
 
-| Format | `N`=1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | inexact |
-|:--|--:|--:|--:|--:|--:|--:|--:|--:|--:|
-| `Binary3p2se` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| `Binary4p2se` | 0.231 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 52 |
-| `Binary5p2se` | 0.293 | 0.195 | 0.135 | 0.075 | 0.015 | 0 | 0 | 0 | 532 |
-| `Binary5p4se` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 84 |
-| `Binary6p2se` | 0.147 | 0.119 | 0.108 | 0.098 | 0.087 | 0.077 | 0.066 | 0.055 | 3028 |
-| `Binary6p4se` | 0.377 | 0.017 | 0 | 0 | 0 | 0 | 0 | 0 | 1432 |
-| `Binary7p2se` | 0.072 | 0.062 | 0.059 | 0.057 | 0.055 | 0.053 | 0.050 | 0.048 | 14164 |
-| `Binary7p4se` | 0.265 | 0.200 | 0.145 | 0.090 | 0.041 | 0 | 0 | 0 | 10264 |
-| `Binary7p6se` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1860 |
-| `Binary8p2se` | 0.036 | 0.031 | 0.031 | 0.030 | 0.030 | 0.029 | 0.028 | 0.028 | 61012 |
-| `Binary8p4se` | 0.135 | 0.120 | 0.109 | 0.096 | 0.086 | 0.076 | 0.066 | 0.057 | 52504 |
-| `Binary8p6se` | 0.384 | 0.033 | 0 | 0 | 0 | 0 | 0 | 0 | 25672 |
+`Add` and `Multiply` are tabulated over `K = 3…8`, `FMA` over `K = 3…6`; `P` runs
+`2, 4, 6` capped at `K-1`.
 
-#### Signed, extended — `Multiply`
+#### Signed — `Add`
 
 | Format | `N`=1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | inexact |
 |:--|--:|--:|--:|--:|--:|--:|--:|--:|--:|
-| `Binary3p2se` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
-| `Binary4p2se` | 0.538 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 52 |
-| `Binary5p2se` | 0.636 | 0.121 | 0.061 | 0 | 0 | 0 | 0 | 0 | 264 |
-| `Binary5p4se` | 0.377 | 0.344 | 0.020 | 0 | 0 | 0 | 0 | 0 | 604 |
-| `Binary6p2se` | 0.645 | 0.079 | 0.066 | 0.053 | 0.039 | 0.026 | 0.013 | 0 | 1216 |
-| `Binary6p4se` | 0.327 | 0.321 | 0.178 | 0 | 0 | 0 | 0 | 0 | 2716 |
-| `Binary7p2se` | 0.642 | 0.043 | 0.040 | 0.037 | 0.034 | 0.031 | 0.028 | 0.024 | 5232 |
-| `Binary7p4se` | 0.299 | 0.307 | 0.198 | 0.045 | 0.022 | 0 | 0 | 0 | 11428 |
-| `Binary7p6se` | 0.135 | 0.201 | 0.272 | 0.276 | 0.036 | 0 | 0 | 0 | 14180 |
-| `Binary8p2se` | 0.640 | 0.022 | 0.021 | 0.021 | 0.020 | 0.019 | 0.018 | 0.018 | 21712 |
-| `Binary8p4se` | 0.285 | 0.300 | 0.194 | 0.032 | 0.027 | 0.022 | 0.016 | 0.011 | 47284 |
-| `Binary8p6se` | 0.119 | 0.174 | 0.240 | 0.253 | 0.150 | 0 | 0 | 0 | 58316 |
+| `Binary3p2sδ` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| `Binary4p2sδ` | 0.32 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 136 |
+| `Binary5p2sδ` | 0.29 | 0.19 | 0.14 | 0.08 | 0.03 | 0 | 0 | 0 | 1160 |
+| `Binary5p4sδ` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 196 |
+| `Binary6p2sδ` | 0.14 | 0.12 | 0.11 | 0.10 | 0.09 | 0.08 | 0.07 | 0.06 | 6280 |
+| `Binary6p4sδ` | 0.38 | 0.02 | 0 | 0 | 0 | 0 | 0 | 0 | 3016 |
+| `Binary7p2sδ` | 0.07 | 0.06 | 0.06 | 0.06 | 0.05 | 0.05 | 0.05 | 0.05 | 28808 |
+| `Binary7p4sδ` | 0.26 | 0.20 | 0.15 | 0.09 | 0.04 | 0 | 0 | 0 | 20936 |
+| `Binary7p6sδ` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3844 |
+| `Binary8p2sδ` | 0.04 | 0.03 | 0.03 | 0.03 | 0.03 | 0.03 | 0.03 | 0.03 | 123016 |
+| `Binary8p4sδ` | 0.13 | 0.12 | 0.11 | 0.10 | 0.09 | 0.08 | 0.07 | 0.06 | 105928 |
+| `Binary8p6sδ` | 0.38 | 0.03 | 0 | 0 | 0 | 0 | 0 | 0 | 51976 |
 
-#### Signed, finite — `Add`
-
-| Format | `N`=1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | inexact |
-|:--|--:|--:|--:|--:|--:|--:|--:|--:|--:|
-| `Binary3p2sf` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
-| `Binary4p2sf` | 0.381 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 84 |
-| `Binary5p2sf` | 0.280 | 0.191 | 0.140 | 0.089 | 0.038 | 0 | 0 | 0 | 628 |
-| `Binary5p4sf` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 112 |
-| `Binary6p2sf` | 0.143 | 0.116 | 0.106 | 0.096 | 0.086 | 0.076 | 0.066 | 0.057 | 3252 |
-| `Binary6p4sf` | 0.384 | 0.030 | 0 | 0 | 0 | 0 | 0 | 0 | 1584 |
-| `Binary7p2sf` | 0.071 | 0.061 | 0.058 | 0.056 | 0.054 | 0.052 | 0.050 | 0.048 | 14644 |
-| `Binary7p4sf` | 0.261 | 0.199 | 0.147 | 0.093 | 0.045 | 0 | 0 | 0 | 10672 |
-| `Binary7p6sf` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1984 |
-| `Binary8p2sf` | 0.035 | 0.031 | 0.030 | 0.030 | 0.029 | 0.029 | 0.028 | 0.028 | 62004 |
-| `Binary8p4sf` | 0.134 | 0.119 | 0.108 | 0.095 | 0.086 | 0.076 | 0.066 | 0.057 | 53424 |
-| `Binary8p6sf` | 0.384 | 0.036 | 0 | 0 | 0 | 0 | 0 | 0 | 26304 |
-
-#### Signed, finite — `Multiply`
+#### Signed — `Multiply`
 
 | Format | `N`=1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | inexact |
 |:--|--:|--:|--:|--:|--:|--:|--:|--:|--:|
-| `Binary3p2sf` | 0.250 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 16 |
-| `Binary4p2sf` | 0.667 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 72 |
-| `Binary5p2sf` | 0.696 | 0.101 | 0.051 | 0 | 0 | 0 | 0 | 0 | 316 |
-| `Binary5p4sf` | 0.354 | 0.360 | 0.056 | 0 | 0 | 0 | 0 | 0 | 712 |
-| `Binary6p2sf` | 0.676 | 0.072 | 0.060 | 0.048 | 0.036 | 0.024 | 0.012 | 0 | 1332 |
-| `Binary6p4sf` | 0.320 | 0.320 | 0.197 | 0 | 0 | 0 | 0 | 0 | 2928 |
-| `Binary7p2sf` | 0.658 | 0.041 | 0.038 | 0.035 | 0.032 | 0.029 | 0.026 | 0.023 | 5476 |
-| `Binary7p4sf` | 0.294 | 0.307 | 0.210 | 0.043 | 0.022 | 0 | 0 | 0 | 11848 |
-| `Binary7p6sf` | 0.132 | 0.198 | 0.269 | 0.279 | 0.043 | 0 | 0 | 0 | 14672 |
-| `Binary8p2sf` | 0.648 | 0.022 | 0.021 | 0.020 | 0.019 | 0.019 | 0.018 | 0.017 | 22212 |
-| `Binary8p4sf` | 0.283 | 0.300 | 0.201 | 0.032 | 0.027 | 0.021 | 0.016 | 0.011 | 48152 |
-| `Binary8p6sf` | 0.118 | 0.172 | 0.239 | 0.253 | 0.154 | 0 | 0 | 0 | 59296 |
+| `Binary3p2sδ` | 0.20 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 20 |
+| `Binary4p2sδ` | 0.61 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 124 |
+| `Binary5p2sδ` | 0.67 | 0.11 | 0.06 | 0 | 0 | 0 | 0 | 0 | 580 |
+| `Binary5p4sδ` | 0.36 | 0.35 | 0.04 | 0 | 0 | 0 | 0 | 0 | 1316 |
+| `Binary6p2sδ` | 0.66 | 0.08 | 0.06 | 0.05 | 0.04 | 0.03 | 0.01 | 0 | 2548 |
+| `Binary6p4sδ` | 0.32 | 0.32 | 0.19 | 0 | 0 | 0 | 0 | 0 | 5644 |
+| `Binary7p2sδ` | 0.65 | 0.04 | 0.04 | 0.04 | 0.03 | 0.03 | 0.03 | 0.02 | 10708 |
+| `Binary7p4sδ` | 0.30 | 0.31 | 0.20 | 0.04 | 0.02 | 0 | 0 | 0 | 23276 |
+| `Binary7p6sδ` | 0.13 | 0.20 | 0.27 | 0.28 | 0.04 | 0 | 0 | 0 | 28852 |
+| `Binary8p2sδ` | 0.64 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 43924 |
+| `Binary8p4sδ` | 0.28 | 0.30 | 0.20 | 0.03 | 0.03 | 0.02 | 0.02 | 0.01 | 95436 |
+| `Binary8p6sδ` | 0.12 | 0.17 | 0.24 | 0.25 | 0.15 | 0 | 0 | 0 | 117612 |
 
-#### Unsigned, finite — `Add`
-
-| Format | `N`=1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | inexact |
-|:--|--:|--:|--:|--:|--:|--:|--:|--:|--:|
-| `Binary3p2uf` | 0.300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 20 |
-| `Binary4p2uf` | 0.295 | 0.179 | 0.128 | 0.077 | 0.026 | 0 | 0 | 0 | 156 |
-| `Binary5p2uf` | 0.155 | 0.113 | 0.103 | 0.094 | 0.084 | 0.074 | 0.064 | 0.054 | 812 |
-| `Binary5p4uf` | 0.391 | 0.024 | 0 | 0 | 0 | 0 | 0 | 0 | 506 |
-| `Binary6p2uf` | 0.078 | 0.060 | 0.058 | 0.056 | 0.054 | 0.051 | 0.049 | 0.047 | 3660 |
-| `Binary6p4uf` | 0.282 | 0.195 | 0.132 | 0.081 | 0.038 | 0 | 0 | 0 | 2970 |
-| `Binary7p2uf` | 0.039 | 0.031 | 0.030 | 0.030 | 0.029 | 0.029 | 0.028 | 0.028 | 15500 |
-| `Binary7p4uf` | 0.151 | 0.123 | 0.105 | 0.090 | 0.081 | 0.072 | 0.063 | 0.054 | 14042 |
-| `Binary7p6uf` | 0.390 | 0.047 | 0 | 0 | 0 | 0 | 0 | 0 | 8930 |
-| `Binary8p2uf` | 0.020 | 0.015 | 0.015 | 0.015 | 0.015 | 0.015 | 0.015 | 0.015 | 63756 |
-| `Binary8p4uf` | 0.077 | 0.066 | 0.060 | 0.055 | 0.052 | 0.050 | 0.048 | 0.046 | 60762 |
-| `Binary8p6uf` | 0.277 | 0.194 | 0.135 | 0.086 | 0.041 | 0 | 0 | 0 | 49506 |
-
-#### Unsigned, finite — `Multiply`
+#### Signed — `FMA`
 
 | Format | `N`=1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | inexact |
 |:--|--:|--:|--:|--:|--:|--:|--:|--:|--:|
-| `Binary3p2uf` | 0.538 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 13 |
-| `Binary4p2uf` | 0.636 | 0.121 | 0.061 | 0 | 0 | 0 | 0 | 0 | 66 |
-| `Binary5p2uf` | 0.645 | 0.079 | 0.066 | 0.053 | 0.039 | 0.026 | 0.013 | 0 | 304 |
-| `Binary5p4uf` | 0.327 | 0.321 | 0.178 | 0 | 0 | 0 | 0 | 0 | 679 |
-| `Binary6p2uf` | 0.642 | 0.043 | 0.040 | 0.037 | 0.034 | 0.031 | 0.028 | 0.024 | 1308 |
-| `Binary6p4uf` | 0.299 | 0.307 | 0.198 | 0.045 | 0.022 | 0 | 0 | 0 | 2857 |
-| `Binary7p2uf` | 0.640 | 0.022 | 0.021 | 0.021 | 0.020 | 0.019 | 0.018 | 0.018 | 5428 |
-| `Binary7p4uf` | 0.285 | 0.300 | 0.194 | 0.032 | 0.027 | 0.022 | 0.016 | 0.011 | 11821 |
-| `Binary7p6uf` | 0.119 | 0.174 | 0.240 | 0.253 | 0.150 | 0 | 0 | 0 | 14579 |
-| `Binary8p2uf` | 0.638 | 0.011 | 0.011 | 0.011 | 0.011 | 0.010 | 0.010 | 0.010 | 22116 |
-| `Binary8p4uf` | 0.279 | 0.295 | 0.189 | 0.019 | 0.017 | 0.016 | 0.015 | 0.013 | 48277 |
-| `Binary8p6uf` | 0.110 | 0.156 | 0.218 | 0.245 | 0.163 | 0.035 | 0.017 | 0 | 59019 |
+| `Binary3p2sδ` | 0.17 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 144 |
+| `Binary4p2sδ` | 0.39 | 0.13 | 0.03 | 0 | 0 | 0 | 0 | 0 | 2864 |
+| `Binary5p2sδ` | 0.24 | 0.18 | 0.15 | 0.10 | 0.07 | 0.04 | 0.02 | 0.01 | 39372 |
+| `Binary5p4sδ` | 0.34 | 0.34 | 0.07 | <0.01 | 0 | 0 | 0 | 0 | 40440 |
+| `Binary6p2sδ` | 0.11 | 0.10 | 0.10 | 0.09 | 0.08 | 0.08 | 0.07 | 0.06 | 410236 |
+| `Binary6p4sδ` | 0.25 | 0.27 | 0.20 | 0.08 | 0.02 | <0.01 | 0 | 0 | 381324 |
+
+#### Unsigned — `Add`
+
+| Format | `N`=1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | inexact |
+|:--|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| `Binary3p2uδ` | 0.25 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 32 |
+| `Binary4p2uδ` | 0.31 | 0.18 | 0.12 | 0.07 | 0.01 | 0 | 0 | 0 | 288 |
+| `Binary5p2uδ` | 0.16 | 0.11 | 0.10 | 0.09 | 0.08 | 0.07 | 0.06 | 0.05 | 1568 |
+| `Binary5p4uδ` | 0.39 | 0.02 | 0 | 0 | 0 | 0 | 0 | 0 | 968 |
+| `Binary6p2uδ` | 0.08 | 0.06 | 0.06 | 0.06 | 0.05 | 0.05 | 0.05 | 0.05 | 7200 |
+| `Binary6p4uδ` | 0.28 | 0.19 | 0.13 | 0.08 | 0.04 | 0 | 0 | 0 | 5832 |
+| `Binary7p2uδ` | 0.04 | 0.03 | 0.03 | 0.03 | 0.03 | 0.03 | 0.03 | 0.03 | 30752 |
+| `Binary7p4uδ` | 0.15 | 0.12 | 0.11 | 0.09 | 0.08 | 0.07 | 0.06 | 0.05 | 27848 |
+| `Binary7p6uδ` | 0.39 | 0.04 | 0 | 0 | 0 | 0 | 0 | 0 | 17672 |
+| `Binary8p2uδ` | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.01 | 0.01 | 127008 |
+| `Binary8p4uδ` | 0.08 | 0.07 | 0.06 | 0.05 | 0.05 | 0.05 | 0.05 | 0.05 | 121032 |
+| `Binary8p6uδ` | 0.28 | 0.19 | 0.13 | 0.09 | 0.04 | 0 | 0 | 0 | 98568 |
+
+#### Unsigned — `Multiply`
+
+| Format | `N`=1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | inexact |
+|:--|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| `Binary3p2uδ` | 0.54 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 26 |
+| `Binary4p2uδ` | 0.64 | 0.12 | 0.06 | 0 | 0 | 0 | 0 | 0 | 132 |
+| `Binary5p2uδ` | 0.64 | 0.08 | 0.07 | 0.05 | 0.04 | 0.03 | 0.01 | 0 | 608 |
+| `Binary5p4uδ` | 0.32 | 0.32 | 0.18 | 0 | 0 | 0 | 0 | 0 | 1309 |
+| `Binary6p2uδ` | 0.64 | 0.04 | 0.04 | 0.04 | 0.03 | 0.03 | 0.03 | 0.02 | 2616 |
+| `Binary6p4uδ` | 0.30 | 0.31 | 0.20 | 0.05 | 0.02 | 0 | 0 | 0 | 5611 |
+| `Binary7p2uδ` | 0.64 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 10856 |
+| `Binary7p4uδ` | 0.28 | 0.30 | 0.20 | 0.03 | 0.03 | 0.02 | 0.02 | 0.01 | 23427 |
+| `Binary7p6uδ` | 0.12 | 0.17 | 0.24 | 0.25 | 0.15 | 0 | 0 | 0 | 28917 |
+| `Binary8p2uδ` | 0.64 | 0.01 | 0.01 | 0.01 | 0.01 | 0.01 | 0.01 | 0.01 | 44232 |
+| `Binary8p4uδ` | 0.28 | 0.29 | 0.19 | 0.02 | 0.02 | 0.02 | 0.01 | 0.01 | 96115 |
+| `Binary8p6uδ` | 0.11 | 0.16 | 0.22 | 0.24 | 0.16 | 0.03 | 0.02 | 0 | 117553 |
+
+#### Unsigned — `FMA`
+
+| Format | `N`=1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | inexact |
+|:--|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| `Binary3p2uδ` | 0.42 | 0.13 | 0.02 | 0 | 0 | 0 | 0 | 0 | 277 |
+| `Binary4p2uδ` | 0.27 | 0.19 | 0.15 | 0.09 | 0.06 | 0.03 | 0.02 | 0.01 | 4453 |
+| `Binary5p2uδ` | 0.13 | 0.11 | 0.10 | 0.09 | 0.08 | 0.07 | 0.06 | 0.06 | 49021 |
+| `Binary5p4uδ` | 0.22 | 0.27 | 0.24 | 0.10 | 0.03 | <0.01 | 0 | 0 | 46504 |
+| `Binary6p2uδ` | 0.06 | 0.05 | 0.05 | 0.05 | 0.05 | 0.05 | 0.05 | 0.04 | 455053 |
+| `Binary6p4uδ` | 0.13 | 0.19 | 0.21 | 0.14 | 0.10 | 0.07 | 0.04 | 0.02 | 438738 |
 
 ### What the tables say
 
-**`N` dominates, and raising it is the reliable lever.** Every row falls as `N`
-grows. At the package default `N = 8`, most of these formats tie on *no* pair at
-all, and the `RSB`/`RSC` choice is then a choice between identical answers.
+**`N` dominates, and raising it is the reliable lever.** Almost every row falls
+as `N` grows, and many reach exactly zero. At the package default `N = 8` a good
+number of these format/operation pairs tie on *no* input at all, and the
+`RSB`/`RSC` choice is then a choice between identical answers.
 
 **Narrower is not tie-ier.** At `N = 4`, signed `Multiply` ties rise from `0` on
-`Binary5p2se` to `0.253` on `Binary8p6se` — more precision, more ties, because a
+`Binary5p2sδ` to `0.25` on `Binary8p6sδ` — more precision, more ties, because a
 longer `ν` is what a tie needs. A very narrow format produces a `ν` so coarse it
 lands *on* grid points, where all three variants agree.
 
-**In the normal range, ties die once `N` reaches about `P`.** `Binary8p6se`
-`Multiply` is the clean case: substantial through `N = 5`, exactly zero from
-`N = 6`. The product simply runs out of fractional bits for a tie to occupy.
+**For `Multiply`, ties die once `N` reaches about `P`.** `Binary8p6sδ` is the
+clean case: substantial through `N = 5`, exactly zero from `N = 6`. The product
+of two `P`-bit significands simply runs out of fractional bits for a tie to
+occupy.
 
 **A wide exponent range keeps a floor under them.** The `P = 2` rows are the
-exception that proves the mechanism: `Binary8p2se` has one stored significand
+exception that proves the mechanism: `Binary8p2sδ` has one stored significand
 bit and an exponent bias of 32, so alignment and subnormals feed `ν` bits that
-precision never could. It still ties on 2.8% of inexact `Add` results at
-`N = 8`, where the better-balanced `Binary8p6se` ties on none. `Binary8p4se`
-sits between, at 5.7%.
+precision never could. It still ties on 3% of inexact `Add` results at `N = 8`,
+where the better-balanced `Binary8p6sδ` ties on none.
 
-**Domain barely matters.** The signed-finite tables track the signed-extended
-ones closely — `Binary8p4sf` `Add` gives `0.134, 0.119, …, 0.057` against
-`Binary8p4se`'s `0.135, 0.120, …, 0.057`. Choosing `FINITE` or `EXTENDED` moves
-which code points exist at the top of the range; it does not change the
-arithmetic that produces `ν`.
+**`FMA` ties the most, and for the longest.** This is the finding that matters
+most in practice, because `FMA` is not a rare operation. Its exact result
+`x·y + z` carries a product's bits *and* an alignment against `z`, so `ν` is
+longer than for either parent operation — and ties survive well past the point
+where both give up. Compare `Binary6p4sδ` across the three:
 
-**Signedness shifts the whole picture by one bit of `K`.** Dropping the sign bit
-hands it to the exponent, so `BinaryKpPuf` and `Binary(K+1)pPse` have the same
-precision *and* the same exponent bias — the same magnitude lattice. For
-`Multiply`, which is sign-symmetric, the tie fractions are then not merely
-similar but **identical**:
-
-| | `N`=1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+| `Binary6p4sδ` | `N`=1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
 |:--|--:|--:|--:|--:|--:|--:|--:|--:|
-| `Binary7p4uf` | 0.285 | 0.300 | 0.194 | 0.032 | 0.027 | 0.022 | 0.016 | 0.011 |
-| `Binary8p4se` | 0.285 | 0.300 | 0.194 | 0.032 | 0.027 | 0.022 | 0.016 | 0.011 |
+| `Add` | 0.38 | 0.02 | 0 | 0 | 0 | 0 | 0 | 0 |
+| `Multiply` | 0.32 | 0.32 | 0.19 | 0 | 0 | 0 | 0 | 0 |
+| `FMA` | 0.25 | 0.27 | 0.20 | 0.08 | 0.02 | <0.01 | 0 | 0 |
 
-The same holds for `Binary5p4uf`/`Binary6p4se`, `Binary6p4uf`/`Binary7p4se`,
-`Binary6p2uf`/`Binary7p2se` and `Binary7p2uf`/`Binary8p2se`. `Add` is close but
-*not* identical across that pairing — `Binary7p4uf` gives `0.151` at `N = 1`
-against `Binary8p4se`'s `0.135` — because a signed `Add` also admits cancelling
-pairs, which an unsigned format has no way to form.
+`Add` is finished by `N = 3` and `Multiply` by `N = 4`; `FMA` is still tying at
+`N = 5`. Unsigned is starker still — `Binary6p4uδ` `FMA` ties on 2% of inexact
+results at `N = 8`, where its `Add` and `Multiply` rows have both been zero
+since `N = 6`.
+
+**Signedness shifts the picture by one bit of `K`.** Dropping the sign bit hands
+it to the exponent, so `BinaryKpPu…` and `Binary(K+1)pPs…` carry the same
+precision *and* the same exponent bias — the same magnitude lattice. The
+unsigned rows track the signed rows one `K` up throughout, and for `Multiply`,
+which is sign-symmetric, the correspondence between the individual
+`BinaryKpPuf` and `Binary(K+1)pPse` tables is not merely close but **exact** —
+verified on `5p4`/`6p4`, `6p4`/`7p4`, `7p4`/`8p4`, `6p2`/`7p2` and `7p2`/`8p2`.
+`Add` only tracks, rather than matching, because a signed `Add` also admits
+cancelling pairs an unsigned format cannot form.
 
 The practical reading: **an unsigned format ties like a signed one a bit wider.**
-If you are choosing `RSB` against `RSC`, read the unsigned row at `K` as though
-it were the signed row at `K + 1`.
+Choosing between `RSB` and `RSC`, read the unsigned row at `K` as the signed row
+at `K + 1`.
 
 !!! note "Scope of the measurement"
-    `Add` and `Multiply` only, over every ordered pair of finite operands.
-    Enclosure-evaluated operations (`Exp`, `Log`, …) are not tabulated: their
-    exact results are irrational most of the time, so `ν` has no finite binary
-    expansion and an exact sub-grid tie essentially never arises.
+    `Add`, `Multiply` and `FMA`, over every ordered pair or triple of finite
+    operands. Enclosure-evaluated operations (`Exp`, `Log`, …) are not
+    tabulated: their exact results are irrational most of the time, so `ν` has
+    no finite binary expansion and an exact sub-grid tie essentially never
+    arises.
 
-    That omission does not weaken the guidance. `Add` and `Multiply` — together
-    with `FMA` — are the operations training and inference perform most, so what
-    is tabulated is what dominates a real workload. The elementary functions
-    both tie less often *and* are called less often. The figures above are
-    reasonable guidance for choosing between `RSB` and `RSC`, not a bound to be
-    discounted.
+    That omission does not weaken the guidance. `Add`, `Multiply` and `FMA` are
+    the operations training and inference perform most, so what is tabulated is
+    what dominates a real workload — and `FMA`, the one that ties most
+    stubbornly, is among them. The elementary functions both tie less often
+    *and* are called less often. The figures above are reasonable guidance for
+    choosing between `RSB` and `RSC`, not a bound to be discounted.
 
 ### Choosing a variant
 
