@@ -23,9 +23,11 @@ includes the infinities. Those four make a [`Binary`](@ref) format specifier.
     implements, in the shape the draft's §4.6 describes — not IEEE approval, not a
     certification, and not a compliance determination.
 
-    Where AIFloats spells something differently from the report, the documentation says
-    so rather than implying the package spelling is quoted; the mapping is on the
-    [Projections](@ref projections) page.
+    AIFloats uses some language and spelling that differs from the report. In all cases
+    this is done to glean advantage from working with Julia, in accord with Julia best
+    practices. In all cases, this is noted in the docstring, or in the documentation.
+    Often the Julia function name does not shadow the report's name, and both are
+    available.
 
 ```julia
 julia> using AIFloats
