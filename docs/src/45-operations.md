@@ -84,13 +84,17 @@ suite — the group affects speed, never the result.
 
 | Kind | Operations | Route |
 |:--|:--|:--|
+| **Sign manipulation** | `Abs`, `CopySign` | low-level bit operations and comparison |
 | **Ring arithmetic** | `Negate`, `Add`, `Subtract`, `Multiply`, `FAA`, `FMA` | error-free computation |
 | **Selection based** | `{Minimum, Maximum}[Magnitude]{Number, Finite}`, `Clamp` | exact order-based selection from a constrained set |
 | **Enclosure** | `Sqrt`, `Divide`, `Exp`, `Log`, the trigonometric and hyperbolic families, and their π-scaled and inverse forms, … | the correctly rounded [interval-enclosure ladder](@ref alg-enclosure) |
 | **Projection** | [`Convert`](@ref) | a projection with no arithmetic of its own |
 
-The first two kinds are both exact, and differ in how: ring arithmetic **computes** a
-result the operands do not contain, while a selection **chooses** one that they do.
+The first three kinds are all exact, and differ in what they do with the operands: sign
+manipulation **rewrites** one bit, ring arithmetic **computes** a result the operands do
+not contain, and a selection **chooses** one that they do. (`Negate` is a sign-bit flip
+too, and is listed with ring arithmetic because that is the role it plays there — the
+additive inverse.)
 
 The selection row is a schema — `[…]` optional, `{…}` a choice — naming the shape of the
 extremum family rather than enumerating it. Not every combination the pattern admits
@@ -100,11 +104,15 @@ this table is a map of the routes, not a census.
 
 !!! note "These kinds are finer than the registry's groups"
     `AIFloats.operationinfo` reports `:B` for Enclosure and `:conv` for Projection, but it
-    does not draw the line above: `Abs` and `Clamp` are recorded `:A` alongside the ring
-    operations, while the extremum family and `CopySign` are `:C`. The registry groups by
-    **evaluation route**, and `Abs` and `Clamp` reach an exact answer the same way the ring
-    operations do. The Kind column groups by what the operation *does with its operands*,
-    which is the more useful reading here and the coarser one there.
+    does not draw the other lines above. The Sign manipulation row alone spans two groups:
+    `Abs` is recorded `:A` and `CopySign` is `:C`. `Clamp` is `:A` beside the ring
+    operations, while the extremum family is `:C`.
+
+    That is not an inconsistency in either scheme. The registry groups by **evaluation
+    route** — how an exact answer is reached — and `Abs` and `Clamp` reach one the same way
+    the ring operations do. The Kind column groups by what the operation *does with its
+    operands*, which is the more useful reading here and a finer cut than the registry
+    needs to make.
 
 [Algorithms](@ref alg-enclosure) explains how the enclosure route *proves* a result is
 correctly rounded rather than merely computing it carefully, and why no fixed working
