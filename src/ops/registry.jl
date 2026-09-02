@@ -116,9 +116,40 @@ What the registry knows about `op`: `(name, arity, group, factors)`.
 - `arity` is the operand count.
 - `group` is `:A` (exact arithmetic and selection), `:B` (enclosure), `:C`
   (extremum), or `:conv`.
-- `factors` is the largest number of datum factors in any monomial of the exact
-  result — the carrier-width driver, and *not* the arity: `FAA` has three
-  operands and one factor.
+- `factors` is the largest number of datum factors in any **monomial** of the
+  exact result — the carrier-width driver, and *not* the arity.
+
+## What `factors` counts
+
+Write the operation's exact result as monomials combined by `+` and `-`. A
+monomial is a product of datums: `x`, `x * y`, or `x^p` for a nonnegative
+integer `p`. `factors` is the greatest number of datum factors any one of those
+monomials carries — a **maximum over the monomials**, not a total across them.
+
+| Operation | Exact result | Monomials | `factors` |
+|:--|:--|:--|--:|
+| `Add` | `x + y` | `x`, `y` | 1 |
+| `FAA` | `x + y + z` | `x`, `y`, `z` | 1 |
+| `Multiply` | `x * y` | `x * y` | 2 |
+| `FMA` | `x * y + z` | `x * y`, `z` | 2 |
+
+`FMA` is the case worth reading twice: the `+ z` adds a monomial, not a factor,
+so the answer is `max(2, 1)` and not `3`. `FAA` is the mirror image — three
+operands, three monomials, one factor apiece.
+
+That distinction is the point, because it is what carrier width turns on.
+Multiplying two datums roughly doubles the exponent span; adding a term can at
+most double the magnitude, which is one binade and cannot cross a rung
+threshold on its own. So the widest single monomial decides the carrier, and
+[`rung`](@ref) multiplies the largest operand bias by exactly this number.
+
+!!! note "Not every exact result is a polynomial"
+    `1/x^2` is a rational expression, not a monomial, and `sqrt(x)` is neither.
+    Operations whose exact result leaves the polynomials — the quotients and
+    everything in group `:B` — do not reach a carrier wide enough to hold that
+    result, because in general no such carrier exists. They are evaluated by the
+    interval-enclosure ladder instead, and `factors` bounds only the operand
+    arithmetic feeding it.
 
 Throws `ArgumentError` naming [`operations`](@ref) for an unknown symbol.
 
@@ -130,6 +161,9 @@ julia> AIFloats.operationinfo(:Add)
 
 julia> AIFloats.operationinfo(:FAA).factors     # three operands, one factor
 1
+
+julia> AIFloats.operationinfo(:FMA).factors     # x*y + z: the x*y monomial
+2
 ```
 """
 function operationinfo(op::Symbol)
