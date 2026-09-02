@@ -165,10 +165,13 @@ or an `f` would otherwise go. `0` means exactly zero, and `<0.01` a nonzero
 fraction below one in two hundred — a distinction worth keeping, because *where
 ties stop entirely* is the useful boundary.
 
+Only the **signed** formats are tabulated. Unsigned formats need no table of
+their own, for the reason stated immediately below the last one.
+
 `Add` and `Multiply` are tabulated over `K = 3…8`, `FMA` over `K = 3…6`; `P` runs
 `2, 4, 6` capped at `K-1`.
 
-#### Signed — `Add`
+#### `Add` (Signed formats)
 
 | Format | `N`=1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | inexact |
 |:--|--:|--:|--:|--:|--:|--:|--:|--:|--:|
@@ -185,7 +188,7 @@ ties stop entirely* is the useful boundary.
 | `Binary8p4sδ` | 0.13 | 0.12 | 0.11 | 0.10 | 0.09 | 0.08 | 0.07 | 0.06 | 105928 |
 | `Binary8p6sδ` | 0.38 | 0.03 | 0 | 0 | 0 | 0 | 0 | 0 | 51976 |
 
-#### Signed — `Multiply`
+#### `Multiply` (Signed formats)
 
 | Format | `N`=1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | inexact |
 |:--|--:|--:|--:|--:|--:|--:|--:|--:|--:|
@@ -202,7 +205,7 @@ ties stop entirely* is the useful boundary.
 | `Binary8p4sδ` | 0.28 | 0.30 | 0.20 | 0.03 | 0.03 | 0.02 | 0.02 | 0.01 | 95436 |
 | `Binary8p6sδ` | 0.12 | 0.17 | 0.24 | 0.25 | 0.15 | 0 | 0 | 0 | 117612 |
 
-#### Signed — `FMA`
+#### `FMA` (Signed formats)
 
 | Format | `N`=1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | inexact |
 |:--|--:|--:|--:|--:|--:|--:|--:|--:|--:|
@@ -213,50 +216,23 @@ ties stop entirely* is the useful boundary.
 | `Binary6p2sδ` | 0.11 | 0.10 | 0.10 | 0.09 | 0.08 | 0.08 | 0.07 | 0.06 | 410236 |
 | `Binary6p4sδ` | 0.25 | 0.27 | 0.20 | 0.08 | 0.02 | <0.01 | 0 | 0 | 381324 |
 
-#### Unsigned — `Add`
+```@raw html
+<p style="font-size: calc(1em + 2pt);">
+The practical reading: <strong>an unsigned format ties like a signed one a bit
+wider.</strong> Choosing between <code>RSB</code> and <code>RSC</code>, read the
+unsigned row at <code>K</code> as the signed row at <code>K&nbsp;+&nbsp;1</code>.
+</p>
+```
 
-| Format | `N`=1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | inexact |
-|:--|--:|--:|--:|--:|--:|--:|--:|--:|--:|
-| `Binary3p2uδ` | 0.25 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 32 |
-| `Binary4p2uδ` | 0.31 | 0.18 | 0.12 | 0.07 | 0.01 | 0 | 0 | 0 | 288 |
-| `Binary5p2uδ` | 0.16 | 0.11 | 0.10 | 0.09 | 0.08 | 0.07 | 0.06 | 0.05 | 1568 |
-| `Binary5p4uδ` | 0.39 | 0.02 | 0 | 0 | 0 | 0 | 0 | 0 | 968 |
-| `Binary6p2uδ` | 0.08 | 0.06 | 0.06 | 0.06 | 0.05 | 0.05 | 0.05 | 0.05 | 7200 |
-| `Binary6p4uδ` | 0.28 | 0.19 | 0.13 | 0.08 | 0.04 | 0 | 0 | 0 | 5832 |
-| `Binary7p2uδ` | 0.04 | 0.03 | 0.03 | 0.03 | 0.03 | 0.03 | 0.03 | 0.03 | 30752 |
-| `Binary7p4uδ` | 0.15 | 0.12 | 0.11 | 0.09 | 0.08 | 0.07 | 0.06 | 0.05 | 27848 |
-| `Binary7p6uδ` | 0.39 | 0.04 | 0 | 0 | 0 | 0 | 0 | 0 | 17672 |
-| `Binary8p2uδ` | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.01 | 0.01 | 127008 |
-| `Binary8p4uδ` | 0.08 | 0.07 | 0.06 | 0.05 | 0.05 | 0.05 | 0.05 | 0.05 | 121032 |
-| `Binary8p6uδ` | 0.28 | 0.19 | 0.13 | 0.09 | 0.04 | 0 | 0 | 0 | 98568 |
-
-#### Unsigned — `Multiply`
-
-| Format | `N`=1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | inexact |
-|:--|--:|--:|--:|--:|--:|--:|--:|--:|--:|
-| `Binary3p2uδ` | 0.54 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 26 |
-| `Binary4p2uδ` | 0.64 | 0.12 | 0.06 | 0 | 0 | 0 | 0 | 0 | 132 |
-| `Binary5p2uδ` | 0.64 | 0.08 | 0.07 | 0.05 | 0.04 | 0.03 | 0.01 | 0 | 608 |
-| `Binary5p4uδ` | 0.32 | 0.32 | 0.18 | 0 | 0 | 0 | 0 | 0 | 1309 |
-| `Binary6p2uδ` | 0.64 | 0.04 | 0.04 | 0.04 | 0.03 | 0.03 | 0.03 | 0.02 | 2616 |
-| `Binary6p4uδ` | 0.30 | 0.31 | 0.20 | 0.05 | 0.02 | 0 | 0 | 0 | 5611 |
-| `Binary7p2uδ` | 0.64 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 10856 |
-| `Binary7p4uδ` | 0.28 | 0.30 | 0.20 | 0.03 | 0.03 | 0.02 | 0.02 | 0.01 | 23427 |
-| `Binary7p6uδ` | 0.12 | 0.17 | 0.24 | 0.25 | 0.15 | 0 | 0 | 0 | 28917 |
-| `Binary8p2uδ` | 0.64 | 0.01 | 0.01 | 0.01 | 0.01 | 0.01 | 0.01 | 0.01 | 44232 |
-| `Binary8p4uδ` | 0.28 | 0.29 | 0.19 | 0.02 | 0.02 | 0.02 | 0.01 | 0.01 | 96115 |
-| `Binary8p6uδ` | 0.11 | 0.16 | 0.22 | 0.24 | 0.16 | 0.03 | 0.02 | 0 | 117553 |
-
-#### Unsigned — `FMA`
-
-| Format | `N`=1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | inexact |
-|:--|--:|--:|--:|--:|--:|--:|--:|--:|--:|
-| `Binary3p2uδ` | 0.42 | 0.13 | 0.02 | 0 | 0 | 0 | 0 | 0 | 277 |
-| `Binary4p2uδ` | 0.27 | 0.19 | 0.15 | 0.09 | 0.06 | 0.03 | 0.02 | 0.01 | 4453 |
-| `Binary5p2uδ` | 0.13 | 0.11 | 0.10 | 0.09 | 0.08 | 0.07 | 0.06 | 0.06 | 49021 |
-| `Binary5p4uδ` | 0.22 | 0.27 | 0.24 | 0.10 | 0.03 | <0.01 | 0 | 0 | 46504 |
-| `Binary6p2uδ` | 0.06 | 0.05 | 0.05 | 0.05 | 0.05 | 0.05 | 0.05 | 0.04 | 455053 |
-| `Binary6p4uδ` | 0.13 | 0.19 | 0.21 | 0.14 | 0.10 | 0.07 | 0.04 | 0.02 | 438738 |
+Dropping the sign bit hands it to the exponent, so `BinaryKpPu…` and
+`Binary(K+1)pPs…` carry the same precision *and* the same exponent bias — the
+same magnitude lattice. Measured over the unsigned formats separately, their
+rows track the signed rows one `K` up throughout; for `Multiply`, which is
+sign-symmetric, the correspondence between `BinaryKpPuf` and `Binary(K+1)pPse`
+is not merely close but **exact**, verified on `5p4`/`6p4`, `6p4`/`7p4`,
+`7p4`/`8p4`, `6p2`/`7p2` and `7p2`/`8p2`. `Add` only tracks, rather than
+matching, because a signed `Add` also admits cancelling pairs an unsigned format
+cannot form.
 
 ### What the tables say
 
@@ -294,23 +270,9 @@ where both give up. Compare `Binary6p4sδ` across the three:
 | `FMA` | 0.25 | 0.27 | 0.20 | 0.08 | 0.02 | <0.01 | 0 | 0 |
 
 `Add` is finished by `N = 3` and `Multiply` by `N = 4`; `FMA` is still tying at
-`N = 5`. Unsigned is starker still — `Binary6p4uδ` `FMA` ties on 2% of inexact
-results at `N = 8`, where its `Add` and `Multiply` rows have both been zero
-since `N = 6`.
-
-**Signedness shifts the picture by one bit of `K`.** Dropping the sign bit hands
-it to the exponent, so `BinaryKpPu…` and `Binary(K+1)pPs…` carry the same
-precision *and* the same exponent bias — the same magnitude lattice. The
-unsigned rows track the signed rows one `K` up throughout, and for `Multiply`,
-which is sign-symmetric, the correspondence between the individual
-`BinaryKpPuf` and `Binary(K+1)pPse` tables is not merely close but **exact** —
-verified on `5p4`/`6p4`, `6p4`/`7p4`, `7p4`/`8p4`, `6p2`/`7p2` and `7p2`/`8p2`.
-`Add` only tracks, rather than matching, because a signed `Add` also admits
-cancelling pairs an unsigned format cannot form.
-
-The practical reading: **an unsigned format ties like a signed one a bit wider.**
-Choosing between `RSB` and `RSC`, read the unsigned row at `K` as the signed row
-at `K + 1`.
+`N = 5`. The gap is wider still on unsigned formats: measured, `Binary6p4uδ`
+`FMA` ties on 2% of inexact results at `N = 8`, where its own `Add` and
+`Multiply` have both been zero since `N = 6`.
 
 !!! note "Scope of the measurement"
     `Add`, `Multiply` and `FMA`, over every ordered pair or triple of finite
