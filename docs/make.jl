@@ -49,7 +49,7 @@ const PAGES = [
             "FAA" => "99-faa128.md",
         ],
     ],
-    "Development Guidelines" => [
+    "For developers" => [
         "Contributing" => "90-contributing.md",
         "Developing" => "91-developer.md",
     ],
@@ -184,12 +184,24 @@ const REFERENCE_DIR = joinpath(@__DIR__, "src", "95-reference")
 # Reviewed exemptions: public bindings deliberately absent from the reference.
 # An entry here is a decision, not a convenience.
 const REFERENCE_EXEMPT = [
-    # Documented on `96-internals.md` instead, as explicitly unstable
+    # Documented on `97-internals.md` instead, as explicitly unstable
     # implementation detail. Listing them here as well would be a duplicate
     # docstring, and would put a vendored carrier in the user-facing reference.
     :DyadicNumbers,
     :Dyadic,
 ]
+
+# The generated format aliases. 120 of the 504 are exported (those with K <= 8),
+# and each is one line saying it is the format its own name spells out —
+# `Binary6p3ue` is `Binary(6, 3, UNSIGNED, EXTENDED)`. Listing them buried
+# fourteen real entries under a hundred and twenty restatements of a naming
+# scheme that `20-concepts.md` gives once and in full, and did the same to the
+# page's index.
+#
+# They keep their docstrings and still answer to `?Binary6p3ue`. What they lose
+# is a place in a listing they were drowning.
+reference_exempt(n::Symbol) =
+    n in REFERENCE_EXEMPT || occursin(r"^Binary\d+p\d+[su][fe]$", String(n))
 
 # The reference is SPLIT across pages because the generated operation families
 # are 154 substantial docstrings; one page of them renders past Documenter's
@@ -239,8 +251,8 @@ const REFERENCE_PAGES = Any[
         ("Block operations", n -> startswith(String(n), "Block")),
         ("Scaled operations", n -> startswith(String(n), "Scaled")),
     ]),
-    ("40-governance", "Conformance, external formats, expert controls", Any[
-        ("Conformance and κ", n -> n in (:conformance, :conformance_dict,
+    ("40-governance", "Conformance", Any[
+        ("Conformance and \u03f0", n -> n in (:conformance, :conformance_dict,
                                          :conformance_report, :ConformanceDeclaration,
                                          :draft_revision, :draft_identity, :measure_kappa,
                                          :register_approx!, :unregister_approx!, :approx,
@@ -248,7 +260,7 @@ const REFERENCE_PAGES = Any[
                                          :ApproxImpl, :ftz_variant)),
         ("External formats", n -> n in (:binary16, :binary32, :binary64, :binary128,
                                         :bfloat16)),
-        ("Carriers and expert controls", nothing),
+        ("Types and formats", nothing),
     ]),
 ]
 
@@ -260,11 +272,11 @@ reference_file(slug) = joinpath(REFERENCE_DIR, slug * ".md")
 reference_relpath(slug) = "95-reference/" * slug * ".md"
 
 function write_reference_pages()
-    ns = setdiff(public_names(), REFERENCE_EXEMPT)
+    ns = filter(!reference_exempt, public_names())
     undocumented = filter(n -> !Docs.hasdoc(AIFloats, n), ns)
     isempty(undocumented) || error(
         "public bindings without documentation: " * join(undocumented, ", ") *
-        "\ndocument them, or add a reviewed entry to REFERENCE_EXEMPT " *
+        "\ndocument them, or add a reviewed exemption to `reference_exempt` " *
         "(docs/refinedocs2.md P1-2)")
 
     mkpath(REFERENCE_DIR)

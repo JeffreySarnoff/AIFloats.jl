@@ -19,7 +19,7 @@ var documenterMenuSections = {
   "95-reference/10-core.html": [["Formats", "Formats"], ["Format-axes", "Format axes"], ["Format-queries", "Format queries"], ["Datums-and-the-codec", "Datums and the codec"], ["Datum-display", "Datum display"], ["Projections", "Projections"], ["Index", "Index"]],
   "95-reference/20-operations.html": [["Scalar-operations", "Scalar operations"], ["Array-kernels-and-tables", "Array kernels and tables"], ["Packed-storage", "Packed storage"], ["Index", "Index"]],
   "95-reference/30-blocks.html": [["Block-containers", "Block containers"], ["Block-conversions", "Block conversions"], ["Block-operations", "Block operations"], ["Scaled-operations", "Scaled operations"], ["Index", "Index"]],
-  "95-reference/40-governance.html": [["Conformance-and-κ", "Conformance and κ"], ["External-formats", "External formats"], ["Carriers-and-expert-controls", "Carriers and expert controls"], ["Index", "Index"]],
+  "95-reference/40-governance.html": [["Conformance-and-ϰ", "Conformance and ϰ"], ["External-formats", "External formats"], ["Types-and-formats", "Types and formats"], ["Index", "Index"]],
   "96-algorithms.html": [["alg-stochastic", "Stochastic rounding"], ["alg-enclosure", "Interval enclosure"], ["alg-sticky", "The sticky protocol"], ["References", "References"]],
   "index.html": [["Installation", "Installation"], ["Where-to-go-next", "Where to go next"], ["Contributors", "Contributors"]],
 };
