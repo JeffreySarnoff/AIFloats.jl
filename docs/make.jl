@@ -319,6 +319,8 @@ makedocs(;
     sitename = "AIFloats.jl",
     format = Documenter.HTML(;
         canonical = "https://JeffreySarnoff.github.io/AIFloats.jl",
+        # Cascading sidebar collapse; see the file for what CSS alone cannot do.
+        assets = ["assets/collapse.js"],
         # Direct `.html` targets work both on the deployed site and when a
         # generated build is opened from disk. Pretty directory URLs require
         # an HTTP server to resolve `path/` to `path/index.html`; without one,
