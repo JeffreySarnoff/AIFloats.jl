@@ -311,10 +311,16 @@ it were the signed row at `K + 1`.
 
 !!! note "Scope of the measurement"
     `Add` and `Multiply` only, over every ordered pair of finite operands.
-    Enclosure-evaluated operations (`Exp`, `Log`, …) are not included: their
-    exact results are generally irrational, so `ν` has no finite binary
-    expansion and an exact sub-grid tie essentially never arises. The figures
-    above are therefore the *high* end for a given format and `N`.
+    Enclosure-evaluated operations (`Exp`, `Log`, …) are not tabulated: their
+    exact results are irrational most of the time, so `ν` has no finite binary
+    expansion and an exact sub-grid tie essentially never arises.
+
+    That omission does not weaken the guidance. `Add` and `Multiply` — together
+    with `FMA` — are the operations training and inference perform most, so what
+    is tabulated is what dominates a real workload. The elementary functions
+    both tie less often *and* are called less often. The figures above are
+    reasonable guidance for choosing between `RSB` and `RSC`, not a bound to be
+    discounted.
 
 ### Choosing a variant
 
