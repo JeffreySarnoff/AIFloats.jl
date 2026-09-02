@@ -71,20 +71,48 @@ Once the package is registered, `Pkg.add("AIFloats")` will be the short form.
 
 ## Where to go next
 
+The documentation is in four parts, and the menu on the left follows the same shape.
+
+**Learn the model.** Read in order the first time; each page assumes the one before it.
+
 | Page | What it covers |
 |:--|:--|
 | [Getting started](@ref getting-started) | Build a format and ask it questions, step by step |
-| [Concepts](@ref concepts) | What K, P, S, and D mean, and why the rules are what they are |
-| [Binary formats](@ref formats) | The full `Binary` API — construction, accessors, validity, display |
-| [Projections](@ref projections) | Rounding and saturation modes, and the projections that pair them |
-| [Operations](@ref operations) | The register: signatures, result formats, refusals, correctness route |
-| [Algorithms](@ref algorithms) | How the results are obtained: stochastic rounding, interval enclosure, the sticky protocol |
-| [Basic examples](@ref examples-basic) | Construct datums, calculate, inspect, and convert |
-| [Intermediate examples](@ref examples-intermediate) | Explicit projections, stochastic rounding, and arrays |
-| [Advanced examples](@ref examples-advanced) | Packed storage, blocks, reductions, and block conversion |
-| [Technical examples](@ref examples-technical) | Carrier, table-policy, conformance, and oracle diagnostics |
-| [Implementation status](@ref status) | What is implemented and what is not |
-| [Reference](@ref reference) | Every documented name |
+| [Concepts](@ref concepts) | What `K`, `P`, `S` and `D` mean, and why the rules are what they are |
+| [Binary formats](@ref formats) | The `F` / `T` / `x` model, aliases, queries, validity, display |
+| [Projections](@ref projections) | Rounding and saturation modes, the projections that pair them, and the defaults |
+| [Operations](@ref operations) | The register: signatures, result formats, refusals, and how each result is reached |
+
+**Worked examples.** Every block runs on its own in a fresh session.
+
+| Page | What it covers |
+|:--|:--|
+| [Basic examples](@ref examples-basic) | Construct datums, calculate, inspect, convert |
+| [Intermediate examples](@ref examples-intermediate) | Explicit projections, saturation, the stochastic contract, arrays |
+| [Advanced examples](@ref examples-advanced) | Packed storage, blocks, reductions, block conversion |
+| [Technical examples](@ref examples-technical) | Table policy, cache snapshots, diagnostics, conformance |
+
+**Look something up.** Generated, and complete by construction.
+
+| Page | What it covers |
+|:--|:--|
+| [Reference](@ref reference) | Every exported and `public` name, in four listings |
+| [Formats, datums, projections](@ref) | `Binary`, the axes and queries, `BinaryValue` and the codec, display, projections |
+| [Operations, kernels, storage](@ref) | The register operations, `vmap`/`vmap!`, the table policy surface, `PackedVector` |
+| [Blocks and scaled operations](@ref) | `Block`, `BlockVector`, and the generated `Block*` and `Scaled*` families |
+| [Conformance](@ref) | `conformance` and the ϰ registry, the IEEE 754 aliases, carrier-level types and switches |
+| [Benchmark results](@ref benchmarks) | Generated from a run of the suite, with the commit and machine it describes |
+
+**How it works, and how to work on it.** Mechanism rather than interface — none of it is a
+stable contract.
+
+| Page | What it covers |
+|:--|:--|
+| [Algorithms](@ref algorithms) | Stochastic rounding, interval enclosure, and the sticky protocol |
+| [Implementation](@ref status) | What is implemented, the deliberate limits, and what costs what |
+| [Dyadic Numbers](@ref dyadic-numbers) | The exact carrier behind the block reductions |
+| [FMA](@ref fma128) · [FAA](@ref faa128) | The pure-Julia fused operations for `Float128` |
+| [Contributing](@ref contributing) · [Developing](@ref dev_docs) | Filing an issue; running the tests, the benchmarks and the docs build |
 
 ## Contributors
 
