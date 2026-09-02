@@ -26,8 +26,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
     var entry = toggle.closest("li");
     if (entry === null) return;
+
     entry.querySelectorAll("input.collapse-toggle").forEach(function (nested) {
-      if (nested !== toggle) nested.checked = false;
+      if (nested === toggle) return;
+      nested.checked = false;
+      // Setting `checked` from script fires no `change` event, so the recorded
+      // state has to be cleared here or the group would spring back open after
+      // the next navigation.
+      var label = nested.nextElementSibling;
+      if (label !== null) setOpen("group:" + label.textContent.trim(), false);
+    });
+
+    // Page entries nested inside the group collapse with it, for the same
+    // reason and by the same rule: an entry re-opens showing one level.
+    entry.querySelectorAll("a.tocitem.has-internal-toggle").forEach(function (nested) {
+      var list = nested.nextElementSibling;
+      if (list === null || !list.classList.contains("internal")) return;
+      list.classList.add("is-collapsed");
+      nested.classList.add("is-closed");
+      setOpen(keyFor(nested.getAttribute("href") || ""), false);
     });
   });
 
@@ -71,15 +88,49 @@ document.addEventListener("DOMContentLoaded", function () {
     return list;
   }
 
+  // Which entries are open survives a navigation. Without that, clicking an
+  // entry name costs TWO clicks to see anything: the first navigates, the page
+  // reloads, and the freshly built menu has forgotten the click ever happened.
+  // sessionStorage rather than localStorage — this is the shape of one visit,
+  // not a preference, and a new session should open with the menu closed.
+  var OPEN_KEY = "documenter-open-sections";
+
+  function readOpen() {
+    try {
+      return JSON.parse(window.sessionStorage.getItem(OPEN_KEY)) || [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function writeOpen(keys) {
+    try {
+      window.sessionStorage.setItem(OPEN_KEY, JSON.stringify(keys));
+    } catch (e) {
+      /* private browsing, file:// with storage disabled — the menu still works,
+         it just forgets between pages */
+    }
+  }
+
+  function setOpen(key, open) {
+    var keys = readOpen().filter(function (k) { return k !== key; });
+    if (open) keys.push(key);
+    writeOpen(keys);
+  }
+
+  var openOnLoad = readOpen();
+
   // An entry is a page link (<a>) rather than a group label (<label>); the
   // groups have their own toggle already.
   menu.querySelectorAll("li > a.tocitem").forEach(function (entry) {
+    var href = entry.getAttribute("href") || "";
+    var key = keyFor(href);
     var sections = entry.nextElementSibling;
     var own = sections !== null && sections.tagName === "UL" &&
               sections.classList.contains("internal");
 
     if (!own) {
-      var headings = sectionsFor[keyFor(entry.getAttribute("href") || "")];
+      var headings = sectionsFor[key];
       if (!headings || headings.length === 0) return;
       sections = buildSections(entry, headings);
     }
@@ -89,24 +140,53 @@ document.addEventListener("DOMContentLoaded", function () {
     chevron.className = "docs-chevron";
     entry.appendChild(chevron);
 
-    // Start CLOSED, so every entry with more under it arrives showing the same
-    // marker, and the marker means the same thing wherever it appears: `>`
-    // there is more here, `v` here it is.
-    sections.classList.add("is-collapsed");
-    entry.classList.add("is-closed");
+    var isCurrent = entry.closest("li.is-active") !== null;
+
+    // Closed unless this visit left it open, so a fresh arrival shows every
+    // entry the same way and the marker means the same thing everywhere:
+    // `>` there is more here, `v` here it is.
+    if (openOnLoad.indexOf(key) === -1) {
+      sections.classList.add("is-collapsed");
+      entry.classList.add("is-closed");
+    }
+
+    function toggle() {
+      var closed = sections.classList.toggle("is-collapsed");
+      entry.classList.toggle("is-closed");
+      setOpen(key, !closed);
+    }
 
     entry.addEventListener("click", function (event) {
-      // On the page being read the link goes nowhere useful, so the click is
-      // the toggle. Elsewhere the first click should still navigate — but only
-      // when it lands on the entry name, not on the marker, which is a control
-      // and nothing else.
-      var onMarker = event.target === chevron;
-      if (!onMarker && !entry.classList.contains("is-current")) return;
-      event.preventDefault();
-      sections.classList.toggle("is-collapsed");
-      entry.classList.toggle("is-closed");
+      if (event.target === chevron) {
+        // The marker is a control and nothing else: it opens the entry where
+        // the reader is, without taking them anywhere.
+        event.preventDefault();
+        toggle();
+        return;
+      }
+      if (isCurrent) {
+        // The link points at the page already being read, so it goes nowhere
+        // useful. Spend the click on the toggle.
+        event.preventDefault();
+        toggle();
+        return;
+      }
+      // Elsewhere the name navigates — and records that its sections should be
+      // showing when the reader lands, so one click is one click.
+      setOpen(key, true);
     });
+  });
 
-    if (entry.closest("li.is-active") !== null) entry.classList.add("is-current");
+  // A group's checkbox is Documenter's, but its open state should survive a
+  // navigation for the same reason.
+  menu.querySelectorAll("input.collapse-toggle").forEach(function (box) {
+    var label = box.nextElementSibling;
+    var name = label === null ? null : label.textContent.trim();
+    if (name === null) return;
+    var key = "group:" + name;
+    if (openOnLoad.indexOf(key) !== -1) box.checked = true;
+    box.addEventListener("change", function () {
+      setOpen(key, box.checked);
+    });
   });
 });
