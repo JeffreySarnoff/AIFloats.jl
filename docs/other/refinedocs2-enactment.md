@@ -78,16 +78,16 @@ stay untracked, because those *are* derivations.
 
 What the fresh run settled:
 
-- **`BlockReduceMultiply` is not on a slow path.** It is 3.7x (`B = 16`) and
-  3.8x (`B = 32`) *faster* than `BlockReduceAdd`, and still 1.4x faster on
-  rung 2 — only possible if its exact `Dyadic` guard passes, because the
-  `BigFloat` fallback is far slower than either. The old "always takes the
+- **`BlockReduceMultiply` is not on a slow path.** Across runs it is 3.6–3.9x
+  *faster* than `BlockReduceAdd` at `B = 16` and `B = 32`, and still ~1.4x
+  faster on rung 2 — only possible if its exact `Dyadic` guard passes, because
+  the `BigFloat` fallback is far slower than either. The old "always takes the
   `BigFloat` path" claim was not merely stale, it was backwards. A product
   reduction accumulates one significand where a sum aligns `B` of them, which
   is why it wins.
-- **"Wider formats ≈ 3 ns" was hiding a 3.8x spread.** `K = 8` decodes through
-  the generated table, `K = 12` computes, and `K = 16` on rung 2 costs 3.8x
-  `K = 12`. The three are now three rows, not one figure.
+- **"Wider formats ≈ 3 ns" was hiding a ~4x spread.** `K = 8` decodes through
+  the generated table, `K = 12` computes, and `K = 16` on rung 2 costs about
+  four times `K = 12`. The three are now three rows, not one figure.
 - **Packed access costs 1.42x an unpacked kernel**, identically for a cheap
   (`Negate`) and an expensive (`Exp`) operation — not the "about 3x" the status
   page claimed. That it is the same ratio for both is the point: the cost is
@@ -95,8 +95,11 @@ What the fresh run settled:
 - **Load is ~68 ms, not ~57 ms, and the first block reduction is ~2 ms, not
   sub-millisecond.** Both removed claims were wrong, and in the flattering
   direction.
-- Threading on four threads reaches 3.5–3.8x, inside the range the status page
+- Threading on four threads reaches 3.5–3.9x, inside the range the status page
   already stated.
+
+Figures above are the stable band across two runs on the same machine; the
+committed page is the authority for any single number.
 
 Prose remains free of hand-entered absolutes (PERF-2); the status page now names
 the rows to compare instead.
@@ -122,7 +125,7 @@ the rows to compare instead.
 | V-3 `test-doc-contracts.jl` | 2043 assertions, all pass |
 | V-4 example isolation | every `@example` block imports what it uses and is executed by the build |
 | V-5 link check | `.lychee.toml` corrected; `lychee` is not installed on this machine, so CI runs it |
-| PERF-1 benchmark regeneration | suite re-run from a clean tree at `c38f241`; page regenerated and tracked |
+| PERF-1 benchmark regeneration | suite re-run from a clean tree at `773d5f4`; page regenerated and tracked |
 | V-6 focused tests | `test-quality`, `test-binary-format`, `test-traits`, `test-governance`, `test-binaryvalue`, `test-tables`, `test-kernels`, `test-compat` — all pass |
 
 `Pkg.test()` was deliberately not run, per the plan.
