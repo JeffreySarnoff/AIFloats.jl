@@ -84,22 +84,26 @@ suite — the group affects speed, never the result.
 
 | Kind | Operations | Route |
 |:--|:--|:--|
-| **Ring** | `Abs`, `Negate`, `Add`, `Subtract`, `Multiply`, `FMA`, `FAA`, `Clamp` | exact evaluation — an error-free transform or an exact escalation |
+| **Ring arithmetic** | `Negate`, `Add`, `Subtract`, `Multiply`, `FAA`, `FMA` | error-free computation |
+| **Selection based** | `Abs`, `Clamp`, `CopySign`, `{Minimum, Maximum}[Magnitude][Number]`, `{Minimum, Maximum}Finite` | exact order-based selection from a constrained set |
 | **Enclosure** | `Sqrt`, `Divide`, `Exp`, `Log`, the trigonometric and hyperbolic families, and their π-scaled and inverse forms, … | the correctly rounded [interval-enclosure ladder](@ref alg-enclosure) |
-| **Selection** | `{Minimum, Maximum}[Magnitude][Number]`, `{Minimum, Maximum}Finite`, `CopySign` | an exact selection among the operands |
 | **Projection** | [`Convert`](@ref) | a projection with no arithmetic of its own |
 
-Ring and Selection are both exact, and differ in how: a ring operation **computes** the
-result, a selection **chooses** one of the operands.
+The first two kinds are both exact, and differ in how: ring arithmetic **computes** a
+result the operands do not contain, while a selection **chooses** one that they do.
 
-The Selection row is a schema: `[…]` is optional and `{…}` is a choice, so it spells out
-the ten extremum names plus `CopySign`. `Magnitude` and `Finite` do not combine — there is
-no `MinimumMagnitudeFinite` — which is why the `Finite` pair is written separately rather
-than folded into one pattern.
+The selection row is a schema — `[…]` optional, `{…}` a choice — spelling out the ten
+extremum names. `Magnitude` and `Finite` do not combine, there being no
+`MinimumMagnitudeFinite`, so the `Finite` pair is written separately rather than folded
+into a single pattern that would name an operation the register does not have.
 
-These names are this documentation's. The registry stores them as the letters
-`AIFloats.operationinfo` reports — `:A` for Ring, `:B` for Enclosure, `:C` for Selection,
-`:conv` for Projection.
+!!! note "These kinds are finer than the registry's groups"
+    `AIFloats.operationinfo` reports `:B` for Enclosure and `:conv` for Projection, but it
+    does not draw the line above: `Abs` and `Clamp` are recorded `:A` alongside the ring
+    operations, while the extremum family and `CopySign` are `:C`. The registry groups by
+    **evaluation route**, and `Abs` and `Clamp` reach an exact answer the same way the ring
+    operations do. The Kind column groups by what the operation *does with its operands*,
+    which is the more useful reading here and the coarser one there.
 
 [Algorithms](@ref alg-enclosure) explains how the enclosure route *proves* a result is
 correctly rounded rather than merely computing it carefully, and why no fixed working
