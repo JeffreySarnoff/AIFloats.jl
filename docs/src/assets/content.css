@@ -1,0 +1,15 @@
+/* Page-content tweaks. Separate from assets/sidebar.css, which is about the
+   menu. */
+
+/* A table's first column is its key: the signature, format or name the rest of
+   the row is about. Letting an inline code span break across lines there turns
+   one identifier into what looks like two, and costs more width in ragged edges
+   than holding it on one line does.
+   
+   Scoped to code spans inside table cells. Inline code in a PARAGRAPH must stay
+   breakable — a long signature in running prose that cannot wrap pushes the
+   whole page sideways. */
+#documenter .content table td:first-child code,
+#documenter .content table th:first-child code {
+  white-space: nowrap;
+}

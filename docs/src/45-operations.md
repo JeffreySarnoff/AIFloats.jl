@@ -50,9 +50,9 @@ julia> vmap(:Add, F, RTE_SN, [x, y], [y, x])   # 4. elementwise over arrays
 | Form | Result format | Projection | Notes |
 |:--|:--|:--|:--|
 | `Op(fr, ρ, xs...)` | `fr`, explicit | `ρ`, explicit | the draft's shape; operands may be of **different** formats |
-| `Op(xs...)` | the shared operand format | task-local [`DefaultProjection`](@ref), resolved once | operands must share a format |
+| `Op(xs...)` | the shared operand format | [`DefaultProjection`](@ref) (task) resolves once | operands must share a format |
 | `Op(ρ, x)` | the operand's format | `ρ`, explicit | unary operations only |
-| `vmap(:Op, fr, ρ, As...)` | `fr` | `ρ`, resolved once per call | see [`vmap!`](@ref) to write into an existing array |
+| `vmap(:Op, fr, ρ, As...)` | `fr`, explicit | `ρ`, resolved once per call | see [`vmap!`](@ref) to write into an existing array, which takes the result format from `dest` instead |
 
 `fr` accepts a [`Binary`](@ref) format type, a datum type, or an alias — all three name the
 same format:

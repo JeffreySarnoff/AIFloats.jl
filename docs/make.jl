@@ -400,7 +400,8 @@ build_docs() = makedocs(;
         # Sidebar menu behaviour Documenter's CSS cannot express on its own:
         # a collapse that cascades, and an accordion on the active page's own
         # section list. See the files.
-        assets = ["assets/sidebar.css", "assets/menu-sections.js", "assets/sidebar.js"],
+        assets = ["assets/sidebar.css", "assets/content.css",
+                  "assets/menu-sections.js", "assets/sidebar.js"],
         # Direct `.html` targets work both on the deployed site and when a
         # generated build is opened from disk. Pretty directory URLs require
         # an HTTP server to resolve `path/` to `path/index.html`; without one,
@@ -435,6 +436,43 @@ build_docs()
 # and an output of it, so the first build after a page's headings change ships
 # the previous map; rebuilding with the new one settles it. An unchanged tree
 # takes this branch never.
+# Documenter checks `@ref` links, and lychee checks that pages exist — neither
+# checks that a FRAGMENT resolves. A link into `page.html#anchor` whose anchor was
+# renamed still renders, still points at a real page, and still lands the reader
+# nowhere near what it named. Every internal `page.html#fragment` in the built
+# site is verified here, which also holds any hand-written link inside a
+# `@raw html` block to the same standard as an `@ref`.
+function check_fragments()
+    build = joinpath(@__DIR__, "build")
+    ids = Dict{String, Set{String}}()
+    pages = String[]
+    for (root, _, files) in walkdir(build), f in files
+        endswith(f, ".html") || continue
+        rel = replace(relpath(joinpath(root, f), build), '\\' => '/')
+        push!(pages, rel)
+        html = read(joinpath(root, f), String)
+        ids[rel] = Set(m.captures[1] for m in eachmatch(r"\sid=\"([^\"]+)\"", html))
+    end
+    bad = String[]
+    for page in pages
+        dir = dirname(page)
+        html = read(joinpath(build, page), String)
+        for m in eachmatch(r"href=\"([^\":#]+\.html)#([^\"]+)\"", html)
+            target = normpath(joinpath(dir, m.captures[1]))
+            target = replace(target, '\\' => '/')
+            haskey(ids, target) || (push!(bad, "$page -> $(m.captures[1]) (no such page)"); continue)
+            frag = replace(m.captures[2], "&amp;" => "&", "&#39;" => "'", "&quot;" => "\"")
+            frag in ids[target] ||
+                push!(bad, "$page -> $(m.captures[1])#$(frag) (no such anchor)")
+        end
+    end
+    isempty(bad) || error("dangling internal fragment link(s):\n  " * join(unique(bad), "\n  "))
+    @info "internal fragment links check out" pages = length(pages)
+    return nothing
+end
+
+check_fragments()
+
 let fresh = render_menu_sections(collect_menu_sections())
     if fresh != read(MENU_SECTIONS_JS, String)
         @info "menu section map changed; rebuilding so the sidebar ships it"
