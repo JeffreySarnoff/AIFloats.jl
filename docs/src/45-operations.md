@@ -84,13 +84,18 @@ suite — the group affects speed, never the result.
 
 | Kind | Operations | Route |
 |:--|:--|:--|
-| **Ring** | `Add`, `Subtract`, `Multiply`, `FMA`, `FAA`, `Abs`, `Negate`, `Clamp` | exact evaluation — an error-free transform or an exact escalation |
-| **Enclosure** | `Exp`, `Log`, `Sqrt`, `Divide`, the trigonometric, hyperbolic, and π-scaled families, `Hypot`, `Softplus`, … | the correctly rounded [interval-enclosure ladder](@ref alg-enclosure) |
-| **Selection** | the extremum family (`Minimum`, `MaximumMagnitudeNumber`, `MinimumFinite`, …) | an exact selection among the operands |
+| **Ring** | `Abs`, `Negate`, `Add`, `Subtract`, `Multiply`, `FMA`, `FAA`, `Clamp` | exact evaluation — an error-free transform or an exact escalation |
+| **Enclosure** | `Sqrt`, `Divide`, `Exp`, `Log`, the trigonometric and hyperbolic families, and their π-scaled and inverse forms, … | the correctly rounded [interval-enclosure ladder](@ref alg-enclosure) |
+| **Selection** | `{Minimum, Maximum}[Magnitude][Number]`, `{Minimum, Maximum}Finite`, `CopySign` | an exact selection among the operands |
 | **Projection** | [`Convert`](@ref) | a projection with no arithmetic of its own |
 
 Ring and Selection are both exact, and differ in how: a ring operation **computes** the
 result, a selection **chooses** one of the operands.
+
+The Selection row is a schema: `[…]` is optional and `{…}` is a choice, so it spells out
+the ten extremum names plus `CopySign`. `Magnitude` and `Finite` do not combine — there is
+no `MinimumMagnitudeFinite` — which is why the `Finite` pair is written separately rather
+than folded into one pattern.
 
 These names are this documentation's. The registry stores them as the letters
 `AIFloats.operationinfo` reports — `:A` for Ring, `:B` for Enclosure, `:C` for Selection,
