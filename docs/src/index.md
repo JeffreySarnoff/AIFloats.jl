@@ -116,6 +116,9 @@ stable contract.
 
 ## Contributors
 
+This work would not have been possible without the ongoing contributions from many
+members of the IEEE SA Working Group P3109.
+
 ```@raw html
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
