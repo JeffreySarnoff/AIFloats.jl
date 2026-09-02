@@ -85,17 +85,18 @@ suite — the group affects speed, never the result.
 | Kind | Operations | Route |
 |:--|:--|:--|
 | **Ring arithmetic** | `Negate`, `Add`, `Subtract`, `Multiply`, `FAA`, `FMA` | error-free computation |
-| **Selection based** | `Abs`, `Clamp`, `CopySign`, `{Minimum, Maximum}[Magnitude][Number]`, `{Minimum, Maximum}Finite` | exact order-based selection from a constrained set |
+| **Selection based** | `{Minimum, Maximum}[Magnitude]{Number, Finite}`, `Clamp` | exact order-based selection from a constrained set |
 | **Enclosure** | `Sqrt`, `Divide`, `Exp`, `Log`, the trigonometric and hyperbolic families, and their π-scaled and inverse forms, … | the correctly rounded [interval-enclosure ladder](@ref alg-enclosure) |
 | **Projection** | [`Convert`](@ref) | a projection with no arithmetic of its own |
 
 The first two kinds are both exact, and differ in how: ring arithmetic **computes** a
 result the operands do not contain, while a selection **chooses** one that they do.
 
-The selection row is a schema — `[…]` optional, `{…}` a choice — spelling out the ten
-extremum names. `Magnitude` and `Finite` do not combine, there being no
-`MinimumMagnitudeFinite`, so the `Finite` pair is written separately rather than folded
-into a single pattern that would name an operation the register does not have.
+The selection row is a schema — `[…]` optional, `{…}` a choice — naming the shape of the
+extremum family rather than enumerating it. Not every combination the pattern admits
+exists (there is no `MinimumMagnitudeFinite`), and the family also holds the bare
+`Minimum` and `Maximum`. `AIFloats.operations()` is the complete and authoritative list;
+this table is a map of the routes, not a census.
 
 !!! note "These kinds are finer than the registry's groups"
     `AIFloats.operationinfo` reports `:B` for Enclosure and `:conv` for Projection, but it
