@@ -43,7 +43,7 @@ const PAGES = [
     # reaches them after the pages that state the contracts.
     "Algorithms" => "96-algorithms.md",
     "97-internals.md",
-    "Fused Ops" => [
+    "Fused Ops (internal)" => [
         "FMA" => "98-fma128.md",
         "FAA" => "99-faa128.md",
     ],
