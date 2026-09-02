@@ -1,22 +1,13 @@
-/* Companion to assets/sidebar.js — the accordion on the active page's own
-   section list.
+/* Companion to assets/sidebar.js.
    
-   Two things the theme does for a collapsible GROUP and not for a page entry,
-   because it styles `label.tocitem` and a page entry is an <a>:
+   Two jobs: give a page entry's accordion the layout the theme gives a
+   collapsible group, and replace the icon-font chevron everywhere with plain
+   text.
    
-   1. Layout. `label.tocitem { display: flex }` with a `flex-grow` on the label
-      text is what puts a group's chevron in the menu's right-hand column. An
-      anchor inherits none of it, so an appended chevron lands immediately after
-      the entry name.
-   
-   2. The icon font. The ONLY rule supplying it is
-      `… label.tocitem .docs-chevron::before { font-family: "Font Awesome 6 Free" }`.
-      Without it, `content: "\f078"` is a Private Use Area codepoint rendered in
-      the body font — a tofu box after the entry name rather than a chevron.
-      That is a glyph, not a control, and it does not go away on a second click
-      because only its codepoint changes.
-   
-   Selectors mirror the theme's own depth so specificity is never in question. */
+   Layout. `label.tocitem { display: flex }` with a `flex-grow` on the label text
+   is what puts a GROUP's marker in the menu's right-hand column. A page entry is
+   an <a>, not a <label>, so it inherits none of that and an appended marker
+   would land immediately after the entry name. */
 
 #documenter .docs-sidebar ul.docs-menu a.tocitem.has-internal-toggle {
   display: flex;
@@ -24,7 +15,7 @@
   cursor: pointer;
 }
 
-/* `auto` rather than a fixed gap: it consumes the free space, so the chevron
+/* `auto` rather than a fixed gap: it consumes the free space, so the marker
    sits against the right edge exactly where a group's does, at any width.
    Deliberately not wrapping the entry text in a `docs-label` span the way the
    groups do — that span carries `margin-left: 0.3em`, which would push these
@@ -33,16 +24,46 @@
   margin-left: auto;
 }
 
-/* Down while the sections show, right while they are hidden — the same glyphs,
-   the same font, and the same direction of meaning as the groups. */
+/* PLAIN-TEXT MARKERS.
+   
+   The theme draws these from Font Awesome, at Private Use Area codepoints
+   \f054 and \f078. That is one more font a menu marker need not depend on, and
+   when the font does not apply the codepoint renders as a tofu box rather than
+   as nothing — a failure that looks like a stray character instead of a missing
+   icon. `>` and `v` are ASCII and cannot fail that way.
+   
+   The font properties are reset explicitly: without that, `>` and `v` would be
+   looked up in Font Awesome, which has no glyph for either. `font-size` returns
+   to the menu's own, since text markers set two-thirds the size of the text
+   beside them read as debris. Selectors match the theme's exactly, so these win
+   on order rather than on a specificity contest. */
+
+#documenter .docs-sidebar ul.docs-menu .docs-chevron {
+  font-family: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+}
+
+/* A group: closed by default, so `>`; `v` once its checkbox is checked. */
+#documenter .docs-sidebar ul.docs-menu label.tocitem .docs-chevron::before {
+  font-family: inherit;
+  font-weight: inherit;
+  content: " >";
+}
+
+#documenter .docs-sidebar ul.docs-menu input:checked ~ label.tocitem .docs-chevron::before {
+  content: " v";
+}
+
+/* A page entry's own section list: shown by default, so `v`; `>` once closed. */
 #documenter .docs-sidebar ul.docs-menu a.tocitem.has-internal-toggle .docs-chevron::before {
-  font-family: "Font Awesome 6 Free";
-  font-weight: 900;
-  content: "\f078";
+  font-family: inherit;
+  font-weight: inherit;
+  content: " v";
 }
 
 #documenter .docs-sidebar ul.docs-menu a.tocitem.has-internal-toggle.is-closed .docs-chevron::before {
-  content: "\f054";
+  content: " >";
 }
 
 #documenter .docs-sidebar ul.docs-menu ul.internal.is-collapsed {
