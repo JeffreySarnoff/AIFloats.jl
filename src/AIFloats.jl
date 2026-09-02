@@ -61,7 +61,7 @@ PackedVector, packing_saves,
 conformance, conformance_dict, conformance_report, draft_revision, draft_identity,
 measure_kappa, register_approx!, unregister_approx!, approx, list_approx, kappa, kappa_measured,
 ftz_variant,
-# session defaults
+# task-local defaults
 DefaultProjection, with_projection,
 DefaultRoundingMode,
 DefaultSaturationMode,

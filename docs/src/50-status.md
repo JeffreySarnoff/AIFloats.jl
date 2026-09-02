@@ -40,7 +40,7 @@ This page says plainly what exists and what the deliberate limits are.
 | **Blocks** (draft §5) | [`Block`](@ref) `(scale, elements)`; `BlockOp`/`ScaledOp` for every register op (`BlockAdd(FR, ρ, b1, b2, sr)`, `ScaledAdd(FR, ρ, s1, x1, s2, x2)`), the reductions [`BlockReduceAdd`](@ref)/[`BlockReduceMultiply`](@ref)/[`BlockDotProduct`](@ref) with exact accumulators at derived precision, the conversions [`ConvertFromBlock`](@ref)/[`ConvertToBlock`](@ref)/[`ConvertToBlockMaxAbsFinite`](@ref); [`BlockVector`](@ref) structure-of-arrays storage |
 | **Packed storage** | [`PackedVector`](@ref) — code points at `K` bits per element in 64-bit words; kernels run unpack → compute → emit (`AIFloats.vmap(op, F, ρ, pv)`); [`packing_saves`](@ref) |
 | **Performance layers** | the Float64 bit path and the Dyadic fixed-point path of `round_to_precision`, pinned bit-identical to the generic core (35M comparisons); Float128 exactness proofs and the `Sticky` wide-spread escape for Group A; eager Float64/Float128 envelope stages before the MPFR ladder for every enclosure — each switchable (`AIFloats.FAST_ARITH`, `AIFloats.FAST_ENCLOSURE`) and pinned equal to the rigorous path; the `Dyadic` carrier is verified against golden digests captured from SmallFloats' original; pure-Julia `fma128`/`faa128` for `Float128` |
-| **Governance** | [`conformance`](@ref) — the draft-§4.6 declaration derived live from the registry, the table cache, and the κ registry ([`conformance_report`](@ref), [`conformance_dict`](@ref)); [`register_approx!`](@ref)/[`measure_kappa`](@ref) — κ measured by enumeration, understatement rejected; [`ftz_variant`](@ref), the Annex's worked example; [`draft_identity`](@ref) with the retained transliteration's digest |
+| **Governance** | [`conformance`](@ref) — a declaration *shaped by* draft §4.6, derived live from the registry, the table cache, and the κ registry (see the note below: this is not a compliance determination) ([`conformance_report`](@ref), [`conformance_dict`](@ref)); [`register_approx!`](@ref)/[`measure_kappa`](@ref) — κ measured by enumeration, understatement rejected; [`ftz_variant`](@ref), the Annex's worked example; [`draft_identity`](@ref) with the retained transliteration's digest |
 | IEEE 754 aliases | [`binary16`](@ref), [`binary32`](@ref), [`binary64`](@ref), [`binary128`](@ref), [`bfloat16`](@ref) |
 
 Every accessor and predicate works on the `Binary` format type, the `BinaryValue`
@@ -62,18 +62,40 @@ during every documentation build and its output is reproduced verbatim under
 [Benchmark results](@ref benchmarks), so the numbers on this page can be checked
 against the machine that built it.
 
-**Decoding.** `K ≤ 8` decodes through a `@generated` constant table (~1.4 ns);
-wider formats compute the value (~3 ns). Both are allocation-free.
+**Decoding.** `K ≤ 8` decodes through a `@generated` constant table; wider formats
+compute the value from its fields. Both are allocation-free. Wider is not one
+cost: the computed path's carrier follows the format's exponent span, so a
+`K = 16` format on a wider rung decodes materially slower than a `K = 12` one.
+Compare the decode rows on the [benchmark page](@ref benchmarks) rather than
+assuming a single figure for "wider formats".
 
-**Tables.** A unary or binary signature whose operand bits sum to
-`AIFloats.TABLE_EAGER_BITS[]` (16) or fewer is memoized on first array use, and
-subsequent calls are a flat indexed gather — for `K = 8` binary `Add` at
-65,536 elements that is ~15 µs against ~240 µs of computation. The band is a
-bound on *build time*: the gate sees only the formats, not the call's length,
-so it is deliberately set where a first call can afford the build. Signatures
-above it always compute. Ternary signatures additionally have an adaptive band
-(`TERNARY_ADAPTIVE_BITS`) that builds only after a signature has processed
-`TERNARY_BUILD_ELEMS` cumulative elements.
+**Tables.** A pure-projection array call may gather from a memoized result
+table instead of computing each element. Which happens is decided by
+[`table_policy`](@ref), from the operand bit-sum `ΣK`, the arity, the byte
+budget, and — in the adaptive bands — how many elements that signature has
+already processed. Every outcome:
+
+| `state` | When | Effect |
+|:--|:--|:--|
+| `:eager` | `ΣK ≤ TABLE_EAGER_BITS[]` (unary/binary) or `TERNARY_EAGER_BITS[]` (ternary) | fetch or build now, whatever the call's length |
+| `:adaptive_cached` | in the adaptive band and already built | gather |
+| `:adaptive_earned` | in the adaptive band, and cumulative elements reach the threshold | build, then gather |
+| `:adaptive_pending` | in the adaptive band, threshold not yet reached | compute per element |
+| `:over_adaptive_band` | `ΣK` beyond `TABLE_ADAPTIVE_BITS[]` / `TERNARY_ADAPTIVE_BITS[]` | compute per element |
+| `:over_byte_budget` | the table would exceed the per-table ceiling | compute per element |
+| `:stochastic` | the projection is stochastic | compute per element; never tabled |
+
+**Binary signatures have an adaptive band too** — `AIFloats.TABLE_ADAPTIVE_BITS`
+and `AIFloats.TABLE_BUILD_ELEMS` — not only ternary ones. The eager gate cannot
+see the call's length, so it stays where a *first* call can afford the build;
+the adaptive gate does see it, and admits signatures whose tables cost
+milliseconds once the work justifies them. Thresholds live in
+`src/tables/policy.jl`, each with the measurement that set it; ask
+`table_policy` rather than transcribing a number.
+
+The gather is a flat indexed read and is dramatically cheaper than recomputing;
+see the array rows on the [benchmark page](@ref benchmarks) for the ratio on the
+machine that built them.
 
 **Threading.** Compute kernels thread above `AIFloats.THREAD_MIN_ELEMS[]`
 (1024), giving roughly 2.7–4x on four threads. The measured crossover is near
@@ -95,9 +117,10 @@ depends on the scheduler. Stochastic signatures are never tabled.
 
 **Packed storage.** [`PackedVector`](@ref) saves memory only when
 [`packing_saves`](@ref) is `true` (that is, when `K` is not the storage unit's
-width). It trades compute for that memory: a tabled unary `vmap` over packed
-input runs about 3x an unpacked one, because the codes must be extracted from
-the bit stream before they can index the table.
+width). It trades compute for that memory: bit extraction adds cost before a
+code can index a table, and how much depends on the operation. Measure retained
+size and throughput together, against the packed rows on the
+[benchmark page](@ref benchmarks), rather than assuming a single ratio.
 
 **Blocks.** When a block's scale and elements both decode to `Float64` and
 every lane product is exact, [`BlockReduceAdd`](@ref) and
@@ -105,8 +128,11 @@ every lane product is exact, [`BlockReduceAdd`](@ref) and
 allocate nothing (~270 ns and ~300 ns at `B = 16`). Wider carriers, non-finite
 lanes, or a lane spread beyond `Dyadic`'s exact alignment band fall back to
 `BigFloat` at a derived precision — always correct, roughly 10x slower.
-`BlockReduceMultiply` always takes the `BigFloat` path: accumulating products
-leaves the exact fixed-point band almost immediately.
+`BlockReduceMultiply` takes the same guarded route — it has a checked exact
+`Dyadic` fast path — but its guard fails sooner: accumulating products leaves
+the exact fixed-point band quickly, so in practice it reaches the `BigFloat`
+fallback more often than the sums do. Both paths form the same exact reduction
+and project once; the guard is a performance decision, never a correctness one.
 
 **Default projection.** `DefaultProjection()` reads a
 `ScopedValue{Projection}`: ~4 ns unbound, ~46 ns inside a `with_projection`
@@ -158,11 +184,22 @@ Array operations resolve the default **once per call**, never per element:
 a four-element `Add(A, B)` is 140 ns unbound and 178 ns bound, and the
 difference does not grow with the array.
 
-**First call.** `using AIFloats` is ~57 ms. The precompile workload covers the
-standard profile's hot entries, so first calls to constructors, arithmetic,
-broadcasting, and `B ∈ {4, 16, 32}` block reductions are sub-millisecond.
-A block size outside that set, or an operation outside the workload, compiles
-on first use.
+**First call.** Package load and first-call compilation are measured in fresh
+processes by the `latency` suite and reported on the
+[benchmark page](@ref benchmarks); they are machine-dependent and are not
+restated here. The precompile workload covers the standard profile's hot
+entries — constructors, arithmetic, broadcasting (including four scoped
+projections), and `B ∈ {4, 16, 32}` block reductions — so those first calls are
+fast rather than free. A block size outside that set, an operation outside the
+workload, or a scoped broadcast under a projection the workload does not name
+compiles on first use, and a first scoped broadcast is the expensive case.
+
+!!! warning "`conformance()` is a query, not a certification"
+    The designated Interim Report is an unapproved draft whose cover states that it
+    "must not be utilized for conformance / compliance purposes." [`conformance`](@ref)
+    reports what this package implements, in the *shape* §4.6 describes. It is not IEEE
+    approval, not a certification, and not a compliance determination — by AIFloats or by
+    anyone else.
 
 ## Deliberate limits
 
@@ -176,7 +213,7 @@ on first use.
 ## Consequences
 
 - Everything a datum can do runs through the register under an explicit or
-  session-default [`Projection`](@ref) — `Add(F, ρ, x, y)`, `Add(x, y)`, or `x + y`.
+  task-local-default [`Projection`](@ref) — `Add(F, ρ, x, y)`, `Add(x, y)`, or `x + y`.
 - `sort` places NaN **first** (the draft's total order), not last as for `Float64`.
 - The engine is verified against an independent `BigInt` reference — millions of
   compared decisions per test run, every rounding and saturation mode, plus a

@@ -23,6 +23,30 @@
 # mean "a float carrier", and Dyadic implements ~ten operations rather than the
 # full AbstractFloat obligation. `promotecarrier` targets BigFloat, never this.
 
+"""
+    DyadicNumbers
+
+The rung-3 exact carrier: an exact dyadic rational `S · 2^Q` plus the three
+non-finite rows, with `Dyadic` as its type.
+
+Every datum of every P3109 format is exactly `S · 2^Q` with `|S| < 2^16`, so
+arithmetic on datums is closed and exact here, allocation-free — MPFR buys
+nothing for it. Transcendental fallbacks still escalate to MPFR through an
+exact `BigFloat` image.
+
+`Dyadic <: Real`, deliberately **not** `<: AbstractFloat`: methods elsewhere
+written `::AbstractFloat` mean "a float carrier", and `Dyadic` implements about
+ten operations rather than the full `AbstractFloat` obligation.
+`AIFloats.promotecarrier` targets `BigFloat`, never this.
+
+Implementation detail, and unstable: it is documented on the
+[Internal carriers](@ref internals) page, not in the public reference. Vendored
+from SmallFloats.jl (provenance header in `src/carriers/dyadic.jl`) and
+verified against golden digests in `test/support/dyadic_golden.sha256`.
+
+Not exported; reach it as `AIFloats.DyadicNumbers` and its type as
+`AIFloats.Dyadic`.
+"""
 module DyadicNumbers
 
 export Dyadic, DY_FINITE, DY_POSINF, DY_NEGINF, DY_NAN,

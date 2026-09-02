@@ -71,6 +71,32 @@ Julia-style spelling of [`ValueType`](@ref) — the same function.
 """
 const valuetype = ValueType
 
+# `:foldable` is a promise, and it is an honest one here: the body is pure,
+# terminates, and every component of the result is interned or immortal — Ints,
+# Bools, a Symbol, and types. Without it the call does not fold, because
+# `formatname` builds its Symbol through a String and inference will not prove
+# that consistent on its own; the tuple then costs ~900 bytes on every call
+# instead of vanishing into a literal.
+Base.@assume_effects :foldable @inline function _formatinfo(::Type{F}) where {F<:Binary}
+    (name          = formatname(F),
+     format        = F,
+     datumtype     = BinaryValue{F, CodeType(F)},
+     bitwidth      = Int(BitwidthOf(F)),
+     precision     = Int(PrecisionOf(F)),
+     signed        = is_signed(F),
+     extended      = is_extended(F),
+     exponentbias  = ExponentBiasOf(F),
+     exponentbits  = ExponentBitwidthOf(F),
+     trailingbits  = Int(TrailingSignificantBitsOf(F)),
+     codetype      = CodeType(F),
+     valuetype     = ValueType(F),
+     datumcarrier  = datumcarrier(F),
+     promotecarrier = promotecarrier(F))
+end
+# `Base.@assume_effects` on the worker used to sit between this docstring and
+# the definition, so Documenter attached it to nothing (refinedocs2 P1-2). The
+# effects annotation stays where it is load-bearing; the docstring now sits on
+# `formatinfo`, the public name.
 """
     formatinfo(F) -> NamedTuple
 
@@ -105,27 +131,6 @@ julia> formatinfo(Binary8p4se(1.5)) === info
 true
 ```
 """
-# `:foldable` is a promise, and it is an honest one here: the body is pure,
-# terminates, and every component of the result is interned or immortal — Ints,
-# Bools, a Symbol, and types. Without it the call does not fold, because
-# `formatname` builds its Symbol through a String and inference will not prove
-# that consistent on its own; the tuple then costs ~900 bytes on every call
-# instead of vanishing into a literal.
-Base.@assume_effects :foldable @inline function formatinfo(::Type{F}) where {F<:Binary}
-    (name          = formatname(F),
-     format        = F,
-     datumtype     = BinaryValue{F, CodeType(F)},
-     bitwidth      = Int(BitwidthOf(F)),
-     precision     = Int(PrecisionOf(F)),
-     signed        = is_signed(F),
-     extended      = is_extended(F),
-     exponentbias  = ExponentBiasOf(F),
-     exponentbits  = ExponentBitwidthOf(F),
-     trailingbits  = Int(TrailingSignificantBitsOf(F)),
-     codetype      = CodeType(F),
-     valuetype     = ValueType(F),
-     datumcarrier  = datumcarrier(F),
-     promotecarrier = promotecarrier(F))
-end
+@inline formatinfo(::Type{F}) where {F<:Binary} = _formatinfo(F)
 @inline formatinfo(::Type{BV}) where {BV<:BinaryValue} = formatinfo(BinaryFormatOf(BV))
 @inline formatinfo(x::BinaryValue) = formatinfo(BinaryFormatOf(x))

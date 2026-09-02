@@ -29,7 +29,7 @@ using AIFloats
 T = BinaryValue(Binary5p2se)
 A = T[0.0, 0.5, 1.0, 1.5, 2.0, 3.0]
 P = PackedVector(A)
-F = BinaryFormatOf(T)
+F = Binary5p2se
 negated = vmap(:Negate, F, RTE_SN, P)
 (negated, typeof(negated))
 ```
@@ -58,10 +58,69 @@ back = AIFloats.packedfrombytes(T, bytes, length(A))
 (length(bytes), 8 * length(AIFloats.packedwords(P)), collect(back) == A)
 ```
 
-Both readers validate: a wrong length is a `DimensionMismatch`, and nonzero
-padding in the unused high bits of the final unit is an `ArgumentError`. A
-reader cannot tell a corrupt stream from a differently-conventioned writer, so
-it refuses rather than guessing.
+Both readers validate rather than guess. A reader cannot tell a corrupt stream
+from a differently-conventioned writer, so it refuses:
+
+```@example advanced_pack_refuse
+using AIFloats
+
+T = BinaryValue(Binary5p2se)
+A = T[0.0, 0.5, 1.0, 1.5, 2.0, 3.0]
+bytes = AIFloats.packedbytes(PackedVector(A))
+
+wrong_length = try
+    AIFloats.packedfrombytes(T, bytes, length(A) + 50)
+catch err
+    err
+end
+
+corrupt_padding = copy(bytes)
+corrupt_padding[end] |= 0x80          # set a bit in the unused high padding
+nonzero_padding = try
+    AIFloats.packedfrombytes(T, corrupt_padding, length(A))
+catch err
+    err
+end
+
+(wrong_length, nonzero_padding)
+```
+
+### Copy packed and block storage
+
+`copy`, `similar`, and an exact-type `copyto!` are defined for both containers.
+`similar` returns the *same* concrete container type — packed storage stays
+packed, and a `BlockVector` keeps its block size and both formats in its type:
+
+```@example advanced_copying
+using AIFloats
+
+T = BinaryValue(Binary5p2se)
+A = T[0.0, 0.5, 1.0, 1.5, 2.0, 3.0]
+P = PackedVector(A)
+
+Q = similar(P)
+copyto!(Q, P)
+
+(typeof(Q), typeof(Q) === typeof(P), collect(Q) == A, copy(P) !== P)
+```
+
+```@example advanced_copying_blocks
+using AIFloats
+
+S = Binary8p1uf
+E = Binary5p2se
+bx = Block(S(1.0), (E(1.5), E(0.25), E(-0.5), E(2.0)))
+bv = BlockVector([bx, bx])
+
+bw = similar(bv)
+copyto!(bw, bv)
+
+(typeof(bw) === typeof(bv), size(bw), bw[1] == bx)
+```
+
+`copyto!` requires the exact element type. A `BlockVector`'s type carries its
+block size and both its formats, so a copy between differently shaped
+containers cannot type-check rather than silently reshaping.
 
 ## Build shared-scale blocks
 
@@ -115,6 +174,38 @@ by = Block(S(1.0), (E(0.5), E(0.75), E(1.0), E(-1.0)))
     sum = BlockReduceAdd(E, RTE_SN, bx),
     product = BlockReduceMultiply(E, RTE_SN, bx),
     dot = BlockDotProduct(E, RTE_SN, bx, by),
+)
+```
+
+All three reductions share the guarded route — including
+[`BlockReduceMultiply`](@ref), which has a checked exact fast path like the
+others. Its guard simply fails sooner, because accumulating products leaves the
+exact fixed-point band quickly, so in practice it reaches the `BigFloat`
+fallback more often. Which path ran is not observable in the result, and the
+documentation deliberately does not promise a particular carrier for a
+particular input — only that both paths form the same exact reduction and
+project once.
+
+### Blocks of different widths and precisions
+
+The scale and element formats are independent, and neither has to match the
+result format:
+
+```@example advanced_block_mixed
+using AIFloats
+
+S = Binary8p1uf          # 8-bit scale, precision 1 — the §4.5 scale format
+E = Binary4p2sf          # 4-bit elements, precision 2
+R = Binary8p4se          # a wider, more precise result format
+
+b = Block(S(2.0), (E(1.5), E(0.5), E(-1.0), E(0.25)))
+
+(
+    scale = scaleformat(b),
+    elements = elemformat(b),
+    lanes = AIFloats.blockdecode(b),
+    reduced_into_R = BlockReduceAdd(R, RTE_SN, b),
+    reduced_into_E = BlockReduceAdd(E, RTE_SN, b),
 )
 ```
 

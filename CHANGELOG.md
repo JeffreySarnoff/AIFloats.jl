@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+### Documentation
+
+A documentation-correctness pass (`docs/refinedocs2.md`). Every claim is now
+measured against one normative source — the IEEE Working Group P3109 Interim
+Report on Arithmetic Formats for Machine Learning, version 4.0.3 (2026-09-01),
+whose PDF digest is recorded in `docs/other/p3109-delta.md` and reported by
+`draft_identity()`.
+
+- `draft_identity()` now names the designated report (revision, date, URL, PDF
+  SHA-256) alongside the retained transliteration, and `draft_revision()` and
+  `conformance_report` state plainly that the report is an unapproved draft and
+  that the declaration is **not** a certification.
+- The exponent-bit budget is stated correctly: `(K - S) - (P - 1)`, not
+  `K - P - S`. The concepts page and the `PrecisionOf` docstring both dropped a
+  `+1` and printed 3 and 4 exponent bits where the truth is 4 and 5.
+- The default projection is documented as `RTE_SN`, task-local, everywhere it
+  had been called `RTE_SF`.
+- Every public binding is documented: 173 gaps closed, 153 of them by
+  registry-generated family docstrings for the scalar and `Block*`/`Scaled*`
+  operations. The reference is now generated from `Base.isexported` /
+  `Base.ispublic`, so it holds nothing private and the build fails on a gap.
+- New Operations page; new `test/test-doc-contracts.jl` pinning the facts the
+  documentation asserts about itself.
+- Corrected: the `Binary` docstring's contradictory "append `()`" sentence,
+  `CodeType`/`ValueType` claiming to accept a format instance, a `BinaryValue`
+  doctest that gave `64.0` where the answer is `72.0`, the binary adaptive
+  table band (documented as ternary-only), `BlockReduceMultiply` described as
+  always using `BigFloat`, and installation instructions naming a registry the
+  package is not yet in.
+
+
 ## [0.2.0] - 2026-09-01
 
 An API-consistency release. Every break below is a break on purpose: each one

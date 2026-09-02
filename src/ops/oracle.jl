@@ -17,7 +17,37 @@
 #                    sticky projection of its envelope agrees on one code
 #                    point. Everything else uses the rigorous MPFR ladder.
 # Disabling either costs speed, never correctness.
+"""
+    FAST_ARITH :: Ref{Bool}
+
+Whether Group A operations may take their fast exactness route: direct
+exactness **proofs** on `Float128` (`twosum128`, an fma residual) before
+escalating to exact `BigFloat`, plus the wide-spread [`Sticky`](@ref) escape
+past the alignment band.
+
+Setting it to `false` forces the rigorous route. Both routes are pinned equal
+by the test suite, so this changes speed and never results. It is a global
+diagnostic switch, not a per-call option — restore the previous value in a
+`finally`.
+
+Not exported; call it as `AIFloats.FAST_ARITH[]`.
+"""
 const FAST_ARITH = Ref(true)
+
+"""
+    FAST_ENCLOSURE :: Ref{Bool}
+
+Whether Group B operations and the quotients may take their fast enclosure
+route: an eager `Float64` estimate from a faithful libm (envelope `2^-45`),
+accepted **only** when the two-sided sticky projection of its envelope agrees
+on one code point. Everything else runs the rigorous MPFR ladder.
+
+Setting it to `false` forces the ladder. Disabling it costs speed, never
+correctness — in particular no Quadmath transcendental is ever accepted as
+correctly rounded on its own. Restore the previous value in a `finally`.
+
+Not exported; call it as `AIFloats.FAST_ENCLOSURE[]`.
+"""
 const FAST_ENCLOSURE = Ref(true)
 
 """
@@ -65,6 +95,21 @@ _exactbig(x::Dyadic)   = BigFloat(x)                    # exact at its own width
 # direction: the rung-3 Add's protocol past the alignment band. Sound because
 # DYADIC_ALIGN_MAX (94) > P + N + 2 for every P ≤ 16, N ≤ 60 — the tail is
 # below both the finest stochastic sub-grid unit and any rounding threshold.
+"""
+    Sticky(v, sgn)
+
+A carrier value `v` whose true tail is known to lie strictly below its last
+bit, in the direction `sgn` (`+1` above, `-1` below, `0` exact).
+
+This is the rung-3 `Add` protocol past the alignment band: rather than widen
+the carrier, the exact residue is summarized as a direction. It is sound
+because `DYADIC_ALIGN_MAX` (94) exceeds `P + N + 2` for every `P <= 16` and
+`N <= 60`, so the tail is below both the finest stochastic sub-grid unit and
+any rounding threshold — every §4.7.4 predicate is evaluated on the exact
+fraction `\u03bd + sgn\u00b7\u03b5`.
+
+Not exported; call it as `AIFloats.Sticky`.
+"""
 struct Sticky{T<:CarrierValue}
     v::T
     sgn::Int

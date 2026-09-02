@@ -83,6 +83,20 @@ The eight-way classification of a datum: `ClassNaN`, `ClassNegInf`,
     ClassPosInf
 end
 
+# One line per member so the Reference index resolves each name (refinedocs2
+# P1-2). The family contract lives on `FPClass`; these say where each member
+# sits and nothing more, because there is nothing more to say.
+for (m, what) in ((:ClassNaN,           "the single NaN — first in the draft's total order"),
+                  (:ClassNegInf,        "negative infinity (`EXTENDED` signed formats only)"),
+                  (:ClassNegNormal,     "a negative normal datum"),
+                  (:ClassNegSubnormal,  "a negative subnormal datum (`P > 1` only)"),
+                  (:ClassZero,          "the single zero — P3109 has no negative zero"),
+                  (:ClassPosSubnormal,  "a positive subnormal datum (`P > 1` only)"),
+                  (:ClassPosNormal,     "a positive normal datum"),
+                  (:ClassPosInf,        "positive infinity (`EXTENDED` formats only)"))
+    @eval @doc $("[`FPClass`](@ref) member: " * what * ". Obtain it with [`Class`](@ref).") $m
+end
+
 """
     Class(x::BinaryValue)
 

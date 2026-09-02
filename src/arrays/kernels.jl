@@ -60,8 +60,43 @@ const THREADED_KERNELS = Ref(true)
     length(inds) >= THREAD_MIN_ELEMS[] && inds isa AbstractUnitRange
 
 """
+    vmap(op::Symbol, fr, ρ, A[, B[, C]]; rng) -> Array
+
+Elementwise draft operation over arrays of datums, allocating the result.
+
+`op` is a registry operation name (`AIFloats.operations()` lists them); `fr` is
+the **result** format, and the returned array has element type
+`BinaryValue(fr)` and `A`'s axes. Operand arrays must share those axes. This is
+the array Seam: the same operation spelled `Add(fr, ρ, x, y)` for scalars is
+`vmap(:Add, fr, ρ, A, B)` over arrays.
+
+`ρ` is resolved once per call, never per element. A pure `ρ` gathers from a
+memoized table whenever [`table_policy`](@ref) grants one and otherwise
+computes per element — the same answer either way. A stochastic `ρ` is never
+tabled and runs a sequential loop that draws from one `rng` stream in
+`eachindex` order, so a seeded call is reproducible and independent of the
+scheduler. There is no per-element `R`.
+
+Use [`vmap!`](@ref) to write into an existing array. A [`PackedVector`](@ref)
+operand is accepted for unary operations and produces an ordinary vector.
+
+# Examples
+
+```jldoctest
+julia> F = Binary8p4se; T = BinaryValue(F);
+
+julia> A = T[0.5, 1.0]; B = T[1.0, 2.0];
+
+julia> vmap(:Add, F, RTE_SN, A, B)
+2-element Vector{BinaryValue(Binary8p4se)}:
+ 1.5
+ 3.0
+```
+"""
+function vmap end
+
+"""
     vmap!(dest, op::Symbol, ρ, A[, B[, C]]; rng) -> dest
-    vmap(op::Symbol, fr, ρ, A...; rng) -> Array
 
 Elementwise draft operation over arrays of datums, projecting into `dest`'s
 (or `fr`'s) format under ρ. Pure ρ runs the Shape-A table gather whenever
@@ -226,7 +261,7 @@ end
     vmap(op, BinaryFormatOf(fr), ρ, As...; rng)
 
 # ---- registry-generated array surface: Op(fr, ρ, A...) mirrors the scalar
-# signature, plus the same-format convenience under the session default ρ
+# signature, plus the same-format convenience under the task-local default ρ
 for op in OP_REGISTRY
     op.name === :Convert && continue
     name = op.name

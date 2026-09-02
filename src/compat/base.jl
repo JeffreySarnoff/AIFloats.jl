@@ -1,6 +1,6 @@
 # the Base register — Julia's own vocabulary over datums
 #
-# Every method here is either one same-format register call under the session
+# Every method here is either one same-format register call under the task-local
 # default projection, a code-point read, or a refusal that says why. There is
 # no third semantics: nothing in this file rounds outside `project`.
 #
@@ -296,7 +296,7 @@ end
 # ---- round / floor / ceil / trunc
 #
 # One rounding, not two: the integer-valued result is formed EXACTLY on the
-# carrier and projected once. The saturation mode is the session default's, so
+# carrier and projected once. The saturation mode is the task-local default's, so
 # these agree with the other verbs about the top of the range; the ROUNDING
 # is the one the verb names.
 @inline function _project_default_sat(::Type{F}, μ::RoundingMode, x) where {F<:Binary}
@@ -392,7 +392,7 @@ Base.Bool(x::BinaryValue) = Bool(decode(x))
 # `Real` rather than the narrower `AbstractFloat`, so that this form accepts
 # exactly what the one-argument form accepts — `BinaryValue{F}(3)` works, and
 # `BinaryValue(F, 3)` would be a surprising hole. Forwards to the same guarded
-# constructor, so it inherits the speculation on the session default and costs
+# constructor, so it inherits the speculation on the task-local default and costs
 # the same ~2 ns.
 @inline BinaryValue(::Type{F}, x::Real; kw...) where {F<:Binary} =
     BinaryValue{F, CodeType(F)}(x; kw...)

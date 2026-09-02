@@ -1,13 +1,30 @@
+# Configuration for the `lychee` link check. CI runs
+#   lychee --config '.lychee.toml' .
+# (.github/workflows/Lint.yml), and docs/src/91-developer.md names the same file.
+
+# GitHub and several documentation hosts rate-limit unauthenticated automated
+# requests, and some answer HEAD with 405 while serving GET.
+max_retries = 3
+retry_wait_time = 4
+timeout = 30
+method = "get"
+user_agent = "Mozilla/5.0 (compatible; lychee link checker)"
+
 exclude = [
   "@ref",
   "@[Cc]ite.*",
   "^https://github.com/.*/releases/tag/v.*$",
-  "^https://doi.org/FIXME$",
+  # The stable docs do not resolve until the first tagged release.
   "^https://JeffreySarnoff.github.io/AIFloats.jl/stable/?$",
-  "^https://blog.esciencecenter.nl", # due to a certificate error (cf. #556)
-  "zenodo.org/badge/DOI/FIXME$"
+  "^https://blog.esciencecenter.nl", # certificate error (cf. #556)
+  # The designated P3109 Interim Report. GitHub serves the PDF through a
+  # redirect chain that rate-limits automated requests; what actually pins this
+  # document is the SHA-256 recorded by `draft_identity()`.
+  "^https://github.com/P3109/Public",
 ]
 
 exclude_path = [
-  "docs/build"
+  "docs/build",
+  # Audit evidence and the retained transliteration, not published pages.
+  "docs/other",
 ]

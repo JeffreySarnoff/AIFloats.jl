@@ -6,22 +6,55 @@ DocTestSetup = :(using AIFloats)
 ```
 
 These examples use the exported `Binary8p4se` alias: an eight-bit, four-bit
-precision, signed, extended format.
+precision, signed, extended format. Throughout the documentation `F` is a
+format, `T` a datum type, `x` a datum, `c` a code point, and `ρ` a projection.
 
 ## Construct and inspect values
 
 ```@example basic_construct
 using AIFloats
 
-T = Binary8p4se
-x = T(1.5)
-y = T(0.25)
+F = Binary8p4se          # the format
+T = BinaryValue(F)       # the datum type
+x = F(1.5)
+y = F(0.25)
 
-(x, decode(x), codepoint(x), BinaryFormatOf(x))
+(x, decode(x), codepoint(x), x isa T)
 ```
 
-A `BinaryValue` stores a code point. [`decode`](@ref) returns its exact numeric
-value on the format's carrier; `codepoint` returns the stored encoding.
+A datum stores a code point. [`decode`](@ref) returns its exact numeric value on
+the format's carrier; `codepoint` returns the stored encoding. `formatof(x)`
+recovers the format from a datum you were handed — there is no need for it when
+you already hold `F`.
+
+## Numbers and code points are different arguments
+
+Every constructor argument is a **number**, `Unsigned` included. To name a raw
+code point, use [`fromcode`](@ref):
+
+```@example basic_codes
+using AIFloats
+
+F = Binary8p4se
+(fromcode(F, 0x45), F(0x45), F(69))
+```
+
+`fromcode(F, 0x45)` is the datum living at code point `0x45`. `F(0x45)` is the
+number 69 projected into `F` — the same thing `F(69)` means. The two questions
+never collide, so `F(codepoint(y))` can never silently reinterpret `y`.
+
+An out-of-range code point is refused rather than truncated:
+
+```@example basic_codes_refuse
+using AIFloats
+
+F = Binary5p2se          # a 5-bit format: code points are 0x00:0x1f
+try
+    fromcode(F, 0xff)
+catch err
+    err
+end
+```
 
 ## Calculate with Julia syntax
 
@@ -31,8 +64,9 @@ the task's [`DefaultProjection`](@ref), initially `RTE_SN`.
 ```@example basic_arithmetic
 using AIFloats
 
-T = Binary8p4se
-x, y = T(1.5), T(0.25)
+F = Binary8p4se
+x, y = F(1.5), F(0.25)
+@assert x + y === Add(x, y)          # each operator is one register call
 (x + y, x * y, x / y, sqrt(x), exp(y))
 ```
 
@@ -42,11 +76,13 @@ projection should be visible at the call site:
 ```@example basic_register
 using AIFloats
 
-T = Binary8p4se
-x, y = T(1.5), T(0.25)
-F = BinaryFormatOf(T)
+F = Binary8p4se
+x, y = F(1.5), F(0.25)
 (Add(F, RTE_SN, x, y), Multiply(F, RTZ_SF, x, y))
 ```
+
+See [Operations](@ref operations) for the full family: signatures, mixed operand
+formats, the correctness route each operation takes, and the refusals.
 
 ## Convert values explicitly
 
@@ -56,7 +92,7 @@ projection explicit:
 ```@example basic_convert
 using AIFloats
 
-F = BinaryFormatOf(Binary8p4se)
+F = Binary8p4se
 value = 1.2
 nearest = Convert(F, RTE_SN, value)
 toward_zero = Convert(F, RTZ_SN, value)
@@ -83,8 +119,8 @@ s = Convert(Small, RTE_SN, x)
 ```@example basic_neighbors
 using AIFloats
 
-T = Binary8p4se
-x = T(1.5)
+F = Binary8p4se
+x = F(1.5)
 (Class(x), NextLessThan(x), NextGreaterThan(x), eps(x))
 ```
 
@@ -93,8 +129,8 @@ Special accessors make important endpoints easy to name:
 ```@example basic_endpoints
 using AIFloats
 
-T = Binary8p4se
-(MinPositiveOf(T), MinNormalOf(T), MaxFiniteOf(T))
+F = Binary8p4se
+(MinPositiveOf(F), MinNormalOf(F), MaxFiniteOf(F))
 ```
 
 Continue with [Intermediate examples](@ref examples-intermediate) for explicit

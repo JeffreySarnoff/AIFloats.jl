@@ -390,6 +390,18 @@ packing_saves(::Type{T}) where {T<:BinaryValue} = Int(BitwidthOf(T)) < 8 * sizeo
 packing_saves(::Type{F}) where {F<:Binary} = packing_saves(BinaryValue(F))
 packing_saves(pv::PackedVector{T}) where {T} = packing_saves(T)
 
+"""
+    PACK_TILE
+
+Elements per tile when a kernel runs over [`PackedVector`](@ref) storage: codes
+are unpacked into a scratch buffer of this length, the ordinary array kernel
+runs over the scratch, and the loop repeats.
+
+The tile keeps the scratch in cache while still amortizing the per-call kernel
+setup. It is a performance constant with no effect on results.
+
+Not exported; call it as `AIFloats.PACK_TILE`.
+"""
 const PACK_TILE = 256
 
 # vmap over packed storage: unpack a tile into a scratch, run the ordinary

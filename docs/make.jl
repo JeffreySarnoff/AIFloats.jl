@@ -1,65 +1,68 @@
 using AIFloats
 using Documenter
+using Documenter: Remotes
 
 DocMeta.setdocmeta!(AIFloats, :DocTestSetup, :(using AIFloats); recursive = true)
 
-# Add titles of sections and overrides page titles
-const titles = Dict(
-    "70-examples" => "Examples",
-    "70-examples/10-basic.md" => "Basic examples",
-    "70-examples/20-intermediate.md" => "Intermediate examples",
-    "70-examples/30-advanced.md" => "Advanced examples",
-    "70-examples/40-technical.md" => "Technical examples",
-    "91-developer.md" => "Developer docs",
-)
+# ---- the page tree ----------------------------------------------------------
+# EXPLICIT, not discovered by walking `src/`. Two reasons, both learned the hard
+# way (docs/refinedocs2.md P2-7):
+#
+#   * navigation order and titles are reviewable in one place, and nesting
+#     deeper than one directory does not need the recursion to be right;
+#   * a planning document dropped into `docs/` cannot become a published page
+#     by accident. Adding a page is one line here, on purpose.
 
-function recursively_list_pages(folder; path_prefix="")
-    pages_list = Any[]
-    for file in readdir(folder)
-        if file == "index.md"
-            # We add index.md separately to make sure it is the first in the list
-            continue
-        end
-        # this is the relative path according to our prefix, not @__DIR__, i.e., relative to `src`
-        relpath = joinpath(path_prefix, file)
-        # full path of the file
-        fullpath = joinpath(folder, relpath)
+const PAGES = [
+    "index.md",
+    "10-getting-started.md",
+    "20-concepts.md",
+    "30-formats.md",
+    "40-projections.md",
+    "Operations" => "45-operations.md",
+    "Examples" => [
+        "Basic examples" => "70-examples/10-basic.md",
+        "Intermediate examples" => "70-examples/20-intermediate.md",
+        "Advanced examples" => "70-examples/30-advanced.md",
+        "Technical examples" => "70-examples/40-technical.md",
+    ],
+    "50-status.md",
+    "60-benchmarks.md",
+    "Reference" => [
+        "95-reference.md",
+        "95-reference/10-core.md",
+        "95-reference/20-operations.md",
+        "95-reference/30-blocks.md",
+        "95-reference/40-governance.md",
+    ],
+    "96-internals.md",
+    "90-contributing.md",
+    "Developer docs" => "91-developer.md",
+]
 
-        if isdir(fullpath)
-            # If this is a folder, enter the recursion case
-            subsection = recursively_list_pages(fullpath; path_prefix=relpath)
+# Every page named above must exist, and every page in `src/` must be named
+# above. A missing file is a broken link; an unlisted file is either a page
+# nobody can reach or a planning document that should not be in `src/`.
+function check_page_tree()
+    listed = String[]
+    walk(x::String) = push!(listed, x)
+    walk(x::Pair) = walk(x.second)
+    walk(x::Vector) = foreach(walk, x)
+    foreach(walk, PAGES)
 
-            # Ignore empty folders
-            if length(subsection) > 0
-                title = if haskey(titles, relpath)
-                titles[relpath]
-                else
-                @error "Bad usage: '$relpath' does not have a title set. Fix in 'docs/make.jl'"
-                relpath
-                end
-                push!(pages_list, title => subsection)
-            end
-
-            continue
-        end
-
-        if splitext(file)[2] != ".md" # non .md files are ignored
-            continue
-        elseif haskey(titles, relpath) # case 'title => path'
-            push!(pages_list, titles[relpath] => relpath)
-        else # case 'title'
-            push!(pages_list, relpath)
-        end
+    src = joinpath(@__DIR__, "src")
+    found = String[]
+    for (root, _, files) in walkdir(src), f in files
+        endswith(f, ".md") && push!(found, relpath(joinpath(root, f), src))
     end
 
-    return pages_list
-end
-
-function list_pages()
-    root_dir = joinpath(@__DIR__, "src")
-    pages_list = recursively_list_pages(root_dir)
-
-    return ["index.md"; pages_list]
+    missing_files = setdiff(listed, found)
+    isempty(missing_files) || error("PAGES names files that do not exist: $missing_files")
+    unlisted = setdiff(found, listed)
+    isempty(unlisted) || error(
+        "docs/src holds pages that PAGES does not list: $unlisted\n" *
+        "Add them to PAGES in docs/make.jl, or move them out of docs/src.")
+    return nothing
 end
 
 # ---- benchmark page ---------------------------------------------------------
@@ -68,9 +71,11 @@ end
 # Chairmarks belongs to benchmark/Project.toml and must not become a dependency
 # of the docs (or of the package) — the same isolation the suite itself keeps.
 #
-# Set AIFLOATS_DOCS_BENCHMARKS=0 to skip the run; the page is still written, and
-# says plainly that it holds no measurements. A failed or skipped run must never
-# fail the docs build: the numbers are informative, the prose around them is the
+# Set AIFLOATS_DOCS_BENCHMARKS=0 to skip the run. The last generated page is
+# then LEFT IN PLACE rather than overwritten with a placeholder: a docs build
+# with benchmarks off must not silently destroy the measurements a previous
+# build produced (docs/refinedocs2.md V-2). A failed run still never fails the
+# build — the numbers are informative, the prose around them is the
 # documentation.
 
 const BENCH_PAGE = joinpath(@__DIR__, "src", "60-benchmarks.md")
@@ -89,59 +94,213 @@ function run_benchmarks()
     read(`$(Base.julia_cmd()) --project=$proj --startup-file=no -t $nthreads $script`, String)
 end
 
+const BENCH_HEADER = """
+# [Benchmark results](@id benchmarks)
+
+Generated by running `benchmark/runbenchmarks.jl` during a documentation
+build. Nothing here is hand-entered.
+
+**These numbers describe the machine that built this page**, recorded in the
+header below along with the commit and the thread count. A shared CI runner
+is noisy and its absolute times mean little; the *ratios* between rows on one
+run are the informative part. Reproduce locally with:
+
+```
+julia --project=benchmark -t 4 benchmark/runbenchmarks.jl          # all suites
+julia --project=benchmark -t 4 benchmark/runbenchmarks.jl scalar   # one suite
+```
+
+The suite is run with four threads unless `JULIA_NUM_THREADS` says
+otherwise, whatever the machine's core count, so that the threading rows
+stay comparable between builds.
+
+What the columns mean: time per call, then allocations and bytes when a call
+allocates at all (their absence is itself the claim — most scalar rows are
+allocation-free), and elements per second for array rows. The `latency`
+suite measures package load and first-call compilation in *fresh processes*,
+because those happen exactly once and cannot be sampled.
+
+**Check the commit in the header below.** These rows describe the tree that was
+measured, which is not necessarily the tree you are reading about. A row marked
+`(dirty)`, or naming a commit older than the current one, is historical
+evidence — see [Performance characteristics](@ref performance) for the design
+decisions these measurements justify, and re-run the suite from a clean commit
+before quoting a number anywhere else.
+
+"""
+
 function write_benchmark_page()
-    header = """
-    # [Benchmark results](@id benchmarks)
-
-    Generated by running `benchmark/runbenchmarks.jl` during this documentation
-    build. Nothing here is hand-entered.
-
-    **These numbers describe the machine that built this page**, recorded in the
-    header below along with the commit and the thread count. A shared CI runner
-    is noisy and its absolute times mean little; the *ratios* between rows on one
-    run are the informative part. Reproduce locally with:
-
-    ```
-    julia --project=benchmark -t 4 benchmark/runbenchmarks.jl          # all suites
-    julia --project=benchmark -t 4 benchmark/runbenchmarks.jl scalar   # one suite
-    ```
-
-    The suite is run with four threads unless `JULIA_NUM_THREADS` says
-    otherwise, whatever the machine's core count, so that the threading rows
-    stay comparable between builds.
-
-    What the columns mean: time per call, then allocations and bytes when a call
-    allocates at all (their absence is itself the claim — most scalar rows are
-    allocation-free), and elements per second for array rows. The `latency`
-    suite measures package load and first-call compilation in *fresh processes*,
-    because those happen exactly once and cannot be sampled.
-
-    See [Performance characteristics](@ref performance) for the design decisions
-    these measurements justify.
-
-    """
-    body = if get(ENV, "AIFLOATS_DOCS_BENCHMARKS", "1") in ("0", "false", "no")
-        "!!! note \"Not run\"\n    " *
-        "This build set `AIFLOATS_DOCS_BENCHMARKS=0`, so no benchmarks were run.\n"
-    else
-        try
-            "```\n" * run_benchmarks() * "```\n"
-        catch err
-            @warn "benchmark suite did not run; the page will say so" exception = err
-            "!!! warning \"Benchmarks did not run\"\n    " *
-            "The suite failed to run during this build. See `benchmark/` to run it " *
-            "locally.\n"
+    if get(ENV, "AIFLOATS_DOCS_BENCHMARKS", "1") in ("0", "false", "no")
+        if isfile(BENCH_PAGE)
+            @info "AIFLOATS_DOCS_BENCHMARKS=0: keeping the existing benchmark page"
+            return nothing
         end
+        write(BENCH_PAGE, BENCH_HEADER *
+              "!!! note \"Not run\"\n    " *
+              "This build set `AIFLOATS_DOCS_BENCHMARKS=0`, and no previously " *
+              "generated page was present, so this page holds no measurements.\n")
+        return nothing
     end
-    write(BENCH_PAGE, header * body)
+    body = try
+        "```\n" * run_benchmarks() * "```\n"
+    catch err
+        @warn "benchmark suite did not run; the page will say so" exception = err
+        "!!! warning \"Benchmarks did not run\"\n    " *
+        "The suite failed to run during this build. See `benchmark/` to run it " *
+        "locally.\n"
+    end
+    write(BENCH_PAGE, BENCH_HEADER * body)
+    return nothing
+end
+
+# ---- reference page ---------------------------------------------------------
+# GENERATED, for the same reason the benchmark page is. A hand-maintained list
+# of 450+ names drifts; `@autodocs Modules=[AIFloats]` has the opposite failure
+# — it publishes private machinery (`get_table`, cache structs, `validformat`)
+# into the user-facing reference while omitting public bindings that carry no
+# docstring.
+#
+# The membership test is `Base.isexported` / `Base.ispublic`, so the page is
+# exactly the public surface by construction, and the build FAILS if a public
+# binding is undocumented (docs/refinedocs2.md P1-1, P1-2).
+
+const REFERENCE_DIR = joinpath(@__DIR__, "src", "95-reference")
+
+# Reviewed exemptions: public bindings deliberately absent from the reference.
+# An entry here is a decision, not a convenience.
+const REFERENCE_EXEMPT = [
+    # Documented on `96-internals.md` instead, as explicitly unstable
+    # implementation detail. Listing them here as well would be a duplicate
+    # docstring, and would put a vendored carrier in the user-facing reference.
+    :DyadicNumbers,
+    :Dyadic,
+]
+
+# The reference is SPLIT across pages because the generated operation families
+# are 154 substantial docstrings; one page of them renders past Documenter's
+# size threshold and is unpleasant to load or search. Each entry is
+#     (file slug, page title, [(section title, predicate), …])
+# and predicates are tried in order across the whole tree — the FIRST match
+# wins, so specific rules precede general ones and `nothing` means
+# "everything still uncategorized".
+const REFERENCE_PAGES = Any[
+    ("10-core", "Formats, datums, projections", Any[
+        ("Formats", n -> n in (:Binary, :IntParam, :CodeType, :ValueType, :codetype,
+                               :valuetype, :Formats, :resolve_fields, :formatname,
+                               :formatinfo)),
+        ("Format axes", n -> n in (:ΣBool, :ΔBool, :SIGNED, :UNSIGNED, :FINITE, :EXTENDED,
+                                   :is_signed, :is_unsigned, :is_finite, :is_extended)),
+        ("Format queries", n -> endswith(String(n), "Of") ||
+                                n in (:bitwidth, :signedness, :domain, :formatof,
+                                      :codemask, :signmask, :orderkeytype, :codedistance)),
+        ("Datums and the codec", n -> startswith(String(n), "Class") ||
+                                      n in (:BinaryValue, :decode, :fromcode, :encode,
+                                            :order_key, :nan_code, :posinf_code,
+                                            :neginf_code, :codetable, :printcodetable,
+                                            :Class, :FPClass, :NextGreaterThan,
+                                            :NextLessThan, :CodeCountingSort)),
+        ("Datum display", n -> n in (:VALID_SHOW_STYLES, :set_show_style!, :get_show_style)),
+        ("Projections", n -> occursin(r"^(RT[EAPNZO]|RS[ABC])(_S[FPN])?$", String(n)) ||
+                             String(n) in ("SF", "SP", "SN") ||
+                             n in (:Projection, :RoundOf, :SatOf, :project,
+                                   :project_interval, :round_to_precision, :saturate,
+                                   :isstochastic, :nrandbits, :DefaultProjection,
+                                   :DefaultRoundingMode, :DefaultSaturationMode,
+                                   :with_projection)),
+    ]),
+    ("20-operations", "Operations, kernels, storage", Any[
+        ("Scalar operations", n -> n in (:operations, :operationinfo) ||
+                                   any(o -> o.name === n, AIFloats.operations())),
+        ("Array kernels and tables", n -> n in (:vmap, :vmap!, :table_policy, :table_stats,
+                                                :table_entries, :empty_tables!)),
+        ("Packed storage", n -> startswith(String(n), "packed") ||
+                                n in (:PackedVector, :packing_saves, :PACK_TILE)),
+    ]),
+    ("30-blocks", "Blocks and scaled operations", Any[
+        ("Block containers", n -> n in (:Block, :BlockVector, :blocksize, :scaleformat,
+                                        :elemformat, :blockdecode, :blockproject)),
+        ("Block conversions", n -> startswith(String(n), "ConvertTo") ||
+                                   startswith(String(n), "ConvertFrom")),
+        ("Block operations", n -> startswith(String(n), "Block")),
+        ("Scaled operations", n -> startswith(String(n), "Scaled")),
+    ]),
+    ("40-governance", "Conformance, external formats, expert controls", Any[
+        ("Conformance and κ", n -> n in (:conformance, :conformance_dict,
+                                         :conformance_report, :ConformanceDeclaration,
+                                         :draft_revision, :draft_identity, :measure_kappa,
+                                         :register_approx!, :unregister_approx!, :approx,
+                                         :list_approx, :kappa, :kappa_measured,
+                                         :ApproxImpl, :ftz_variant)),
+        ("External formats", n -> n in (:binary16, :binary32, :binary64, :binary128,
+                                        :bfloat16)),
+        ("Carriers and expert controls", nothing),
+    ]),
+]
+
+public_names() = sort!(filter(names(AIFloats; all = true)) do n
+    Base.isexported(AIFloats, n) || Base.ispublic(AIFloats, n)
+end)
+
+reference_file(slug) = joinpath(REFERENCE_DIR, slug * ".md")
+reference_relpath(slug) = "95-reference/" * slug * ".md"
+
+function write_reference_pages()
+    ns = setdiff(public_names(), REFERENCE_EXEMPT)
+    undocumented = filter(n -> !Docs.hasdoc(AIFloats, n), ns)
+    isempty(undocumented) || error(
+        "public bindings without documentation: " * join(undocumented, ", ") *
+        "\ndocument them, or add a reviewed entry to REFERENCE_EXEMPT " *
+        "(docs/refinedocs2.md P1-2)")
+
+    mkpath(REFERENCE_DIR)
+    remaining = copy(ns)
+    total = 0
+    for (slug, title, sections) in REFERENCE_PAGES
+        io = IOBuffer()
+        println(io, "# ", title, "\n")
+        println(io, "```@meta\nCurrentModule = AIFloats\n```\n")
+        println(io, "Part of the [Reference](@ref reference); see that page for how this ",
+                    "listing is generated and what it guarantees.\n")
+        println(io, "```@contents\nPages = [\"", slug, ".md\"]\nDepth = 2\n```")
+        wrote = 0
+        for (section, pred) in sections
+            members = pred === nothing ? copy(remaining) : filter(pred, remaining)
+            isempty(members) && continue
+            setdiff!(remaining, members)
+            wrote += length(members)
+            println(io, "\n## ", section, "\n")
+            println(io, "```@docs")
+            foreach(n -> println(io, n), members)
+            println(io, "```")
+        end
+        println(io, "\n## Index\n\n```@index\nPages = [\"", slug, ".md\"]\n```")
+        write(reference_file(slug), String(take!(io)))
+        total += wrote
+    end
+    isempty(remaining) || error("reference generator left names uncategorized: $remaining")
+
+    # The landing page (95-reference.md) is hand-written and tracked; only the
+    # sub-pages are generated. It must list every one of them, or a reader can
+    # reach a section only through the sidebar.
+    landing = read(joinpath(@__DIR__, "src", "95-reference.md"), String)
+    for (slug, title, _) in REFERENCE_PAGES
+        occursin(title, landing) || error(
+            "docs/src/95-reference.md does not link the generated page \"$title\" ($slug)")
+    end
+    @info "reference pages generated" public = total pages = length(REFERENCE_PAGES)
+    return nothing
 end
 
 write_benchmark_page()
+write_reference_pages()
+check_page_tree()
 
 makedocs(;
     modules = [AIFloats],
     authors = "Jeffrey Sarnoff <jeffrey.sarnoff@ieee.org>",
-    repo = "https://github.com/JeffreySarnoff/AIFloats.jl/blob/{commit}{path}#{line}",
+    # A Remotes.GitHub, not a format string: with a string, Documenter cannot
+    # derive the repository root for the navbar link and warns on every build.
+    repo = Remotes.GitHub("JeffreySarnoff", "AIFloats.jl"),
     sitename = "AIFloats.jl",
     format = Documenter.HTML(;
         canonical = "https://JeffreySarnoff.github.io/AIFloats.jl",
@@ -149,14 +308,21 @@ makedocs(;
         # generated build is opened from disk. Pretty directory URLs require
         # an HTTP server to resolve `path/` to `path/index.html`; without one,
         # a click exposes the directory and makes the reader select index.html.
+        # README links must match this choice — they name `.html` files.
         prettyurls = false,
-        # 95-reference.md is one page holding every docstring in the package,
-        # several of which carry the measurement tables that justify a policy
-        # constant. It exceeds Documenter's 200 KiB default on its own.
+        # 95-reference.md is one page holding every public docstring in the
+        # package, several of which carry the measurement tables that justify a
+        # policy constant. It exceeds Documenter's 200 KiB default on its own.
         size_threshold = 500 * 1024,
         size_threshold_warn = 400 * 1024,
     ),
-    pages = list_pages(),
+    pages = PAGES,
+    # Not `:all`. The reference page is generated from `Base.isexported` /
+    # `Base.ispublic`, so every PUBLIC binding is in the manual by construction
+    # and the generator errors if one is not. Private docstrings — cache keys,
+    # policy constants, carrier probes — are deliberately absent from the user
+    # reference (docs/refinedocs2.md P1-1); `:all` would demand they be added.
+    checkdocs = :public,
 )
 
 deploydocs(; repo = "github.com/JeffreySarnoff/AIFloats.jl")

@@ -6,8 +6,42 @@ DocTestSetup = :(using AIFloats)
 ```
 
 [`Binary{K,P,S,D}`](@ref Binary) is the one format specifier. This page covers its
-construction, its accessors, and how it displays. For what the four parameters *mean*, read
-[Concepts](@ref concepts) first.
+construction, its accessors, its aliases, and how it displays. For what the four parameters
+*mean*, read [Concepts](@ref concepts) first.
+
+## The canonical triad
+
+Three spellings, three different questions. Every page uses these letters:
+
+```jldoctest formats
+julia> F = Binary8p4se          # the FORMAT — a type, and there is no instance
+Binary{8, 4, ±, ∞}
+
+julia> T = BinaryValue(F)       # the DATUM TYPE — a concrete AbstractFloat
+BinaryValue(Binary8p4se)
+
+julia> x = F(1.5)               # a DATUM of that type
+1.5
+
+julia> x isa T, x isa F
+(true, false)
+```
+
+- `F()` is an error, on purpose — `F` already *is* the format.
+- `F(x)` consumes a **number**, every `Integer` and `Unsigned` included.
+- `fromcode(F, c)` consumes a **code point**. The two are different questions with
+  different spellings, so `F(codepoint(y))` can never silently mean `y`.
+
+```jldoctest formats
+julia> fromcode(F, 0x45), F(0x45)
+(1.625, 72.0)
+```
+
+The report's vocabulary differs from Julia's here. In Interim Report §3.1 a *floating-point
+datum* is the mathematical element and a *floating-point value* is its code point in an
+associated format. In Julia, `BinaryValue` is the object that stores that code point and
+behaves numerically as the datum. This documentation says "datum" for the number and "code
+point" for the encoding, and never uses "value" for both in one breath.
 
 ## Construction
 
@@ -79,8 +113,17 @@ ERROR: ArgumentError: Invalid format: K=2, P=1, S=SIGNED, D=FINITE
 [...]
 ```
 
-`AIFloats.validformat` holds the rules — `K > 2`, `P > 0`, `P <= K - S` — and can be called
-directly to test a combination without building it.
+The rules are `K > 2`, `P > 0`, and `P <= K - S`; [Concepts](@ref concepts) derives them
+from the bit budget. [`Binary`](@ref) is the validator — it checks and throws, and there is
+no supported non-throwing form. To test a combination without an exception, catch it:
+
+```jldoctest formats
+julia> isvalid_format(K, P, S, D) = try Binary(K, P, S, D); true catch; false end
+isvalid_format (generic function with 1 method)
+
+julia> isvalid_format(8, 4, SIGNED, FINITE), isvalid_format(2, 1, SIGNED, FINITE)
+(true, false)
+```
 
 ## Accessors
 
@@ -179,15 +222,90 @@ The glyphs are one per axis:
 | domain | `∞` | [`EXTENDED`](@ref) |
 | | `⏥` | [`FINITE`](@ref) |
 
-A format's two renderings are the spelled-out `string` and the glyphic `String`:
+This is *format* display. Datum display is a separate axis with its own scopes; see
+[Datum display scope](@ref display-scope).
+
+## Aliases
+
+Every valid format in the `3 ≤ K ≤ 16` grid has a generated alias spelled the way the
+report names formats (§3.2): `Binary⟨K⟩p⟨P⟩⟨s|u⟩⟨f|e⟩`. Those with `K ≤ 8` are exported;
+the rest live in `AIFloats.Formats`.
 
 ```jldoctest formats
-julia> string(B)
-"Binary{16, 10, UNSIGNED, EXTENDED}"
+julia> Binary8p4se === Binary(8, 4, SIGNED, EXTENDED)
+true
 
-julia> String(B)
-"Binary{16, 10, +, ∞}"
+julia> AIFloats.Formats.Binary16p10ue === Binary(16, 10, UNSIGNED, EXTENDED)
+true
 ```
+
+An alias names a **format**. It is not a datum type and not a datum — `BinaryValue(F)` and
+`F(x)` are those.
+
+## Two spellings of every query
+
+Each capitalized query has a lower-case Julia-style spelling. The pair is the *same generic
+function object* — not a wrapper, not an adapter, not a compatibility shim, and with no
+call-site cost either way:
+
+| Capitalized | Julia-style |
+|:--|:--|
+| [`BitwidthOf`](@ref) | [`bitwidth`](@ref) |
+| [`SignednessOf`](@ref) | [`signedness`](@ref) |
+| [`DomainOf`](@ref) | [`domain`](@ref) |
+| [`BinaryFormatOf`](@ref) | [`formatof`](@ref) |
+| [`CodeType`](@ref) | [`codetype`](@ref) |
+| [`ValueType`](@ref) | [`valuetype`](@ref) |
+
+```jldoctest formats
+julia> bitwidth === BitwidthOf, formatof === BinaryFormatOf
+(true, true)
+```
+
+Use `formatof(x)` to recover a format from a datum you were handed. Do not write
+`formatof(F)` when `F` is already the format.
+
+[`formatinfo`](@ref) answers every static question at once, and folds to a literal when the
+format is known at compile time:
+
+```jldoctest formats
+julia> info = formatinfo(Binary8p4se);
+
+julia> info.name, info.bitwidth, info.precision, info.exponentbits
+(:Binary8p4se, 8, 4, 4)
+
+julia> info.datumtype
+BinaryValue(Binary8p4se)
+```
+
+## [Datum display scope](@id display-scope)
+
+How a **datum** prints is a separate question from how a format prints, and it has two
+mechanisms with different reach:
+
+| Mechanism | Scope |
+|:--|:--|
+| [`set_show_style!`](@ref) | **process-wide** fallback |
+| an `IOContext` with `:binary_show_style` | that one `show`, composable |
+
+```jldoctest formats
+julia> x = Binary8p4se(1.5);
+
+julia> sprint(show, x; context = :binary_show_style => :codepoint)
+"0x44"
+
+julia> sprint(show, x; context = :binary_show_style => :typed)
+"Binary8p4se(1.5 ⇆ 0x44)"
+
+julia> get_show_style()
+:value
+```
+
+!!! warning "Library code should not call `set_show_style!`"
+    It changes a process-wide preference that the caller may be relying on. Pass an
+    `IOContext` instead. This is display state only — it is unrelated to the task-local
+    numerical [`DefaultProjection`](@ref), which is bound rather than set for exactly the
+    same reason.
 
 ```@meta
 DocTestSetup = nothing

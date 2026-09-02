@@ -16,8 +16,9 @@ The representation invariant: the code point occupies the low `K` bits of the
 storage unit and the high bits are zero. Every construction path enforces it.
 
 **Construction has one semantic axis.** Every constructor argument is a
-`Real` **value**, projected into `F` under a [`Projection`](@ref) — the session
-default unless a `projection` keyword says otherwise. `Unsigned` is not special:
+`Real` **value**, projected into `F` under a [`Projection`](@ref) — the
+task-local default ([`DefaultProjection`](@ref)) unless a `projection` keyword
+says otherwise. `Unsigned` is not special:
 `BinaryValue(F, 0x03)` is the number three, exactly as `BinaryValue(F, 3.0)` is.
 
 To name a **code point**, use [`fromcode`](@ref). It is a different question and
@@ -45,7 +46,7 @@ julia> fromcode(F, 0x45) === x           # and 0x45 is where that value lives
 true
 
 julia> BinaryValue(F, 0x45)              # but as a NUMBER, 0x45 is 69
-64.0
+72.0
 
 julia> BinaryValue(F, 1.7)               # a value off the lattice is projected
 1.75
@@ -54,13 +55,11 @@ julia> BinaryValue(F, 1.7; projection = RTZ_SN)
 1.625
 ```
 """
-# PHASE 1b DIAGNOSTIC -- TEMPORARY, NEVER TO BE THE COMMITTED INTERFACE.
-#
-# Deleting the code-point constructor outright would NOT give a MethodError:
-# the value-taking `Real` constructor accepts the very same argument, so every
-# missed `T(0x45)` would silently become the number 69. That is the plan's
-# top-ranked risk (improveapi3.md §6 Phase 1b) and a loud diagnostic is the
-# only way to expose the call sites a grep and the test inventory missed.
+# Why there is no code-point constructor, and why its absence is loud:
+# deleting one outright would NOT give a MethodError, because the value-taking
+# `Real` constructor accepts the very same argument. A missed `T(0x45)` would
+# silently become the number 69. Code points are reached only through
+# `fromcode`, and every value path says so.
 #
 struct BinaryValue{F<:Binary, U<:Unsigned} <: AbstractFloat
     code::U

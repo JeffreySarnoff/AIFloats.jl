@@ -109,14 +109,25 @@ end
     @test c.package_version == Base.pkgversion(AIFloats)
     d = conformance_dict(c)
     @test d["package"] == "AIFloats.jl $(Base.pkgversion(AIFloats))"
-    @test length(d["formats"]) == 504 && d["draft_identity"]["designation"] == "IEEE P3109/D1"
+    @test length(d["formats"]) == 504
+    # the identity names the DESIGNATED report (revision, date, URL, PDF digest)
+    # and keeps the retained transliteration as provenance beside it
+    @test d["draft_identity"]["report_revision"] == "4.0.3"
+    @test d["draft_identity"]["report_date"] == "2026-09-01"
+    @test d["draft_identity"]["retained_designation"] == "IEEE P3109/D1"
     @test any(s -> s["op"] == "Add" && s["saturation"] == "SN", d["cached_specializations"])
     @test any(s -> s["op"] == "FMA" && length(s["operands"]) == 3, d["cached_specializations"])
     @test d["cached_bytes"] == c.cached_bytes
     buf = IOBuffer(); conformance_report(buf, c); rep = String(take!(buf))
     @test occursin("κ verified exhaustively", rep) && occursin("Exp⟨", rep)
     @test occursin("Scalar operations (52)", rep) && occursin("K ∈ 3:16", rep)
-    @test draft_revision() == "IEEE P3109/D1, uploaded 2026-07-17"
+    @test occursin("Interim Report", draft_revision())
+    @test occursin("version 4.0.3", draft_revision())
+    # a declaration must never read as a certification: the designated report is
+    # an unapproved draft and says so on its cover
+    @test occursin("unapproved draft", draft_revision())
+    @test occursin("NOT a certification", rep)
+    @test occursin("must not be used for conformance", rep)
     # the retained transliteration matches its declared digest
     src = joinpath(pkgdir(AIFloats), draft_identity().retained_source)
     @test isfile(src)

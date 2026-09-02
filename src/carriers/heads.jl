@@ -104,8 +104,23 @@ _cinf(::Type{Dyadic})  = DyadicNumbers.DYADIC_POSINF
 _cninf(::Type{Dyadic}) = DyadicNumbers.DYADIC_NEGINF
 _czero(::Type{Dyadic}) = DyadicNumbers.DYADIC_ZERO
 
-# the four types a datum can be in flight. Rows written against this rather
-# than AbstractFloat are the ones that must also accept Dyadic.
+"""
+    CarrierValue
+
+The four types a decoded datum can be in flight: `Float64`, `Float128`,
+`BigFloat`, and the exact fixed-point `AIFloats.Dyadic`.
+
+Which one a format uses is its **rung** (`AIFloats.rung`), chosen from the
+format's exponent span, not its storage width. Methods written against
+`CarrierValue` rather than `AbstractFloat` are exactly those that must also
+accept `Dyadic`, which is not an `AbstractFloat`.
+
+Carrier selection is an implementation detail and is not part of the stable
+interface: depend on [`decode`](@ref), the register operations, and
+[`project`](@ref) instead of on a particular rung.
+
+Not exported; call it as `AIFloats.CarrierValue`.
+"""
 const CarrierValue = Union{Float64, Float128, BigFloat, Dyadic}
 
 # ---- exact binary128 representation adapter ---------------------------------

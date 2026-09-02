@@ -118,11 +118,56 @@ const _GUARDED_PROJECTIONS = (:RTE_SN, :RTE_SF, :RTE_SP,
                               :RSB_SN, :RSB_SF, :RSB_SP,
                               :RSC_SN, :RSC_SF, :RSC_SP)
 
+# ---- generated family documentation -----------------------------------------
+# One paragraph per registry operation, written FROM the registry row, so an
+# operation cannot exist without documentation and cannot be documented with
+# the wrong arity or correctness route. The narrative lives on the Operations
+# page; this is the per-name entry the Reference index needs.
+
+const _OP_GROUP_PROSE = Dict(
+    :A => "evaluated exactly (an error-free transform or an exact escalation), then projected once",
+    :B => "evaluated through the correctly rounded interval-enclosure ladder, then projected once",
+    :C => "an exact selection among the operands, then projected once",
+    :conv => "a projection with no arithmetic of its own",
+)
+
+function _op_docstring(op::OpInfo)
+    n = String(op.name)
+    ops = join(("x$i" for i in 1:op.arity), ", ")
+    plural = op.arity == 1 ? "operand" : "operands"
+    route = _OP_GROUP_PROSE[op.group]
+    """
+        $n(fr, \u03c1, $ops; rng, R)
+        $n($ops)
+
+    The P3109 register operation `$n`, over $(op.arity) datum $plural.
+
+    The first form is the draft's shape: `fr` is the **result** format (a
+    [`Binary`](@ref) format type, a datum type, or an alias) and `\u03c1` is the
+    [`Projection`](@ref). Operands may be datums of any formats; each is decoded
+    onto a carrier wide enough for the exact result. The result is $route, so
+    the returned datum is the correctly rounded one for `\u03c1`.
+
+    The second form takes same-format operands and resolves the task-local
+    [`DefaultProjection`](@ref) once, returning that same format. It is a
+    convenience, not a second semantics.
+
+    `rng` and `R` are consulted only under a stochastic `\u03c1`: `R` supplies the
+    random bits directly and takes precedence over `rng`; with neither, a
+    stochastic projection draws from `Random.default_rng()`. A pure projection
+    touches no RNG state.
+
+    Elementwise over arrays, the same operation is `vmap(:$n, fr, \u03c1, A...)`;
+    see [`vmap!`](@ref). Blocked and scaled forms are `Block$n` and `Scaled$n`.
+    Registry metadata is `AIFloats.operationinfo(:$n)`.
+    """
+end
+
 # ---- the generated spec register --------------------------------------------
 # For each registry op:
 #   Op(F, ρ, x::BinaryValue...; rng, R)   — the draft form (F a format or a
 #                                           datum type/alias)
-#   Op(x::T...; ...) same-format          — under the session default ρ
+#   Op(x::T...; ...) same-format          — under the task-local default ρ
 for op in OP_REGISTRY
     op.name === :Convert && continue
     name = op.name
@@ -134,7 +179,13 @@ for op in OP_REGISTRY
     bar = Symbol(:_default_, name)          # the projection-typed barrier
     guards = [:(ρ === $g && return $name(BinaryFormatOf(T), $g, $(xs...); rng, R)::T)
               for g in _GUARDED_PROJECTIONS]
+    # FAMILY DOCUMENTATION, generated from registry metadata (refinedocs2 P1-2).
+    # 51 nearly identical hand-written strings would be 51 chances to drift; the
+    # registry already knows the arity and the correctness route, so the text is
+    # derived from them and cannot disagree with the method it documents.
+    doc = _op_docstring(op)
     @eval begin
+        @doc $doc $name
         @inline function $name(fr::Type{<:Binary}, ρ::Projection, $(spec...);
                                rng::MaybeRNG = nothing, R::MaybeR = nothing)
             apply_op($V(), fr, ρ, _drawR(ρ, rng, R), $(dec...))
@@ -275,7 +326,7 @@ const ConvertSource = Union{BinaryValue, ConvertNumber}
 
 Project `x` into format `F` under projection `ρ` — the draft's Convert.
 
-The accepted sources are the closed set [`AIFloats.ConvertSource`](@ref): a
+The accepted sources are the closed set `AIFloats.ConvertSource`: a
 `BinaryValue` of any format, `Float64`/`Float32`/`Float16`/`BFloat16` (exact
 widening), `Float128`, `BigFloat`, or any `Integer` (widened exactly). Every
 one of them reaches the same `_convert_value` seam, so the scalar and array
@@ -334,11 +385,11 @@ export Convert
 # ---- construction from a value ----------------------------------------------
 # the BinaryValue value constructor: an Unsigned is a code point (defined with
 # the struct); every other Real is a value and goes through Convert — under an
-# explicit projection keyword, defaulting to the session projection.
+# explicit projection keyword, defaulting to the task-local projection.
 #
 # `projection` defaults to `nothing`, not to `DefaultProjection()`: an eagerly
 # evaluated default would read the abstract Ref on EVERY call and force the
-# dynamic, boxing call through it. `nothing` means "ask the session", and the
+# dynamic, boxing call through it. `nothing` means "ask the task-local default", and the
 # ask carries the same SPECULATION GUARD the generated op methods use — the
 # untouched default RTE_SN is tested by identity and passed as the literal
 # constant, so the common construction is a static, allocation-free call.

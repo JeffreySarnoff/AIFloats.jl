@@ -2,18 +2,55 @@
 # cache, and the κ registry. Nothing here is spelled by hand that the package
 # already knows: a declaration that can go stale is worse than none.
 
-"""The retained P3109 draft this package implements, with the digest of its
-transliteration (`docs/other/IEEE_D1.md`)."""
+"""
+    DRAFT_IDENTITY
+
+The normative source this release is measured against, and the transliteration it
+retains as provenance.
+
+`report_*` names the **designated document**: the IEEE Working Group P3109 Interim
+Report on Arithmetic Formats for Machine Learning, at the stable P3109 Public URL,
+identified by its cover revision, cover date, and the SHA-256 of the PDF that was
+compared. That comparison is recorded in `docs/other/p3109-delta.md`.
+
+`retained_*` names the local Markdown transliteration the implementation was
+originally written against. It is provenance, not authority: where the two differ,
+the PDF governs.
+
+The report is an **unapproved draft**. Its cover states that it must not be used for
+conformance or compliance purposes, and neither this identity nor
+[`conformance`](@ref) asserts otherwise.
+"""
 const DRAFT_IDENTITY = (
-    designation = "IEEE P3109/D1",
-    uploaded = "2026-07-17",
+    designation = "IEEE P3109 Interim Report on Arithmetic Formats for Machine Learning",
+    report_revision = "4.0.3",
+    report_date = "2026-09-01",
+    report_url = "https://github.com/P3109/Public/blob/main/IEEE%20P3109%20Interim%20Report.pdf",
+    report_sha256 = "7de115ed6882b7550b8fa61e81e5173857b340c3bfe30db8d4ad74b472229b9e",
+    report_status = "unapproved draft; not for conformance/compliance use",
+    retained_designation = "IEEE P3109/D1",
+    retained_uploaded = "2026-07-17",
     retained_source = "docs/other/IEEE_D1.md",
     transliteration_sha256 = "820cb5009cd6fe9032f5bdfb661bc639e33296f716a552eafc81f899411bb5f2",
 )
-const DRAFT_REVISION = "$(DRAFT_IDENTITY.designation), uploaded $(DRAFT_IDENTITY.uploaded)"
-"""Human-readable designation of the retained P3109 draft implemented by this release."""
+const DRAFT_REVISION =
+    "$(DRAFT_IDENTITY.designation), version $(DRAFT_IDENTITY.report_revision) " *
+    "($(DRAFT_IDENTITY.report_date)) — $(DRAFT_IDENTITY.report_status)"
+"""
+    draft_revision() -> String
+
+Human-readable designation of the normative P3109 report this release is measured
+against, including its unapproved-draft status. See [`draft_identity`](@ref) for the
+structured form.
+"""
 draft_revision() = DRAFT_REVISION
-"""Structured identity and SHA-256 digest of the retained P3109 draft transliteration."""
+"""
+    draft_identity() -> NamedTuple
+
+Structured identity of the designated P3109 Interim Report — revision, date, URL, and
+PDF SHA-256 — together with the retained transliteration and its digest. See
+`AIFloats.DRAFT_IDENTITY` for what each field means and which one is authoritative.
+"""
 draft_identity() = DRAFT_IDENTITY
 
 # the supported vocabulary, declared once. The type hierarchy owns
@@ -107,11 +144,7 @@ function conformance_dict(c::ConformanceDeclaration = conformance())
         "package" => c.package,
         "package_version" => string(c.package_version),
         "draft" => c.draft,
-        "draft_identity" => Dict(
-            "designation" => c.draft_identity.designation,
-            "uploaded" => c.draft_identity.uploaded,
-            "retained_source" => c.draft_identity.retained_source,
-            "transliteration_sha256" => c.draft_identity.transliteration_sha256),
+        "draft_identity" => Dict(String(k) => v for (k, v) in pairs(c.draft_identity)),
         "interpretations" => copy(c.interpretations),
         "formats" => String.(c.formats),
         "operations" => [Dict("name" => String(o.name), "arity" => o.arity,
@@ -140,9 +173,17 @@ Human-readable rendering of the conformance declaration.
 """
 function conformance_report(io::IO = stdout, c::ConformanceDeclaration = conformance())
     println(io, "Conformance declaration — ", c.package)
-    println(io, "Implements: ", c.draft)
-    println(io, "Retained source: ", c.draft_identity.retained_source,
-            " (sha256 ", c.draft_identity.transliteration_sha256, ")")
+    println(io, "Measured against: ", c.draft)
+    println(io, "  ", c.draft_identity.report_url)
+    println(io, "  pdf sha256 ", c.draft_identity.report_sha256)
+    println(io, "Retained transliteration: ", c.draft_identity.retained_source,
+            " (", c.draft_identity.retained_designation,
+            ", sha256 ", c.draft_identity.transliteration_sha256, ")")
+    # The cover of the designated report says so in as many words. A declaration
+    # that omitted it would read as a certification, which this is not.
+    println(io, "NOT a certification: the designated report is an unapproved draft and")
+    println(io, "must not be used for conformance or compliance purposes. This is a query")
+    println(io, "of what this package implements, in the shape §4.6 describes.")
     println(io, "Interpretations: ", isempty(c.interpretations) ? "none" : "")
     for s in c.interpretations
         println(io, "  - ", s)

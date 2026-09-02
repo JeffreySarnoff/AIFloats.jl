@@ -12,6 +12,22 @@ in which a format is completely determined by four things: how many bits it occu
 many of those carry the significand, whether it represents negative values, and whether it
 includes the infinities. Those four make a [`Binary`](@ref) format specifier.
 
+!!! note "The normative source, and what it is not"
+    Every semantic claim in this documentation is measured against one document: the
+    **IEEE Working Group P3109 Interim Report on Arithmetic Formats for Machine
+    Learning**, version 4.0.3 (1 September 2026), at
+    [P3109/Public](https://github.com/P3109/Public/blob/main/IEEE%20P3109%20Interim%20Report.pdf).
+    [`draft_identity`](@ref) records its revision, date, URL, and PDF digest.
+
+    That report is an **unapproved draft**; its cover states it must not be used for
+    conformance or compliance purposes. [`conformance`](@ref) reports what this package
+    implements, in the shape the draft's §4.6 describes — not IEEE approval, not a
+    certification, and not a compliance determination.
+
+    Where AIFloats spells something differently from the report, the documentation says
+    so rather than implying the package spelling is quoted; the mapping is on the
+    [Projections](@ref projections) page.
+
 ```julia
 julia> using AIFloats
 
@@ -36,9 +52,21 @@ julia> CodeType(B), ValueType(B)          # how to store a code, and a value
 
 ## Installation
 
+AIFloats.jl is not yet in the General registry, so install it from its repository:
+
 ```julia
-julia> using Pkg; Pkg.add("AIFloats")
+julia> using Pkg; Pkg.add(url = "https://github.com/JeffreySarnoff/AIFloats.jl")
+
+julia> using AIFloats
 ```
+
+To work against a local checkout instead:
+
+```julia
+julia> using Pkg; Pkg.develop(path = "/path/to/AIFloats.jl")
+```
+
+Once the package is registered, `Pkg.add("AIFloats")` will be the short form.
 
 ## Where to go next
 
@@ -48,7 +76,8 @@ julia> using Pkg; Pkg.add("AIFloats")
 | [Concepts](@ref concepts) | What K, P, S, and D mean, and why the rules are what they are |
 | [Binary formats](@ref formats) | The full `Binary` API — construction, accessors, validity, display |
 | [Projections](@ref projections) | Rounding and saturation modes, and the projections that pair them |
-| [Basic examples](@ref examples-basic) | Construct values, calculate, inspect, and convert |
+| [Operations](@ref operations) | The register: signatures, result formats, refusals, correctness route |
+| [Basic examples](@ref examples-basic) | Construct datums, calculate, inspect, and convert |
 | [Intermediate examples](@ref examples-intermediate) | Explicit projections, stochastic rounding, and arrays |
 | [Advanced examples](@ref examples-advanced) | Packed storage, blocks, reductions, and block conversion |
 | [Technical examples](@ref examples-technical) | Carrier, table-policy, conformance, and oracle diagnostics |

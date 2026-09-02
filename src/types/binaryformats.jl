@@ -53,13 +53,14 @@ domain `D`.
 - `S` is [`SIGNED`](@ref) or [`UNSIGNED`](@ref), or the equivalent `Bool`
 - `D` is [`EXTENDED`](@ref) or [`FINITE`](@ref), or the equivalent `Bool`
 
-This returns the parameterized **type**, not an instance. Append `()` when you need a value.
-Invalid combinations throw an `ArgumentError` — see [`validformat`](@ref) for the rules.
+This returns the parameterized **type**, and that type *is* the format. Invalid
+combinations throw an `ArgumentError`; the rules are `K > 2`, `P > 0`, and `P <= K - S`.
 
-The type is the canonical spelling: it is what [`BinaryValue`](@ref) takes as its first
-parameter. There is no instance form: `B()` raises, because `B` already *is* the
-format (improveapi3.md §4.1). Calling a format constructs a **datum**, so `B(x)` is a
+There is no instance form: `B()` raises, because `B` is already the format
+(improveapi3.md §4.1). Calling a format constructs a **datum**, so `B(x)` is a
 [`BinaryValue`](@ref) and `B(x) isa B` is `false`; the datum type is `BinaryValue(B)`.
+A raw code point is a different question with a different spelling,
+[`fromcode`](@ref).
 
 # Examples
 
@@ -88,8 +89,8 @@ end
 
 The unsigned integer type that holds one code point of a `K`-bit format.
 
-`UInt8` for `K <= 8`, `UInt16` above. Accepts a bitwidth, a [`Binary`](@ref) type, or a
-`Binary` instance.
+`UInt8` for `K <= 8`, `UInt16` above. Accepts a bitwidth or a [`Binary`](@ref) format
+type. Formats have no instances, so there is no instance method.
 
 # Examples
 
@@ -113,8 +114,8 @@ CodeType(::Type{Binary{K,P,S,D}}) where {K,P,S,D} = CodeType(K)
 
 A Julia float type wide enough to hold every value of a `K`-bit format exactly.
 
-`Float32` for `K <= 8`, `Float64` for `K <= 10`, `Float128` above. Accepts a bitwidth, a
-[`Binary`](@ref) type, or a `Binary` instance.
+`Float32` for `K <= 8`, `Float64` for `K <= 10`, `Float128` above. Accepts a bitwidth or
+a [`Binary`](@ref) format type. Formats have no instances, so there is no instance method.
 
 # Examples
 
@@ -302,8 +303,9 @@ BitwidthOf(::Type{Binary{K,P,S,D}}) where {K,P,S,D} = K
 
 The number of significand bits, `P`, **counting the implicit leading bit**.
 
-The bits actually stored are [`TrailingSignificantBitsOf`](@ref) = `P - 1`; the rest of the
-format, `K - P - is_signed(format)`, is exponent.
+The bits actually stored are [`TrailingSignificantBitsOf`](@ref) = `P - 1`; the rest of
+the format, `(K - is_signed(format)) - (P - 1)`, is exponent — that is
+[`ExponentBitwidthOf`](@ref).
 
 # Examples
 

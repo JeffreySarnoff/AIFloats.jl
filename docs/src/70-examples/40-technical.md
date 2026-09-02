@@ -25,8 +25,9 @@ formats = (
 [(F, AIFloats.rung(F), AIFloats.datumcarrier(F)) for F in formats]
 ```
 
-Carrier types are implementation details. Use [`decode`](@ref), registered
-operations, and [`project`](@ref) rather than depending on a particular rung.
+Carrier types are implementation details and are not part of the stable
+interface. Use [`decode`](@ref), registered operations, and [`project`](@ref)
+rather than depending on a particular rung.
 
 ## Inspect table policy without building a table
 
@@ -60,24 +61,52 @@ signature, and `threshold` is the count required to earn its table. Supplying
 `nelems` asks what a future call of that size would do without incrementing
 `cumulative` or changing the cache.
 
-One snapshot answers both "how many" and "how big", and the two are guaranteed
-to describe the same moment — the reason `table_stats` exists rather than a
-pair of separate queries:
+## Inspect the table cache
 
-```@example technical_cache
+`AIFloats.table_stats()` is one locked snapshot: its counts and its byte total
+describe the same moment, which is why it exists rather than a pair of separate
+queries.
+
+```@example technical_stats
 using AIFloats
 
 s = AIFloats.table_stats()
 (s.entries, s.bytes, s.by_arity)
 ```
 
-`AIFloats.table_entries()` gives the same snapshot per entry, naming format
-types and the mode names you write:
+`AIFloats.table_entries()` is a second locked snapshot, per entry, naming format
+types and the mode names you write. Populate the cache through the ordinary
+array path — `vmap` — rather than reaching for a private builder:
 
-```@example technical_cache
+```@example technical_entries
+using AIFloats
+
 AIFloats.empty_tables!()
-AIFloats.get_table(:Negate, Binary(3, 2, SIGNED, FINITE), Binary(3, 2, SIGNED, FINITE), RTE_SN)
-AIFloats.table_entries()
+
+F = Binary(3, 2, SIGNED, FINITE)          # ΣK = 3: comfortably in the eager band
+T = BinaryValue(F)
+A = T[0.5, 1.0, 1.5]
+vmap(:Negate, F, RTE_SN, A)               # this is what builds and caches the table
+
+entries = AIFloats.table_entries()
+[(e.op, e.result, e.operands, e.rounding, e.saturation, e.bytes) for e in entries]
+```
+
+!!! warning "Two snapshots are two moments"
+    Each of `table_stats()` and `table_entries()` is internally coherent, but
+    they are separate calls. The entry bytes sum to a separately obtained
+    `table_stats().bytes` **only if the cache is not mutated between them** —
+    another task's first array call is enough to break it.
+
+    Where one coherent count-and-byte declaration is required, use
+    [`conformance`](@ref): it derives its byte total from the very entry vector
+    it captured.
+
+```@example technical_coherent
+using AIFloats
+
+c = conformance()
+(length(c.cached_specializations), c.cached_bytes)
 ```
 
 ## Compare the fast enclosure with the rigorous ladder
@@ -138,6 +167,30 @@ c = conformance()
 
 Use [`conformance_report`](@ref) for the human-readable declaration and
 [`conformance_dict`](@ref) for structured tooling.
+
+`draft_identity()` names the designated Interim Report — revision, date, URL,
+and the SHA-256 of the PDF the implementation was compared against — alongside
+the retained transliteration it was originally written from. The report is an
+**unapproved draft**; its cover states it must not be used for conformance or
+compliance purposes. `conformance()` reports what this package implements, in
+the shape §4.6 describes. It is not IEEE approval, not a certification, and not
+a compliance determination.
+
+## Discover the operation register
+
+The registry is queryable without touching its private storage:
+
+```@example technical_registry
+using AIFloats
+
+ops = AIFloats.operations()
+by_arity = Dict(a => count(o -> o.arity == a, ops) for a in 1:3)
+(total = length(ops), by_arity = by_arity, add = AIFloats.operationinfo(:Add))
+```
+
+`AIFloats.operations()` and `AIFloats.operationinfo` are the supported entry
+points; `OP_REGISTRY` itself is private and its shape is not part of the
+interface. See [Operations](@ref operations).
 
 ```@meta
 DocTestSetup = nothing

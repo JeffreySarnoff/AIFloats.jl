@@ -1,4 +1,4 @@
-# the session default projection — ONE source of dynamic truth, task-local
+# the task-local default projection — ONE source of dynamic truth, task-local
 #
 # A `Ref` was wrong for this, and not merely unfashionable: a projection
 # CHANGES NUMERIC RESULTS, so two tasks that want different rounding cannot

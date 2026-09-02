@@ -25,6 +25,31 @@ end
 # lexicographic order (subnormals and the lowest normal binade share
 # Q = 2 − B − P), signed formats are sign–magnitude symmetric, unsigned
 # underflow is simply sign < 0, and HUGEQ exceeds every Q_hi.
+"""
+    saturate(F, \u03c1, r::Rounded) -> code point
+
+Interim Report \u00a74.7.5 `\u03c9Saturate`, followed by the encode: map the already
+rounded value `r` onto a code point of format `F` under `\u03c1`'s saturation mode.
+
+The three modes differ only outside `F`'s finite range, and they differ from
+each other only on a **genuine infinity**:
+
+| Mode | Out-of-range finite | `\u00b1Inf` reaching saturation |
+|:--|:--|:--|
+| [`SF`](@ref) | clamps to the extremal finite | clamps to the extremal finite |
+| [`SP`](@ref) | clamps to the extremal finite | kept when `F` can represent it, else clamped |
+| [`SN`](@ref) | extremal finite when the rounding direction points back into range, else the infinity, else NaN | the infinity when `F` is `EXTENDED` and signed as needed, else NaN |
+
+Under `SN`, an unsigned extended format has no `-Inf`, so a negative overflow
+is NaN; a `FINITE` format has no infinity at all, so every out-of-range result
+is NaN. The rounding mode is passed in because \u00a74.7.5 needs it to resolve those
+directed rows — saturation itself never rounds.
+
+This is the saturation half of [`project`](@ref);
+[`round_to_precision`](@ref) is the other half.
+
+Not exported; call it as `AIFloats.saturate`.
+"""
 @inline function saturate(::Type{F}, ρ::Projection{RM,SM}, r::Rounded) where
         {F<:Binary, RM<:RoundingMode, SM<:SaturationMode}
     r.kind == KIND_NAN && return nan_code(F)

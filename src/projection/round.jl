@@ -281,6 +281,27 @@ end
 # fixed-point Dyadic path; no Quadmath arithmetic function is used. BigFloat gets 8 guard bits of
 # working precision. Dyadic cannot go through the core (its zero row builds
 # zero(float(typeof(X))) and float(Dyadic) does not exist, by design).
+"""
+    round_to_precision(P, B, \u03bc, X, R, sticky) -> Rounded
+
+Interim Report \u00a74.7.4 `\u03c9RoundToPrecision`: round the closed extended real `X`
+to precision `P` at exponent bias `B` under rounding mode `\u03bc`, returning the
+canonical `(kind, sign, S, Q)` decomposition rather than a code point.
+
+`R` supplies the random bits for a stochastic `\u03bc` (`0 <= R < 2^N`) and is
+ignored otherwise. `sticky` is `+1`, `0`, or `-1`: it says that the true value
+lies a shade above, exactly at, or a shade below `X`, so each \u00a74.7.4
+`RoundAway` predicate is evaluated on the exact fraction even when the carrier
+cannot hold it. Callers that have an exact `X` pass `0`.
+
+This is the rounding half of [`project`](@ref); [`saturate`](@ref) is the other
+half. Ordinary code wants `project`, which composes them and encodes the
+result. Methods exist for each carrier (`Float64`, `Float128`, `BigFloat`,
+`AIFloats.Dyadic`); no Quadmath arithmetic function is used on the `Float128`
+path, which is decoded exactly instead.
+
+Not exported; call it as `AIFloats.round_to_precision`.
+"""
 function round_to_precision(P::Int, B::Int, μ::RoundingMode, X::Float64, R::Int, sticky::Int)
     (isnan(X) | isinf(X) | iszero(X)) && return _rtp_core(P, B, μ, X, R, sticky)
     ((reinterpret(UInt64, X) >> 52) & 0x7ff) == 0x000 && return _rtp_core(P, B, μ, X, R, sticky)

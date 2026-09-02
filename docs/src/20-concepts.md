@@ -52,11 +52,25 @@ julia> PrecisionOf(B), AIFloats.TrailingSignificantBitsOf(B)
 Rearranged, the exponent gets whatever is left:
 
 ```
-exponent bits  =  K - P - S
+exponent bits  =  (K - S) - (P - 1)
 ```
 
-So for the format above: 8 − 4 − 1 = 3 exponent bits, alongside 1 sign bit and 3 stored
-significand bits.
+The `- (P - 1)` is the *stored* significand, not `P`, which is why the rearrangement
+keeps a `+1` that is easy to drop. So for the format above: (8 − 1) − 3 = 4 exponent bits,
+alongside 1 sign bit and 3 stored significand bits — and 1 + 4 + 3 = 8, the whole budget.
+[`ExponentBitwidthOf`](@ref) is the same arithmetic:
+
+```jldoctest concepts
+julia> ExponentBitwidthOf(B), AIFloats.TrailingSignificantBitsOf(B), SignednessOf(B)
+(4, 3, true)
+
+julia> ExponentBitwidthOf(B) + AIFloats.TrailingSignificantBitsOf(B) + SignednessOf(B)
+8
+```
+
+The report derives the exponent *bias* from the same budget: `B = 2^(K-P-1)` for a signed
+format and `2^(K-P)` for an unsigned one ([`ExponentBiasOf`](@ref)). Both are `2^(E-1)`
+in the exponent width `E` above — a useful check that the two derivations agree.
 
 ### Dropping the sign buys range
 
@@ -64,10 +78,20 @@ An unsigned format spends no bit on sign, so the same `K` and `P` leave it one m
 bit — twice the dynamic range, for giving up negative values. That is a real trade for
 quantities known to be non-negative, such as post-ReLU activations or attention weights.
 
-| Format | `K` | `P` | sign | exponent | stored significand |
-|:--|--:|--:|--:|--:|--:|
-| `Binary(8, 4, SIGNED, …)` | 8 | 4 | 1 | 3 | 3 |
-| `Binary(8, 4, UNSIGNED, …)` | 8 | 4 | 0 | 4 | 3 |
+| Format | `K` | `P` | sign | exponent | stored significand | bias |
+|:--|--:|--:|--:|--:|--:|--:|
+| `Binary(8, 4, SIGNED, …)` | 8 | 4 | 1 | 4 | 3 | 8 |
+| `Binary(8, 4, UNSIGNED, …)` | 8 | 4 | 0 | 5 | 3 | 16 |
+
+```jldoctest concepts
+julia> U = Binary(8, 4, UNSIGNED, FINITE);
+
+julia> ExponentBitwidthOf(B), ExponentBitwidthOf(U)
+(4, 5)
+
+julia> ExponentBiasOf(B), ExponentBiasOf(U)
+(8, 16)
+```
 
 ### Where the validity rules come from
 
@@ -139,9 +163,20 @@ unsigned/signed and `f`/`e` for finite/extended. Each name maps one-to-one onto 
 | `Binary8p4uf` | `Binary(8, 4, UNSIGNED, FINITE)` |
 | `Binary4p2ue` | `Binary(4, 2, UNSIGNED, EXTENDED)` |
 
-The generated P3109 datum aliases begin with capital `Binary`, following
-Julia's convention for names that denote types. The separate IEEE 754 aliases
-[`binary16`](@ref), [`binary32`](@ref), [`binary64`](@ref), and
+Each generated alias names a **format**, not a datum and not a datum type. The capital
+`Binary` follows Julia's convention for names that denote types, and `Binary8p4se` is
+exactly the type `Binary(8, 4, SIGNED, EXTENDED)` returns:
+
+```jldoctest concepts
+julia> Binary8p4se === Binary(8, 4, SIGNED, EXTENDED)
+true
+
+julia> BinaryValue(Binary8p4se)          # the datum TYPE is a separate spelling
+BinaryValue(Binary8p4se)
+```
+
+[Binary formats](@ref formats) sets out the full `F` / `T` / `x` model. The separate IEEE 754
+aliases [`binary16`](@ref), [`binary32`](@ref), [`binary64`](@ref), and
 [`binary128`](@ref) retain their standard lowercase spellings.
 
 ## Compared with IEEE 754

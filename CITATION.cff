@@ -1,10 +1,42 @@
-# Go to https://citation-file-format.github.io/cff-initializer-javascript/#/ to finish this
 cff-version: 1.2.0
 title: AIFloats.jl
 message: >-
-  If you use this software, please cite it using the
-  metadata from this file.
+  If you use this software, please cite it using the metadata from this file.
 type: software
+abstract: >-
+  Julia implementation of the small binary floating-point formats for machine
+  learning described by the IEEE Working Group P3109 Interim Report on
+  Arithmetic Formats for Machine Learning: the format layer, datums and the
+  code-point codec, the projection engine (every rounding and saturation mode),
+  the draft's operation register evaluated to correct rounding, array kernels
+  and memoized tables, shared-scale blocks, packed storage, and a live
+  conformance declaration.
 authors:
-  - given-names: Jeffrey Sarnoff
+  - given-names: Jeffrey
+    family-names: Sarnoff
     email: jeffrey.sarnoff@ieee.org
+repository-code: "https://github.com/JeffreySarnoff/AIFloats.jl"
+url: "https://JeffreySarnoff.github.io/AIFloats.jl"
+license: MIT
+version: 0.2.0
+keywords:
+  - julia
+  - floating-point
+  - machine-learning
+  - IEEE-P3109
+  - low-precision-arithmetic
+references:
+  - type: report
+    title: >-
+      IEEE Working Group P3109 Interim Report on Arithmetic Formats for Machine
+      Learning
+    version: 4.0.3
+    date-released: "2026-09-01"
+    url: "https://github.com/P3109/Public/blob/main/IEEE%20P3109%20Interim%20Report.pdf"
+    notes: >-
+      Unapproved draft. Its cover states that it must not be used for
+      conformance or compliance purposes. This is the normative source AIFloats.jl
+      is measured against; see draft_identity() for the PDF digest recorded by
+      this release.
+    authors:
+      - name: IEEE Working Group P3109

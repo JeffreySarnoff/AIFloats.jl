@@ -235,6 +235,54 @@ blockproject(::Type{FR}, ρ::Projection, sr, Z; kw...) where {FR<:BinaryValue} =
 #   BlockOp(FR, ρ, b1[, b2[, b3]], sr; rng)  — operand blocks, result scale sr
 #   ScaledOp(FR, ρ, s1, x1[, s2, x2[, s3, x3]]; rng) — (scale, element) pairs,
 #                                            unit result scale
+# ---- generated family documentation -----------------------------------------
+# 102 `Block*`/`Scaled*` names, one registry row each. Written from the row so
+# the arity and the shared-scale contract cannot drift apart from the method.
+
+function _block_docstring(op::OpInfo)
+    n = String(op.name)
+    bs = join(("b$i" for i in 1:op.arity), ", ")
+    plural = op.arity == 1 ? "block" : "blocks"
+    """
+        Block$n(fr, \u03c1, $bs, sr; rng) -> Block
+
+    `$n` applied lanewise to $(op.arity) shared-scale $plural, with `sr` as the
+    **result scale**.
+
+    Each operand block is `(scale, elements)`; the lanes are decoded at
+    `scale * element`, `$n` is formed on the common carrier, and every lane is
+    projected once into `fr` against `sr` (see [`blockproject`](@ref)). All
+    operand blocks must have the same block size `B`; the result is a
+    [`Block`](@ref) of that size.
+
+    When every operand scale and `sr` are one, the call reduces to `B`
+    independent [`$n`](@ref) calls — same answer, no scale arithmetic.
+
+    `rng` applies only under a stochastic `\u03c1`, and the lanes draw in index
+    order from one stream.
+    """
+end
+
+function _scaled_docstring(op::OpInfo)
+    n = String(op.name)
+    pairs = join(("(s$i, x$i)" for i in 1:op.arity), ", ")
+    args = join(("s$i, x$i" for i in 1:op.arity), ", ")
+    plural = op.arity == 1 ? "pair" : "pairs"
+    """
+        Scaled$n(fr, \u03c1, $args; rng) -> BinaryValue
+
+    `$n` over $(op.arity) scale/value $plural $pairs — the draft \u00a75.8 scaled
+    form, and one of the specializations \u00a74.5 requires for
+    `Fs = {Binary8p1uf}`.
+
+    Each `si * xi` product is formed exactly on the common carrier before `$n`
+    is applied, so no intermediate is projected. The single result is projected
+    once into `fr` under `\u03c1`.
+
+    When every `si` is one this reduces to [`$n`](@ref) on the values alone.
+    """
+end
+
 for op in OP_REGISTRY
     op.name === :Convert && continue
     name = op.name
@@ -253,7 +301,11 @@ for op in OP_REGISTRY
                       for i in 1:op.arity]
     unit_blocks = foldl((a, b) -> :($a && $b), [:(isone($(bs[i]).s)) for i in 1:op.arity])
     unit_scales = foldl((a, b) -> :($a && $b), [:(isone($(ss[i]))) for i in 1:op.arity])
+    bdoc = _block_docstring(op)                # refinedocs2 P1-2: family docs,
+    sdoc = _scaled_docstring(op)               # generated from the registry row
     @eval begin
+        @doc $bdoc $bname
+        @doc $sdoc $sname
         function $bname(fr::Type{<:Binary}, ρ::Projection, $(block_params...), sr::BinaryValue;
                         rng::MaybeRNG = nothing) where {B}
             if isone(sr) && $unit_blocks

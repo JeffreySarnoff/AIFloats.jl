@@ -174,8 +174,8 @@ end
 """
     ProjectionComponent
 
-Supertype of the two halves of a [`Projection`](@ref): [`RoundingMode`](@ref) and
-[`SaturationMode`](@ref).
+Supertype of the two halves of a [`Projection`](@ref): `AIFloats.RoundingMode` and
+`AIFloats.SaturationMode`.
 
 Not exported; refer to it as `AIFloats.ProjectionComponent`.
 """
@@ -411,7 +411,7 @@ struct ρSN <: NonsaturatingSaturationMode end
 """
     SF
 
-SatFinite — a saturating [`SaturationMode`](@ref).
+SatFinite — a saturating `AIFloats.SaturationMode`.
 
 A `SaturatingSaturationMode`: [`project`](@ref) clamps everything past the largest finite
 value — a genuine infinity too — to that value. See `AIFloats.saturate`.
@@ -421,7 +421,7 @@ const SF = ρSF()
 """
     SP
 
-SatPropagate — a saturating [`SaturationMode`](@ref).
+SatPropagate — a saturating `AIFloats.SaturationMode`.
 
 A `SaturatingSaturationMode`: [`project`](@ref) keeps a representable infinity and clamps
 the rest to the largest finite value. See `AIFloats.saturate`.
@@ -431,7 +431,7 @@ const SP = ρSP()
 """
     SN
 
-SatNone — the non-saturating [`SaturationMode`](@ref).
+SatNone — the non-saturating `AIFloats.SaturationMode`.
 
 The one `NonsaturatingSaturationMode`: past the largest finite value, [`project`](@ref)
 follows the draft's direction/signedness/domain rows — a directed rounding pointing back
@@ -508,7 +508,10 @@ One of the 27 presets, named `<rounding>_<saturation>` over the 9 rounding modes
 [`RSA`](@ref), [`RSB`](@ref), [`RSC`](@ref)) and the 3 saturation modes ([`SF`](@ref),
 [`SP`](@ref), [`SN`](@ref)): `RTE_SF`, `RTE_SP`, `RTE_SN`, `RTA_SF`, … , `RSC_SN`.
 
-`RTE_SF` is the conventional default — round to nearest, ties to even, saturating.
+`RTE_SF` rounds to nearest with ties to even and clamps everything, infinities included,
+to the finite range. It is **not** the package default: [`DefaultProjection`](@ref) is
+initially [`RTE_SN`](@ref), and `randn` — not ordinary construction — is what defaults to
+`RTE_SF`.
 """
 const RTE_SF = Projection(RTE, SF)
 const RTE_SP = Projection(RTE, SP)
@@ -564,7 +567,7 @@ end
 """
     RoundOf(p)
 
-The [`RoundingMode`](@ref) half of a [`Projection`](@ref).
+The `AIFloats.RoundingMode` half of a [`Projection`](@ref).
 
 # Examples
 
@@ -578,7 +581,7 @@ RoundOf(p::Projection{R,S}) where {R<:RoundingMode, S<:SaturationMode} = p.rho[1
 """
     SatOf(p)
 
-The [`SaturationMode`](@ref) half of a [`Projection`](@ref).
+The `AIFloats.SaturationMode` half of a [`Projection`](@ref).
 
 # Examples
 

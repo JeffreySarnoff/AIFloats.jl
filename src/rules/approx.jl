@@ -112,7 +112,34 @@ struct ApproxImpl{Fn}
     kappa_measured::Float64
     exhaustive::Bool
 end
+"""
+    kappa(a::ApproxImpl) -> Float64
+    kappa(name::Symbol) -> Float64
+
+The **declared** \u03ba of a registered approximate implementation — the error bound
+its author stands behind, in the sense of Interim Report \u00a74.4.
+
+\u00a74.6 requires an implementation that supplies an approximate specialization to
+declare \u03ba. This is the declared figure; [`kappa_measured`](@ref) is what
+enumeration actually found. A declaration that understates the measured value
+is rejected at registration.
+
+Not exported; call it as `AIFloats.kappa`.
+"""
 kappa(a::ApproxImpl) = a.kappa_declared
+
+"""
+    kappa_measured(a::ApproxImpl) -> Float64
+
+The \u03ba that [`measure_kappa`](@ref) found by enumeration, as distinct from the
+value the implementation declared ([`kappa`](@ref)).
+
+For an exhaustively enumerated specialization this is the exact worst case over
+every operand code point, and `a.exhaustive` is `true`; otherwise it is the
+worst case over the sampled domain and is a lower bound on the true \u03ba.
+
+Not exported; call it as `AIFloats.kappa_measured`.
+"""
 kappa_measured(a::ApproxImpl) = a.kappa_measured
 
 const APPROX_REGISTRY = Dict{Symbol, ApproxImpl}()
