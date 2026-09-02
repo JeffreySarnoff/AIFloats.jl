@@ -75,7 +75,7 @@ The documentation is in four parts, and the menu on the left follows the same sh
 
 **Learn the model.** Read in order the first time; each page assumes the one before it.
 
-| Page | What it covers |
+| Topic | What it covers |
 |:--|:--|
 | [Getting started](@ref getting-started) | Build a format and ask it questions, step by step |
 | [Concepts](@ref concepts) | What `K`, `P`, `S` and `D` mean, and why the rules are what they are |
@@ -85,7 +85,7 @@ The documentation is in four parts, and the menu on the left follows the same sh
 
 **Worked examples.** Every block runs on its own in a fresh session.
 
-| Page | What it covers |
+| Topic | What it covers |
 |:--|:--|
 | [Basic examples](@ref examples-basic) | Construct datums, calculate, inspect, convert |
 | [Intermediate examples](@ref examples-intermediate) | Explicit projections, saturation, the stochastic contract, arrays |
@@ -94,7 +94,7 @@ The documentation is in four parts, and the menu on the left follows the same sh
 
 **Look something up.** Generated, and complete by construction.
 
-| Page | What it covers |
+| Topic | What it covers |
 |:--|:--|
 | [Reference](@ref reference) | Every exported and `public` name, in four listings |
 | [Formats, datums, projections](@ref) | `Binary`, the axes and queries, `BinaryValue` and the codec, display, projections |
@@ -106,7 +106,7 @@ The documentation is in four parts, and the menu on the left follows the same sh
 **How it works, and how to work on it.** Mechanism rather than interface — none of it is a
 stable contract.
 
-| Page | What it covers |
+| Topic | What it covers |
 |:--|:--|
 | [Algorithms](@ref algorithms) | Stochastic rounding, interval enclosure, and the sticky protocol |
 | [Implementation](@ref status) | What is implemented, the deliberate limits, and what costs what |
