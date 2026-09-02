@@ -303,39 +303,95 @@ const RTZ = ρRTZ()
 """
     RTO
 
-RoundToOdd — inexact results get a `1` in the last bit; exact results are left alone.
+RoundToOdd — an inexact result takes the odd neighbour; an exact result is left alone.
+The report's predicate (\u00a74.7.4) is `RoundAway(ToOdd) = \u03bd > 0 and CodeIsEven`.
 
-Like [`RTE`](@ref) it is unbiased, and it is cheaper in hardware, but it roughly doubles the
-rounding error. Its value is in avoiding double-rounding when a wide intermediate is later
-narrowed. The one `ParityRoundingMode`.
+The one `ParityRoundingMode`.
+
+!!! note "Motivation, not contract"
+    Round-to-odd's practical use is avoiding double rounding: round a wide intermediate to
+    odd, narrow it, and the second rounding lands where a single direct rounding would
+    have. That is a property of the composition, not a guarantee this package makes about
+    error magnitude or hardware cost on any particular device.
 """
 const RTO = ρRTO()
 
 """
     RSA
 
-StochasticA — a `StochasticRoundingMode`, rounding up or down at random.
+StochasticA — a `StochasticRoundingMode`. Rounds away with probability
 
-Stochastic rounding is unbiased in expectation, which lets very low-precision training
-accumulate small updates that deterministic rounding would discard.
+    P = \u230a\u03bd\u00b72^N\u230b / 2^N
+
+where `\u03bd` is the exact leftover fraction. That is `\u03bd` **truncated** onto the `2^N` grid, so
+`RSA` rounds away slightly less often than `\u03bd` warrants: its bias is never positive and
+reaches `2^-N` in magnitude. It is the cheapest of the three — one shift, floor and
+compare.
+
+The report's predicate (\u00a74.7.4) is `RoundAway(StochasticA_{N,R}) = \u230a\u03bd\u00b72^N\u230b + R \u2265 2^N`,
+with `R` the supplied random bits, `0 \u2264 R < 2^N`.
 
 The mode carries its random-bit budget `N` in the type; this constant is the
-default budget, `ρRSA{8}()`. Other budgets via `AIFloats.ρRSA(N)` with
+default budget, `\u03c1RSA{8}()`. Other budgets via `AIFloats.\u03c1RSA(N)` with
 `1 <= N <= 60`. Query with [`nrandbits`](@ref).
+
+!!! warning "Not exactly unbiased"
+    All three variants quantize the rounding probability onto a grid of `2^N` steps, so
+    none is exactly unbiased at finite `N`. A fraction that is not on that grid — `\u03bd = 0.8`
+    at `N = 3`, say — is rounded away with a grid probability, never with probability `\u03bd`.
+    Choose the variant for the balance \u00a74.7.4 NOTE 2 describes, between accuracy and
+    complexity, and choose `N` for how fine that grid must be.
+
+!!! note "Motivation, not contract"
+    Stochastic rounding is used in low-precision training because an update smaller than
+    one unit in the last place is discarded by every deterministic mode but can accumulate
+    under a random one. That is motivation from the wider literature, not a guarantee this
+    package makes.
+
+See also [`RSB`](@ref), [`RSC`](@ref).
 """
 const RSA = ρRSA{DEFAULT_RBITS}()
 
 """
     RSB
 
-StochasticB — a `StochasticRoundingMode` at the default budget `N = 8`. See [`RSA`](@ref).
+StochasticB — a `StochasticRoundingMode`. Rounds away with probability
+
+    P = \u230a\u03bd\u00b72^N + \u00bd\u230b / 2^N
+
+that is, `\u03bd` rounded to the **nearest** grid point, ties resolved upward. Centring the
+quantization this way halves the worst-case bias against [`RSA`](@ref)'s truncation, to
+`2^-(N+1)`, and costs no extra random bits.
+
+The report's predicate (\u00a74.7.4) is
+`RoundAway(StochasticB_{N,R}) = \u230a\u03bd\u00b72^(N+1)\u230b + (2R + 1) \u2265 2^(N+1)`. Evaluating at doubled
+resolution with the `+1` is what supplies the half-step offset: the same `N` random bits
+buy nearest-rounding rather than truncation.
+
+Differs from [`RSC`](@ref) only where `\u03bd\u00b72^N` lands exactly halfway — `RSB` goes up there,
+`RSC` goes to even. Default budget `N = 8`; see [`RSA`](@ref) for the budget mechanics and
+the caveats that apply to all three.
 """
 const RSB = ρRSB{DEFAULT_RBITS}()
 
 """
     RSC
 
-StochasticC — a `StochasticRoundingMode` at the default budget `N = 8`. See [`RSA`](@ref).
+StochasticC — a `StochasticRoundingMode`. Rounds away with probability
+
+    P = RNITE(\u03bd\u00b72^N) / 2^N
+
+that is, `\u03bd` rounded to the **nearest** grid point with ties to even. Worst-case bias
+matches [`RSB`](@ref)'s `2^-(N+1)`, and the even tie-break lets tie bias cancel across many
+roundings instead of always pushing up. It is the most expensive of the three: it needs an
+actual round-to-nearest-even of the scaled fraction, not just a floor.
+
+The report's predicate (\u00a74.7.4) is
+`RoundAway(StochasticC_{N,R}) = RNITE(\u03bd\u00b72^N) + R \u2265 2^N`, with `RNITE` the
+round-to-nearest-ties-even the report defines alongside it.
+
+Differs from [`RSB`](@ref) only at an exact halfway `\u03bd\u00b72^N`. Default budget `N = 8`; see
+[`RSA`](@ref) for the budget mechanics and the caveats that apply to all three.
 """
 const RSC = ρRSC{DEFAULT_RBITS}()
 

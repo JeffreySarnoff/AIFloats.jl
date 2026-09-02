@@ -146,6 +146,60 @@ end
           vmap(:Add, F, RSA_SN, A, B; rng = Xoshiro(7))
 end
 
+@testset "the three stochastic variants quantize as documented" begin
+    # 40-projections.md and the RSA/RSB/RSC docstrings state a probability of
+    # rounding away for each variant. Counting the R values that satisfy the
+    # §4.7.4 predicate is that probability exactly, so the prose is checkable.
+    #
+    # P = 4, B = 8 puts the binade at 1.0 with Q = -3, so S̃ = 8x and the
+    # leftover fraction ν is frac(8x) — chosen so ν is exact in Float64.
+    P, B = 4, 8
+    away(μ, ν, R) = AIFloats.round_to_precision(P, B, μ, 1.0 + ν / 8, R, 0).S > 8
+    prob(μ, ν, N) = count(R -> away(μ, ν, R), 0:(1 << N) - 1) / (1 << N)
+
+    rnite(x) = (f = floor(x); r = x - f;
+                (r > 0.5 || (r == 0.5 && isodd(Int(f)))) ? f + 1 : f)
+
+    for N in 1:6, k in 0:(1 << 6) - 1
+        ν = k / (1 << 6)                       # exact in Float64
+        A = AIFloats.ρRSA{N}(); Bm = AIFloats.ρRSB{N}(); C = AIFloats.ρRSC{N}()
+        scale = 1 << N
+
+        # RSA truncates ν onto the 2^N grid
+        @test prob(A, ν, N) == floor(ν * scale) / scale
+        # RSB rounds it to nearest, ties up
+        @test prob(Bm, ν, N) == floor(ν * scale + 0.5) / scale
+        # RSC rounds it to nearest, ties to even
+        @test prob(C, ν, N) == rnite(ν * scale) / scale
+
+        # RSA is never biased away from zero; RSB and RSC are centred
+        @test prob(A, ν, N) <= ν
+        @test ν - prob(A, ν, N) < 1 / scale
+        @test abs(prob(Bm, ν, N) - ν) <= 1 / (2 * scale)
+        @test abs(prob(C, ν, N) - ν) <= 1 / (2 * scale)
+
+        # RSB and RSC agree except at an exact halfway point
+        if ν * scale != floor(ν * scale) + 0.5
+            @test prob(Bm, ν, N) == prob(C, ν, N)
+        end
+    end
+
+    # the worked rows printed on the projections page
+    @test prob(AIFloats.ρRSA{1}(), 0.25, 1) == 0.0
+    @test prob(AIFloats.ρRSB{1}(), 0.25, 1) == 0.5
+    @test prob(AIFloats.ρRSC{1}(), 0.25, 1) == 0.0
+    @test prob(AIFloats.ρRSA{1}(), 0.75, 1) == 0.5
+    @test prob(AIFloats.ρRSB{1}(), 0.75, 1) == 1.0
+    @test prob(AIFloats.ρRSC{1}(), 0.75, 1) == 1.0
+    @test prob(AIFloats.ρRSA{2}(), 0.125, 2) == 0.0
+    @test prob(AIFloats.ρRSB{2}(), 0.125, 2) == 0.25
+    @test prob(AIFloats.ρRSC{2}(), 0.125, 2) == 0.0
+    # none is exactly unbiased at finite N: 0.8 is not on the 3-bit grid
+    for μ in (AIFloats.ρRSA{3}(), AIFloats.ρRSB{3}(), AIFloats.ρRSC{3}())
+        @test prob(μ, 0.8, 3) == 0.75
+    end
+end
+
 @testset "the public surface is what the documentation says it is" begin
     # P0-7, P1-1, P1-5: names the documentation must NOT recommend, and names
     # it must be able to.

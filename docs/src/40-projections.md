@@ -74,21 +74,55 @@ Interim Report §4.7.4 defines every mode by one predicate, `RoundAway(µ)`, on 
 "Even" here is the report's `CodeIsEven`, which for `P = 1` formats — where there is no
 significand bit to be even — falls back to the parity of the biased exponent.
 
-!!! note "Why these three stochastic variants"
-    The report (§4.7.4 NOTE 2) says the three variants "offer a balance between accuracy
-    and complexity". All three quantize the rounding probability onto a grid of `2^N`
-    steps, so none is exactly unbiased at finite `N`; they differ in how the residue below
-    that grid is treated. `RSA` truncates it, `RSB` adds a half-step offset, and `RSC`
-    rounds it to nearest. AIFloats does not claim a bias figure for any of them.
+### How the three stochastic variants differ
+
+All three consume exactly `N` random bits and differ only in **how the rounding
+probability is quantized** onto the grid of `2^N` steps. Counting the `R` values that
+satisfy each predicate gives the probability of rounding away:
+
+| Mode | `P(round away)` | Quantization of `ν` |
+|:--|:--|:--|
+| [`RSA`](@ref)`{N}` | `⌊ν·2^N⌋ / 2^N` | truncated |
+| [`RSB`](@ref)`{N}` | `⌊ν·2^N + ½⌋ / 2^N` | nearest, ties up |
+| [`RSC`](@ref)`{N}` | `RNITE(ν·2^N) / 2^N` | nearest, ties to even |
+
+So `RSA` rounds away slightly less often than `ν` warrants — its bias is never positive
+and reaches `2^-N`. `RSB` and `RSC` centre the quantization, halving worst-case bias to
+`2^-(N+1)`; `RSB` buys that with a half-step offset evaluated at doubled resolution
+(`2R + 1`), which needs no extra random bits, while `RSC` computes an actual
+round-to-nearest-even and lets tie bias cancel over many roundings rather than always
+pushing up.
+
+`RSB` and `RSC` can only disagree where `ν·2^N` lands exactly halfway. Away from those
+points the two are identical:
+
+| `N` | `ν` | `RSA` | `RSB` | `RSC` |
+|--:|--:|--:|--:|--:|
+| 1 | 0.25 | 0 | ½ | 0 |
+| 1 | 0.75 | ½ | 1 | 1 |
+| 2 | 0.125 | 0 | ¼ | 0 |
+| 3 | 0.8 | ¾ | ¾ | ¾ |
+
+Cost runs opposite to accuracy: `RSA` is a shift, a floor and a compare; `RSB` adds one
+bit of intermediate width; `RSC` needs the round-to-nearest-even. That is the "balance
+between accuracy and complexity" of §4.7.4 NOTE 2.
+
+!!! warning "None is exactly unbiased at finite `N`"
+    The last row above is the reason. `ν = 0.8` is not on the 3-bit grid, so every variant
+    rounds away with probability `¾`, not `0.8`. Stochastic rounding is unbiased only in
+    the limit of an exact probability; at a finite budget the grid is the bias floor.
+    Choose the variant for the accuracy/complexity balance, and `N` for how fine that grid
+    must be. AIFloats claims no bias figure beyond the bounds above.
 
 !!! note "Motivation, not contract"
     Round-to-odd's practical use is avoiding double rounding: round a wide intermediate to
     odd, narrow it, and the second rounding lands where a single direct rounding would
-    have. Stochastic rounding is used in low-precision training because a weight update
-    smaller than one unit in the last place is discarded by every deterministic mode but
-    can accumulate under a random one. Both statements are *motivation* from the wider
-    literature, not guarantees this package makes, and neither is a claim about hardware
-    cost or error magnitude on any particular device.
+    have — a property of the composition, not of the mode alone. Stochastic rounding is
+    used in low-precision training because a weight update smaller than one unit in the
+    last place is discarded by every deterministic mode but can accumulate under a random
+    one. Both statements are *motivation* from the wider literature, not guarantees this
+    package makes, and neither is a claim about hardware cost or error magnitude on any
+    particular device.
 
 ## [Saturation modes](@id saturation-modes)
 
