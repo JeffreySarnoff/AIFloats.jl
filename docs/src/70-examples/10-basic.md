@@ -27,7 +27,7 @@ the format's carrier; `codepoint` returns the stored encoding. `formatof(x)`
 recovers the format from a datum you were handed — there is no need for it when
 you already hold `F`.
 
-## Numbers and code points are different arguments
+## Numbers and code points are distinct
 
 Every constructor argument is a **number**, `Unsigned` included. To name a raw
 code point, use [`fromcode`](@ref):

@@ -152,7 +152,7 @@ bz = BlockAdd(E, RTE_SN, bx, by, S(1.0))
 (bz, AIFloats.blockdecode(bz))
 ```
 
-## Reduce a block with one final projection
+## Reduce a block
 
 Block reductions first try an allocation-free exact accumulator. That fast path
 is used only after checking that the decoded lanes are finite, each required
