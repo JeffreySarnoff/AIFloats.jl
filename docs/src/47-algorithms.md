@@ -127,7 +127,102 @@ The last row is the one to remember. `ν = 0.8` is not representable on the
     `RSC`, but with `RSA`'s one-signed behaviour where it matters most, at the
     ties.
 
+    How much that separation is worth depends on how often ties occur, which is
+    a property of `N` and the format rather than of the mode.
+    [How often ties actually occur](@ref alg-ties) measures it.
+
     AIFloats claims no bias figure beyond these bounds.
+
+### [How often ties actually occur](@id alg-ties)
+
+`RSB` and `RSC` differ only at ties, so the question decides whether the choice
+between them matters at all. It has a sharp answer, and it is not the intuitive
+one.
+
+A tie is `ν·2^N` landing exactly halfway between two grid points, which requires
+`ν` to have **exactly `N+1` fractional bits**. So ties are not primarily a
+property of the data. They are a property of how many fractional bits `ν` tends
+to carry, against `N`. Two things supply those bits:
+
+- **Precision.** The exact product of two `P`-bit significands has at most `2P`
+  bits, leaving at most about `P` fractional bits in `ν`. More precision, longer
+  `ν`, more ties — up to the point where `N` outruns the supply.
+- **Exponent spread.** Adding values many binades apart, or landing in the
+  subnormal region where the exponent is clamped, gives `ν` bits in proportion
+  to the exponent range rather than to `P`. This is what produces a small tie
+  fraction that *persists* at every `N`.
+
+The tables below are exact counts, not samples: every ordered pair of finite
+operands of each signed extended format, keeping the pairs whose exact result is
+nonzero and inexact. Entries are the fraction of those results that tie; the
+final column is how many there were.
+
+#### `Add`
+
+| Format | `N`=1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | inexact |
+|:--|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| `Binary3p2se` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| `Binary4p2se` | 0.231 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 52 |
+| `Binary5p2se` | 0.293 | 0.195 | 0.135 | 0.075 | 0.015 | 0 | 0 | 0 | 532 |
+| `Binary5p4se` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 84 |
+| `Binary6p2se` | 0.147 | 0.119 | 0.108 | 0.098 | 0.087 | 0.077 | 0.066 | 0.055 | 3028 |
+| `Binary6p4se` | 0.377 | 0.017 | 0 | 0 | 0 | 0 | 0 | 0 | 1432 |
+| `Binary7p2se` | 0.072 | 0.062 | 0.059 | 0.057 | 0.055 | 0.053 | 0.050 | 0.048 | 14164 |
+| `Binary7p4se` | 0.265 | 0.200 | 0.145 | 0.090 | 0.041 | 0 | 0 | 0 | 10264 |
+| `Binary7p6se` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1860 |
+| `Binary8p2se` | 0.036 | 0.031 | 0.031 | 0.030 | 0.030 | 0.029 | 0.028 | 0.028 | 61012 |
+| `Binary8p4se` | 0.135 | 0.120 | 0.109 | 0.096 | 0.086 | 0.076 | 0.066 | 0.057 | 52504 |
+| `Binary8p6se` | 0.384 | 0.033 | 0 | 0 | 0 | 0 | 0 | 0 | 25672 |
+
+#### `Multiply`
+
+| Format | `N`=1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | inexact |
+|:--|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| `Binary3p2se` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| `Binary4p2se` | 0.538 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 52 |
+| `Binary5p2se` | 0.636 | 0.121 | 0.061 | 0 | 0 | 0 | 0 | 0 | 264 |
+| `Binary5p4se` | 0.377 | 0.344 | 0.020 | 0 | 0 | 0 | 0 | 0 | 604 |
+| `Binary6p2se` | 0.645 | 0.079 | 0.066 | 0.053 | 0.039 | 0.026 | 0.013 | 0 | 1216 |
+| `Binary6p4se` | 0.327 | 0.321 | 0.178 | 0 | 0 | 0 | 0 | 0 | 2716 |
+| `Binary7p2se` | 0.642 | 0.043 | 0.040 | 0.037 | 0.034 | 0.031 | 0.028 | 0.024 | 5232 |
+| `Binary7p4se` | 0.299 | 0.307 | 0.198 | 0.045 | 0.022 | 0 | 0 | 0 | 11428 |
+| `Binary7p6se` | 0.135 | 0.201 | 0.272 | 0.276 | 0.036 | 0 | 0 | 0 | 14180 |
+| `Binary8p2se` | 0.640 | 0.022 | 0.021 | 0.021 | 0.020 | 0.019 | 0.018 | 0.018 | 21712 |
+| `Binary8p4se` | 0.285 | 0.300 | 0.194 | 0.032 | 0.027 | 0.022 | 0.016 | 0.011 | 47284 |
+| `Binary8p6se` | 0.119 | 0.174 | 0.240 | 0.253 | 0.150 | 0 | 0 | 0 | 58316 |
+
+What the tables say:
+
+**`N` dominates, and raising it is the reliable lever.** Every row falls as `N`
+grows. At the package default `N = 8`, most of these formats tie on *no* pair at
+all, and the `RSB`/`RSC` choice is then a choice between identical answers.
+
+**Narrower is not tie-ier.** At `N = 4`, `Multiply` ties rise from `0` on
+`Binary5p2se` to `0.253` on `Binary8p6se` — more precision, more ties, because a
+longer `ν` is what a tie needs. A very narrow format produces a `ν` so coarse it
+lands *on* grid points, where all three variants agree.
+
+**In the normal range, ties die once `N` reaches about `P`.** `Binary8p6se`
+`Multiply` is the clean case: substantial through `N = 5`, exactly zero from
+`N = 6`. The product simply runs out of fractional bits for a tie to occupy.
+
+**A wide exponent range keeps a floor under them.** The `P = 2` rows are the
+exception that proves the mechanism: `Binary8p2se` has one stored significand
+bit and an exponent bias of 32, so alignment and subnormals feed `ν` bits that
+precision never could. It still ties on 2.8% of inexact `Add` results at
+`N = 8`, where the better-balanced `Binary8p6se` ties on none. `Binary8p4se`
+sits between, at 5.7%.
+
+So the formats where `RSC` earns its cost are the ones with **little precision
+and a lot of exponent**, or any format at a **small `N`** — and a tight `N` is
+exactly the regime the variants were designed for [Fitzgibbon2025].
+
+!!! note "Scope of the measurement"
+    `Add` and `Multiply` on signed extended formats, over every operand pair.
+    Enclosure-evaluated operations (`Exp`, `Log`, …) are not included: their
+    exact results are generally irrational, so `ν` has no finite binary
+    expansion and an exact sub-grid tie essentially never arises. The numbers
+    above are therefore the *high* end for a given format and `N`.
 
 ### Choosing a variant
 
@@ -138,12 +233,12 @@ them. Start from what your budget is really constrained by.
 `RSA`'s bit cost and close to `RSA`'s arithmetic cost. If nothing in your problem
 argues for another, use it.
 
-**Choose `RSC` when many roundings accumulate and ties are common.** Ties are not
-rare in practice: they occur whenever the exact value sits on a sub-grid
-boundary, which is systematic in fixed-point-ish data, quantized activations, and
-anything derived from a coarser format. `RSB` pushes every one of those upward;
-`RSC` alternates by parity so they cancel. Pay for it only when you have reason
-to think ties are frequent, because it is the most expensive of the three.
+**Choose `RSC` when ties are actually frequent** — which, as
+[the next section](@ref alg-ties) measures, means a small `N`, or a format whose
+exponent range is wide relative to its precision. `RSB` pushes every tie upward;
+`RSC` alternates by parity so they cancel. Where ties are rare the two are
+indistinguishable, and `RSC` is the most expensive of the three, so this is a
+choice to make from the table rather than from intuition.
 
 **Choose `RSA` when the random bits or the gate count are the binding
 constraint**, and a known one-signed bias of at most `2^-N` is acceptable — or
