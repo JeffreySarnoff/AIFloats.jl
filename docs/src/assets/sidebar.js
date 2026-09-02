@@ -50,6 +50,14 @@ document.addEventListener("DOMContentLoaded", function () {
     chevron.className = "docs-chevron";
     entry.appendChild(chevron);
 
+    // Start CLOSED. Documenter reveals the active page's headings on load,
+    // which made this entry the one thing in the menu that arrived expanded —
+    // every group starts at `>` and waits to be asked. Closing it on setup
+    // makes the menu uniform, and makes the marker mean the same thing
+    // wherever it appears: `>` there is more here, `v` here it is.
+    sections.classList.add("is-collapsed");
+    entry.classList.add("is-closed");
+
     entry.addEventListener("click", function (event) {
       event.preventDefault();
       sections.classList.toggle("is-collapsed");
