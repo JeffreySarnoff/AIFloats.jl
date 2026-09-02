@@ -99,7 +99,7 @@ The documentation is in four parts, and the menu on the left follows the same sh
 | [Reference](@ref reference) | Every exported and `public` name, in four listings |
 | [Formats, datums, projections](@ref) | `Binary`, the axes and queries, `BinaryValue` and the codec, display, projections |
 | [Operations, kernels, storage](@ref) | The register operations, `vmap`/`vmap!`, the table policy surface, `PackedVector` |
-| [Blocks and scaled operations](@ref) | `Block`, `BlockVector`, and the generated `Block*` and `Scaled*` families |
+| [Blocks and scaled operations](@ref) | `Block`, `BlockVector`, and the generated `Block` and `Scaled` families |
 | [Conformance](@ref) | `conformance` and the ϰ registry, the IEEE 754 aliases, carrier-level types and switches |
 | [Benchmark results](@ref benchmarks) | Generated from a run of the suite, with the commit and machine it describes |
 
