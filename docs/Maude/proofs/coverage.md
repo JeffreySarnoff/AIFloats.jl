@@ -98,8 +98,12 @@ a constructor abstraction nor a successful SCC run proves RAT semantics.
 
 NaN handling, real operands, and infinity operands use distinct sorts or
 explicit complementary guards. Unknown symbolic tests are never treated as
-false by an `owise` arithmetic equation. The only conformance `owise`
-equations are over decidable String/Nat name-and-arity metadata.
+false by an `owise` arithmetic equation. No `owise` equation remains in the
+specification: the conformance name-and-arity predicates are membership in
+explicit finite tables (`inArityTable`), defined by structural recursion, so
+their complement is a theorem of the definition rather than an execution
+strategy. Verified equal to the previous ordered rows on all 5,820 name/arity
+pairs.
 
 FMA is `omegaAdd(omegaMultiply(X,Y),Z)` and FAA is
 `omegaAdd(omegaAdd(X,Y),Z)`, as the draft itself states. There is no projection

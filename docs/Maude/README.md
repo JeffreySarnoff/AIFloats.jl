@@ -225,3 +225,76 @@ Two things I changed beyond the new file:
 load-symbolic.maude and load-contracts.maude each pulled core with plain load load-core.maude. sload only skips files that were themselves sloaded, so chaining the three loaders redefined all 22 core modules and 9 views. Both now use sload; each loader is also clean standalone (0 advisories each).
 The first draft of the header comment broke the lexer: Maude's --- comments are not opaque to parentheses, braces, or backticks. Rewritten as plain words. Worth knowing for the other .maude headers.
 One design note in the file: P3109-SPEC imports P3109-SYMBOLIC (which already includes P3109-CORE). The contract theories P3109-REAL-CONTRACT / P3109-EXTERNAL-FORMAT and the parameterized P3109-EXTERNAL-BRIDGE{B} are loaded into the module database but can't be imported by an fmod — they need a view to instantiate, which is exactly the "external-format contract remains open" obligation in asspec.md.
+
+
+====
+
+Two translator warnings:
+- (Resolved.) Three equations used owise, the `false` fallbacks of `numericArity`, `plainArity` and `blockElementArity` in lib/conformance.maude. maude2lean emits an owise equation as a plain unconditional axiom, so alongside the positive rows it would derive true = false. They are now membership in explicit finite tables (`numericArityTable` etc.) by structural recursion (`inArityTable`), with no owise and no conditions; the old and new definitions agree on all 5,820 name/arity pairs checked, and the translator no longer warns. No owise remains anywhere in the specification.
+- 75 special operators (Maude builtins from NAT/INT/RAT/STRING etc.) have no equational definition; they appear as uninterpreted constructors without axioms.
+
+..
+
+Only three equations, all in conformance.maude: the false fallbacks for numericArity, plainArity, blockElementArity. Each pairs with ceq … = true if A == k /\ (N == "Add" or N == …) positive rows over String × Nat name/arity metadata.
+
+Why it's unsound in Lean. owise is a Maude execution strategy — "try this only after every other equation fails to match" — not an equational axiom. maude2lean's def_extractor.py refuses to treat an owise group as a definition, warns, and then emits the equation as an ordinary eqe constructor. So Lean gets both numericArity("Add", 3) =E true and numericArity(N, A) =E false for all N, A, hence true =E false. (In the current output the three ops don't appear at all — the String kind collapsed first — so today they're lost, not unsound. Fix the literal bug and they become unsound.)
+
+Best practice: don't encode "otherwise" as a fallback; encode it as membership in an explicit finite set, defined by structural recursion. Three ways, in order of preference:
+
+Table-driven, one unconditional equation. Make the name/arity list data, not conditions:
+
+
+sort ArityEntry ArityTable .
+op _:_ : String Nat -> ArityEntry [ctor] .
+op nil : -> ArityTable [ctor] .  op _;_ : ArityEntry ArityTable -> ArityTable [ctor] .
+op numericTable : -> ArityTable .
+eq numericTable = ("Convert" : 2) ; ("Abs" : 2) ; … ; ("Clamp" : 4) ; ("ScaledFMA" : 7) ; nil .
+op inTable : String Nat ArityTable -> Bool .
+eq inTable(N, A, nil) = false .
+eq inTable(N, A, (M : K) ; T) = (N == M and A == K) or inTable(N, A, T) .
+eq numericArity(N, A) = inTable(N, A, numericTable) .
+No owise, no ceq, complete and confluent by construction (constructor recursion), and == on String/Nat is one of the two things maude2lean does special-case. It also removes the four hand-typed or-chains and gives tools/generate-wrappers.py one source of truth: inventory/operations.json already holds every name and arity, so the table should be generated from it, not typed.
+
+Explicit complement. Keep the ceq … = true rows and write ceq numericArity(N, A) = false if not(cond₂) /\ not(cond₃) /\ …. Sound, but duplicates every condition, and conditional equations still block the translator's definition extraction.
+
+Sort-based disjointness. The right tool for the ω-operations (that's how NaN/±Inf vs Rat rows are already kept exclusive), but names here are String, not a constructor sort, so it doesn't apply unless you first make operation names an enumeration sort — which is defensible on its own merits and would also sidestep the string-literal collapse.
+
+The proofs/coverage.md note already restricts owise to "decidable String/Nat metadata"; option 1 removes the last three uses, so the restriction becomes "none" and the README warning can go. Say the word and I'll do it, generating the tables from operations.json.
+
+>>
+
+Two separate problems, two different fixes.
+
+1. owise equations (unsound today)
+
+Maude semantics: eq f(x) = r [owise] applies only when no other f equation matches. Translator currently emits it as an unconditional eqe constructor, so Lean can derive f(a) =E r even when a non-owise equation covers f(a). Fix in __init__.py _do_equations: emit the owise equation with an extra premise that no other LHS matches. Concretely, for each sibling equation eq f(p₁..pₙ) = r' of the same top symbol, add a hypothesis
+
+lean
+(∀ vars_of_pᵢ, ¬ (kF.eqa x (f p₁ .. pₙ)))    -- or literally x ≠ f p₁..pₙ for ctor patterns
+
+Simplest sound version: reject sibling conditional equations (keep the warning there), and for unconditional siblings generate ¬ ∃ vars, args =A pattern premises. This is the "definitional extension" approach in the maude2lean paper. Implementation points:
+- maudext.get_variables on the sibling LHS for the binder list.
+- self.eqa for the disequality (matching modulo axioms, so ≠ on terms is wrong when args have assoc/comm).
+- Drop the warning once implemented; keep it for owise with conditional siblings.
+  Cost: one new premise builder, ~40 lines. Gives real semantics for owise instead of a warning.
+
+Alternative cheap option: --with-derived-as-defs path already handles ordered matching correctly, because Lean match is ordered. I made complete reject owise earlier to be safe; it could instead accept owise when it is the last equation and it is variable-only. That covers the common "default case" shape as a Lean def with | _ => r last. Fits your spec only where the operator qualifies as a definition (linear ctor patterns, no conditions, no axioms).
+
+2. 75 special operators without equations
+
+These are Maude builtins on Nat/Int/Rat/String/Float (_+_, _*_, _<_, _quo_, gcd, substr, float ops...) marked special in the prelude; Maude implements them in C++. The translator sees no equations, so Lean gets opaque constructors with no axioms. Nothing can be proven about arithmetic.
+
+Fix: extend the native-kind mechanism that already exists for Bool (special.py find_bool, _index_native) to Nat, Int, Rat, String:
+- Map Maude kind [Nat] to Lean Nat, [Int] to Int, [Rat] to Rat (needs Mathlib, or use Int × Nat/a custom Rat in a data file), [String] to String.
+- Map special symbols to Lean expressions via their id-hook names, e.g. ACU_NumberOpSymbol + → ({} + {}), NumberOpSymbol quo → ({} / {}), _<_ → decide ({} < {}), s_ → ({} + 1), sd → Nat.dist... a table of maybe 60 hooks in special.py.
+- Sorts Zero, NzNat, NzInt, PosRat, NzRat become has_sort predicates over the native type (n ≠ 0, 0 < q...).
+- Equality =E on those kinds becomes Lean =, as already done for Bool.
+- Option name --with-native-arith yes, default off. Lean 4 core suffices for Nat/Int/String; Rat needs a data file or Mathlib.
+  Cost: largest change of the two, maybe 300 lines plus tests. Remaining unmapped specials (e.g. random, float transcendental) stay opaque with a per-operator warning naming them.
+
+3. Practical for your spec now
+
+P3109-SPEC translated as one 23k-line file with all Maude prelude arithmetic inlined as opaque symbols. Even after fixing both items, proving things about the rational core in Lean means proving over native Rat; that is the realistic route (item 2 with Rat). Item 1 matters wherever your spec uses owise defaults (worth checking how many: grep -c owise lib/*.maude).
+
+Recommend order: item 2 for Nat/Int/Rat first (unblocks arithmetic), then item 1.
+
