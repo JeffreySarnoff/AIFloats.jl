@@ -1,4 +1,4 @@
-id	module	property	assumptions	method	backend	session	status	conclusion
+    id	module	property	assumptions	method	backend	session	status	conclusion
 smoke-confluence	P3109-PROOF-SMOKE	local confluence	pure constructors; BOOL disabled	CRC	Maude++ 3.5.1 / MFE 3.0	sessions/smoke-crc.txt	proved	All critical pairs joined; locally-confluent.
 smoke-sort	P3109-PROOF-SMOKE	sort decrease	pure constructors	CRC	Maude++ 3.5.1 / MFE 3.0	sessions/smoke-crc.txt	proved	The module is sort-decreasing.
 smoke-complete	P3109-PROOF-SMOKE	sufficient completeness and soundness	ground weak termination and ground sort decrease remain separate	SCC	Maude++ 3.5.1 / MFE 3.0	sessions/smoke-scc.txt	proved	It is complete and sound; ground weak termination and ground sort-decreasingness not proved by SCC.
