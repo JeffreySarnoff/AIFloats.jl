@@ -1,8 +1,12 @@
 # Plan: IEEE P3109/D1 as a Maude specification
 
-Source: `docs/other/IEEE_D1.md`, the September 2026 revised-draft rendering.
-Where this document says "the draft", it means that file. This plan does not
-import semantics from other references.
+Authoritative source: `docs/other/IEEE_D1_2026_09_07.pdf`, IEEE P3109/D1,
+September 2026. SHA-256:
+`53c217cf225f82fa173aa1e23f7a4134f740cbdcec423311ea4a92a8ac04d299`.
+Where this document says "the draft", it means that PDF. Extracted text is
+only a navigation aid; the PDF's visible content governs. This plan does not
+import semantics from other references or assume that a Markdown rendering
+has been validated against the PDF.
 
 Target: a Maude 3 specification with an executable exact rational core for
 P3109 formats, symbolic specifications for general real results, and explicit
@@ -38,11 +42,13 @@ this plan's source restriction.
 
 ## 1. Freeze the source and build the inventory
 
-- Record the SHA-256 of the source in a manifest referenced by the modules.
+- Record the authoritative PDF's filename and SHA-256 in a manifest referenced
+  by the modules. Record extraction tools/options for any derived text, and
+  preserve PDF page numbers and printed page labels for source evidence.
   A changed source requires a reviewed revision of the specification.
 - Extract requirements, signatures, operand/result domains, behavior rows,
   formulas, normative tables, recommendations, and NOTE properties from
-  §§1–5. Matrix columns: `§ref`, `kind`, `text`, `module`,
+  §§1–5. Matrix columns: `§ref`, `PDF-page`, `printed-page`, `kind`, `text`, `module`,
   `equation-id(s)`, `test-id(s)`, `status`, and `reason` where needed.
 - Build the operation inventory from §§4–5, including `RoundOf` and `SatOf`
   in §4.15. Cross-check Annex F and record discrepancies; that informative
@@ -223,9 +229,11 @@ encoder's full datum precondition.
 - Every rounding/saturation branch has boundary tests. Finite exhaustive
   tests specify modes and fixed stochastic `N,R` fixtures; unbounded random
   parameters require general arguments.
-- §4.7.3's nearest-even NOTE checks use the upper finite interval and
-  nonnegative values around half the smallest subnormal. "At or below half"
-  must not inadvertently include arbitrarily large negative values.
+- §4.7.3's nearest-even NOTE checks cover the upper finite interval and,
+  for smallest positive subnormal `m`, `abs(X)≤m/2 → 0`. Test zero, both
+  endpoints `±m/2`, and points immediately inside and outside those bounds.
+  Retain the positive `(m/2,m)` check and its negative counterpart for signed
+  results. Formats without subnormals have separate `P=1` boundary tests.
 
 ## 7. Ordered behaviors and exact operations
 
@@ -267,7 +275,7 @@ finite division by infinity explicitly.
 ## 8. General real operations and certified evaluation
 
 Specify Sqrt, RSqrt, exponentials, logarithms, trigonometric and hyperbolic
-operations, π-scaled variants, SoftPlus, Hypot, ArcTan2, and ArcTan2Pi using
+operations, π-scaled variants, Softplus, Hypot, ArcTan2, and ArcTan2Pi using
 §§4.10.8–4.10.16. Some rational inputs give rational results; others require
 symbolic reals. The shared signature supports `sin(π*X)`,
 `ωLog(ωAdd(1,X))`, and `ωSubtract(ωExp(X),1)`. Raw real functions have
@@ -315,18 +323,28 @@ No fixed enclosure width guarantees termination for all cases.
   generator inputs and generator with output for reproducibility.
 - `Class` implements Table 2's eight cases and partitions valid codes.
 - Restrict `TotalOrder` to P3109 formats (§4.12.1). Build an independent
-  list with NaN first and remaining datums in numerical order. Compare every
-  pair with its list ranks. Agreement establishes totality, reflexivity,
-  antisymmetry, and transitivity without sampled triples or cubic enumeration:
-  an eight-bit format needs 256² pair checks.
+  list for each format with NaN first and remaining datums in numerical order.
+  Compare every same-format pair with its list ranks. Agreement establishes
+  totality, reflexivity, antisymmetry, and transitivity on each format's value
+  set without cubic enumeration: an eight-bit format needs 256² pair checks.
+  Also test independently parameterized input formats using decoded numerical
+  order with NaN first. Include equal datums with different codes, unequal
+  datums, NaN pairs, and infinities. Equal datums in different formats compare
+  True in both directions; do not impose antisymmetry on their distinct
+  format-tagged representations.
 - Implement §4.16's ordered code-point Next rules. Guard `SmallestNegative`
   to signed formats and record shadowed cases. Do not extend P3109 code
   arithmetic to external formats without a source-defined rule or an explicit
   unresolved contract.
 
-**Accept when** wrappers match signatures, Class partitions each format in
-`F4∪F8`, TotalOrder agrees with ranks, and both Next inverse laws hold
-where both steps return non-NaN. Test extrema, infinities, zero, and NaN.
+**Accept when** wrappers match signatures and Class partitions each format in
+`F4∪F8`. Check TotalOrder on every code pair for every ordered pair of formats
+in that set, using per-format ranks for equal formats and decoded ordering
+for mixed formats. For Next, reuse each format's independent numerical list
+with NaN removed: every non-NaN code must advance to its immediate neighbor
+in the specified direction, or return NaN if none exists. Test NaN propagation
+separately. These adjacency checks include extrema, infinities, and zero,
+and imply the inverse laws wherever both steps return non-NaN.
 
 ## 10. Blocks and scaled operations
 
@@ -360,10 +378,18 @@ it to block projection. Preserve every projection's specified position.
 
 **Accept when** shape and random-length guards are checked; special
 scale/element combinations agree with the table; and all §5.4.2 and §5.5.3
-NOTEs have evaluated checks or documented source findings. §5.4.2 NOTE 2's
-±1 claim needs the final projection qualification: an unsigned result format
-cannot represent `-1`. Preserve the normative projection and document the
-NOTE's limitation instead of requiring every NOTE to pass unchanged.
+NOTEs have evaluated checks or documented source findings. Require §5.4.2
+NOTE 2 (PDF p. 63) to pass for P3109 formats: with an infinite scale, every
+nonzero, non-NaN result element is `±1`. Unsigned projection of `-1` yields
+zero or NaN, already excluded by the NOTE; it is not a counterexample.
+
+Record the actual conflict in §5.5.3 NOTE 2 (PDF p. 66). With `B=1`, all
+formats `Binary8p4se`, input `[+Inf]`, scale projection
+`(NearestTiesToEven,SatFinite)`, and element projection
+`(NearestTiesToEven,SatNone)`, the scale is `224` and the result element is
+`+Inf`, outside the NOTE's stated alternatives `±1` and `±MaxFiniteOf(fr)`.
+Preserve the normative behavior and retain this counterexample as a source
+finding and regression check.
 
 For `B=1` and unit scales, compare BlockDotProduct with exact ωMultiply
 followed by one projection (equivalently scalar Multiply), and ScaledAdd
