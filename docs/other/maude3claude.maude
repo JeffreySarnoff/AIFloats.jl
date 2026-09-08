@@ -1,0 +1,617 @@
+--- =====================================================================
+--- P3109 Section 3 -- Floating-point formats
+--- A Maude functional specification
+--- =====================================================================
+---
+--- STATUS: NOT EXECUTED. No Maude toolchain was available where this was
+--- written, so nothing below has been parsed, reduced, or checked. Treat it
+--- as a specification of structure. Expect to confirm three prelude
+--- signatures on first load (see OBLIGATION O-1).
+---
+--- SCOPE: IEEE_D1.md clause 3 only -- 3.1 Formats and 3.2 Naming. No other
+--- clause of that document and no other document was used. Where clause 3
+--- defers to material outside itself (NOTE 3 defers the encoding to 4.7.6),
+--- this specification declares the operation and supplies no equations,
+--- rather than importing a definition it is not permitted to read.
+---
+--- Everything here is either quoted from clause 3, or derived from it with
+--- the derivation shown. Derived material is marked DERIVED.
+---
+--- =====================================================================
+--- A. Coverage of clause 3
+--- =====================================================================
+---
+---   3.1 closed extended reals R^omega := R u {-inf, +inf, NaN}
+---                                             -> fmod P3109-XREAL
+---   3.1 NOTE 1  single NaN; no negative zero  -> P3109-XREAL, by construction
+---   3.1 format = datum set + encoding         -> P3109-ENCODING (declared)
+---   3.1 encoding bijective onto 0 .. 2^K-1    -> P3109-ENCODING (obligation)
+---   3.1 four format-defining parameters       -> fmod P3109-FORMAT, op fmt
+---   3.1 K > 2                                 -> cmb, P3109-FORMAT
+---   3.1 0 < P < K signed, 0 < P <= K unsigned -> cmb, P3109-FORMAT
+---   3.1 Sigma in {Signed, Unsigned}           -> fmod P3109-PARAMS
+---   3.1 Delta in {Finite, Extended}           -> fmod P3109-PARAMS
+---   3.1 bias 2^(K-P-1) / 2^(K-P)              -> op bias, P3109-FORMAT
+---   3.1 datum = element of D_f                -> P3109-ENCODING (declared)
+---   3.1 value = code point                    -> sort CodePoint
+---   3.1 NOTE 2  value/code point synonymy     -> comment + OBLIGATION O-3
+---   3.1 finite datum: not +-inf and not NaN   -> op isFinite, P3109-XREAL
+---   3.1 finite datum form S * 2^(1-P) * 2^E   -> op magnitude, P3109-DECOMP
+---   3.1 E > -B, 0 <= S < 2^P                  -> op admissible, P3109-DECOMP
+---   3.1 canonical: smallest E; zero at E = 0  -> op canonical, P3109-DECOMP
+---   3.1 normal 2^(P-1) <= S < 2^P             -> op isNormal
+---   3.1 subnormal 0 < S < 2^(P-1)             -> op isSubnormal
+---   3.1 zero is neither                       -> DERIVED, test T-14
+---   3.1 trailing significand S mod 2^(P-1)    -> op trailingSignificand
+---   3.2 long name Binary{K, P, Sigma, Delta}  -> op longName, P3109-NAMING
+---   3.2 short name Binary<K>p<P><s|u><e|f>    -> op shortName, P3109-NAMING
+---   3.2 examples Binary12p7se, Binary8p1uf    -> tests T-05, T-06
+---   3.2 NOTE  finite datums are integer
+---            multiples of powers of two       -> DERIVED, satisfied by
+---                                                construction; see D-5
+---
+--- =====================================================================
+--- B. Modelling decisions, and what each one costs
+--- =====================================================================
+---
+--- D-1  R is modelled by Rat.
+---      Clause 3 defines R^omega over the reals, and Maude has no reals.
+---      Rat is a SUBSET of R, so the model is sound and incomplete, never
+---      unsound: no term of sort Xreal denotes a non-real. The incompleteness
+---      does not bite anywhere clause 3 constrains a datum, because every
+---      finite datum has magnitude S * 2^(1-P) * 2^E with S and E integers,
+---      which is a dyadic rational. Clause 3 says nothing else about which
+---      reals are datums.
+---
+--- D-2  Refinement by conditional membership, not by a validity flag.
+---      3.1's parameter constraints are expressed as cmb axioms giving the
+---      subsort ValidFormat < Format. Operations that clause 3 defines only
+---      for formats -- bias, the accessors, naming -- are declared on
+---      ValidFormat. Applying one to a parameter tuple that violates 3.1
+---      yields a term in the kind, i.e. no value, which is the faithful
+---      reading: such a tuple denotes no format at all.
+---
+--- D-3  0 <= S is carried by the sort, not by an axiom.
+---      3.1 requires 0 <= S < 2^P. The lower bound is discharged by giving S
+---      sort Nat; only the upper bound needs an axiom. Sorts should carry
+---      constraints they can carry.
+---
+--- D-4  Decompositions are first class; extraction is not modelled.
+---      3.1 defines canonicality as a property of a decomposition (S, E) --
+---      "the smallest E > -B" -- and gives no procedure for producing one
+---      from a magnitude. This specification therefore supplies the
+---      composition (magnitude) and the predicate (canonical), and does not
+---      supply a decomposition function. Writing one would be invention. See
+---      review finding R-2.
+---
+--- D-5  The 3.2 NOTE is satisfied by construction, not by an axiom.
+---      "finite datums are integer multiples of (positive or negative) powers
+---      of two" holds of every term magnitude(F, dec(S, E)) = S * 2^(1-P+E)
+---      because S is a Nat. No axiom is needed and none is stated; an axiom
+---      would assert as new what the definition already forces.
+---
+--- =====================================================================
+--- C. Review findings, and the corrections applied
+--- =====================================================================
+---
+--- R-1  Nat subtraction is partial and was silently entering the kind.
+---      The first draft wrote bias as 2 ^ (K - P - 1). On Nat, _-_ is partial
+---      in Maude and K - P - 1 drops to the kind. Corrected to sd, the
+---      symmetric difference, which is total on Nat. This is sound here
+---      because validity guarantees K > P for signed formats (so K - P >= 1)
+---      and K >= P for unsigned, making sd agree with subtraction on exactly
+---      the arguments that can occur.
+---
+--- R-2  Canonicality was stated over magnitudes and needed an algorithm
+---      clause 3 does not provide.
+---      The first draft wrote canonical as a predicate on a magnitude, which
+---      forces a decomposition procedure. Corrected: canonical is a predicate
+---      on (F, S, E), and the "smallest E" rule is discharged by the
+---      characterisation derived at DERIVATION 1 below.
+---
+--- R-3  The datum set was being identified with the set of canonical values.
+---      That does not follow. Clause 3 says every FINITE datum has the
+---      canonical form, and that the encoding is a bijection onto 2^K code
+---      points. It does not say every value of that form is a datum. The
+---      containment runs one way only, and clause 3 gives no upper bound on
+---      E, so the set of canonical magnitudes is INFINITE while D_f has
+---      exactly 2^K elements. See section D.
+---
+--- R-4  A Domain constant named "finite" collided with the datum predicate.
+---      3.1 uses "finite" for a datum that is not an infinity or NaN, and
+---      3.1 uses Finite for a value of Delta. These are different predicates
+---      of different things. The constants are now spelled exactly as 3.1
+---      spells them -- Signed, Unsigned, Finite, Extended -- and the datum
+---      predicate is isFinite on Xreal. No name serves twice.
+---
+--- R-5  Import modes were not all protecting.
+---      Adding Rat < Xreal introduces no new terms of sort Rat and no new
+---      equalities between them, so RAT is imported protecting, not
+---      including. Every import below is protecting, and that is a claim the
+---      first load should check.
+---
+--- R-6  isFinite was not total.
+---      An equation per non-real constructor left Rat uncovered. Corrected
+---      with an equation on a Rat-sorted variable, which covers the subsort
+---      in one axiom.
+---
+--- R-7  A validity predicate was missing, so the tests could not state
+---      their expectations. Added isValidFormat using the subsort-variable
+---      plus owise idiom.
+---
+--- R-8  Variable declarations clashed across the import graph.
+---      Maude inherits variable declarations along imports, and the first
+---      draft declared S as Signedness in P3109-FORMAT and as the Nat
+---      significand in P3109-DECOMP, and N as Int in one module and Nat in
+---      another. Importing both into P3109-SECTION-3 would redeclare each
+---      name at two sorts. Corrected: every variable name is declared
+---      exactly once across the whole graph. F : ValidFormat is declared in
+---      P3109-FORMAT and inherited by the three modules above it; the
+---      significand is Sg, the exponent Ex, twoPow's argument Pw, and the
+---      any-format variable AF.
+---
+--- R-9  Unary minus was left unparenthesised.
+---      "E > - bias(F)" mixes a comparison with a prefix minus. Written as
+---      "Ex > (- bias(F))" so the parse cannot depend on precedence
+---      declarations in the prelude.
+---
+--- R-10 Test constants were declared at too strong a sort.
+---      Declaring them : -> ValidFormat asserts validity in an equation
+---      whose right-hand side has declared sort Format, which Maude accepts
+---      only at the kind level and may warn about. Corrected to : -> Format;
+---      their validity is what tests T-01 to T-04 exist to establish, and
+---      asserting it in a declaration would presuppose the answer.
+---
+--- =====================================================================
+--- D. What clause 3 does not determine
+--- =====================================================================
+---
+--- Writing this specification makes one gap unmissable: CLAUSE 3 DOES NOT
+--- DETERMINE D_f. It fixes
+---
+---   (a) D_f is a subset of R^omega,
+---   (b) |D_f| = 2^K, because the encoding is a bijection onto 0 .. 2^K - 1,
+---   (c) every finite element of D_f has magnitude S * 2^(1-P) * 2^E with
+---       0 <= S < 2^P and E > -B,
+---
+--- and nothing more. It does not say which such magnitudes are members, nor
+--- whether the infinities or NaN are members -- that is what Delta and the
+--- encoding decide, and NOTE 3 defers the encoding to 4.7.6.
+---
+--- Note also that (c) bounds E BELOW and not above, so the set of magnitudes
+--- satisfying (c) is infinite while (b) makes D_f finite. The finiteness of a
+--- format's datum set is therefore a consequence of the ENCODING, not of the
+--- canonical form. That is why P3109-ENCODING below declares three operations
+--- and states no equation for any of them: within clause 3 there is nothing
+--- to write, and writing something would be invention.
+---
+--- =====================================================================
+--- DERIVATION 1 -- the canonicality test  (DERIVED, not quoted)
+--- =====================================================================
+---
+--- 3.1: "This decomposition is made canonical for nonzero values by choosing
+--- the smallest E > -B. For S = 0, E is chosen to be 0."
+---
+--- Fix a nonzero magnitude v. The admissible decompositions of v are the
+--- pairs (S, E) with v = S * 2^(1-P) * 2^E, 0 <= S < 2^P, and E > -B, i.e.
+--- E >= 1 - B over the integers. Since
+---
+---     S * 2^(1-P) * 2^E  =  (2S) * 2^(1-P) * 2^(E-1),
+---
+--- decreasing E by one doubles S. So E may be decreased exactly while the
+--- result stays admissible, that is while 2S < 2^P and E - 1 >= 1 - B.
+--- Hence (S, E) has the smallest admissible E precisely when
+---
+---     2S >= 2^P    (equivalently S >= 2^(P-1)),   or   E = 1 - B.
+---
+--- Both bounds exist, so a minimum exists and the canonical form is unique.
+---
+--- Two consequences, both agreeing with 3.1's own classification:
+---   * a normal decomposition (2^(P-1) <= S < 2^P) is canonical at every
+---     admissible E;
+---   * a subnormal decomposition (0 < S < 2^(P-1)) is canonical only at the
+---     floor E = 1 - B.
+--- The second is not stated in 3.1 and is not assumed here; it follows.
+---
+--- =====================================================================
+
+--- ---------------------------------------------------------------------
+--- 3.1 -- the two enumerated parameters
+--- ---------------------------------------------------------------------
+fmod P3109-PARAMS is
+  protecting BOOL .
+
+  --- 3.1: "Signedness Sigma, in {Signed, Unsigned}"
+  sort Signedness .
+  ops Signed Unsigned : -> Signedness [ctor] .
+
+  --- 3.1: "Domain Delta, in {Finite, Extended}"
+  --- Spelled as 3.1 spells it. Not to be confused with isFinite on a datum,
+  --- which is a different predicate of a different thing (review finding R-4).
+  sort Domain .
+  ops Finite Extended : -> Domain [ctor] .
+endfm
+
+--- ---------------------------------------------------------------------
+--- 3.1 -- the closed extended reals
+--- ---------------------------------------------------------------------
+fmod P3109-XREAL is
+  protecting RAT .
+
+  --- 3.1: "R^omega := R u {-inf, +inf, NaN}"
+  --- Rat stands in for R (decision D-1): a sound under-approximation.
+  sort Xreal .
+  subsort Rat < Xreal .
+
+  --- 3.1 NOTE 1: "This set contains a single NaN value" -- one constant, so
+  --- structural equality gives it. "There is no negative zero in this set"
+  --- -- Rat has exactly one zero, so this holds by construction. Neither
+  --- property needs an axiom, and neither is stated as one.
+  ops nan posInfinity negInfinity : -> Xreal [ctor] .
+
+  --- 3.1: "The word finite applied to a datum signifies that the datum is
+  --- not +-inf or NaN."
+  op isFinite : Xreal -> Bool .
+  var Q : Rat .
+  eq isFinite(Q) = true .                 --- covers the whole subsort (R-6)
+  eq isFinite(nan) = false .
+  eq isFinite(posInfinity) = false .
+  eq isFinite(negInfinity) = false .
+endfm
+
+--- ---------------------------------------------------------------------
+--- 3.1 -- the four format-defining parameters, their constraints, the bias
+--- ---------------------------------------------------------------------
+fmod P3109-FORMAT is
+  protecting NAT .
+  protecting P3109-PARAMS .
+
+  sorts Format ValidFormat .
+  subsort ValidFormat < Format .
+
+  --- 3.1: "A floating-point format has four format-defining parameters"
+  op fmt : Nat Nat Signedness Domain -> Format [ctor] .
+
+  --- Every variable name in this file is declared exactly once across the
+  --- whole import graph; see review finding R-8. F is declared here and
+  --- inherited by P3109-DECOMP, P3109-ENCODING and P3109-NAMING.
+  vars K P : Nat .
+  var  Sn  : Signedness .
+  var  Dm  : Domain .
+  var  AF  : Format .          --- any format, valid or not
+  var  F   : ValidFormat .
+
+  --- 3.1: "Bitwidth K, an integer greater than two"
+  --- 3.1: "Precision P, an integer greater than zero. P shall be strictly
+  ---       less than K (0 < P < K) for signed formats, and less than or
+  ---       equal to K (0 < P <= K) for unsigned formats"
+  --- 0 <= S and 0 <= P come free from sort Nat (decision D-3).
+  --- 3.1 sets no upper bound on K, so Nat is the right sort and the family
+  --- has infinitely many valid instances.
+  cmb fmt(K, P, Signed,   Dm) : ValidFormat
+      if K > 2 /\ P > 0 /\ P < K .
+  cmb fmt(K, P, Unsigned, Dm) : ValidFormat
+      if K > 2 /\ P > 0 /\ P <= K .
+
+  --- a decidable validity test, for stating expectations (R-7)
+  op isValidFormat : Format -> Bool .
+  eq isValidFormat(F)  = true .
+  eq isValidFormat(AF) = false [owise] .
+
+  --- accessors, defined only where 3.1 defines a format
+  op bitwidthOf   : ValidFormat -> Nat .
+  op precisionOf  : ValidFormat -> Nat .
+  op signednessOf : ValidFormat -> Signedness .
+  op domainOf     : ValidFormat -> Domain .
+
+  eq bitwidthOf(fmt(K, P, Sn, Dm))   = K .
+  eq precisionOf(fmt(K, P, Sn, Dm))  = P .
+  eq signednessOf(fmt(K, P, Sn, Dm)) = Sn .
+  eq domainOf(fmt(K, P, Sn, Dm))     = Dm .
+
+  --- 3.1: "For signed formats, the exponent bias shall be B = 2^(K-P-1).
+  ---       For unsigned formats, the exponent bias shall be B = 2^(K-P)."
+  --- sd is Nat symmetric difference; it agrees with subtraction here because
+  --- validity forces K > P (signed) and K >= P (unsigned). See R-1.
+  op bias : ValidFormat -> Nat .
+  eq bias(fmt(K, P, Signed,   Dm)) = 2 ^ sd(sd(K, P), 1) .
+  eq bias(fmt(K, P, Unsigned, Dm)) = 2 ^ sd(K, P) .
+endfm
+
+--- ---------------------------------------------------------------------
+--- 3.1 -- the form of a finite datum
+--- ---------------------------------------------------------------------
+fmod P3109-DECOMP is
+  protecting INT .
+  protecting P3109-FORMAT .
+  protecting P3109-XREAL .
+
+  --- 2^N for a possibly negative N. Terminating: |N| strictly decreases.
+  --- Confluent: the three cases are mutually exclusive.
+  op twoPow : Int -> Rat .
+  var Pw : Int .
+  eq  twoPow(0)  = 1 .
+  ceq twoPow(Pw) = 2 * twoPow(Pw - 1) if Pw > 0 .
+  ceq twoPow(Pw) = twoPow(Pw + 1) / 2 if Pw < 0 .
+
+  --- a (significand, exponent) pair. Decision D-4: decompositions are first
+  --- class; extraction from a magnitude is not modelled, because 3.1 does
+  --- not define it.
+  sort Decomp .
+  op dec : Nat Int -> Decomp [ctor] .
+
+  --- F : ValidFormat is inherited from P3109-FORMAT (R-8).
+  var Sg : Nat .    --- significand
+  var Ex : Int .    --- exponent
+
+  op sigOf : Decomp -> Nat .
+  op expOf : Decomp -> Int .
+  eq sigOf(dec(Sg, Ex)) = Sg .
+  eq expOf(dec(Sg, Ex)) = Ex .
+
+  --- 3.1: "the exponent E is an integer such that E > -B, and S, the
+  ---       significand, is an integer 0 <= S < 2^P"
+  op admissible : ValidFormat Decomp -> Bool .
+  eq admissible(F, dec(Sg, Ex)) =
+       (Sg < 2 ^ precisionOf(F)) and (Ex > (- bias(F))) .
+
+  --- 3.1: "a real number whose absolute value has the form S * 2^(1-P) * 2^E"
+  --- Partial: a decomposition that is not admissible denotes no magnitude.
+  op magnitude : ValidFormat Decomp ~> Rat .
+  ceq magnitude(F, dec(Sg, Ex)) =
+        Sg * twoPow(1 - precisionOf(F)) * twoPow(Ex)
+      if admissible(F, dec(Sg, Ex)) .
+
+  --- 3.1: "made canonical for nonzero values by choosing the smallest
+  ---       E > -B. For S = 0, E is chosen to be 0."
+  --- The nonzero case uses the characterisation of DERIVATION 1.
+  op canonical : ValidFormat Decomp -> Bool .
+  eq  canonical(F, dec(0, Ex)) = (Ex == 0) .
+  ceq canonical(F, dec(Sg, Ex)) =
+        admissible(F, dec(Sg, Ex))
+        and ( (Sg >= 2 ^ sd(precisionOf(F), 1)) or (Ex == 1 - bias(F)) )
+      if Sg > 0 .
+
+  --- 3.1: "The datum is normal if 2^(P-1) <= S < 2^P. The datum is subnormal
+  ---       if 0 < S < 2^(P-1). The datum zero is neither normal nor
+  ---       subnormal."
+  --- The last sentence is not axiomatised: it follows from the two
+  --- definitions, and test T-14 checks that it does.
+  ops isZero isNormal isSubnormal : ValidFormat Decomp -> Bool .
+  eq isZero(F, dec(Sg, Ex)) = (Sg == 0) .
+  eq isNormal(F, dec(Sg, Ex)) =
+       (2 ^ sd(precisionOf(F), 1) <= Sg) and (Sg < 2 ^ precisionOf(F)) .
+  eq isSubnormal(F, dec(Sg, Ex)) =
+       (0 < Sg) and (Sg < 2 ^ sd(precisionOf(F), 1)) .
+
+  --- 3.1: "The trailing significand is the integer S mod 2^(P-1)."
+  op trailingSignificand : ValidFormat Decomp -> Nat .
+  eq trailingSignificand(F, dec(Sg, Ex)) =
+       Sg rem (2 ^ sd(precisionOf(F), 1)) .
+endfm
+
+--- ---------------------------------------------------------------------
+--- 3.1 -- code points and the encoding
+---
+--- 3.1 states that a format comprises a datum set and an encoding, and that
+--- the encoding is a unique bijective mapping from D_f onto 0 .. 2^K - 1.
+--- It does not give the graph of that mapping; NOTE 3 defers it to 4.7.6,
+--- which is outside this specification's scope. The three operations below
+--- are therefore DECLARED AND LEFT WITHOUT EQUATIONS. That is the whole
+--- content of clause 3 on this point, and section D explains why nothing
+--- more can honestly be written here.
+--- ---------------------------------------------------------------------
+fmod P3109-ENCODING is
+  protecting NAT .
+  protecting P3109-FORMAT .
+  protecting P3109-XREAL .
+
+  --- 3.1: "integer code points 0 . . . 2^K - 1"
+  sort CodePoint .
+  op cp : Nat -> CodePoint [ctor] .
+  op codeOf : CodePoint -> Nat .
+  var Cn : Nat .               --- F : ValidFormat inherited (R-8)
+  eq codeOf(cp(Cn)) = Cn .
+
+  op inCodeRange : ValidFormat CodePoint -> Bool .
+  eq inCodeRange(F, cp(Cn)) = Cn < 2 ^ bitwidthOf(F) .
+
+  --- declared, deliberately unequated
+  op inDatumSet : ValidFormat Xreal -> Bool .        --- membership in D_f
+  op encode     : ValidFormat Xreal ~> CodePoint .
+  op decode     : ValidFormat CodePoint ~> Xreal .
+
+  --- OBLIGATIONS these declarations carry, all stated by 3.1 and none
+  --- dischargeable from clause 3 alone:
+  ---   O-A  encode is defined exactly on { X | inDatumSet(F, X) }
+  ---   O-B  decode is defined exactly on { C | inCodeRange(F, C) }
+  ---   O-C  decode(F, encode(F, X)) = X    for X in D_f      (injective)
+  ---   O-D  encode(F, decode(F, C)) = C    for C in range     (surjective)
+  ---   O-E  |D_f| = 2 ^ bitwidthOf(F)
+  ---   O-F  inDatumSet(F, X) and isFinite(X) implies X is the magnitude, up
+  ---        to sign, of some canonical decomposition of F
+  --- O-F is the one-way containment of review finding R-3. Its converse is
+  --- NOT an obligation, because 3.1 does not assert it.
+endfm
+
+--- ---------------------------------------------------------------------
+--- 3.2 -- naming
+--- ---------------------------------------------------------------------
+fmod P3109-NAMING is
+  protecting STRING .
+  protecting CONVERSION .
+  protecting P3109-FORMAT .
+  --- F : ValidFormat inherited from P3109-FORMAT (R-8).
+
+  --- 3.2: "signedness <sigma> in {s, u}, for signed and unsigned; and
+  ---       domain <delta> in {e, f} for extended and finite"
+  op sigChar : Signedness -> String .
+  eq sigChar(Signed)   = "s" .
+  eq sigChar(Unsigned) = "u" .
+
+  op domChar : Domain -> String .
+  eq domChar(Extended) = "e" .
+  eq domChar(Finite)   = "f" .
+
+  --- 3.2: "A shortened notation ... Binary<kappa>p<psi><sigma><delta> where
+  ---       the placeholders <kappa> and <psi> are decimal representations of
+  ---       the bitwidth K and precision P"
+  op shortName : ValidFormat -> String .
+  eq shortName(F) =
+       "Binary" + string(bitwidthOf(F), 10) + "p" + string(precisionOf(F), 10)
+       + sigChar(signednessOf(F)) + domChar(domainOf(F)) .
+
+  --- 3.2: "Formats defined in this document shall be named
+  ---       Binary{K, P, Sigma, Delta}."
+  op sigWord : Signedness -> String .
+  eq sigWord(Signed)   = "Signed" .
+  eq sigWord(Unsigned) = "Unsigned" .
+
+  op domWord : Domain -> String .
+  eq domWord(Extended) = "Extended" .
+  eq domWord(Finite)   = "Finite" .
+
+  op longName : ValidFormat -> String .
+  eq longName(F) =
+       "Binary{" + string(bitwidthOf(F), 10) + ", " + string(precisionOf(F), 10)
+       + ", " + sigWord(signednessOf(F)) + ", " + domWord(domainOf(F)) + "}" .
+
+  --- No parser is provided. 3.2 defines a NOTATION for referring to formats,
+  --- not a decision procedure for reading one; and shortName is injective on
+  --- ValidFormat, so nothing is lost. A parser would be an extension of
+  --- clause 3, not a rendering of it.
+endfm
+
+--- ---------------------------------------------------------------------
+--- the whole of clause 3
+--- ---------------------------------------------------------------------
+fmod P3109-SECTION-3 is
+  protecting P3109-PARAMS .
+  protecting P3109-XREAL .
+  protecting P3109-FORMAT .
+  protecting P3109-DECOMP .
+  protecting P3109-ENCODING .
+  protecting P3109-NAMING .
+endfm
+
+--- =====================================================================
+--- Tests. Each expectation is either quoted from clause 3 or derived by
+--- DERIVATION 1. Run with:   maude maude3claude.maude
+--- =====================================================================
+fmod P3109-SECTION-3-TESTS is
+  protecting P3109-SECTION-3 .
+
+  --- 3.2's own two examples, plus one signed 8-bit format used throughout
+  --- Declared at Format, not ValidFormat: validity is what T-01 to T-04
+  --- establish, and asserting it here would presuppose the answer (R-10).
+  ops b12p7se b8p1uf b8p4se : -> Format .
+  eq b12p7se = fmt(12, 7, Signed,   Extended) .
+  eq b8p1uf  = fmt(8,  1, Unsigned, Finite) .
+  eq b8p4se  = fmt(8,  4, Signed,   Extended) .
+  --- b8p4se: P = 4, B = 2^3 = 8, 2^(P-1) = 8, 2^P = 16, floor exponent = -7
+endfm
+
+--- ---- 3.1 parameter constraints ----
+red in P3109-SECTION-3-TESTS :
+    isValidFormat(fmt(8, 4, Signed, Extended)) .        --- T-01  expect true
+red in P3109-SECTION-3-TESTS :
+    isValidFormat(fmt(8, 8, Signed, Extended)) .        --- T-02  expect false
+red in P3109-SECTION-3-TESTS :
+    isValidFormat(fmt(8, 8, Unsigned, Finite)) .        --- T-03  expect true
+red in P3109-SECTION-3-TESTS :
+    isValidFormat(fmt(2, 1, Signed, Extended)) .        --- T-04  expect false
+
+--- ---- 3.2 naming, against 3.2's own examples ----
+red in P3109-SECTION-3-TESTS : shortName(b12p7se) .     --- T-05  "Binary12p7se"
+red in P3109-SECTION-3-TESTS : shortName(b8p1uf) .      --- T-06  "Binary8p1uf"
+red in P3109-SECTION-3-TESTS : longName(b8p4se) .
+                          --- T-07  "Binary{8, 4, Signed, Extended}"
+
+--- ---- 3.1 exponent bias ----
+red in P3109-SECTION-3-TESTS : bias(b8p4se) .           --- T-08  expect 8
+red in P3109-SECTION-3-TESTS : bias(b8p1uf) .           --- T-09  expect 128
+red in P3109-SECTION-3-TESTS : bias(b12p7se) .          --- T-10  expect 16
+
+--- ---- 3.1 magnitudes ----
+red in P3109-SECTION-3-TESTS : magnitude(b8p4se, dec(8, 0)) .
+                          --- T-11  8 * 2^-3 * 2^0 = 1
+red in P3109-SECTION-3-TESTS : magnitude(b8p4se, dec(12, 1)) .
+                          --- T-12  12 * 2^-3 * 2^1 = 3
+red in P3109-SECTION-3-TESTS : magnitude(b8p4se, dec(1, -7)) .
+                          --- T-13  1 * 2^-3 * 2^-7 = 1/1024
+red in P3109-SECTION-3-TESTS : magnitude(b8p4se, dec(16, 0)) .
+                          --- T-13b  NOT admissible: expect a kind term,
+                          ---        not a Rat. This is the partiality of
+                          ---        decision D-2 showing up at the top level.
+
+--- ---- 3.1 classification ----
+red in P3109-SECTION-3-TESTS :
+    isNormal(b8p4se, dec(0, 0)) or isSubnormal(b8p4se, dec(0, 0)) .
+                          --- T-14  expect false: "zero is neither normal nor
+                          ---       subnormal", derived rather than assumed
+red in P3109-SECTION-3-TESTS : isNormal(b8p4se, dec(12, 1)) .   --- T-15 true
+red in P3109-SECTION-3-TESTS : isSubnormal(b8p4se, dec(4, -7)) .--- T-16 true
+red in P3109-SECTION-3-TESTS : isSubnormal(b8p1uf, dec(1, 0)) .
+                          --- T-17  expect false. DERIVED: a P = 1 format has
+                          ---       no subnormals, since 0 < S < 2^0 = 1 is
+                          ---       unsatisfiable over Nat.
+
+--- ---- DERIVATION 1: canonicality ----
+red in P3109-SECTION-3-TESTS : canonical(b8p4se, dec(0, 0)) .   --- T-18 true
+red in P3109-SECTION-3-TESTS : canonical(b8p4se, dec(0, 3)) .   --- T-19 false
+red in P3109-SECTION-3-TESTS : canonical(b8p4se, dec(8, 0)) .
+                          --- T-20  true: normal, canonical at every
+                          ---       admissible exponent
+red in P3109-SECTION-3-TESTS : canonical(b8p4se, dec(4, 0)) .
+                          --- T-21  false: subnormal above the floor, so E
+                          ---       is not the smallest admissible one
+red in P3109-SECTION-3-TESTS : canonical(b8p4se, dec(4, -7)) .
+                          --- T-22  true: subnormal at the floor E = 1 - B
+red in P3109-SECTION-3-TESTS : canonical(b8p4se, dec(16, 0)) .  --- T-23 false
+
+--- ---- 3.1 trailing significand ----
+red in P3109-SECTION-3-TESTS :
+    trailingSignificand(b8p4se, dec(12, 1)) .           --- T-24  12 rem 8 = 4
+red in P3109-SECTION-3-TESTS :
+    trailingSignificand(b8p4se, dec(8, 0)) .            --- T-25  8 rem 8 = 0
+red in P3109-SECTION-3-TESTS :
+    trailingSignificand(b8p1uf, dec(1, 0)) .
+                          --- T-26  expect 0. DERIVED: with P = 1 the modulus
+                          ---       is 2^0 = 1, so the trailing significand of
+                          ---       a P = 1 format is always 0.
+
+--- ---- 3.1 R^omega ----
+red in P3109-SECTION-3-TESTS : isFinite(3/4) .          --- T-27  true
+red in P3109-SECTION-3-TESTS : isFinite(nan) .          --- T-28  false
+red in P3109-SECTION-3-TESTS : isFinite(posInfinity) .  --- T-29  false
+
+--- =====================================================================
+--- OUTSTANDING OBLIGATIONS
+--- =====================================================================
+---
+--- O-1  Load it. Nothing here has been parsed. Three prelude signatures
+---      should be confirmed on the first load, since the specification will
+---      not typecheck if any differs:
+---        * sd : Nat Nat -> Nat                              (module NAT)
+---        * _^_ : NzNat Nat -> NzNat, needed so that the modulus in
+---          trailingSignificand is accepted by _rem_ : Nat NzNat -> Nat
+---        * string : Rat Nat ~> String                (module CONVERSION)
+---      If the third differs, only P3109-NAMING is affected.
+---
+--- O-2  Confirm that every import is genuinely protecting (review finding
+---      R-5). Maude does not check import modes; they are claims.
+---
+--- O-3  3.1 NOTE 2 gives two concrete encodings -- 2.0 in Binary8p4se is
+---      code point 0x48, and Inf in Binary8p4se is 0x7F. Neither can be
+---      discharged here, because both depend on the encoding that NOTE 3
+---      defers to 4.7.6. They are recorded as tests to run once that clause
+---      is in scope:
+---        codeOf(encode(b8p4se, 2)) == 72
+---        codeOf(encode(b8p4se, posInfinity)) == 127
+---      Until then the terms do not reduce, which is the correct behaviour
+---      and not a defect.
+---
+--- O-4  Confluence and termination are argued informally above (twoPow
+---      decreases |N|; every other equation is non-recursive; the guards of
+---      each conditional group are mutually exclusive). Confirm with Maude's
+---      Church-Rosser and termination tools rather than by inspection.

@@ -1,0 +1,261 @@
+*** IEEE P3109 D1, Section 3 -- floating-point formats
+***
+*** Source discipline
+*** -----------------
+*** The domain content in this file comes only from Section 3 of IEEE_D1.md.
+*** General Maude structure follows the Maude 3.5.1 Manual.  No encoding
+*** equations are invented: Section 3 requires a unique bijection, but defers
+*** its definition.  Consequently, this specification makes that bijection an
+*** explicit obligation and records the two encodings given by Note 2 only in
+*** the separate informative-examples module.
+***
+*** Design and review record
+*** ------------------------
+*** 1. Plan: separate parameter syntax, validated semantic sorts, exact finite
+***    forms, names, encoding obligations, and informative observations.
+*** 2. Development: use functional modules because Section 3 specifies static
+***    data and equations, not a transition system; use constructor terms for
+***    syntax and memberships for validity invariants.
+*** 3. Review corrections: keep format expressions distinct from valid formats;
+***    keep finite forms distinct from membership in a format's datum set; do
+***    not infer the missing upper exponent bound or an encoding algorithm;
+***    represent finite values with exact rationals rather than Maude FLOATs;
+***    represent zero by one constructor, so negative zero is unrepresentable.
+*** 4. Cleanup: all semantic functions are terminating structural equations;
+***    conditional memberships depend only on total Boolean predicates; the
+***    core has no rewrite rules, owise equations, strings, or parser-sensitive
+***    display notation.
+
+fmod P3109-SECTION-3 is
+  protecting RAT .
+
+  sorts Signedness Domain Sign .
+  ops Signed Unsigned : -> Signedness [ctor] .
+  ops Finite Extended : -> Domain [ctor] .
+  ops Positive Negative : -> Sign [ctor] .
+
+  *** A Binary term is first syntax (FormatExpression).  Its membership in
+  *** Format is derived exactly from the Section 3 parameter constraints.
+  sorts Format FormatExpression .
+  subsort Format < FormatExpression .
+  op Binary : NzNat NzNat Signedness Domain -> FormatExpression [ctor] .
+
+  op validFormat : FormatExpression -> Bool .
+  vars K P : NzNat .
+  var D : Domain .
+  eq validFormat(Binary(K, P, Signed, D))
+    = (2 < K) and (P < K) .
+  eq validFormat(Binary(K, P, Unsigned, D))
+    = (2 < K) and (P <= K) .
+
+  var F : FormatExpression .
+  cmb F : Format if validFormat(F) .
+
+  *** Parameter projections and derived quantities.  Their equations are
+  *** structural and therefore total on FormatExpression; their semantic use
+  *** is intended for terms having sort Format.
+  op bitwidth : FormatExpression -> NzNat .
+  op precision : FormatExpression -> NzNat .
+  op signedness : FormatExpression -> Signedness .
+  op domain : FormatExpression -> Domain .
+  op exponentBias : FormatExpression -> NzNat .
+  op codePointCount : FormatExpression -> NzNat .
+  op normalThreshold : FormatExpression -> NzNat .
+
+  var SG : Signedness .
+  eq bitwidth(Binary(K, P, SG, D)) = K .
+  eq precision(Binary(K, P, SG, D)) = P .
+  eq signedness(Binary(K, P, SG, D)) = SG .
+  eq domain(Binary(K, P, SG, D)) = D .
+  eq exponentBias(Binary(K, P, Signed, D))
+    = 2 ^ sd(sd(K, P), 1) .
+  eq exponentBias(Binary(K, P, Unsigned, D))
+    = 2 ^ sd(K, P) .
+  eq codePointCount(Binary(K, P, SG, D)) = 2 ^ K .
+  eq normalThreshold(Binary(K, P, SG, D)) = 2 ^ sd(P, 1) .
+
+  op includesInfinities : FormatExpression -> Bool .
+  eq includesInfinities(Binary(K, P, SG, Finite)) = false .
+  eq includesInfinities(Binary(K, P, SG, Extended)) = true .
+
+  op signAllowed : FormatExpression Sign -> Bool .
+  eq signAllowed(Binary(K, P, Signed, D), Positive) = true .
+  eq signAllowed(Binary(K, P, Signed, D), Negative) = true .
+  eq signAllowed(Binary(K, P, Unsigned, D), Positive) = true .
+  eq signAllowed(Binary(K, P, Unsigned, D), Negative) = false .
+
+  *** Closed-extended-real special values.  There is exactly one NaN term.
+  *** Finite real values below reduce to Rat; Rat has one zero, so no negative
+  *** zero is introduced.
+  sorts Real ClosedExtendedReal ExtendedSpecial .
+  subsort Rat < Real .
+  subsorts Real ExtendedSpecial < ClosedExtendedReal .
+  ops NaN PosInfinity NegInfinity : -> ExtendedSpecial [ctor] .
+
+  *** A FiniteFormExpression records the Section 3 decomposition.  Nonzero
+  *** forms use NzNat; zero has its own constructor and hence no sign.  The
+  *** CanonicalFiniteForm membership validates the format, signedness, bounds,
+  *** and the "smallest E" rule.  It does NOT claim that the represented real
+  *** belongs to D_f, because Section 3 does not construct D_f.
+  sorts FiniteFormExpression CanonicalFiniteForm .
+  subsort CanonicalFiniteForm < FiniteFormExpression .
+  op zeroIn : FormatExpression -> FiniteFormExpression [ctor] .
+  op finiteIn : FormatExpression Sign NzNat Int
+    -> FiniteFormExpression [ctor] .
+
+  op canonicalFiniteForm : FiniteFormExpression -> Bool .
+  eq canonicalFiniteForm(zeroIn(F)) = validFormat(F) .
+
+  vars S : NzNat .
+  var E : Int .
+  var SN : Sign .
+  eq canonicalFiniteForm(finiteIn(F, SN, S, E))
+    = validFormat(F)
+      and signAllowed(F, SN)
+      and (S < (2 ^ precision(F)))
+      and (E > - exponentBias(F))
+      and ((E == (1 - exponentBias(F)))
+           or (normalThreshold(F) <= S)) .
+
+  var FF : FiniteFormExpression .
+  cmb FF : CanonicalFiniteForm if canonicalFiniteForm(FF) .
+
+  *** Exact powers of two and the exact real represented by a finite form.
+  *** pow2 is defined over Int so negative scale exponents remain exact.
+  op pow2 : Int -> PosRat .
+  eq pow2(0) = 1 .
+  ceq pow2(E) = 2 * pow2(E - 1) if E > 0 .
+  ceq pow2(E) = 1 / pow2(- E) if E < 0 .
+
+  op representedReal : FiniteFormExpression -> Rat .
+  eq representedReal(zeroIn(F)) = 0 .
+  eq representedReal(finiteIn(F, Positive, S, E))
+    = S * pow2((1 - precision(F)) + E) .
+  eq representedReal(finiteIn(F, Negative, S, E))
+    = - (S * pow2((1 - precision(F)) + E)) .
+
+  sort FiniteClass .
+  ops Normal Subnormal NeitherNormalNorSubnormal IllFormed
+    : -> FiniteClass [ctor] .
+  op finiteClass : FiniteFormExpression -> FiniteClass .
+  eq finiteClass(zeroIn(F))
+    = if validFormat(F)
+      then NeitherNormalNorSubnormal
+      else IllFormed
+      fi .
+  eq finiteClass(finiteIn(F, SN, S, E))
+    = if canonicalFiniteForm(finiteIn(F, SN, S, E))
+      then (if normalThreshold(F) <= S then Normal else Subnormal fi)
+      else IllFormed
+      fi .
+
+  op trailingSignificand : FiniteFormExpression -> Nat .
+  eq trailingSignificand(zeroIn(F)) = 0 .
+  eq trailingSignificand(finiteIn(F, SN, S, E))
+    = S rem normalThreshold(F) .
+
+  *** Code-point syntax and its validated subsort.  A floating-point value is
+  *** a validated code point with its format carried in the term.
+  sorts CodePoint CodePointExpression FloatingValue .
+  subsort CodePoint < CodePointExpression .
+  subsort CodePoint < FloatingValue .
+  op cp : FormatExpression Nat -> CodePointExpression [ctor] .
+  op validCodePoint : CodePointExpression -> Bool .
+  var N : Nat .
+  eq validCodePoint(cp(F, N))
+    = validFormat(F) and (N < codePointCount(F)) .
+  var CP : CodePointExpression .
+  cmb CP : CodePoint if validCodePoint(CP) .
+
+  sort InfinityCodeName .
+  ops Inf NegInf : -> InfinityCodeName [ctor] .
+
+  *** Section 3 specifies these semantic properties but does not supply the
+  *** datum set or encoding needed to compute them.  Reifying them as
+  *** obligations is intentional: downstream encoding modules can discharge
+  *** them without changing this interface.
+  sort SemanticObligation .
+  sort CodePointRange .
+  op zeroThrough : Nat -> CodePointRange [ctor] .
+  op codePointRange : FormatExpression -> CodePointRange .
+  eq codePointRange(F) = zeroThrough(sd(codePointCount(F), 1)) .
+  op datumSetIsSubsetOfClosedExtendedReals
+    : FormatExpression -> SemanticObligation [ctor] .
+  op encodingIsUniqueBijectionOntoCodePoints
+    : FormatExpression CodePointRange -> SemanticObligation [ctor] .
+  op infinityCodePointsAreNamedInfAndNegInf
+    : FormatExpression -> SemanticObligation [ctor] .
+
+  *** Names are algebraic data rather than presentation strings.  This avoids
+  *** conflating the standard name with rendering while retaining every field.
+  sorts FullFormatName ShortFormatName SignednessSuffix DomainSuffix .
+  ops s u : -> SignednessSuffix [ctor] .
+  ops e f : -> DomainSuffix [ctor] .
+  op BinaryName : NzNat NzNat Signedness Domain -> FullFormatName [ctor] .
+  op BinaryShortName
+    : NzNat NzNat SignednessSuffix DomainSuffix -> ShortFormatName [ctor] .
+  op fullName : FormatExpression -> FullFormatName .
+  op shortName : FormatExpression -> ShortFormatName .
+
+  eq fullName(Binary(K, P, SG, D)) = BinaryName(K, P, SG, D) .
+  eq shortName(Binary(K, P, Signed, Extended))
+    = BinaryShortName(K, P, s, e) .
+  eq shortName(Binary(K, P, Signed, Finite))
+    = BinaryShortName(K, P, s, f) .
+  eq shortName(Binary(K, P, Unsigned, Extended))
+    = BinaryShortName(K, P, u, e) .
+  eq shortName(Binary(K, P, Unsigned, Finite))
+    = BinaryShortName(K, P, u, f) .
+endfm
+
+
+fmod P3109-SECTION-3-INFORMATIVE-EXAMPLES is
+  protecting P3109-SECTION-3 .
+
+  *** These constants and observations reproduce Section 3 examples.  Decimal
+  *** 72 and 127 are the code points displayed there as 0x48 and 0x7F.
+  op Binary12p7se : -> FormatExpression .
+  op Binary8p1uf : -> FormatExpression .
+  op Binary8p4se : -> FormatExpression .
+  eq Binary12p7se = Binary(12, 7, Signed, Extended) .
+  eq Binary8p1uf = Binary(8, 1, Unsigned, Finite) .
+  eq Binary8p4se = Binary(8, 4, Signed, Extended) .
+
+  sort EncodingArgument .
+  op real : Rat -> EncodingArgument [ctor] .
+  op infinity : -> EncodingArgument [ctor] .
+  op observedOmegaEncode
+    : FormatExpression EncodingArgument -> CodePointExpression .
+  eq observedOmegaEncode(Binary(8, 4, Signed, Extended), real(2))
+    = cp(Binary(8, 4, Signed, Extended), 72) .
+  eq observedOmegaEncode(Binary(8, 4, Signed, Extended), infinity)
+    = cp(Binary(8, 4, Signed, Extended), 127) .
+endfm
+
+
+*** Reproducible review checks (uncomment in Maude 3.5.1).
+***
+*** red in P3109-SECTION-3-INFORMATIVE-EXAMPLES :
+***   validFormat(Binary12p7se) .                         --- true
+*** red in P3109-SECTION-3-INFORMATIVE-EXAMPLES :
+***   validFormat(Binary(8, 8, Signed, Finite)) .         --- false
+*** red in P3109-SECTION-3-INFORMATIVE-EXAMPLES :
+***   validFormat(Binary8p1uf) .                          --- true
+*** red in P3109-SECTION-3-INFORMATIVE-EXAMPLES :
+***   exponentBias(Binary8p4se) .                         --- 8
+*** red in P3109-SECTION-3-INFORMATIVE-EXAMPLES :
+***   representedReal(finiteIn(Binary8p4se, Positive, 8, 1)) .
+***                                                       --- 2
+*** red in P3109-SECTION-3-INFORMATIVE-EXAMPLES :
+***   finiteClass(finiteIn(Binary8p4se, Positive, 8, 1)) .--- Normal
+*** red in P3109-SECTION-3-INFORMATIVE-EXAMPLES :
+***   finiteClass(finiteIn(Binary8p4se, Positive, 1, -7)).--- Subnormal
+*** red in P3109-SECTION-3-INFORMATIVE-EXAMPLES :
+***   finiteClass(zeroIn(Binary8p4se)) .                  --- neither
+*** red in P3109-SECTION-3-INFORMATIVE-EXAMPLES :
+***   trailingSignificand(finiteIn(Binary8p4se, Positive, 11, 1)) .
+***                                                       --- 3
+*** red in P3109-SECTION-3-INFORMATIVE-EXAMPLES :
+***   observedOmegaEncode(Binary8p4se, real(2)) .         --- cp(..., 72)
+*** red in P3109-SECTION-3-INFORMATIVE-EXAMPLES :
+***   observedOmegaEncode(Binary8p4se, infinity) .        --- cp(..., 127)
