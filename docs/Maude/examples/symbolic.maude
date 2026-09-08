@@ -1,0 +1,8 @@
+load ../load-symbolic.maude
+red in P3109-SYMBOLIC : omegaSqrt(9/16) .
+red in P3109-SYMBOLIC : omegaSqrt(2) .
+red in P3109-SYMBOLIC : omegaArcTan2Pi(1, -1) .
+red in P3109-SYMBOLIC : omegaTanPi(-1/2) .
+--- This is a residual comparison, not false.
+red in P3109-SYMBOLIC : xEq(exprExp(1), exprExp(2)) .
+quit

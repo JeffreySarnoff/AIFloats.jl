@@ -1,0 +1,25 @@
+--- Single entry point for the whole P3109/D1 Maude specification.
+---
+---   maude load-spec.maude
+---
+--- Loads in dependency order the exact rational core from load-core.maude,
+--- the symbolic real profile from load-symbolic.maude, and the external-format
+--- and real-number contracts from load-contracts.maude, then defines one top
+--- module P3109-SPEC that imports every executable module.
+---
+--- The contract theories P3109-REAL-CONTRACT and P3109-EXTERNAL-FORMAT and the
+--- parameterized bridge P3109-EXTERNAL-BRIDGE are loaded into the module
+--- database but are theories or parameterized, so a functional module cannot
+--- import them. Instantiate the bridge with a view once an external-format
+--- implementation exists.
+---
+--- sload rather than load: the three loaders each pull load-core.maude, and
+--- sload skips a file that has already been loaded, so nothing is redefined.
+
+sload load-core.maude
+sload load-symbolic.maude
+sload load-contracts.maude
+
+fmod P3109-SPEC is
+  including P3109-SYMBOLIC .
+endfm

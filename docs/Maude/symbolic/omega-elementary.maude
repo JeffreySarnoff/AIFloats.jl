@@ -1,0 +1,227 @@
+--- Source: P3109/D1 4.10.8-4.10.16, printed page 40-48.
+fmod P3109-OMEGA-ELEMENTARY is
+  including P3109-REAL-EXPRESSIONS .
+  ops omegaHypot omegaArcTan2 omegaArcTan2Pi : XReal XReal ~> XReal .
+  vars U V : Real .
+  vars R S : Rat .
+  vars A B : Number .
+  vars X Y : XReal .
+  vars I J : Infinity .
+  vars N D NS DS : Nat .
+  var K : Int .
+  op omegaSqrt : XReal ~> XReal .
+  op omegaRSqrt : XReal ~> XReal .
+  op omegaExp : XReal ~> XReal .
+  op omegaExp2 : XReal ~> XReal .
+  op omegaLog : XReal ~> XReal .
+  op omegaLog2 : XReal ~> XReal .
+  op omegaLogOnePlus : XReal ~> XReal .
+  op omegaExpMinusOne : XReal ~> XReal .
+  op omegaSin : XReal ~> XReal .
+  op omegaCos : XReal ~> XReal .
+  op omegaTan : XReal ~> XReal .
+  op omegaArcSin : XReal ~> XReal .
+  op omegaArcCos : XReal ~> XReal .
+  op omegaArcTan : XReal ~> XReal .
+  op omegaSinh : XReal ~> XReal .
+  op omegaCosh : XReal ~> XReal .
+  op omegaTanh : XReal ~> XReal .
+  op omegaArcSinh : XReal ~> XReal .
+  op omegaArcCosh : XReal ~> XReal .
+  op omegaArcTanh : XReal ~> XReal .
+  op omegaSinPi : XReal ~> XReal .
+  op omegaCosPi : XReal ~> XReal .
+  op omegaTanPi : XReal ~> XReal .
+  op omegaArcSinPi : XReal ~> XReal .
+  op omegaArcCosPi : XReal ~> XReal .
+  op omegaArcTanPi : XReal ~> XReal .
+  op omegaSoftplus : XReal ~> XReal .
+  op exprSqrt : Real ~> Real [ctor] .
+  cmb [p3109-expr-Sqrt-domain] : exprSqrt(U) : Real if xLe(0, U) [metadata "clause=4.10; page=40-44"] .
+  ceq [p3109-omega-elementary-001] : omegaSqrt(U) = exprSqrt(U) if xLe(0, U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-002] : omegaSqrt(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  op exprExp : Real -> Real [ctor] .
+  eq [p3109-omega-elementary-003] : omegaExp(U) = exprExp(U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-004] : omegaExp(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  op exprExp2 : Real -> Real [ctor] .
+  eq [p3109-omega-elementary-005] : omegaExp2(U) = exprExp2(U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-006] : omegaExp2(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  op exprLog : Real ~> Real [ctor] .
+  cmb [p3109-expr-Log-domain] : exprLog(U) : Real if xLt(0, U) [metadata "clause=4.10; page=40-44"] .
+  ceq [p3109-omega-elementary-007] : omegaLog(U) = exprLog(U) if xLt(0, U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-008] : omegaLog(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  op exprLog2 : Real ~> Real [ctor] .
+  cmb [p3109-expr-Log2-domain] : exprLog2(U) : Real if xLt(0, U) [metadata "clause=4.10; page=40-44"] .
+  ceq [p3109-omega-elementary-009] : omegaLog2(U) = exprLog2(U) if xLt(0, U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-010] : omegaLog2(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  op exprSin : Real -> Real [ctor] .
+  eq [p3109-omega-elementary-011] : omegaSin(U) = exprSin(U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-012] : omegaSin(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  op exprCos : Real -> Real [ctor] .
+  eq [p3109-omega-elementary-013] : omegaCos(U) = exprCos(U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-014] : omegaCos(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  op exprTan : Real ~> Real [ctor] .
+  cmb [p3109-expr-Tan-domain] : exprTan(U) : Real if xEq(omegaCos(U), 0) == false [metadata "clause=4.10; page=40-44"] .
+  ceq [p3109-omega-elementary-015] : omegaTan(U) = exprTan(U) if xEq(omegaCos(U), 0) == false [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-016] : omegaTan(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  op exprArcSin : Real ~> Real [ctor] .
+  cmb [p3109-expr-ArcSin-domain] : exprArcSin(U) : Real if xLe(-1, U) /\ xLe(U, 1) [metadata "clause=4.10; page=40-44"] .
+  ceq [p3109-omega-elementary-017] : omegaArcSin(U) = exprArcSin(U) if xLe(-1, U) /\ xLe(U, 1) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-018] : omegaArcSin(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  op exprArcCos : Real ~> Real [ctor] .
+  cmb [p3109-expr-ArcCos-domain] : exprArcCos(U) : Real if xLe(-1, U) /\ xLe(U, 1) [metadata "clause=4.10; page=40-44"] .
+  ceq [p3109-omega-elementary-019] : omegaArcCos(U) = exprArcCos(U) if xLe(-1, U) /\ xLe(U, 1) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-020] : omegaArcCos(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  op exprArcTan : Real -> Real [ctor] .
+  eq [p3109-omega-elementary-021] : omegaArcTan(U) = exprArcTan(U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-022] : omegaArcTan(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  op exprSinh : Real -> Real [ctor] .
+  eq [p3109-omega-elementary-023] : omegaSinh(U) = exprSinh(U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-024] : omegaSinh(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  op exprCosh : Real -> Real [ctor] .
+  eq [p3109-omega-elementary-025] : omegaCosh(U) = exprCosh(U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-026] : omegaCosh(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  op exprTanh : Real -> Real [ctor] .
+  eq [p3109-omega-elementary-027] : omegaTanh(U) = exprTanh(U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-028] : omegaTanh(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  op exprArcSinh : Real -> Real [ctor] .
+  eq [p3109-omega-elementary-029] : omegaArcSinh(U) = exprArcSinh(U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-030] : omegaArcSinh(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  op exprArcCosh : Real ~> Real [ctor] .
+  cmb [p3109-expr-ArcCosh-domain] : exprArcCosh(U) : Real if xLe(1, U) [metadata "clause=4.10; page=40-44"] .
+  ceq [p3109-omega-elementary-031] : omegaArcCosh(U) = exprArcCosh(U) if xLe(1, U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-032] : omegaArcCosh(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  op exprArcTanh : Real ~> Real [ctor] .
+  cmb [p3109-expr-ArcTanh-domain] : exprArcTanh(U) : Real if xLt(-1, U) /\ xLt(U, 1) [metadata "clause=4.10; page=40-44"] .
+  ceq [p3109-omega-elementary-033] : omegaArcTanh(U) = exprArcTanh(U) if xLt(-1, U) /\ xLt(U, 1) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-034] : omegaArcTanh(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-035] : omegaSqrt(posInf) = posInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-036] : omegaSqrt(negInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-037] : omegaExp(posInf) = posInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-038] : omegaExp(negInf) = 0 [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-039] : omegaExp2(posInf) = posInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-040] : omegaExp2(negInf) = 0 [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-041] : omegaLog(posInf) = posInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-042] : omegaLog(negInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-043] : omegaLog2(posInf) = posInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-044] : omegaLog2(negInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-045] : omegaSin(posInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-046] : omegaSin(negInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-047] : omegaCos(posInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-048] : omegaCos(negInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-049] : omegaTan(posInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-050] : omegaTan(negInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-051] : omegaArcSin(posInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-052] : omegaArcSin(negInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-053] : omegaArcCos(posInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-054] : omegaArcCos(negInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-055] : omegaArcTan(posInf) = piMultiple(1/2) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-056] : omegaArcTan(negInf) = piMultiple(-1/2) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-057] : omegaSinh(posInf) = posInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-058] : omegaSinh(negInf) = negInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-059] : omegaCosh(posInf) = posInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-060] : omegaCosh(negInf) = posInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-061] : omegaTanh(posInf) = 1 [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-062] : omegaTanh(negInf) = -1 [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-063] : omegaArcSinh(posInf) = posInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-064] : omegaArcSinh(negInf) = negInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-065] : omegaArcCosh(posInf) = posInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-066] : omegaArcCosh(negInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-067] : omegaArcTanh(posInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-068] : omegaArcTanh(negInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-069] : omegaSqrt(U) = nan if xLt(U, 0) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-070] : omegaLog(U) = nan if xLt(U, 0) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-071] : omegaLog2(U) = nan if xLt(U, 0) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-072] : omegaLog(0) = negInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-073] : omegaLog2(0) = negInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-074] : omegaArcSin(U) = nan if xLt(U, -1) or xLt(1, U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-075] : omegaArcCos(U) = nan if xLt(U, -1) or xLt(1, U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-076] : omegaArcTanh(U) = nan if xLt(U, -1) or xLt(1, U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-077] : omegaArcCosh(U) = nan if xLt(U, 1) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-078] : omegaArcTanh(1) = posInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-079] : omegaArcTanh(-1) = negInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-080] : omegaRSqrt(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-081] : omegaRSqrt(negInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-082] : omegaRSqrt(posInf) = 0 [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-083] : omegaRSqrt(U) = nan if xLe(U, 0) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-084] : omegaRSqrt(U) = omegaRecip(omegaSqrt(U)) if xLt(0, U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-085] : omegaLogOnePlus(X) = omegaLog(omegaAdd(1, X)) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-086] : omegaExpMinusOne(X) = omegaSubtract(omegaExp(X), 1) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-087] : omegaSoftplus(X) = omegaLog(omegaAdd(1, omegaExp(X))) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-088] : omegaSinPi(X) = omegaSin(omegaMultiply(X, pi)) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-089] : omegaCosPi(X) = omegaCos(omegaMultiply(X, pi)) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-090] : omegaTanPi(X) = omegaTan(omegaMultiply(X, pi)) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-091] : omegaArcSinPi(X) = omegaDivide(omegaArcSin(X), pi) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-092] : omegaArcCosPi(X) = omegaDivide(omegaArcCos(X), pi) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-093] : omegaArcTanPi(X) = omegaDivide(omegaArcTan(X), pi) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-094] : omegaTan(U) = posInf if xEq(omegaCos(U), 0) /\ xLt(0, omegaSin(U)) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-095] : omegaTan(U) = negInf if xEq(omegaCos(U), 0) /\ xLt(omegaSin(U), 0) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  op numeratorOf : Rat -> Int .
+  op denominatorOf : Rat -> Nat .
+  eq [p3109-omega-elementary-096] : numeratorOf(K) = K [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-097] : denominatorOf(K) = 1 [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  vars NZ : NzInt .
+  var ND : NzNat .
+  eq [p3109-omega-elementary-098] : numeratorOf(NZ / ND) = NZ [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-099] : denominatorOf(NZ / ND) = ND [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-100] : exprSqrt(R) = NS / DS if R >= 0 /\ N := numeratorOf(R) /\ D := denominatorOf(R) /\ NS := integerSqrt(N) /\ DS := integerSqrt(D) /\ NS * NS == N /\ DS * DS == D [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-101] : exprExp(0) = 1 [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-102] : exprExp2(K) = pow2(K) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-103] : exprLog(1) = 0 [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-104] : exprLog2(R) = K if R > 0 /\ K := floorLog2(R) /\ R == pow2(K) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-105] : exprSin(0) = 0 [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-106] : exprCos(0) = 1 [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-107] : exprTan(0) = 0 [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-108] : exprArcSin(0) = 0 [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-109] : exprArcSin(1) = piMultiple(1/2) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-110] : exprArcSin(-1) = piMultiple(-1/2) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-111] : exprArcCos(0) = piMultiple(1/2) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-112] : exprArcCos(1) = 0 [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-113] : exprArcCos(-1) = pi [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-114] : exprArcTan(0) = 0 [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-115] : exprArcTan(1) = piMultiple(1/4) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-116] : exprArcTan(-1) = piMultiple(-1/4) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-117] : exprSinh(0) = 0 [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-118] : exprCosh(0) = 1 [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-119] : exprTanh(0) = 0 [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-120] : exprArcSinh(0) = 0 [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-121] : exprArcCosh(1) = 0 [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-122] : exprArcTanh(0) = 0 [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-123] : exprSin(piMultiple(R)) = 0 if R == floor(R) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-124] : exprSin(piMultiple(R)) = if even(floor(R)) then 1 else -1 fi if R - floor(R) == 1/2 [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-125] : exprCos(piMultiple(R)) = if even(floor(R)) then 1 else -1 fi if R == floor(R) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-126] : exprCos(piMultiple(R)) = 0 if R - floor(R) == 1/2 [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-127] : exprTan(piMultiple(R)) = 0 if R == floor(R) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-128] : xEq(exprCos(R), 0) = false if R =/= 0 [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-129] : xLt(0, exprExp(U)) = true [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-130] : xEq(exprExp(U), 0) = false [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-131] : xLt(exprExp(U), 0) = false [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-132] : xLt(0, exprExp2(U)) = true [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-133] : xEq(exprExp2(U), 0) = false [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-134] : xLt(exprExp2(U), 0) = false [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-135] : xLt(0, exprSqrt(U)) = true if xLt(0, U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-136] : xEq(exprSqrt(U), 0) = false if xLt(0, U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-137] : xLt(exprSqrt(U), 0) = false if xLe(0, U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-138] : omegaHypot(nan, X) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-139] : omegaHypot(A, nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-140] : omegaHypot(A, I) = posInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-141] : omegaHypot(I, U) = posInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-142] : omegaHypot(U, V) = omegaSqrt(realAdd(realMultiply(U, U), realMultiply(V, V))) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-143] : omegaArcTan2(nan, X) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-144] : omegaArcTan2(A, nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-145] : omegaArcTan2(0, 0) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-146] : omegaArcTan2(I, J) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-147] : omegaArcTan2(U, posInf) = 0 [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-148] : omegaArcTan2(0, U) = 0 if xLt(0, U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-149] : omegaArcTan2(posInf, U) = piMultiple(1/2) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-150] : omegaArcTan2(U, 0) = piMultiple(1/2) if xLt(0, U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-151] : omegaArcTan2(U, negInf) = pi if xLe(0, U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-152] : omegaArcTan2(U, negInf) = piMultiple(-1) if xLt(U, 0) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-153] : omegaArcTan2(0, U) = pi if xLt(U, 0) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-154] : omegaArcTan2(negInf, U) = piMultiple(-1/2) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-155] : omegaArcTan2(U, 0) = piMultiple(-1/2) if xLt(U, 0) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-156] : omegaArcTan2(U, V) = omegaArcTan(omegaDivide(U, V)) if xLt(0, V) /\ xEq(U, 0) == false [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-157] : omegaArcTan2(U, V) = omegaAdd(omegaArcTan(omegaDivide(U, V)), pi) if xLt(0, U) /\ xLt(V, 0) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  ceq [p3109-omega-elementary-158] : omegaArcTan2(U, V) = omegaSubtract(omegaArcTan(omegaDivide(U, V)), pi) if xLt(U, 0) /\ xLt(V, 0) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+  eq [p3109-omega-elementary-159] : omegaArcTan2Pi(X, Y) = omegaDivide(omegaArcTan2(X, Y), pi) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+endfm

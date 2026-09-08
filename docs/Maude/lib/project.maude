@@ -1,0 +1,12 @@
+--- Source: P3109/D1 4.7.3, printed page 26.
+fmod P3109-PROJECT is
+  including P3109-FORMAT-QUERIES .
+  including P3109-ROUND .
+  including P3109-SATURATE .
+  op project : Format ProjSpec XReal ~> Nat .
+  vars F : Format .
+  var PS : ProjSpec .
+  var X : Number .
+  ceq [p3109-project-001] : project(F, PS, nan) = encode(F, nan) if validFormat(F) /\ validProjection(PS) [metadata "clause=4.7.3; page=26"] .
+  ceq [p3109-project-002] : project(F, PS, X) = encode(F, saturate(decode(F, MinFiniteOf(F)), decode(F, MaxFiniteOf(F)), SatOf(PS), RoundOf(PS), roundToPrecision(PrecisionOf(F), ExponentBiasOf(F), RoundOf(PS), X), SignednessOf(F), DomainOf(F))) if validFormat(F) /\ validProjection(PS) [metadata "clause=4.7.3; page=26"] .
+endfm

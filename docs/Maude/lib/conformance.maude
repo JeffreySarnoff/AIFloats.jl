@@ -1,0 +1,215 @@
+--- Source: P3109/D1 4.4-4.6, printed page 21-24.
+view FormatElt from TRIV to P3109-FORMAT-CORE is
+  sort Elt to Format .
+endv
+fmod P3109-CONFORMANCE-DATA is
+  including P3109-BLOCK-CORE .
+  including P3109-SEQUENCE{FormatElt} * (sort Seq{FormatElt} to FormatSeq, op nil to fnil, op cons to fcons) .
+  sorts Specialization Kappa Observation Declaration Evidence KappaPart .
+  op numeric : String FormatSeq ProjSpec -> Specialization [ctor] .
+  op plain : String FormatSeq -> Specialization [ctor] .
+  op blockElements : String Nat FormatSeq BlockProjSpec -> Specialization [ctor] .
+  op blockReduction : String Nat FormatSeq ProjSpec -> Specialization [ctor] .
+  op blockScale : String Nat FormatSeq ProjSpec BlockProjSpec -> Specialization [ctor] .
+  op steps : Nat -> Kappa [ctor] .
+  ops kNaN kInfinity : -> Kappa [ctor] .
+  op kappaPart : CodeSeq Kappa -> KappaPart [ctor] .
+  op observation : String CodeSeq Format Int Int -> Observation [ctor] .
+  ops pendingEvidence sampleEvidence exhaustiveEvidence proofEvidence : -> Evidence [ctor] .
+  op exact : Specialization String Evidence -> Declaration [ctor] .
+  op approximate : Specialization String Kappa Evidence -> Declaration [ctor] .
+endfm
+view ObservationElt from TRIV to P3109-CONFORMANCE-DATA is
+  sort Elt to Observation .
+endv
+view KappaPartElt from TRIV to P3109-CONFORMANCE-DATA is
+  sort Elt to KappaPart .
+endv
+view CodeSeqElt from TRIV to P3109-BLOCK-CORE is
+  sort Elt to CodeSeq .
+endv
+view DeclarationElt from TRIV to P3109-CONFORMANCE-DATA is
+  sort Elt to Declaration .
+endv
+view SpecializationElt from TRIV to P3109-CONFORMANCE-DATA is
+  sort Elt to Specialization .
+endv
+fmod P3109-CONFORMANCE is
+  including P3109-SEQUENCE{KappaPartElt} * (sort Seq{KappaPartElt} to KappaPartSeq, op nil to knil, op cons to kcons) .
+  op partitioned : Specialization String CodeSeq KappaPartSeq Evidence -> Declaration [ctor] .
+  op partRegions : KappaPartSeq -> PartitionSeq .
+  op partBound : KappaPartSeq -> Kappa .
+  op declarationKappa : Declaration ~> Kappa .
+  including P3109-SEQUENCE{CodeSeqElt} * (sort Seq{CodeSeqElt} to PartitionSeq, op nil to pnil, op cons to pcons) .
+  including P3109-SEQUENCE{DeclarationElt} * (sort Seq{DeclarationElt} to DeclarationSeq, op nil to dnil, op cons to dcons) .
+  including P3109-SEQUENCE{SpecializationElt} * (sort Seq{SpecializationElt} to SpecializationSeq, op nil to snil, op cons to scons) .
+  including P3109-CONFORMANCE-DATA .
+  including P3109-PREDICATES .
+  including P3109-SEQUENCE{ObservationElt} * (sort Seq{ObservationElt} to ObservationSeq, op nil to onil, op cons to ocons) .
+  ops inF4 inF8 inFs allowedExternal : Format -> Bool .
+  op containsFormat : Format FormatSeq -> Bool .
+  op validFX : FormatSeq -> Bool .
+  op validFXTail : FormatSeq -> Bool .
+  op allFormats : FormatSeq -> Bool .
+  op required : Specialization FormatSeq -> Bool .
+  ops requiredNumeric requiredPlain : String FormatSeq FormatSeq -> Bool .
+  ops minmaxName compareName predicateName formatNameOp : String -> Bool .
+  op specializationName : Specialization -> String .
+  op numericPlainName : String -> Bool .
+  op blockElementArity : String Nat -> Bool .
+  op numericResult : Specialization -> Bool .
+  op declaredIdentity : Declaration -> Specialization .
+  op hasDeclaration : Specialization DeclarationSeq -> Bool .
+  op declarationsCover : SpecializationSeq DeclarationSeq -> Bool .
+  op partition : CodeSeq PartitionSeq -> Bool .
+  op partitionUnion : PartitionSeq -> CodeSeq .
+  op partitionDisjoint : PartitionSeq -> Bool .
+  op validSpecialization : Specialization -> Bool .
+  op numericArity : String Nat -> Bool .
+  op plainArity : String Nat -> Bool .
+  op wellFormedDeclaration : Declaration -> Bool .
+  op evidenceComplete : Evidence -> Bool .
+  op finiteRank : Format Int ~> Nat .
+  op observationKappa : Observation ~> Kappa .
+  op batchKappa : ObservationSeq ~> Kappa .
+  op mergeKappa : Kappa Kappa -> Kappa .
+  op memberCode : Int CodeSeq -> Bool .
+  op disjointCodes : CodeSeq CodeSeq -> Bool .
+  op uniqueCodes : CodeSeq -> Bool .
+  op appendCodes : CodeSeq CodeSeq -> CodeSeq .
+  op subsetCodes : CodeSeq CodeSeq -> Bool .
+  op partition2 : CodeSeq CodeSeq CodeSeq -> Bool .
+  vars F G H J L : Format .
+  vars FS FX : FormatSeq .
+  vars N NAME : String .
+  vars S T : Specialization .
+  var PS : ProjSpec .
+  vars C D : Int .
+  vars A B : Nat .
+  vars CS DS ES : CodeSeq .
+  vars K Q : Kappa .
+  var O : Observation .
+  var OS : ObservationSeq .
+  var E : Evidence .
+  var BP : BlockProjSpec .
+  var PARTS : PartitionSeq .
+  var KP : KappaPartSeq .
+  var DEC : Declaration .
+  var DECS : DeclarationSeq .
+  var SPECS : SpecializationSeq .
+  eq [p3109-conformance-001] : inF4(F) = (F == Binary(4, 2, Signed, Finite)) [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-002] : inF8(F) = (F == Binary(8, 4, Signed, Extended) or F == Binary(8, 3, Signed, Extended)) [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-003] : inFs(F) = (F == Binary(8, 1, Unsigned, Finite)) [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-004] : allowedExternal(F) = (F == binary32 or F == binary16 or F == BFloat16) [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-005] : containsFormat(F, fnil) = false [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-006] : containsFormat(F, fcons(G, FS)) = (F == G or containsFormat(F, FS)) [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-007] : validFX(fnil) = false [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-008] : validFX(fcons(F, FS)) = allowedExternal(F) and not containsFormat(F, FS) and validFXTail(FS) [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-009] : validFXTail(fnil) = true [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-010] : validFXTail(fcons(F, FS)) = allowedExternal(F) and not containsFormat(F, FS) and validFXTail(FS) [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-011] : allFormats(fnil) = true [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-012] : allFormats(fcons(F, FS)) = validFormat(F) and allFormats(FS) [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-013] : required(numeric(N, FS, PS), FX) = validFX(FX) and (PS == proj(NearestTiesToEven, SatNone)) and requiredNumeric(N, FS, FX) [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-014] : required(plain(N, FS), FX) = validFX(FX) and requiredPlain(N, FS, FX) [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-015] : requiredNumeric(N, fcons(F, fcons(G, fnil)), FX) = (((N == "Convert" or N == "Recip") and (inF4(F) or inF8(F) or containsFormat(F, FX)) and (inF4(G) or inF8(G) or containsFormat(G, FX))) or ((N == "Abs" or N == "Negate") and F == G and (inF4(F) or inF8(F)))) [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-016] : requiredNumeric(N, fcons(F, fcons(G, fcons(H, fnil))), FX) = (((N == "Add" or N == "Subtract" or N == "Multiply") and (inF4(F) or inF8(F)) and (inF4(G) or inF8(G)) and (inF8(H) or containsFormat(H, FX))) or (minmaxName(N) and F == G and G == H and (inF4(F) or inF8(F)))) [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-017] : requiredNumeric(N, fcons(F, fcons(G, fcons(H, fcons(J, fnil)))), FX) = ((N == "FMA" or N == "FAA") and (inF4(F) or inF8(F)) and (inF4(G) or inF8(G)) and H == J and containsFormat(H, FX)) [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-018] : requiredNumeric(N, fcons(F, fcons(G, fcons(H, fcons(J, fcons(L, fnil))))), FX) = ((N == "ScaledAdd" or N == "ScaledSubtract" or N == "ScaledMultiply") and inFs(F) and F == H and (inF4(G) or inF8(G)) and (inF4(J) or inF8(J)) and (inF8(L) or containsFormat(L, FX))) [metadata "clause=4.4-4.6; page=21-24"] .
+  ceq [p3109-conformance-019] : requiredNumeric(N, FS, FX) = false if length(FS) < 2 or length(FS) > 5 [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-020] : requiredPlain(N, fcons(F, fnil), FX) = ((predicateName(N) and (inF4(F) or inF8(F))) or (formatNameOp(N) and (inF4(F) or inF8(F) or containsFormat(F, FX)))) [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-021] : requiredPlain(N, fcons(F, fcons(G, fnil)), FX) = (compareName(N) and F == G and (inF4(F) or inF8(F))) [metadata "clause=4.4-4.6; page=21-24"] .
+  ceq [p3109-conformance-022] : requiredPlain(N, FS, FX) = false if length(FS) < 1 or length(FS) > 2 [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-023] : minmaxName(N) = (N == "Minimum" or N == "Maximum" or N == "MinimumNumber" or N == "MaximumNumber" or N == "MinimumMagnitude" or N == "MaximumMagnitude" or N == "MinimumMagnitudeNumber" or N == "MaximumMagnitudeNumber" or N == "MinimumFinite" or N == "MaximumFinite") [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-024] : compareName(N) = (N == "CompareLess" or N == "CompareLessEqual" or N == "CompareEqual" or N == "CompareGreater" or N == "CompareGreaterEqual") [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-025] : predicateName(N) = (N == "IsZero" or N == "IsOne" or N == "IsNaN" or N == "IsInfinite" or N == "IsFinite" or N == "IsSignMinus" or N == "IsNormal" or N == "IsSubnormal" or N == "NextGreaterThan" or N == "NextLessThan") [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-026] : formatNameOp(N) = (N == "BitwidthOf" or N == "PrecisionOf" or N == "SignednessOf" or N == "DomainOf" or N == "ExponentBitwidthOf" or N == "TrailingSignificandBitwidthOf" or N == "ExponentBiasOf" or N == "MaxFiniteOf" or N == "MinFiniteOf" or N == "MinPositiveOf" or N == "MaxSubnormalOf" or N == "MinNormalOf") [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-027] : specializationName(numeric(N, FS, PS)) = N [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-028] : specializationName(plain(N, FS)) = N [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-033] : evidenceComplete(pendingEvidence) = false [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-034] : evidenceComplete(sampleEvidence) = false [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-035] : evidenceComplete(exhaustiveEvidence) = true [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-036] : evidenceComplete(proofEvidence) = true [metadata "clause=4.4-4.6; page=21-24"] .
+  ceq [p3109-conformance-037] : finiteRank(F, C) = C if validCode(F, C) /\ internalFormat(F) /\ IsFinite(F, C) /\ SignednessOf(F) == Unsigned [metadata "clause=4.4-4.6; page=21-24"] .
+  ceq [p3109-conformance-038] : finiteRank(F, C) = MaxFiniteOf(F) + C if validCode(F, C) /\ internalFormat(F) /\ IsFinite(F, C) /\ SignednessOf(F) == Signed /\ not IsSignMinus(F, C) [metadata "clause=4.4-4.6; page=21-24"] .
+  ceq [p3109-conformance-039] : finiteRank(F, C) = MinFiniteOf(F) - C if validCode(F, C) /\ internalFormat(F) /\ IsFinite(F, C) /\ IsSignMinus(F, C) [metadata "clause=4.4-4.6; page=21-24"] .
+  ceq [p3109-conformance-040] : observationKappa(observation(N, CS, F, C, D)) = kNaN if validCode(F, C) /\ validCode(F, D) /\ IsNaN(F, C) =/= IsNaN(F, D) [metadata "clause=4.4-4.6; page=21-24"] .
+  ceq [p3109-conformance-041] : observationKappa(observation(N, CS, F, C, D)) = steps(0) if validCode(F, C) /\ validCode(F, D) /\ IsNaN(F, C) /\ IsNaN(F, D) [metadata "clause=4.4-4.6; page=21-24"] .
+  ceq [p3109-conformance-042] : observationKappa(observation(N, CS, F, C, D)) = steps(0) if validCode(F, C) /\ validCode(F, D) /\ IsInfinite(F, C) /\ IsInfinite(F, D) /\ IsSignMinus(F, C) == IsSignMinus(F, D) [metadata "clause=4.4-4.6; page=21-24"] .
+  ceq [p3109-conformance-043] : observationKappa(observation(N, CS, F, C, D)) = kInfinity if validCode(F, C) /\ validCode(F, D) /\ not IsNaN(F, C) /\ not IsNaN(F, D) /\ (IsInfinite(F, C) or IsInfinite(F, D)) /\ not (IsInfinite(F, C) and IsInfinite(F, D) and IsSignMinus(F, C) == IsSignMinus(F, D)) [metadata "clause=4.4-4.6; page=21-24"] .
+  ceq [p3109-conformance-044] : observationKappa(observation(N, CS, F, C, D)) = steps(abs(finiteRank(F, C) - finiteRank(F, D))) if validCode(F, C) /\ validCode(F, D) /\ IsFinite(F, C) /\ IsFinite(F, D) [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-045] : batchKappa(onil) = steps(0) [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-046] : batchKappa(ocons(O, OS)) = mergeKappa(observationKappa(O), batchKappa(OS)) [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-047] : mergeKappa(kNaN, K) = kNaN [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-048] : mergeKappa(kInfinity, kNaN) = kNaN [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-049] : mergeKappa(steps(A), kNaN) = kNaN [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-050] : mergeKappa(kInfinity, kInfinity) = kInfinity [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-051] : mergeKappa(kInfinity, steps(A)) = kInfinity [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-052] : mergeKappa(steps(A), kInfinity) = kInfinity [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-053] : mergeKappa(steps(A), steps(B)) = steps(max(A, B)) [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-054] : memberCode(C, cnil) = false [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-055] : memberCode(C, ccons(D, CS)) = (C == D or memberCode(C, CS)) [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-056] : disjointCodes(cnil, CS) = true [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-057] : disjointCodes(ccons(C, CS), DS) = (not memberCode(C, DS) and disjointCodes(CS, DS)) [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-058] : uniqueCodes(cnil) = true [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-059] : uniqueCodes(ccons(C, CS)) = (not memberCode(C, CS) and uniqueCodes(CS)) [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-060] : appendCodes(cnil, CS) = CS [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-061] : appendCodes(ccons(C, CS), DS) = ccons(C, appendCodes(CS, DS)) [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-062] : subsetCodes(cnil, CS) = true [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-063] : subsetCodes(ccons(C, CS), DS) = (memberCode(C, DS) and subsetCodes(CS, DS)) [metadata "clause=4.4-4.6; page=21-24"] .
+  eq [p3109-conformance-064] : partition2(CS, DS, ES) = (uniqueCodes(CS) and uniqueCodes(DS) and uniqueCodes(ES) and disjointCodes(DS, ES) and subsetCodes(CS, appendCodes(DS, ES)) and subsetCodes(appendCodes(DS, ES), CS)) [metadata "clause=4.4-4.6; page=21-24"] .
+  ceq [p3109-decl-numeric-2] : numericArity(N, A) = true if A == 2 /\ (N == "Convert" or N == "Abs" or N == "Negate" or N == "Sqrt" or N == "Recip" or N == "RSqrt" or N == "Exp" or N == "Exp2" or N == "Log" or N == "Log2" or N == "LogOnePlus" or N == "ExpMinusOne" or N == "Sin" or N == "Cos" or N == "Tan" or N == "ArcSin" or N == "ArcCos" or N == "ArcTan" or N == "Sinh" or N == "Cosh" or N == "Tanh" or N == "ArcSinh" or N == "ArcCosh" or N == "ArcTanh" or N == "SinPi" or N == "CosPi" or N == "TanPi" or N == "ArcSinPi" or N == "ArcCosPi" or N == "ArcTanPi" or N == "Softplus") [metadata "clause=4.3; page=19-20"] .
+  ceq [p3109-decl-numeric-3] : numericArity(N, A) = true if A == 3 /\ (N == "CopySign" or N == "Add" or N == "Subtract" or N == "Multiply" or N == "Divide" or N == "Hypot" or N == "ArcTan2" or N == "ArcTan2Pi" or N == "Minimum" or N == "Maximum" or N == "MinimumNumber" or N == "MaximumNumber" or N == "MinimumMagnitude" or N == "MaximumMagnitude" or N == "MinimumMagnitudeNumber" or N == "MaximumMagnitudeNumber" or N == "MinimumFinite" or N == "MaximumFinite") [metadata "clause=4.3; page=19-20"] .
+  ceq [p3109-decl-numeric-4] : numericArity(N, A) = true if A == 4 /\ (N == "FMA" or N == "FAA" or N == "Clamp") [metadata "clause=4.3; page=19-20"] .
+  ceq [p3109-decl-plain-2] : plainArity(N, A) = true if A == 2 /\ (N == "CompareLess" or N == "CompareLessEqual" or N == "CompareEqual" or N == "CompareGreater" or N == "CompareGreaterEqual" or N == "TotalOrder") [metadata "clause=4.3; page=19-20"] .
+  ceq [p3109-decl-plain-1] : plainArity(N, A) = true if A == 1 /\ (N == "IsZero" or N == "IsOne" or N == "IsNaN" or N == "IsInfinite" or N == "IsFinite" or N == "IsSignMinus" or N == "IsNormal" or N == "IsSubnormal" or N == "Class" or N == "BitwidthOf" or N == "PrecisionOf" or N == "ExponentBitwidthOf" or N == "TrailingSignificandBitwidthOf" or N == "ExponentBiasOf" or N == "SignednessOf" or N == "DomainOf" or N == "MaxFiniteOf" or N == "MinFiniteOf" or N == "MinPositiveOf" or N == "MaxSubnormalOf" or N == "MinNormalOf" or N == "NextGreaterThan" or N == "NextLessThan") [metadata "clause=4.3; page=19-20"] .
+  ceq [p3109-decl-plain-0] : plainArity(N, A) = true if A == 0 /\ (N == "RoundOf" or N == "SatOf") [metadata "clause=4.3; page=19-20"] .
+  eq [p3109-decl-numeric-other] : numericArity(N, A) = false [owise metadata "clause=4.3; page=19-20"] .
+  eq [p3109-decl-plain-other] : plainArity(N, A) = false [owise metadata "clause=4.3; page=19-20"] .
+  eq [p3109-decl-specialization-numeric] : validSpecialization(numeric(N, FS, PS)) = numericArity(N, length(FS)) and allFormats(FS) and validProjection(PS) [metadata "clause=4.3; page=19-20"] .
+  eq [p3109-decl-specialization-plain] : validSpecialization(plain(N, FS)) = plainArity(N, length(FS)) and allFormats(FS) [metadata "clause=4.3; page=19-20"] .
+  eq [p3109-decl-numeric-plain] : numericPlainName(N) = (N == "NextGreaterThan" or N == "NextLessThan" or N == "MaxFiniteOf" or N == "MinFiniteOf" or N == "MinPositiveOf" or N == "MaxSubnormalOf" or N == "MinNormalOf") [metadata "clause=4.4; page=21"] .
+  eq [p3109-decl-exact] : wellFormedDeclaration(exact(S, NAME, E)) = (NAME =/= "" and validSpecialization(S)) [metadata "clause=4.6; page=24"] .
+  eq [p3109-decl-approximate] : wellFormedDeclaration(approximate(S, NAME, K, E)) = (NAME =/= "" and NAME =/= specializationName(S) and numericResult(S) and validSpecialization(S)) [metadata "clause=4.4; page=21"] .
+  eq [p3109-block-elements-name] : specializationName(blockElements(N, A, FS, BP)) = N [metadata "clause=5.5;5.7; page=64-66;69"] .
+  eq [p3109-block-reduction-name] : specializationName(blockReduction(N, A, FS, PS)) = N [metadata "clause=5.6; page=67-68"] .
+  eq [p3109-block-scale-name] : specializationName(blockScale(N, A, FS, PS, BP)) = N [metadata "clause=5.5.3; page=66"] .
+  eq [p3109-block-elements-valid] : validSpecialization(blockElements(N, A, FS, BP)) = (A >= 1 and allFormats(FS) and validBlockProjection(BP, A) and blockElementArity(N, length(FS))) [metadata "clause=5.5;5.7; page=64-66;69"] .
+  eq [p3109-block-reduction-valid] : validSpecialization(blockReduction(N, A, FS, PS)) = (A >= 1 and allFormats(FS) and validProjection(PS) and (((N == "BlockReduceAdd" or N == "BlockReduceMultiply") and length(FS) == 3) or (N == "BlockDotProduct" and length(FS) == 5))) [metadata "clause=5.6; page=67-68"] .
+  eq [p3109-block-scale-valid] : validSpecialization(blockScale(N, A, FS, PS, BP)) = (N == "ConvertToBlockMaxAbsFinite" and A >= 1 and length(FS) == 3 and allFormats(FS) and validProjection(PS) and validBlockProjection(BP, A)) [metadata "clause=5.5.3; page=66"] .
+  eq [p3109-block-elements-not-required] : required(blockElements(N, A, FS, BP), FX) = false [metadata "clause=4.5; page=22-23"] .
+  eq [p3109-block-reduction-not-required] : required(blockReduction(N, A, FS, PS), FX) = false [metadata "clause=4.5; page=22-23"] .
+  eq [p3109-block-scale-not-required] : required(blockScale(N, A, FS, PS, BP), FX) = false [metadata "clause=4.5; page=22-23"] .
+  eq [p3109-result-projected-numeric] : numericResult(numeric(N, FS, PS)) = true [metadata "clause=4.4; page=21"] .
+  eq [p3109-result-plain-numeric] : numericResult(plain(N, FS)) = numericPlainName(N) [metadata "clause=4.4; page=21"] .
+  eq [p3109-result-block-elements-numeric] : numericResult(blockElements(N, A, FS, BP)) = true [metadata "clause=4.4; page=21"] .
+  eq [p3109-result-block-reduction-numeric] : numericResult(blockReduction(N, A, FS, PS)) = true [metadata "clause=4.4; page=21"] .
+  eq [p3109-result-block-scale-numeric] : numericResult(blockScale(N, A, FS, PS, BP)) = true [metadata "clause=4.4; page=21"] .
+  eq [p3109-declared-exact] : declaredIdentity(exact(S, NAME, E)) = S [metadata "clause=4.6; page=24"] .
+  eq [p3109-declared-approximate] : declaredIdentity(approximate(S, NAME, K, E)) = S [metadata "clause=4.6; page=24"] .
+  eq [p3109-declared-empty] : hasDeclaration(S, dnil) = false [metadata "clause=4.6; page=24"] .
+  eq [p3109-declared-member] : hasDeclaration(S, dcons(DEC, DECS)) = ((wellFormedDeclaration(DEC) and declaredIdentity(DEC) == S) or hasDeclaration(S, DECS)) [metadata "clause=4.6; page=24"] .
+  eq [p3109-declarations-cover-empty] : declarationsCover(snil, DECS) = true [metadata "clause=4.5-4.6; page=22-24"] .
+  eq [p3109-declarations-cover-cons] : declarationsCover(scons(S, SPECS), DECS) = (hasDeclaration(S, DECS) and declarationsCover(SPECS, DECS)) [metadata "clause=4.5-4.6; page=22-24"] .
+  eq [p3109-partition-union-empty] : partitionUnion(pnil) = cnil [metadata "clause=4.4; page=21"] .
+  eq [p3109-partition-union-cons] : partitionUnion(pcons(CS, PARTS)) = appendCodes(CS, partitionUnion(PARTS)) [metadata "clause=4.4; page=21"] .
+  eq [p3109-partition-disjoint-empty] : partitionDisjoint(pnil) = true [metadata "clause=4.4; page=21"] .
+  eq [p3109-partition-disjoint-cons] : partitionDisjoint(pcons(CS, PARTS)) = (uniqueCodes(CS) and disjointCodes(CS, partitionUnion(PARTS)) and partitionDisjoint(PARTS)) [metadata "clause=4.4; page=21"] .
+  eq [p3109-partition-general] : partition(CS, PARTS) = (uniqueCodes(CS) and partitionDisjoint(PARTS) and subsetCodes(CS, partitionUnion(PARTS)) and subsetCodes(partitionUnion(PARTS), CS)) [metadata "clause=4.4; page=21"] .
+  ceq [p3109-block-conversion-arity] : blockElementArity(N, A) = true if A == 3 /\ (N == "ConvertFromBlock" or N == "ConvertToBlock") [metadata "clause=5.5.1-5.5.2; page=64-65"] .
+  ceq [p3109-block-element-arity-1] : blockElementArity(N, A) = true if A == 4 /\ (N == "BlockConvert" or N == "BlockAbs" or N == "BlockNegate" or N == "BlockSqrt" or N == "BlockRecip" or N == "BlockRSqrt" or N == "BlockExp" or N == "BlockExp2" or N == "BlockLog" or N == "BlockLog2" or N == "BlockLogOnePlus" or N == "BlockExpMinusOne" or N == "BlockSin" or N == "BlockCos" or N == "BlockTan" or N == "BlockArcSin" or N == "BlockArcCos" or N == "BlockArcTan" or N == "BlockSinh" or N == "BlockCosh" or N == "BlockTanh" or N == "BlockArcSinh" or N == "BlockArcCosh" or N == "BlockArcTanh" or N == "BlockSinPi" or N == "BlockCosPi" or N == "BlockTanPi" or N == "BlockArcSinPi" or N == "BlockArcCosPi" or N == "BlockArcTanPi" or N == "BlockSoftplus") [metadata "clause=5.7; page=69"] .
+  ceq [p3109-block-element-arity-2] : blockElementArity(N, A) = true if A == 6 /\ (N == "BlockCopySign" or N == "BlockAdd" or N == "BlockSubtract" or N == "BlockMultiply" or N == "BlockDivide" or N == "BlockHypot" or N == "BlockArcTan2" or N == "BlockArcTan2Pi" or N == "BlockMinimum" or N == "BlockMaximum" or N == "BlockMinimumNumber" or N == "BlockMaximumNumber" or N == "BlockMinimumMagnitude" or N == "BlockMaximumMagnitude" or N == "BlockMinimumMagnitudeNumber" or N == "BlockMaximumMagnitudeNumber" or N == "BlockMinimumFinite" or N == "BlockMaximumFinite") [metadata "clause=5.7; page=69"] .
+  ceq [p3109-block-element-arity-3] : blockElementArity(N, A) = true if A == 8 /\ (N == "BlockFMA" or N == "BlockFAA" or N == "BlockClamp") [metadata "clause=5.7; page=69"] .
+  eq [p3109-block-element-arity-other] : blockElementArity(N, A) = false [owise metadata "clause=5.7; page=69"] .
+  ceq [p3109-scaled-decl-arity-1] : numericArity(N, A) = true if A == 3 /\ (N == "ScaledConvert" or N == "ScaledAbs" or N == "ScaledNegate" or N == "ScaledSqrt" or N == "ScaledRecip" or N == "ScaledRSqrt" or N == "ScaledExp" or N == "ScaledExp2" or N == "ScaledLog" or N == "ScaledLog2" or N == "ScaledLogOnePlus" or N == "ScaledExpMinusOne" or N == "ScaledSin" or N == "ScaledCos" or N == "ScaledTan" or N == "ScaledArcSin" or N == "ScaledArcCos" or N == "ScaledArcTan" or N == "ScaledSinh" or N == "ScaledCosh" or N == "ScaledTanh" or N == "ScaledArcSinh" or N == "ScaledArcCosh" or N == "ScaledArcTanh" or N == "ScaledSinPi" or N == "ScaledCosPi" or N == "ScaledTanPi" or N == "ScaledArcSinPi" or N == "ScaledArcCosPi" or N == "ScaledArcTanPi" or N == "ScaledSoftplus") [metadata "clause=5.8; page=70"] .
+  ceq [p3109-scaled-decl-arity-2] : numericArity(N, A) = true if A == 5 /\ (N == "ScaledCopySign" or N == "ScaledAdd" or N == "ScaledSubtract" or N == "ScaledMultiply" or N == "ScaledDivide" or N == "ScaledHypot" or N == "ScaledArcTan2" or N == "ScaledArcTan2Pi" or N == "ScaledMinimum" or N == "ScaledMaximum" or N == "ScaledMinimumNumber" or N == "ScaledMaximumNumber" or N == "ScaledMinimumMagnitude" or N == "ScaledMaximumMagnitude" or N == "ScaledMinimumMagnitudeNumber" or N == "ScaledMaximumMagnitudeNumber" or N == "ScaledMinimumFinite" or N == "ScaledMaximumFinite") [metadata "clause=5.8; page=70"] .
+  ceq [p3109-scaled-decl-arity-3] : numericArity(N, A) = true if A == 7 /\ (N == "ScaledFMA" or N == "ScaledFAA" or N == "ScaledClamp") [metadata "clause=5.8; page=70"] .
+  eq [p3109-decl-partitioned-valid] : wellFormedDeclaration(partitioned(S, NAME, CS, KP, E)) = (NAME =/= "" and NAME =/= specializationName(S) and numericResult(S) and validSpecialization(S) and partition(CS, partRegions(KP))) [metadata "clause=4.4; page=21"] .
+  eq [p3109-decl-partitioned-identity] : declaredIdentity(partitioned(S, NAME, CS, KP, E)) = S [metadata "clause=4.4; page=21"] .
+  eq [p3109-part-regions-empty] : partRegions(knil) = pnil [metadata "clause=4.4; page=21"] .
+  eq [p3109-part-regions-cons] : partRegions(kcons(kappaPart(CS, K), KP)) = pcons(CS, partRegions(KP)) [metadata "clause=4.4; page=21"] .
+  eq [p3109-part-bound-empty] : partBound(knil) = steps(0) [metadata "clause=4.4; page=21"] .
+  eq [p3109-part-bound-cons] : partBound(kcons(kappaPart(CS, K), KP)) = mergeKappa(K, partBound(KP)) [metadata "clause=4.4; page=21"] .
+  ceq [p3109-decl-exact-kappa] : declarationKappa(exact(S, NAME, E)) = steps(0) if wellFormedDeclaration(exact(S, NAME, E)) /\ numericResult(S) [metadata "clause=4.4; page=21"] .
+  ceq [p3109-decl-approx-kappa] : declarationKappa(approximate(S, NAME, K, E)) = K if wellFormedDeclaration(approximate(S, NAME, K, E)) [metadata "clause=4.4; page=21"] .
+  ceq [p3109-decl-partition-kappa] : declarationKappa(partitioned(S, NAME, CS, KP, E)) = partBound(KP) if wellFormedDeclaration(partitioned(S, NAME, CS, KP, E)) [metadata "clause=4.4; page=21"] .
+endfm

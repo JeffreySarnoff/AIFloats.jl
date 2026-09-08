@@ -1,0 +1,10 @@
+--- Small standalone check; tools/run-tests.py runs the complete blocks suite.
+load ../load-core.maude
+load support.maude
+fmod P3109-TEST-BLOCKS is
+  including P3109-CORE .
+  including P3109-TEST-SUPPORT .
+endfm
+red in P3109-TEST-BLOCKS : check("blocks-standalone", (normalizeElement(posInf, negInf) == -1)) .
+red in P3109-TEST-BLOCKS : suiteComplete(1) .
+quit

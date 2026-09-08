@@ -1,0 +1,13 @@
+--- Source: P3109/D1 implementation test harness, printed page n/a.
+fmod P3109-TEST-SUPPORT is
+  protecting STRING .
+  protecting NAT .
+  sort TestResult .
+  op suiteComplete : Nat -> TestResult [ctor] .
+  op passed : String -> TestResult [ctor] .
+  op failed : String -> TestResult [ctor] .
+  op check : String Bool -> TestResult .
+  var ID : String .
+  eq [p3109-support-001] : check(ID, true) = passed(ID) [metadata "clause=implementation test harness; page=n/a"] .
+  eq [p3109-support-002] : check(ID, false) = failed(ID) [metadata "clause=implementation test harness; page=n/a"] .
+endfm

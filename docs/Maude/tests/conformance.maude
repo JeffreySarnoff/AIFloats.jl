@@ -1,0 +1,10 @@
+--- Small standalone check; tools/run-tests.py runs the complete conformance suite.
+load ../load-core.maude
+load support.maude
+fmod P3109-TEST-CONFORMANCE is
+  including P3109-CORE .
+  including P3109-TEST-SUPPORT .
+endfm
+red in P3109-TEST-CONFORMANCE : check("conformance-standalone", (mergeKappa(kInfinity, kNaN) == kNaN)) .
+red in P3109-TEST-CONFORMANCE : suiteComplete(1) .
+quit

@@ -1,0 +1,4 @@
+sload load-core.maude
+load contracts/real.maude
+load contracts/external-format.maude
+load contracts/external-bridge.maude

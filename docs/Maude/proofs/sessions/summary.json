@@ -1,0 +1,46 @@
+[
+  {
+    "module": "P3109-PROOF-SMOKE",
+    "target": "proofs/toolchain-smoke.maude",
+    "sha256": "fa2b6229c1665162ed64e6aa870061fd86c85347ffaad473d0fdd44a686d0bf2",
+    "engine": "/usr/local/bin/maude++",
+    "mfe": "/opt/mfe-3.5.1/src/mfe.maude",
+    "options": [
+      "-no-banner",
+      "-no-ansi-color"
+    ],
+    "crc": [
+      "All critical pairs have been joined.",
+      "The specification is locally-confluent.",
+      "The module is sort-decreasing."
+    ],
+    "scc": [
+      "Analysis: it is complete and it is sound",
+      "Ground weak termination: not proved",
+      "Ground sort-decreasingness: not proved"
+    ],
+    "production_refinement": "not established by this tool session"
+  },
+  {
+    "module": "P3109-PROOF-SATURATION",
+    "target": "proofs/slices/saturation-cases.maude",
+    "sha256": "684771ed31948f2db504a4a79fa574deaf179bed9148a9f2c4e134d23c1be047",
+    "engine": "/usr/local/bin/maude++",
+    "mfe": "/opt/mfe-3.5.1/src/mfe.maude",
+    "options": [
+      "-no-banner",
+      "-no-ansi-color"
+    ],
+    "crc": [
+      "All critical pairs have been joined.",
+      "The specification is locally-confluent.",
+      "The module is sort-decreasing."
+    ],
+    "scc": [
+      "Analysis: it is complete and it is sound",
+      "Ground weak termination: not proved",
+      "Ground sort-decreasingness: not proved"
+    ],
+    "production_refinement": "not established by this tool session"
+  }
+]

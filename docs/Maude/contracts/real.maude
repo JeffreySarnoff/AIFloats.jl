@@ -1,0 +1,31 @@
+--- Source: P3109/D1 3.1; 4.10; interpretation obligation, printed page 16; 33-48.
+fth P3109-REAL-CONTRACT is
+  including P3109-XREAL .
+  ops realZero realOne : -> Real .
+  ops addReal multiplyReal : Real Real -> Real .
+  op negateReal : Real -> Real .
+  op inverseReal : Real ~> Real .
+  op lessReal : Real Real -> Bool .
+  vars A B C : Real .
+  eq [p3109-real-001] : addReal(A, B) = addReal(B, A) [metadata "clause=3.1; 4.10; interpretation obligation; page=16; 33-48"] .
+  eq [p3109-real-002] : addReal(addReal(A, B), C) = addReal(A, addReal(B, C)) [metadata "clause=3.1; 4.10; interpretation obligation; page=16; 33-48"] .
+  eq [p3109-real-003] : addReal(A, realZero) = A [metadata "clause=3.1; 4.10; interpretation obligation; page=16; 33-48"] .
+  eq [p3109-real-004] : addReal(A, negateReal(A)) = realZero [metadata "clause=3.1; 4.10; interpretation obligation; page=16; 33-48"] .
+  eq [p3109-real-005] : multiplyReal(A, B) = multiplyReal(B, A) [metadata "clause=3.1; 4.10; interpretation obligation; page=16; 33-48"] .
+  eq [p3109-real-006] : multiplyReal(multiplyReal(A, B), C) = multiplyReal(A, multiplyReal(B, C)) [metadata "clause=3.1; 4.10; interpretation obligation; page=16; 33-48"] .
+  eq [p3109-real-007] : multiplyReal(A, realOne) = A [metadata "clause=3.1; 4.10; interpretation obligation; page=16; 33-48"] .
+  eq [p3109-real-008] : multiplyReal(A, addReal(B, C)) = addReal(multiplyReal(A, B), multiplyReal(A, C)) [metadata "clause=3.1; 4.10; interpretation obligation; page=16; 33-48"] .
+  ceq [p3109-real-009] : multiplyReal(A, inverseReal(A)) = realOne if A =/= realZero [metadata "clause=3.1; 4.10; interpretation obligation; page=16; 33-48"] .
+  eq [p3109-real-010] : lessReal(A, A) = false [metadata "clause=3.1; 4.10; interpretation obligation; page=16; 33-48"] .
+  ceq [p3109-real-011] : lessReal(A, C) = true if lessReal(A, B) /\ lessReal(B, C) [metadata "clause=3.1; 4.10; interpretation obligation; page=16; 33-48" nonexec] .
+  ceq [p3109-real-012] : lessReal(addReal(A, C), addReal(B, C)) = true if lessReal(A, B) [metadata "clause=3.1; 4.10; interpretation obligation; page=16; 33-48"] .
+  ceq [p3109-real-013] : lessReal(multiplyReal(A, C), multiplyReal(B, C)) = true if lessReal(A, B) /\ lessReal(realZero, C) [metadata "clause=3.1; 4.10; interpretation obligation; page=16; 33-48"] .
+  eq [p3109-real-014] : realZero = 0 [metadata "clause=3.1; 4.10; interpretation obligation; page=16; 33-48"] .
+  eq [p3109-real-015] : realOne = 1 [metadata "clause=3.1; 4.10; interpretation obligation; page=16; 33-48"] .
+endfth
+--- Additional semantic obligations (not first-order executable axioms):
+--- ordered-field totality and completeness; the intended embedding of RAT;
+--- standard elementary functions and pi; soundness of expression interpretation;
+--- any projection certificate must contain the real and stay inside one complete
+--- round/saturate/encode decision region for the fixed random operand.
+--- No implementation view into RAT or intervals is supplied.

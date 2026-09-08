@@ -1,0 +1,18 @@
+[
+  {
+    "id": "D1-positive-subnormal-count",
+    "expression": "MaxSubnormalOf(Binary(8, 4, Signed, Extended)) == 7"
+  },
+  {
+    "id": "D1-worst-step",
+    "expression": "observationKappa(observation(\"D1\", cnil, Binary(8, 4, Signed, Extended), 4, 0)) == steps(4)"
+  },
+  {
+    "id": "D2-trivial-bound",
+    "expression": "(2 ^ 32 - 2 ^ 24 - 1) == 4278190079"
+  },
+  {
+    "id": "D2-input-subset-size",
+    "expression": "145 ^ 4 == 442050625"
+  }
+]

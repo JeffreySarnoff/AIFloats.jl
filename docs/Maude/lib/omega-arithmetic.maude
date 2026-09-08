@@ -1,0 +1,50 @@
+--- Source: P3109/D1 4.9-4.10.8, printed page 32-40.
+fmod P3109-OMEGA-ARITHMETIC is
+  including P3109-RATIONAL-MATH .
+  ops omegaConvert omegaAbs omegaNegate omegaRecip : XReal ~> XReal .
+  ops omegaCopySign omegaAdd omegaSubtract omegaMultiply omegaDivide : XReal XReal ~> XReal .
+  ops omegaFMA omegaFAA : XReal XReal XReal ~> XReal .
+  vars X Y Z : XReal .
+  vars A B : Number .
+  vars U V : Real .
+  vars R S : Rat .
+  vars I J : Infinity .
+  eq [p3109-omega-arithmetic-001] : omegaConvert(X) = X [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-002] : omegaAbs(nan) = nan [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-003] : omegaAbs(I) = posInf [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-004] : omegaAbs(R) = abs(R) [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-005] : omegaNegate(nan) = nan [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-006] : omegaNegate(posInf) = negInf [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-007] : omegaNegate(negInf) = posInf [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-008] : omegaNegate(R) = - R [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-009] : omegaCopySign(nan, X) = nan [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-010] : omegaCopySign(A, nan) = nan [metadata "clause=4.9-4.10.8; page=32-40"] .
+  ceq [p3109-omega-arithmetic-011] : omegaCopySign(A, B) = omegaNegate(omegaAbs(A)) if xMinus(B) [metadata "clause=4.9-4.10.8; page=32-40"] .
+  ceq [p3109-omega-arithmetic-012] : omegaCopySign(A, B) = omegaAbs(A) if xMinus(B) == false [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-013] : omegaAdd(nan, X) = nan [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-014] : omegaAdd(A, nan) = nan [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-015] : omegaAdd(posInf, negInf) = nan [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-016] : omegaAdd(negInf, posInf) = nan [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-017] : omegaAdd(I, I) = I [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-018] : omegaAdd(I, U) = I [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-019] : omegaAdd(U, I) = I [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-020] : omegaAdd(R, S) = R + S [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-021] : omegaSubtract(X, Y) = omegaAdd(X, omegaNegate(Y)) [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-022] : omegaMultiply(nan, X) = nan [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-023] : omegaMultiply(A, nan) = nan [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-024] : omegaMultiply(I, J) = if xMinus(I) == xMinus(J) then posInf else negInf fi [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-025] : omegaMultiply(I, 0) = nan [metadata "clause=4.9-4.10.8; page=32-40"] .
+  ceq [p3109-omega-arithmetic-026] : omegaMultiply(I, R) = if xMinus(I) == (R < 0) then posInf else negInf fi if R =/= 0 [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-027] : omegaMultiply(U, I) = omegaMultiply(I, U) [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-028] : omegaMultiply(R, S) = R * S [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-029] : omegaDivide(nan, X) = nan [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-030] : omegaDivide(A, nan) = nan [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-031] : omegaDivide(I, J) = nan [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-032] : omegaDivide(A, 0) = nan [metadata "clause=4.9-4.10.8; page=32-40"] .
+  ceq [p3109-omega-arithmetic-033] : omegaDivide(I, R) = if xMinus(I) == (R < 0) then posInf else negInf fi if R =/= 0 [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-034] : omegaDivide(U, I) = 0 [metadata "clause=4.9-4.10.8; page=32-40"] .
+  ceq [p3109-omega-arithmetic-035] : omegaDivide(R, S) = R / S if S =/= 0 [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-036] : omegaRecip(X) = omegaDivide(1, X) [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-037] : omegaFMA(X, Y, Z) = omegaAdd(omegaMultiply(X, Y), Z) [metadata "clause=4.9-4.10.8; page=32-40"] .
+  eq [p3109-omega-arithmetic-038] : omegaFAA(X, Y, Z) = omegaAdd(omegaAdd(X, Y), Z) [metadata "clause=4.9-4.10.8; page=32-40"] .
+endfm

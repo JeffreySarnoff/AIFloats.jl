@@ -1,0 +1,68 @@
+--- Source: P3109/D1 3.1-3.2; 4.14, printed page 16-17; 58.
+fmod P3109-FORMAT-CORE is
+  protecting INT .
+  protecting CONVERSION .
+  sorts Format Signedness Domain .
+  ops Signed Unsigned : -> Signedness [ctor] .
+  ops Finite Extended : -> Domain [ctor] .
+  op Binary : Int Int Signedness Domain -> Format [ctor] .
+  ops binary64 binary32 binary16 BFloat16 : -> Format [ctor] .
+  op validFormat : Format -> Bool .
+  op internalFormat : Format -> Bool .
+  ops BitwidthOf PrecisionOf ExponentBitwidthOf TrailingSignificandBitwidthOf ExponentBiasOf : Format ~> Nat .
+  op SignednessOf : Format ~> Signedness .
+  op DomainOf : Format ~> Domain .
+  op formatName : Format ~> String .
+  op signName : Signedness -> String .
+  op domainName : Domain -> String .
+  vars K P : Int .
+  var S : Signedness .
+  var D : Domain .
+  var F : Format .
+  eq [p3109-format-core-001] : validFormat(Binary(K, P, S, D)) = (K > 2 and P > 0 and (if S == Signed then P < K else P <= K fi)) [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-002] : internalFormat(Binary(K, P, S, D)) = true [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  ceq [p3109-format-core-003] : BitwidthOf(Binary(K, P, S, D)) = K if validFormat(Binary(K, P, S, D)) [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  ceq [p3109-format-core-004] : PrecisionOf(Binary(K, P, S, D)) = P if validFormat(Binary(K, P, S, D)) [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  ceq [p3109-format-core-005] : SignednessOf(Binary(K, P, S, D)) = S if validFormat(Binary(K, P, S, D)) [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  ceq [p3109-format-core-006] : DomainOf(Binary(K, P, S, D)) = D if validFormat(Binary(K, P, S, D)) [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  ceq [p3109-format-core-007] : ExponentBiasOf(Binary(K, P, S, D)) = 2 ^ (if S == Signed then K - P - 1 else K - P fi) if validFormat(Binary(K, P, S, D)) [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  ceq [p3109-format-core-008] : ExponentBitwidthOf(F) = (BitwidthOf(F) - PrecisionOf(F)) + (if SignednessOf(F) == Signed then 0 else 1 fi) if validFormat(F) [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  ceq [p3109-format-core-009] : TrailingSignificandBitwidthOf(F) = PrecisionOf(F) - 1 if validFormat(F) [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  ceq [p3109-format-core-010] : formatName(Binary(K, P, S, D)) = "Binary" + string(K, 10) + "p" + string(P, 10) + signName(S) + domainName(D) if validFormat(Binary(K, P, S, D)) [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-011] : signName(Signed) = "s" [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-012] : signName(Unsigned) = "u" [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-013] : domainName(Finite) = "f" [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-014] : domainName(Extended) = "e" [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-015] : validFormat(binary64) = true [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-016] : internalFormat(binary64) = false [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-017] : BitwidthOf(binary64) = 64 [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-018] : PrecisionOf(binary64) = 53 [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-019] : ExponentBiasOf(binary64) = 1023 [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-020] : SignednessOf(binary64) = Signed [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-021] : DomainOf(binary64) = Extended [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-022] : formatName(binary64) = "binary64" [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-023] : validFormat(binary32) = true [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-024] : internalFormat(binary32) = false [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-025] : BitwidthOf(binary32) = 32 [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-026] : PrecisionOf(binary32) = 24 [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-027] : ExponentBiasOf(binary32) = 127 [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-028] : SignednessOf(binary32) = Signed [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-029] : DomainOf(binary32) = Extended [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-030] : formatName(binary32) = "binary32" [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-031] : validFormat(binary16) = true [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-032] : internalFormat(binary16) = false [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-033] : BitwidthOf(binary16) = 16 [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-034] : PrecisionOf(binary16) = 11 [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-035] : ExponentBiasOf(binary16) = 15 [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-036] : SignednessOf(binary16) = Signed [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-037] : DomainOf(binary16) = Extended [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-038] : formatName(binary16) = "binary16" [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-039] : validFormat(BFloat16) = true [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-040] : internalFormat(BFloat16) = false [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-041] : BitwidthOf(BFloat16) = 16 [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-042] : PrecisionOf(BFloat16) = 8 [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-043] : ExponentBiasOf(BFloat16) = 127 [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-044] : SignednessOf(BFloat16) = Signed [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-045] : DomainOf(BFloat16) = Extended [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+  eq [p3109-format-core-046] : formatName(BFloat16) = "BFloat16" [metadata "clause=3.1-3.2; 4.14; page=16-17; 58"] .
+endfm

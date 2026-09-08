@@ -1,0 +1,51 @@
+--- Constructor abstraction of D1 4.7.5, p.29. Refinement is an explicit obligation.
+set include BOOL off .
+fmod P3109-PROOF-SATURATION is
+  sorts Sat Round Sign Domain Location Outcome .
+  ops none finite propagate : -> Sat [ctor] .
+  ops up down zero other : -> Round [ctor] .
+  ops signed unsigned : -> Sign [ctor] .
+  ops extended finiteDomain : -> Domain [ctor] .
+  ops qnan inside below above plusInfinity minusInfinity : -> Location [ctor] .
+  ops outNaN unchanged low high outPlusInfinity outMinusInfinity : -> Outcome [ctor] .
+  op decision : Sat Round Location Sign Domain -> Outcome .
+  op highNone : Round Sign Domain -> Outcome .
+  op lowNone : Round Sign Domain -> Outcome .
+  op highOverflow : Domain -> Outcome .
+  op lowOverflow : Sign Domain -> Outcome .
+  var S : Sat .
+  var R : Round .
+  var SG : Sign .
+  var D : Domain .
+  eq [p3109-slice-nan] : decision(S, R, qnan, SG, D) = outNaN .
+  eq [p3109-slice-inrange] : decision(S, R, inside, SG, D) = unchanged .
+  eq [p3109-slice-finite-posinf] : decision(finite, R, plusInfinity, SG, D) = high .
+  eq [p3109-slice-finite-neginf] : decision(finite, R, minusInfinity, SG, D) = low .
+  eq [p3109-slice-finite-high] : decision(finite, R, above, SG, D) = high .
+  eq [p3109-slice-finite-low] : decision(finite, R, below, SG, D) = low .
+  eq [p3109-slice-propagate-posinf-ext] : decision(propagate, R, plusInfinity, SG, extended) = outPlusInfinity .
+  eq [p3109-slice-propagate-posinf-fin] : decision(propagate, R, plusInfinity, SG, finiteDomain) = high .
+  eq [p3109-slice-propagate-neginf-signed-ext] : decision(propagate, R, minusInfinity, signed, extended) = outMinusInfinity .
+  eq [p3109-slice-propagate-neginf-unsigned-ext] : decision(propagate, R, minusInfinity, unsigned, extended) = low .
+  eq [p3109-slice-propagate-neginf-fin] : decision(propagate, R, minusInfinity, SG, finiteDomain) = low .
+  eq [p3109-slice-propagate-low] : decision(propagate, R, below, SG, D) = low .
+  eq [p3109-slice-propagate-high] : decision(propagate, R, above, SG, D) = high .
+  eq [p3109-slice-none-posinf] : decision(none, R, plusInfinity, SG, D) = highOverflow(D) .
+  eq [p3109-slice-none-neginf] : decision(none, R, minusInfinity, SG, D) = lowOverflow(SG, D) .
+  eq [p3109-slice-none-high] : decision(none, R, above, SG, D) = highNone(R, SG, D) .
+  eq [p3109-slice-none-low] : decision(none, R, below, SG, D) = lowNone(R, SG, D) .
+  eq [p3109-slice-high-zero] : highNone(zero, SG, D) = high .
+  eq [p3109-slice-high-down] : highNone(down, SG, D) = high .
+  eq [p3109-slice-high-up] : highNone(up, SG, D) = highOverflow(D) .
+  eq [p3109-slice-high-other] : highNone(other, SG, D) = highOverflow(D) .
+  eq [p3109-slice-low-zero] : lowNone(zero, SG, D) = low .
+  eq [p3109-slice-low-up] : lowNone(up, SG, D) = low .
+  eq [p3109-slice-low-down] : lowNone(down, SG, D) = lowOverflow(SG, D) .
+  eq [p3109-slice-low-other] : lowNone(other, SG, D) = lowOverflow(SG, D) .
+  eq [p3109-slice-high-ext] : highOverflow(extended) = outPlusInfinity .
+  eq [p3109-slice-high-fin] : highOverflow(finiteDomain) = outNaN .
+  eq [p3109-slice-low-signed-ext] : lowOverflow(signed, extended) = outMinusInfinity .
+  eq [p3109-slice-low-unsigned-ext] : lowOverflow(unsigned, extended) = outNaN .
+  eq [p3109-slice-low-fin] : lowOverflow(SG, finiteDomain) = outNaN .
+endfm
+set include BOOL on .

@@ -1,0 +1,48 @@
+--- Source: P3109/D1 5.2-5.4, printed page 61-63.
+fmod P3109-BLOCK-CORE is
+  including P3109-PROJECT .
+  including P3109-OMEGA-ARITHMETIC .
+  including P3109-SEQUENCE{XRealElt} * (sort Seq{XRealElt} to XSeq, op nil to xnil, op cons to xcons) .
+  including P3109-SEQUENCE{CodeElt} * (sort Seq{CodeElt} to CodeSeq, op nil to cnil, op cons to ccons) .
+  sort Block .
+  op scaledResult : Block ~> Nat .
+  op block : Int CodeSeq -> Block [ctor] .
+  op validCodes : Format CodeSeq -> Bool .
+  op validBlock : Nat Format Format Int CodeSeq -> Bool .
+  op decodeElements : Format CodeSeq ~> XSeq .
+  op multiplyElements : XReal XSeq ~> XSeq .
+  op blockDecode : Nat Format Format Int CodeSeq ~> XSeq .
+  op normalizeElement : XReal XReal ~> XReal .
+  op blockProject : Nat Format Format BlockProjSpec Int XSeq ~> CodeSeq .
+  op projectElements : Format BlockProjSpec XReal XSeq Nat ~> CodeSeq .
+  op projectUnscaled : Format BlockProjSpec XSeq Nat ~> CodeSeq .
+  vars B J : Nat .
+  vars FS FX FR : Format .
+  vars S C : Int .
+  var CS : CodeSeq .
+  var XS : XSeq .
+  vars X Y : XReal .
+  vars A V : Number .
+  var I : Infinity .
+  var R : Rat .
+  var BP : BlockProjSpec .
+  eq [p3109-scaled-result] : scaledResult(block(S, ccons(C, cnil))) = C [metadata "clause=5.8; page=70"] .
+  eq [p3109-block-core-001] : validCodes(FX, cnil) = validFormat(FX) [metadata "clause=5.2-5.4; page=61-63"] .
+  eq [p3109-block-core-002] : validCodes(FX, ccons(C, CS)) = validCode(FX, C) and validCodes(FX, CS) [metadata "clause=5.2-5.4; page=61-63"] .
+  eq [p3109-block-core-003] : validBlock(B, FS, FX, S, CS) = (B >= 1 and length(CS) == B and validCode(FS, S) and validCodes(FX, CS)) [metadata "clause=5.2-5.4; page=61-63"] .
+  ceq [p3109-block-core-004] : decodeElements(FX, cnil) = xnil if validFormat(FX) [metadata "clause=5.2-5.4; page=61-63"] .
+  ceq [p3109-block-core-005] : decodeElements(FX, ccons(C, CS)) = xcons(decode(FX, C), decodeElements(FX, CS)) if validCodes(FX, ccons(C, CS)) [metadata "clause=5.2-5.4; page=61-63"] .
+  eq [p3109-block-core-006] : multiplyElements(X, xnil) = xnil [metadata "clause=5.2-5.4; page=61-63"] .
+  eq [p3109-block-core-007] : multiplyElements(X, xcons(Y, XS)) = xcons(omegaMultiply(X, Y), multiplyElements(X, XS)) [metadata "clause=5.2-5.4; page=61-63"] .
+  ceq [p3109-block-core-008] : blockDecode(B, FS, FX, S, CS) = multiplyElements(decode(FS, S), decodeElements(FX, CS)) if validBlock(B, FS, FX, S, CS) [metadata "clause=5.2-5.4; page=61-63"] .
+  eq [p3109-block-core-009] : normalizeElement(nan, X) = nan [metadata "clause=5.2-5.4; page=61-63"] .
+  eq [p3109-block-core-010] : normalizeElement(A, nan) = nan [metadata "clause=5.2-5.4; page=61-63"] .
+  eq [p3109-block-core-011] : normalizeElement(0, V) = 0 [metadata "clause=5.2-5.4; page=61-63"] .
+  eq [p3109-block-core-012] : normalizeElement(I, V) = xSign(I) * xSign(V) [metadata "clause=5.2-5.4; page=61-63"] .
+  ceq [p3109-block-core-013] : normalizeElement(R, V) = omegaDivide(V, R) if R =/= 0 [metadata "clause=5.2-5.4; page=61-63"] .
+  ceq [p3109-block-core-014] : blockProject(B, FS, FR, BP, S, XS) = projectElements(FR, BP, decode(FS, S), XS, 0) if B >= 1 /\ length(XS) == B /\ validCode(FS, S) /\ validFormat(FR) /\ validBlockProjection(BP, B) [metadata "clause=5.2-5.4; page=61-63"] .
+  eq [p3109-block-core-015] : projectElements(FR, BP, X, xnil, J) = cnil [metadata "clause=5.2-5.4; page=61-63"] .
+  eq [p3109-block-core-016] : projectElements(FR, BP, X, xcons(Y, XS), J) = ccons(project(FR, projectionAt(BP, J), normalizeElement(X, Y)), projectElements(FR, BP, X, XS, J + 1)) [metadata "clause=5.2-5.4; page=61-63"] .
+  eq [p3109-block-core-017] : projectUnscaled(FR, BP, xnil, J) = cnil [metadata "clause=5.2-5.4; page=61-63"] .
+  eq [p3109-block-core-018] : projectUnscaled(FR, BP, xcons(Y, XS), J) = ccons(project(FR, projectionAt(BP, J), Y), projectUnscaled(FR, BP, XS, J + 1)) [metadata "clause=5.2-5.4; page=61-63"] .
+endfm

@@ -1,0 +1,9 @@
+set include BOOL off .
+fmod P3109-PROOF-SMOKE is
+  sort Bit .
+  ops off on : -> Bit [ctor] .
+  op flip : Bit -> Bit .
+  eq [p3109-proof-flip-off] : flip(off) = on .
+  eq [p3109-proof-flip-on] : flip(on) = off .
+endfm
+set include BOOL on .

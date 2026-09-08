@@ -1,0 +1,5 @@
+--- Symbolic block facade; projection is shared with the core.
+fmod P3109-SYMBOLIC-BLOCK is
+  including P3109-BLOCK-WRAPPERS .
+  including P3109-SYMBOLIC-BLOCK-WRAPPERS .
+endfm

@@ -1,0 +1,8 @@
+load ../load-core.maude
+--- Convert Binary8p4se 2.0 (code 72) to Binary4p2sf (code 6).
+red in P3109-CORE : Convert(Binary(8, 4, Signed, Extended), Binary(4, 2, Signed, Finite), proj(NearestTiesToEven, SatNone), 72) .
+--- Exact fused arithmetic, before a single projection.
+red in P3109-CORE : omegaFMA(3/2, 3/2, -1/4) .
+--- Infinite result scale normalizes nonzero elements to signed units.
+red in P3109-CORE : blockProject(2, Binary(4, 2, Signed, Extended), Binary(4, 2, Signed, Finite), bproj(NearestTiesToEven, SatNone), 7, xcons(posInf, xcons(-2, xnil))) .
+quit

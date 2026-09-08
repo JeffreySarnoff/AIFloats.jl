@@ -1,0 +1,11 @@
+--- Source: P3109/D1 4.8; parameterized interface, printed page 31.
+fmod P3109-EXTERNAL-BRIDGE{B :: P3109-EXTERNAL-FORMAT} is
+  including P3109-CODEC .
+  var C : Int .
+  var X : XReal .
+  var N : String .
+  ceq [p3109-external-bridge-001] : externalDecode(backendFormat, C) = backendDecode(C) if backendValidCode(C) [metadata "clause=4.8; parameterized interface; page=31"] .
+  ceq [p3109-external-bridge-002] : externalEncode(backendFormat, X) = backendEncode(X) if backendDatum(X) [metadata "clause=4.8; parameterized interface; page=31"] .
+  eq [p3109-external-bridge-003] : externalDatum(backendFormat, X) = backendDatum(X) [metadata "clause=4.8; parameterized interface; page=31"] .
+  eq [p3109-external-bridge-004] : externalBound(backendFormat, N) = backendBound(N) [metadata "clause=4.8; parameterized interface; page=31"] .
+endfm

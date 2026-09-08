@@ -1,0 +1,28 @@
+--- Source: P3109/D1 4.8; 4.14, printed page 31; 58.
+fth P3109-EXTERNAL-FORMAT is
+  including P3109-EXTERNAL-SIGNATURE .
+  op backendFormat : -> Format .
+  op backendDecode : Int ~> XReal .
+  op backendEncode : XReal ~> Nat .
+  op backendDatum : XReal -> Bool .
+  op backendValidCode : Int -> Bool .
+  op backendCanonical : Int ~> Nat .
+  op backendQuietNaN : -> Nat .
+  op backendPositiveZero : -> Nat .
+  op backendBound : String ~> Nat .
+  op backendFiniteCount : -> Nat .
+  vars C : Int .
+  var X : XReal .
+  ceq [p3109-external-format-001] : backendDecode(backendEncode(X)) = X if backendDatum(X) [metadata "clause=4.8; 4.14; page=31; 58"] .
+  ceq [p3109-external-format-002] : backendEncode(backendDecode(C)) = backendCanonical(C) if backendValidCode(C) [metadata "clause=4.8; 4.14; page=31; 58"] .
+  ceq [p3109-external-format-003] : backendDatum(backendDecode(C)) = true if backendValidCode(C) [metadata "clause=4.8; 4.14; page=31; 58"] .
+  ceq [p3109-external-format-004] : backendValidCode(backendEncode(X)) = true if backendDatum(X) [metadata "clause=4.8; 4.14; page=31; 58"] .
+  eq [p3109-external-format-005] : backendEncode(nan) = backendQuietNaN [metadata "clause=4.8; 4.14; page=31; 58"] .
+  eq [p3109-external-format-006] : backendDecode(backendQuietNaN) = nan [metadata "clause=4.8; 4.14; page=31; 58"] .
+  eq [p3109-external-format-007] : backendEncode(0) = backendPositiveZero [metadata "clause=4.8; 4.14; page=31; 58"] .
+  eq [p3109-external-format-008] : backendDecode(backendPositiveZero) = 0 [metadata "clause=4.8; 4.14; page=31; 58"] .
+endfth
+--- A backend must additionally identify all NaN encodings and both zeros,
+--- decode both infinities, justify all five bound queries and finite-value
+--- counting (single zero), and prove that backendFormat is an allowed external
+--- format. These obligations cannot be discharged from this draft alone.

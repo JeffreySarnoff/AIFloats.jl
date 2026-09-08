@@ -1,0 +1,9 @@
+--- Source: P3109/D1 4.8; 4.14, printed page 31; 58.
+fmod P3109-EXTERNAL-SIGNATURE is
+  including P3109-XREAL .
+  including P3109-FORMAT-CORE .
+  op externalDecode : Format Int ~> XReal .
+  op externalEncode : Format XReal ~> Nat .
+  op externalDatum : Format XReal ~> Bool .
+  op externalBound : Format String ~> Nat .
+endfm

@@ -1,0 +1,49 @@
+--- Source: P3109/D1 3.1; 4.7.2; 4.7.6; 4.8, printed page 16; 25; 30-31.
+fmod P3109-CODEC is
+  including P3109-RATIONAL-MATH .
+  including P3109-EXTERNAL-SIGNATURE .
+  op validCode : Format Int -> Bool .
+  op nanCode : Format ~> Nat .
+  op positiveLimit : Format ~> Nat .
+  op datum : Format XReal ~> Bool .
+  op decode : Format Int ~> XReal .
+  op decodePositive : Format Nat ~> Rat .
+  op encode : Format XReal ~> Nat .
+  op magnitudeCode : Format Rat ~> Int .
+  op candidateDatum : Format Rat Int -> Bool .
+  vars F : Format .
+  vars K P C E T : Int .
+  vars S : Signedness .
+  vars D : Domain .
+  vars R V : Rat .
+  vars X : XReal .
+  ceq [p3109-code-invalid-format] : validCode(F, C) = false if not validFormat(F) [metadata "clause=3.1; page=16"] .
+  ceq [p3109-codec-001] : validCode(F, C) = C >= 0 and C < 2 ^ BitwidthOf(F) if validFormat(F) [metadata "clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31"] .
+  ceq [p3109-codec-002] : nanCode(F) = if SignednessOf(F) == Signed then 2 ^ (BitwidthOf(F) - 1) else 2 ^ BitwidthOf(F) - 1 fi if validFormat(F) /\ internalFormat(F) [metadata "clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31"] .
+  ceq [p3109-codec-003] : positiveLimit(F) = if SignednessOf(F) == Signed then 2 ^ (BitwidthOf(F) - 1) - 1 else 2 ^ BitwidthOf(F) - 2 fi if validFormat(F) /\ internalFormat(F) [metadata "clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31"] .
+  ceq [p3109-codec-004] : decode(F, C) = externalDecode(F, C) if validCode(F, C) /\ not internalFormat(F) [metadata "clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31"] .
+  ceq [p3109-codec-005] : decode(F, C) = nan if validCode(F, C) /\ internalFormat(F) /\ C == nanCode(F) [metadata "clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31"] .
+  ceq [p3109-codec-006] : decode(F, C) = posInf if validCode(F, C) /\ internalFormat(F) /\ DomainOf(F) == Extended /\ C == positiveLimit(F) [metadata "clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31"] .
+  ceq [p3109-codec-007] : decode(F, C) = negInf if validCode(F, C) /\ internalFormat(F) /\ SignednessOf(F) == Signed /\ DomainOf(F) == Extended /\ C == 2 ^ BitwidthOf(F) - 1 [metadata "clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31"] .
+  ceq [p3109-codec-008] : decode(F, C) = - decodePositive(F, C - 2 ^ (BitwidthOf(F) - 1)) if validCode(F, C) /\ internalFormat(F) /\ SignednessOf(F) == Signed /\ C > nanCode(F) /\ (DomainOf(F) == Finite or C < 2 ^ BitwidthOf(F) - 1) [metadata "clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31"] .
+  ceq [p3109-codec-009] : decode(F, C) = decodePositive(F, C) if validCode(F, C) /\ internalFormat(F) /\ C < nanCode(F) /\ (DomainOf(F) == Finite or C < positiveLimit(F)) [metadata "clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31"] .
+  ceq [p3109-codec-010] : decodePositive(F, C) = (C rem (2 ^ (PrecisionOf(F) - 1))) * pow2(2 - PrecisionOf(F) - ExponentBiasOf(F)) if C >= 0 /\ C < 2 ^ (PrecisionOf(F) - 1) [metadata "clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31"] .
+  ceq [p3109-codec-011] : decodePositive(F, C) = (1 + (C rem (2 ^ (PrecisionOf(F) - 1))) * pow2(1 - PrecisionOf(F))) * pow2((C quo (2 ^ (PrecisionOf(F) - 1))) - ExponentBiasOf(F)) if C >= 2 ^ (PrecisionOf(F) - 1) [metadata "clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31"] .
+  ceq [p3109-codec-012] : datum(F, X) = false if not validFormat(F) [metadata "clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31"] .
+  ceq [p3109-codec-013] : datum(F, X) = externalDatum(F, X) if validFormat(F) /\ not internalFormat(F) [metadata "clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31"] .
+  ceq [p3109-codec-014] : datum(F, nan) = true if validFormat(F) /\ internalFormat(F) [metadata "clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31"] .
+  ceq [p3109-codec-015] : datum(F, posInf) = (DomainOf(F) == Extended) if validFormat(F) /\ internalFormat(F) [metadata "clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31"] .
+  ceq [p3109-codec-016] : datum(F, negInf) = (DomainOf(F) == Extended and SignednessOf(F) == Signed) if validFormat(F) /\ internalFormat(F) [metadata "clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31"] .
+  ceq [p3109-codec-017] : datum(F, R) = false if validFormat(F) /\ internalFormat(F) /\ R < 0 /\ SignednessOf(F) == Unsigned [metadata "clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31"] .
+  ceq [p3109-codec-018] : datum(F, 0) = true if validFormat(F) /\ internalFormat(F) [metadata "clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31"] .
+  ceq [p3109-codec-019] : datum(F, R) = candidateDatum(F, abs(R), magnitudeCode(F, abs(R))) if validFormat(F) /\ internalFormat(F) /\ R =/= 0 /\ (R > 0 or SignednessOf(F) == Signed) [metadata "clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31"] .
+  ceq [p3109-codec-020] : magnitudeCode(F, R) = floor(R * pow2((PrecisionOf(F) - 1) - E)) + (if E == (1 - ExponentBiasOf(F)) and R < pow2(E) then 0 else ((E + ExponentBiasOf(F)) - 1) * (2 ^ (PrecisionOf(F) - 1)) fi) if R > 0 /\ E := max(floorLog2(R), 1 - ExponentBiasOf(F)) [metadata "clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31"] .
+  ceq [p3109-codec-021] : candidateDatum(F, R, C) = false if C < 0 or C > positiveLimit(F) or (DomainOf(F) == Extended and C == positiveLimit(F)) [metadata "clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31"] .
+  ceq [p3109-codec-022] : candidateDatum(F, R, C) = xEq(decode(F, C), R) if C >= 0 /\ C <= positiveLimit(F) /\ (DomainOf(F) == Finite or C < positiveLimit(F)) [metadata "clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31"] .
+  ceq [p3109-codec-023] : encode(F, X) = externalEncode(F, X) if validFormat(F) /\ not internalFormat(F) /\ datum(F, X) [metadata "clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31"] .
+  ceq [p3109-codec-024] : encode(F, nan) = nanCode(F) if validFormat(F) /\ internalFormat(F) [metadata "clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31"] .
+  ceq [p3109-codec-025] : encode(F, posInf) = positiveLimit(F) if validFormat(F) /\ internalFormat(F) /\ datum(F, posInf) [metadata "clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31"] .
+  ceq [p3109-codec-026] : encode(F, negInf) = 2 ^ BitwidthOf(F) - 1 if validFormat(F) /\ internalFormat(F) /\ datum(F, negInf) [metadata "clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31"] .
+  ceq [p3109-codec-027] : encode(F, 0) = 0 if validFormat(F) /\ internalFormat(F) [metadata "clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31"] .
+  ceq [p3109-codec-028] : encode(F, R) = magnitudeCode(F, abs(R)) + (if R < 0 then 2 ^ (BitwidthOf(F) - 1) else 0 fi) if validFormat(F) /\ internalFormat(F) /\ R =/= 0 /\ datum(F, R) [metadata "clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31"] .
+endfm

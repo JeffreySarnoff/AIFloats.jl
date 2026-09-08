@@ -1,0 +1,105 @@
+{
+  "revision_date": "2026-09-08",
+  "plan": {
+    "path": "planmaude.md",
+    "sha256": "553157488b8b4c90a401b589b0a554c0c4b07bd1428c3ce95312525eacf3d2ef"
+  },
+  "arithmetic_source": {
+    "path": "../other/IEEE_D1_2026_09_07.pdf",
+    "sha256": "53c217cf225f82fa173aa1e23f7a4134f740cbdcec423311ea4a92a8ac04d299",
+    "identity": "IEEE P3109/D1, September 2026; printed-page references"
+  },
+  "asspec": {
+    "path": null,
+    "sha256": null,
+    "status": "excluded by user source restriction; not read"
+  },
+  "source_policy": "Only planmaude.md and the permitted IEEE PDF were used as repository reference documents. Pre-existing installation.md and other documents were not read or modified.",
+  "extraction": {
+    "command": "pdftotext -layout SOURCE /tmp/p3109-build/draft.txt",
+    "version": "pdftotext version 26.01.0",
+    "sha256": "99a7461565d02b1b445b719b7d46f1cbaf395c7f51c49f1d5445ab10d9bf8b46",
+    "temporary_output": "not committed"
+  },
+  "core": {
+    "version": "3.5.1",
+    "launcher": {
+      "path": "/usr/local/bin/maude",
+      "resolved_path": "/usr/local/bin/maude",
+      "sha256": "e9dcc2f3b1aaf8dd17b7cbf2b676dc8dac30fbb0fa16518ac78c4c06c0e020e3"
+    },
+    "engine": {
+      "path": "/opt/maude/maude",
+      "resolved_path": "/opt/maude-3.5.1/maude",
+      "sha256": "9dd4044e693944aae97ad72086bc70275fa34bf635f9b377a5b2100bf3ed8655"
+    },
+    "prelude": {
+      "path": "/opt/maude/prelude.maude",
+      "resolved_path": "/opt/maude-3.5.1/prelude.maude",
+      "sha256": "8f03c0be1999dfedff5fbabc1473b20359681d6cfa1dece6f47626e1a827de75"
+    }
+  },
+  "proof": {
+    "version": "3.5.1",
+    "launcher": {
+      "path": "/usr/local/bin/maude++",
+      "resolved_path": "/usr/local/bin/maude++",
+      "sha256": "867f668b3eb446a3a10d5d0a12fcfa088772d683a7fe49f5c81a21b4e577b9fa"
+    },
+    "engine": {
+      "path": "/opt/maude++-3.5.1/maude",
+      "resolved_path": "/opt/maude++-3.5.1/maude",
+      "sha256": "3f8c7332c6f97d6cb4e44d2b185a5cdcafbd3fb8d7dbcb5a51a29b818473976b"
+    },
+    "prelude": {
+      "path": "/opt/maude++-3.5.1/prelude.maude",
+      "resolved_path": "/opt/maude++-3.5.1/prelude.maude",
+      "sha256": "7f164405e98987326b438f974d151c5629a0e90aeae5ded389c700f09f52a666"
+    },
+    "mfe": {
+      "path": "/opt/mfe-3.5.1/src/mfe.maude",
+      "resolved_path": "/opt/mfe-3.5.1/src/mfe.maude",
+      "sha256": "f8275bce286c878b99ad5a79a03cbead40efd34cadaea3336954d6d62b33ba2e"
+    },
+    "full_maude": {
+      "path": "/opt/mfe-3.5.1/src/FM/full-maude351.maude",
+      "resolved_path": "/opt/mfe-3.5.1/src/FM/full-maude351.maude",
+      "sha256": "b2881abc252c2aabd51f18f081061d4c83749b5176d61978b78b71804e100b76"
+    },
+    "crc": {
+      "path": "/opt/mfe-3.5.1/src/CRChC/crchc3u.maude",
+      "resolved_path": "/opt/mfe-3.5.1/src/CRChC/crchc3u.maude",
+      "sha256": "02b42f666f3b356cf3f7d12df9ce485bc63941864ddc9b0876edda28132b971f"
+    },
+    "scc": {
+      "path": "/opt/mfe-3.5.1/src/SCC/scc.maude",
+      "resolved_path": "/opt/mfe-3.5.1/src/SCC/scc.maude",
+      "sha256": "72c7fc2021c71163403958a890c88e9af232a0147370e6e86b01b2d995f97f4e"
+    },
+    "banners": [
+      "Full Maude 3.5.1a Nov 12 2025",
+      "The Maude Formal Environment 3.0",
+      "Church-Rosser Checker 3t - Feb 14 2026",
+      "Coherence Checker 3t - Feb 14 2026",
+      "Sufficient Completeness Checker 2b - Feb 14 2026"
+    ],
+    "ceta_build_identifier": null,
+    "ceta_note": "No independently reported CETA build identifier; SCC success is not a version identifier.",
+    "options": [
+      "-no-banner",
+      "-no-ansi-color"
+    ],
+    "entrypoint": "Maude++ directly with MFE; never standalone scc.maude or maude-scc"
+  },
+  "language_references": [
+    {
+      "url": "https://maude.cs.illinois.edu/documentation",
+      "accessed": "2026-09-08"
+    },
+    {
+      "url": "https://github.com/maude-team/MFE/wiki/Tools-available",
+      "accessed": "2026-09-08"
+    }
+  ],
+  "manual_baseline": "Maude Manual 3.5.1 (as fixed in plan); local distributed prelude used for exact operator signatures"
+}

@@ -1,0 +1,20 @@
+==========================================
+erewrite in MFE : init .
+
+    Full Maude 3.5.1a Nov 12 2025
+
+    The Maude Formal Environment 3.0
+      Church-Rosser Checker 3t - Feb 14 2026
+      Coherence Checker 3t - Feb 14 2026
+      Sufficient Completeness Checker 2b - Feb 14 2026
+
+MFE> The SCC has been set as current tool.
+MFE> Sufficient completeness check for P3109-PROOF-SATURATION
+Completeness counter-examples: none were found
+Freeness counter-examples: none were found
+Analysis: it is complete and it is sound
+Ground weak termination: not proved
+Ground sort-decreasingness: not proved
+MFE> rewrites: 225155 in 80ms cpu (80ms real) (2785503 rewrites/second)
+result Configuration: (none).Configuration
+Bye.

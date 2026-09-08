@@ -1,0 +1,10 @@
+--- Small standalone check; tools/run-tests.py runs the complete order-next suite.
+load ../load-core.maude
+load support.maude
+fmod P3109-TEST-ORDER-NEXT is
+  including P3109-CORE .
+  including P3109-TEST-SUPPORT .
+endfm
+red in P3109-TEST-ORDER-NEXT : check("order-next-standalone", (NextGreaterThan(Binary(4, 2, Signed, Finite), 9) == 0)) .
+red in P3109-TEST-ORDER-NEXT : suiteComplete(1) .
+quit

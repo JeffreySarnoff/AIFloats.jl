@@ -1,0 +1,26 @@
+load lib/xreal.maude
+load lib/rational-math.maude
+load lib/format-core.maude
+load lib/sequences.maude
+load lib/projection-spec.maude
+load lib/external-signature.maude
+load lib/codec.maude
+load lib/format-queries.maude
+load lib/rounding.maude
+load lib/saturation.maude
+load lib/project.maude
+load lib/omega-arithmetic.maude
+load lib/omega-extrema.maude
+load lib/predicates.maude
+load lib/order-next.maude
+load lib/scalar-ops.maude
+load lib/block-core.maude
+load lib/block-ops.maude
+load lib/block-wrappers.maude
+load lib/conformance.maude
+fmod P3109-CORE is
+  including P3109-CONFORMANCE .
+  including P3109-SCALAR .
+  including P3109-ORDER-NEXT .
+  including P3109-BLOCK-WRAPPERS .
+endfm

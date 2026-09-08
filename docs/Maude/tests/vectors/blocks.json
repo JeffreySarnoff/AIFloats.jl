@@ -1,0 +1,210 @@
+[
+  {
+    "id": "normalize-nan-nan",
+    "expression": "normalizeElement(nan, nan) == nan"
+  },
+  {
+    "id": "normalize-nan-0",
+    "expression": "normalizeElement(nan, 0) == nan"
+  },
+  {
+    "id": "normalize-nan-posInf",
+    "expression": "normalizeElement(nan, posInf) == nan"
+  },
+  {
+    "id": "normalize-nan-negInf",
+    "expression": "normalizeElement(nan, negInf) == nan"
+  },
+  {
+    "id": "normalize-nan-2",
+    "expression": "normalizeElement(nan, 2) == nan"
+  },
+  {
+    "id": "normalize-nan--2",
+    "expression": "normalizeElement(nan, -2) == nan"
+  },
+  {
+    "id": "normalize-0-nan",
+    "expression": "normalizeElement(0, nan) == nan"
+  },
+  {
+    "id": "normalize-0-0",
+    "expression": "normalizeElement(0, 0) == 0"
+  },
+  {
+    "id": "normalize-0-posInf",
+    "expression": "normalizeElement(0, posInf) == 0"
+  },
+  {
+    "id": "normalize-0-negInf",
+    "expression": "normalizeElement(0, negInf) == 0"
+  },
+  {
+    "id": "normalize-0-2",
+    "expression": "normalizeElement(0, 2) == 0"
+  },
+  {
+    "id": "normalize-0--2",
+    "expression": "normalizeElement(0, -2) == 0"
+  },
+  {
+    "id": "normalize-posInf-nan",
+    "expression": "normalizeElement(posInf, nan) == nan"
+  },
+  {
+    "id": "normalize-posInf-0",
+    "expression": "normalizeElement(posInf, 0) == 0"
+  },
+  {
+    "id": "normalize-posInf-posInf",
+    "expression": "normalizeElement(posInf, posInf) == 1"
+  },
+  {
+    "id": "normalize-posInf-negInf",
+    "expression": "normalizeElement(posInf, negInf) == -1"
+  },
+  {
+    "id": "normalize-posInf-2",
+    "expression": "normalizeElement(posInf, 2) == 1"
+  },
+  {
+    "id": "normalize-posInf--2",
+    "expression": "normalizeElement(posInf, -2) == -1"
+  },
+  {
+    "id": "normalize-negInf-nan",
+    "expression": "normalizeElement(negInf, nan) == nan"
+  },
+  {
+    "id": "normalize-negInf-0",
+    "expression": "normalizeElement(negInf, 0) == 0"
+  },
+  {
+    "id": "normalize-negInf-posInf",
+    "expression": "normalizeElement(negInf, posInf) == -1"
+  },
+  {
+    "id": "normalize-negInf-negInf",
+    "expression": "normalizeElement(negInf, negInf) == 1"
+  },
+  {
+    "id": "normalize-negInf-2",
+    "expression": "normalizeElement(negInf, 2) == -1"
+  },
+  {
+    "id": "normalize-negInf--2",
+    "expression": "normalizeElement(negInf, -2) == 1"
+  },
+  {
+    "id": "normalize-2-nan",
+    "expression": "normalizeElement(2, nan) == nan"
+  },
+  {
+    "id": "normalize-2-0",
+    "expression": "normalizeElement(2, 0) == 0"
+  },
+  {
+    "id": "normalize-2-posInf",
+    "expression": "normalizeElement(2, posInf) == posInf"
+  },
+  {
+    "id": "normalize-2-negInf",
+    "expression": "normalizeElement(2, negInf) == negInf"
+  },
+  {
+    "id": "normalize-2-2",
+    "expression": "normalizeElement(2, 2) == 1"
+  },
+  {
+    "id": "normalize-2--2",
+    "expression": "normalizeElement(2, -2) == -1"
+  },
+  {
+    "id": "normalize--2-nan",
+    "expression": "normalizeElement(-2, nan) == nan"
+  },
+  {
+    "id": "normalize--2-0",
+    "expression": "normalizeElement(-2, 0) == 0"
+  },
+  {
+    "id": "normalize--2-posInf",
+    "expression": "normalizeElement(-2, posInf) == negInf"
+  },
+  {
+    "id": "normalize--2-negInf",
+    "expression": "normalizeElement(-2, negInf) == posInf"
+  },
+  {
+    "id": "normalize--2-2",
+    "expression": "normalizeElement(-2, 2) == -1"
+  },
+  {
+    "id": "normalize--2--2",
+    "expression": "normalizeElement(-2, -2) == 1"
+  },
+  {
+    "id": "nan-before-zero",
+    "expression": "blockProject(2, Binary(4, 2, Signed, Finite), Binary(4, 2, Signed, Finite), bproj(NearestTiesToEven, SatNone), 0, xcons(nan, xcons(2, xnil))) == ccons(8, ccons(0, cnil))"
+  },
+  {
+    "id": "infinite-scale-note-5.4.2",
+    "expression": "blockProject(3, Binary(4, 2, Signed, Extended), Binary(4, 2, Signed, Finite), bproj(NearestTiesToEven, SatNone), 7, xcons(posInf, xcons(-2, xcons(0, xnil)))) == ccons(4, ccons(12, ccons(0, cnil)))"
+  },
+  {
+    "id": "malformed-block",
+    "expression": "validBlock(2, Binary(4, 2, Signed, Finite), Binary(4, 2, Signed, Finite), 4, ccons(4, cnil)) == false"
+  },
+  {
+    "id": "empty-block",
+    "expression": "validBlock(0, Binary(4, 2, Signed, Finite), Binary(4, 2, Signed, Finite), 4, cnil) == false"
+  },
+  {
+    "id": "invalid-random-length",
+    "expression": "validBlockProjection(bproj(BlockStochasticA(2, rcons(1, rnil)), SatNone), 2) == false"
+  },
+  {
+    "id": "stochastic-index",
+    "expression": "blockProject(2, Binary(4, 2, Signed, Finite), Binary(4, 2, Signed, Finite), bproj(BlockStochasticA(2, rcons(0, rcons(3, rnil))), SatNone), 4, xcons(5/4, xcons(5/4, xnil))) == ccons(4, ccons(5, cnil))"
+  },
+  {
+    "id": "sum",
+    "expression": "BlockReduceAdd(2, Binary(4, 2, Signed, Finite), Binary(4, 2, Signed, Finite), Binary(4, 2, Signed, Finite), proj(NearestTiesToEven, SatNone), 4, ccons(4, ccons(4, cnil))) == 6"
+  },
+  {
+    "id": "product",
+    "expression": "BlockReduceMultiply(2, Binary(4, 2, Signed, Finite), Binary(4, 2, Signed, Finite), Binary(4, 2, Signed, Finite), proj(NearestTiesToEven, SatNone), 4, ccons(5, ccons(6, cnil))) == 7"
+  },
+  {
+    "id": "dot",
+    "expression": "BlockDotProduct(2, Binary(4, 2, Signed, Finite), Binary(4, 2, Signed, Finite), Binary(4, 2, Signed, Finite), Binary(4, 2, Signed, Finite), Binary(4, 2, Signed, Finite), proj(NearestTiesToEven, SatNone), 4, ccons(4, ccons(4, cnil)), 4, ccons(4, ccons(4, cnil))) == 6"
+  },
+  {
+    "id": "all-nan-maxabs",
+    "expression": "ConvertToBlockMaxAbsFinite(2, Binary(4, 2, Signed, Finite), Binary(4, 2, Signed, Finite), Binary(4, 2, Signed, Finite), proj(NearestTiesToEven, SatNone), bproj(NearestTiesToEven, SatNone), ccons(8, ccons(8, cnil))) == block(8, ccons(8, ccons(8, cnil)))"
+  },
+  {
+    "id": "zero-rounded-scale",
+    "expression": "ConvertToBlockMaxAbsFinite(1, Binary(8, 4, Signed, Extended), Binary(4, 2, Signed, Finite), Binary(4, 2, Signed, Finite), proj(NearestTiesToEven, SatNone), bproj(NearestTiesToEven, SatNone), ccons(1, cnil)) == block(0, ccons(0, cnil))"
+  },
+  {
+    "id": "source-note-5.5.3-counterexample",
+    "expression": "ConvertToBlockMaxAbsFinite(1, Binary(8, 4, Signed, Extended), Binary(8, 4, Signed, Extended), Binary(8, 4, Signed, Extended), proj(NearestTiesToEven, SatFinite), bproj(NearestTiesToEven, SatNone), ccons(127, cnil)) == block(126, ccons(127, cnil))"
+  },
+  {
+    "id": "source-counterexample-scale224",
+    "expression": "decode(Binary(8, 4, Signed, Extended), 126) == 224"
+  },
+  {
+    "id": "convert-from",
+    "expression": "ConvertFromBlock(2, Binary(4, 2, Signed, Finite), Binary(4, 2, Signed, Finite), Binary(4, 2, Signed, Finite), bproj(NearestTiesToEven, SatNone), 6, ccons(4, ccons(5, cnil))) == ccons(6, ccons(7, cnil))"
+  },
+  {
+    "id": "convert-to",
+    "expression": "ConvertToBlock(2, Binary(4, 2, Signed, Finite), Binary(4, 2, Signed, Finite), Binary(4, 2, Signed, Finite), bproj(NearestTiesToEven, SatNone), ccons(6, ccons(7, cnil)), 6) == ccons(4, ccons(5, cnil))"
+  },
+  {
+    "id": "fold-order",
+    "expression": "foldMultiply(1, xcons(0, xcons(posInf, xcons(2, xnil)))) == nan"
+  }
+]

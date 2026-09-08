@@ -1,0 +1,298 @@
+[
+  {
+    "id": "omegaSqrt(9/16)",
+    "expression": "omegaSqrt(9/16) == 3/4"
+  },
+  {
+    "id": "omegaSqrt(2)",
+    "expression": "omegaSqrt(2) == exprSqrt(2)"
+  },
+  {
+    "id": "omegaSqrt(-1)",
+    "expression": "omegaSqrt(-1) == nan"
+  },
+  {
+    "id": "omegaRSqrt(0)",
+    "expression": "omegaRSqrt(0) == nan"
+  },
+  {
+    "id": "omegaRSqrt(posInf)",
+    "expression": "omegaRSqrt(posInf) == 0"
+  },
+  {
+    "id": "omegaRSqrt(4)",
+    "expression": "omegaRSqrt(4) == 1/2"
+  },
+  {
+    "id": "omegaHypot(3, 4)",
+    "expression": "omegaHypot(3, 4) == 5"
+  },
+  {
+    "id": "omegaHypot(nan, posInf)",
+    "expression": "omegaHypot(nan, posInf) == nan"
+  },
+  {
+    "id": "omegaExp(negInf)",
+    "expression": "omegaExp(negInf) == 0"
+  },
+  {
+    "id": "omegaExp2(-3)",
+    "expression": "omegaExp2(-3) == 1/8"
+  },
+  {
+    "id": "omegaLog(0)",
+    "expression": "omegaLog(0) == negInf"
+  },
+  {
+    "id": "omegaLog(-1)",
+    "expression": "omegaLog(-1) == nan"
+  },
+  {
+    "id": "omegaLog2(1/8)",
+    "expression": "omegaLog2(1/8) == -3"
+  },
+  {
+    "id": "omegaLogOnePlus(-1)",
+    "expression": "omegaLogOnePlus(-1) == negInf"
+  },
+  {
+    "id": "omegaExpMinusOne(negInf)",
+    "expression": "omegaExpMinusOne(negInf) == -1"
+  },
+  {
+    "id": "omegaSoftplus(negInf)",
+    "expression": "omegaSoftplus(negInf) == 0"
+  },
+  {
+    "id": "omegaSoftplus(posInf)",
+    "expression": "omegaSoftplus(posInf) == posInf"
+  },
+  {
+    "id": "omegaSinPi(1/2)",
+    "expression": "omegaSinPi(1/2) == 1"
+  },
+  {
+    "id": "omegaCosPi(1/2)",
+    "expression": "omegaCosPi(1/2) == 0"
+  },
+  {
+    "id": "omegaTanPi(1/2)",
+    "expression": "omegaTanPi(1/2) == posInf"
+  },
+  {
+    "id": "omegaTanPi(3/2)",
+    "expression": "omegaTanPi(3/2) == negInf"
+  },
+  {
+    "id": "omegaTanPi(-1/2)",
+    "expression": "omegaTanPi(-1/2) == negInf"
+  },
+  {
+    "id": "omegaTanPi(-3/2)",
+    "expression": "omegaTanPi(-3/2) == posInf"
+  },
+  {
+    "id": "omegaTanPi(2)",
+    "expression": "omegaTanPi(2) == 0"
+  },
+  {
+    "id": "omegaArcTanPi(posInf)",
+    "expression": "omegaArcTanPi(posInf) == 1/2"
+  },
+  {
+    "id": "omegaArcSinPi(-1)",
+    "expression": "omegaArcSinPi(-1) == -1/2"
+  },
+  {
+    "id": "omegaArcCosPi(-1)",
+    "expression": "omegaArcCosPi(-1) == 1"
+  },
+  {
+    "id": "omegaArcTanh(1)",
+    "expression": "omegaArcTanh(1) == posInf"
+  },
+  {
+    "id": "omegaArcTanh(-1)",
+    "expression": "omegaArcTanh(-1) == negInf"
+  },
+  {
+    "id": "omegaArcTanh(2)",
+    "expression": "omegaArcTanh(2) == nan"
+  },
+  {
+    "id": "omegaArcCosh(0)",
+    "expression": "omegaArcCosh(0) == nan"
+  },
+  {
+    "id": "omegaTanh(negInf)",
+    "expression": "omegaTanh(negInf) == -1"
+  },
+  {
+    "id": "omegaLog(omegaExp(2))",
+    "expression": "omegaLog(omegaExp(2)) == exprLog(exprExp(2))"
+  },
+  {
+    "id": "omegaAdd(omegaSqrt(2), 1)",
+    "expression": "omegaAdd(omegaSqrt(2), 1) == realAdd(exprSqrt(2), 1)"
+  },
+  {
+    "id": "arctan2-row-1",
+    "expression": "omegaArcTan2Pi(nan, 1) == nan"
+  },
+  {
+    "id": "arctan2-radians-row-1",
+    "expression": "omegaArcTan2(nan, 1) == nan"
+  },
+  {
+    "id": "arctan2-row-2",
+    "expression": "omegaArcTan2Pi(1, nan) == nan"
+  },
+  {
+    "id": "arctan2-radians-row-2",
+    "expression": "omegaArcTan2(1, nan) == nan"
+  },
+  {
+    "id": "arctan2-row-3",
+    "expression": "omegaArcTan2Pi(0, 0) == nan"
+  },
+  {
+    "id": "arctan2-radians-row-3",
+    "expression": "omegaArcTan2(0, 0) == nan"
+  },
+  {
+    "id": "arctan2-row-4",
+    "expression": "omegaArcTan2Pi(negInf, posInf) == nan"
+  },
+  {
+    "id": "arctan2-radians-row-4",
+    "expression": "omegaArcTan2(negInf, posInf) == nan"
+  },
+  {
+    "id": "arctan2-row-5",
+    "expression": "omegaArcTan2Pi(posInf, negInf) == nan"
+  },
+  {
+    "id": "arctan2-radians-row-5",
+    "expression": "omegaArcTan2(posInf, negInf) == nan"
+  },
+  {
+    "id": "arctan2-row-6",
+    "expression": "omegaArcTan2Pi(1, posInf) == 0"
+  },
+  {
+    "id": "arctan2-radians-row-6",
+    "expression": "omegaArcTan2(1, posInf) == 0"
+  },
+  {
+    "id": "arctan2-row-7",
+    "expression": "omegaArcTan2Pi(0, 1) == 0"
+  },
+  {
+    "id": "arctan2-radians-row-7",
+    "expression": "omegaArcTan2(0, 1) == 0"
+  },
+  {
+    "id": "arctan2-row-8",
+    "expression": "omegaArcTan2Pi(posInf, 1) == 1/2"
+  },
+  {
+    "id": "arctan2-radians-row-8",
+    "expression": "omegaArcTan2(posInf, 1) == piMultiple(1/2)"
+  },
+  {
+    "id": "arctan2-row-9",
+    "expression": "omegaArcTan2Pi(1, 0) == 1/2"
+  },
+  {
+    "id": "arctan2-radians-row-9",
+    "expression": "omegaArcTan2(1, 0) == piMultiple(1/2)"
+  },
+  {
+    "id": "arctan2-row-10",
+    "expression": "omegaArcTan2Pi(0, negInf) == 1"
+  },
+  {
+    "id": "arctan2-radians-row-10",
+    "expression": "omegaArcTan2(0, negInf) == piMultiple(1)"
+  },
+  {
+    "id": "arctan2-row-11",
+    "expression": "omegaArcTan2Pi(-1, negInf) == -1"
+  },
+  {
+    "id": "arctan2-radians-row-11",
+    "expression": "omegaArcTan2(-1, negInf) == piMultiple(-1)"
+  },
+  {
+    "id": "arctan2-row-12",
+    "expression": "omegaArcTan2Pi(0, -1) == 1"
+  },
+  {
+    "id": "arctan2-radians-row-12",
+    "expression": "omegaArcTan2(0, -1) == piMultiple(1)"
+  },
+  {
+    "id": "arctan2-row-13",
+    "expression": "omegaArcTan2Pi(negInf, 1) == -1/2"
+  },
+  {
+    "id": "arctan2-radians-row-13",
+    "expression": "omegaArcTan2(negInf, 1) == piMultiple(-1/2)"
+  },
+  {
+    "id": "arctan2-row-14",
+    "expression": "omegaArcTan2Pi(-1, 0) == -1/2"
+  },
+  {
+    "id": "arctan2-radians-row-14",
+    "expression": "omegaArcTan2(-1, 0) == piMultiple(-1/2)"
+  },
+  {
+    "id": "arctan2-row-15",
+    "expression": "omegaArcTan2Pi(1, 1) == 1/4"
+  },
+  {
+    "id": "arctan2-radians-row-15",
+    "expression": "omegaArcTan2(1, 1) == piMultiple(1/4)"
+  },
+  {
+    "id": "arctan2-row-16",
+    "expression": "omegaArcTan2Pi(1, -1) == 3/4"
+  },
+  {
+    "id": "arctan2-radians-row-16",
+    "expression": "omegaArcTan2(1, -1) == piMultiple(3/4)"
+  },
+  {
+    "id": "arctan2-row-17",
+    "expression": "omegaArcTan2Pi(-1, -1) == -3/4"
+  },
+  {
+    "id": "arctan2-radians-row-17",
+    "expression": "omegaArcTan2(-1, -1) == piMultiple(-3/4)"
+  },
+  {
+    "id": "unknown-compare",
+    "expression": "(xEq(exprExp(1), exprExp(2)) :: Bool) == false"
+  },
+  {
+    "id": "invalid-log-expression",
+    "expression": "(exprLog(-1) :: Real) == false"
+  },
+  {
+    "id": "invalid-root-expression",
+    "expression": "(exprSqrt(-1) :: Real) == false"
+  },
+  {
+    "id": "invalid-real-division",
+    "expression": "(realDivide(1, 0) :: Real) == false"
+  },
+  {
+    "id": "unresolved-projection",
+    "expression": "(project(Binary(4, 2, Signed, Finite), proj(NearestTiesToEven, SatNone), exprSqrt(2)) :: Nat) == false"
+  },
+  {
+    "id": "enclosure-equal-endpoints-negative",
+    "expression": "project(Binary(4, 2, Signed, Finite), proj(NearestTiesToEven, SatNone), -100) == 8 and project(Binary(4, 2, Signed, Finite), proj(NearestTiesToEven, SatNone), 100) == 8 and project(Binary(4, 2, Signed, Finite), proj(NearestTiesToEven, SatNone), 0) == 0"
+  }
+]

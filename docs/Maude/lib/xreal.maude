@@ -1,0 +1,51 @@
+--- Source: P3109/D1 3.1; 4.12; 4.13, printed page 16; 53-56.
+fmod P3109-XREAL is
+  protecting RAT .
+  sorts Real Number Infinity XReal .
+  subsorts Rat < Real < Number < XReal .
+  subsort Infinity < Number .
+  ops posInf negInf : -> Infinity [ctor] .
+  op nan : -> XReal [ctor] .
+  ops xNaN xInfinite xFinite xMinus : XReal ~> Bool .
+  ops xLt xLe xEq : XReal XReal ~> Bool .
+  op xSign : XReal ~> Int .
+  vars X Y : XReal .
+  vars A B : Number .
+  vars U V : Real .
+  vars R S : Rat .
+  var I : Infinity .
+  eq [p3109-xreal-001] : xNaN(nan) = true [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-002] : xNaN(A) = false [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-003] : xInfinite(nan) = false [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-004] : xInfinite(I) = true [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-005] : xInfinite(U) = false [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-006] : xFinite(nan) = false [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-007] : xFinite(I) = false [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-008] : xFinite(U) = true [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-009] : xMinus(nan) = false [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-010] : xMinus(posInf) = false [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-011] : xMinus(negInf) = true [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-012] : xMinus(R) = (R < 0) [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-013] : xLt(nan, X) = false [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-014] : xLt(A, nan) = false [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-015] : xLt(negInf, posInf) = true [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-016] : xLt(posInf, negInf) = false [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-017] : xLt(I, I) = false [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-018] : xLt(negInf, U) = true [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-019] : xLt(U, posInf) = true [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-020] : xLt(posInf, U) = false [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-021] : xLt(U, negInf) = false [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-022] : xLt(R, S) = (R < S) [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-023] : xEq(nan, X) = false [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-024] : xEq(A, nan) = false [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-025] : xEq(I, I) = true [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-026] : xEq(posInf, negInf) = false [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-027] : xEq(negInf, posInf) = false [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-028] : xEq(I, U) = false [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-029] : xEq(U, I) = false [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-030] : xEq(R, S) = (R == S) [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-031] : xLe(X, Y) = xLt(X, Y) or xEq(X, Y) [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-032] : xSign(posInf) = 1 [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-033] : xSign(negInf) = -1 [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+  eq [p3109-xreal-034] : xSign(R) = if R == 0 then 0 else if R < 0 then -1 else 1 fi fi [metadata "clause=3.1; 4.12; 4.13; page=16; 53-56"] .
+endfm

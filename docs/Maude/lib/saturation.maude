@@ -1,0 +1,38 @@
+--- Source: P3109/D1 4.7.5, printed page 29.
+fmod P3109-SATURATE is
+  including P3109-XREAL .
+  including P3109-FORMAT-CORE .
+  including P3109-PROJSPEC .
+  op saturate : Rat Rat SatMode RoundMode XReal Signedness Domain ~> XReal .
+  op overflow : Signedness Domain Bool -> XReal .
+  op clipsHigh : RoundMode -> Bool .
+  op clipsLow : RoundMode -> Bool .
+  vars L H R : Rat .
+  var X : XReal .
+  var I : Infinity .
+  var M : RoundMode .
+  var S : SatMode .
+  var SG : Signedness .
+  var D : Domain .
+  eq [p3109-saturation-001] : clipsHigh(M) = (M == TowardZero or M == TowardNegative) [metadata "clause=4.7.5; page=29"] .
+  eq [p3109-saturation-002] : clipsLow(M) = (M == TowardZero or M == TowardPositive) [metadata "clause=4.7.5; page=29"] .
+  eq [p3109-saturation-003] : overflow(SG, Finite, true) = nan [metadata "clause=4.7.5; page=29"] .
+  eq [p3109-saturation-004] : overflow(SG, Finite, false) = nan [metadata "clause=4.7.5; page=29"] .
+  eq [p3109-saturation-005] : overflow(SG, Extended, true) = posInf [metadata "clause=4.7.5; page=29"] .
+  eq [p3109-saturation-006] : overflow(Signed, Extended, false) = negInf [metadata "clause=4.7.5; page=29"] .
+  eq [p3109-saturation-007] : overflow(Unsigned, Extended, false) = nan [metadata "clause=4.7.5; page=29"] .
+  ceq [p3109-saturation-008] : saturate(L, H, S, M, nan, SG, D) = nan if L <= H /\ validRound(M) [metadata "clause=4.7.5; page=29"] .
+  ceq [p3109-saturation-009] : saturate(L, H, S, M, R, SG, D) = R if L <= R /\ R <= H /\ validRound(M) [metadata "clause=4.7.5; page=29"] .
+  ceq [p3109-saturation-010] : saturate(L, H, SatFinite, M, X, SG, D) = L if L <= H /\ validRound(M) /\ xLt(X, L) [metadata "clause=4.7.5; page=29"] .
+  ceq [p3109-saturation-011] : saturate(L, H, SatFinite, M, X, SG, D) = H if L <= H /\ validRound(M) /\ xLt(H, X) [metadata "clause=4.7.5; page=29"] .
+  ceq [p3109-saturation-012] : saturate(L, H, SatPropagate, M, posInf, SG, D) = if D == Extended then posInf else H fi if L <= H /\ validRound(M) [metadata "clause=4.7.5; page=29"] .
+  ceq [p3109-saturation-013] : saturate(L, H, SatPropagate, M, negInf, SG, D) = if SG == Signed and D == Extended then negInf else L fi if L <= H /\ validRound(M) [metadata "clause=4.7.5; page=29"] .
+  ceq [p3109-saturation-014] : saturate(L, H, SatPropagate, M, R, SG, D) = L if L <= H /\ validRound(M) /\ R < L [metadata "clause=4.7.5; page=29"] .
+  ceq [p3109-saturation-015] : saturate(L, H, SatPropagate, M, R, SG, D) = H if L <= H /\ validRound(M) /\ R > H [metadata "clause=4.7.5; page=29"] .
+  ceq [p3109-saturation-016] : saturate(L, H, SatNone, M, R, SG, D) = H if L <= H /\ validRound(M) /\ R > H /\ clipsHigh(M) [metadata "clause=4.7.5; page=29"] .
+  ceq [p3109-saturation-017] : saturate(L, H, SatNone, M, R, SG, D) = L if L <= H /\ validRound(M) /\ R < L /\ clipsLow(M) [metadata "clause=4.7.5; page=29"] .
+  ceq [p3109-saturation-018] : saturate(L, H, SatNone, M, posInf, SG, D) = overflow(SG, D, true) if L <= H /\ validRound(M) [metadata "clause=4.7.5; page=29"] .
+  ceq [p3109-saturation-019] : saturate(L, H, SatNone, M, negInf, SG, D) = overflow(SG, D, false) if L <= H /\ validRound(M) [metadata "clause=4.7.5; page=29"] .
+  ceq [p3109-saturation-020] : saturate(L, H, SatNone, M, R, SG, D) = overflow(SG, D, false) if L <= H /\ validRound(M) /\ R < L /\ not clipsLow(M) [metadata "clause=4.7.5; page=29"] .
+  ceq [p3109-saturation-021] : saturate(L, H, SatNone, M, R, SG, D) = overflow(SG, D, true) if L <= H /\ validRound(M) /\ R > H /\ not clipsHigh(M) [metadata "clause=4.7.5; page=29"] .
+endfm

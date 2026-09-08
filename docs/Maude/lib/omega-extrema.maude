@@ -1,0 +1,57 @@
+--- Source: P3109/D1 4.11, printed page 49-52.
+fmod P3109-OMEGA-EXTREMA is
+  including P3109-OMEGA-ARITHMETIC .
+  ops omegaMinimum omegaMaximum omegaMinimumNumber omegaMaximumNumber omegaMinimumMagnitude omegaMaximumMagnitude omegaMinimumMagnitudeNumber omegaMaximumMagnitudeNumber omegaMinimumFinite omegaMaximumFinite : XReal XReal ~> XReal .
+  op omegaClamp : XReal XReal XReal ~> XReal .
+  vars X Y Z : XReal .
+  vars A B C : Number .
+  vars U V : Real .
+  vars I J : Infinity .
+  eq [p3109-omega-extrema-001] : omegaMinimum(nan, X) = nan [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-002] : omegaMinimum(A, nan) = nan [metadata "clause=4.11; page=49-52"] .
+  ceq [p3109-omega-extrema-003] : omegaMinimum(A, B) = A if xLt(A, B) [metadata "clause=4.11; page=49-52"] .
+  ceq [p3109-omega-extrema-004] : omegaMinimum(A, B) = B if xLe(B, A) [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-005] : omegaMinimumNumber(nan, X) = X [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-006] : omegaMinimumNumber(A, nan) = A [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-007] : omegaMinimumNumber(A, B) = omegaMinimum(A, B) [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-008] : omegaMinimumMagnitude(nan, X) = nan [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-009] : omegaMinimumMagnitude(A, nan) = nan [metadata "clause=4.11; page=49-52"] .
+  ceq [p3109-omega-extrema-010] : omegaMinimumMagnitude(A, B) = A if xLt(omegaAbs(A), omegaAbs(B)) [metadata "clause=4.11; page=49-52"] .
+  ceq [p3109-omega-extrema-011] : omegaMinimumMagnitude(A, B) = B if xLt(omegaAbs(B), omegaAbs(A)) [metadata "clause=4.11; page=49-52"] .
+  ceq [p3109-omega-extrema-012] : omegaMinimumMagnitude(A, B) = omegaMinimum(A, B) if xEq(omegaAbs(A), omegaAbs(B)) [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-013] : omegaMinimumMagnitudeNumber(nan, X) = X [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-014] : omegaMinimumMagnitudeNumber(A, nan) = A [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-015] : omegaMinimumMagnitudeNumber(A, B) = omegaMinimumMagnitude(A, B) [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-016] : omegaMinimumFinite(nan, X) = X [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-017] : omegaMinimumFinite(A, nan) = A [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-018] : omegaMinimumFinite(I, J) = omegaMinimum(I, J) [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-019] : omegaMinimumFinite(I, U) = U [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-020] : omegaMinimumFinite(U, I) = U [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-021] : omegaMinimumFinite(U, V) = omegaMinimum(U, V) [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-022] : omegaMaximum(nan, X) = nan [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-023] : omegaMaximum(A, nan) = nan [metadata "clause=4.11; page=49-52"] .
+  ceq [p3109-omega-extrema-024] : omegaMaximum(A, B) = B if xLt(A, B) [metadata "clause=4.11; page=49-52"] .
+  ceq [p3109-omega-extrema-025] : omegaMaximum(A, B) = A if xLe(B, A) [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-026] : omegaMaximumNumber(nan, X) = X [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-027] : omegaMaximumNumber(A, nan) = A [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-028] : omegaMaximumNumber(A, B) = omegaMaximum(A, B) [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-029] : omegaMaximumMagnitude(nan, X) = nan [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-030] : omegaMaximumMagnitude(A, nan) = nan [metadata "clause=4.11; page=49-52"] .
+  ceq [p3109-omega-extrema-031] : omegaMaximumMagnitude(A, B) = B if xLt(omegaAbs(A), omegaAbs(B)) [metadata "clause=4.11; page=49-52"] .
+  ceq [p3109-omega-extrema-032] : omegaMaximumMagnitude(A, B) = A if xLt(omegaAbs(B), omegaAbs(A)) [metadata "clause=4.11; page=49-52"] .
+  ceq [p3109-omega-extrema-033] : omegaMaximumMagnitude(A, B) = omegaMaximum(A, B) if xEq(omegaAbs(A), omegaAbs(B)) [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-034] : omegaMaximumMagnitudeNumber(nan, X) = X [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-035] : omegaMaximumMagnitudeNumber(A, nan) = A [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-036] : omegaMaximumMagnitudeNumber(A, B) = omegaMaximumMagnitude(A, B) [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-037] : omegaMaximumFinite(nan, X) = X [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-038] : omegaMaximumFinite(A, nan) = A [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-039] : omegaMaximumFinite(I, J) = omegaMaximum(I, J) [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-040] : omegaMaximumFinite(I, U) = U [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-041] : omegaMaximumFinite(U, I) = U [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-042] : omegaMaximumFinite(U, V) = omegaMaximum(U, V) [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-043] : omegaClamp(nan, X, Y) = nan [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-044] : omegaClamp(A, nan, X) = nan [metadata "clause=4.11; page=49-52"] .
+  eq [p3109-omega-extrema-045] : omegaClamp(A, B, nan) = nan [metadata "clause=4.11; page=49-52"] .
+  ceq [p3109-omega-extrema-046] : omegaClamp(A, B, C) = nan if xLt(C, B) [metadata "clause=4.11; page=49-52"] .
+  ceq [p3109-omega-extrema-047] : omegaClamp(A, B, C) = omegaMinimum(omegaMaximum(A, B), C) if xLe(B, C) [metadata "clause=4.11; page=49-52"] .
+endfm

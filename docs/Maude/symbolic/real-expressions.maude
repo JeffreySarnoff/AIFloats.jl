@@ -1,0 +1,56 @@
+--- Source: P3109/D1 3.1; 4.10; mathematical expression representation, printed page 16; 33-48.
+fmod P3109-REAL-EXPRESSIONS is
+  including P3109-OMEGA-EXTREMA .
+  ops realAdd realMultiply : Real Real -> Real [ctor] .
+  ops realNegate realAbs : Real -> Real [ctor] .
+  op realDivide : Real Real ~> Real [ctor] .
+  op piMultiple : Rat -> Real [ctor] .
+  op pi : -> Real .
+  vars U V : Real .
+  vars R S : Rat .
+  var I : Infinity .
+  eq [p3109-real-expressions-001] : pi = piMultiple(1) [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  eq [p3109-real-expressions-002] : piMultiple(0) = 0 [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  eq [p3109-real-expressions-003] : realAdd(R, S) = R + S [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  eq [p3109-real-expressions-004] : realAdd(0, U) = U [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  eq [p3109-real-expressions-005] : realAdd(U, 0) = U [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  eq [p3109-real-expressions-006] : realAdd(piMultiple(R), piMultiple(S)) = piMultiple(R + S) [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  eq [p3109-real-expressions-007] : realMultiply(R, S) = R * S [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  eq [p3109-real-expressions-008] : realMultiply(0, U) = 0 [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  eq [p3109-real-expressions-009] : realMultiply(U, 0) = 0 [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  eq [p3109-real-expressions-010] : realMultiply(1, U) = U [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  eq [p3109-real-expressions-011] : realMultiply(U, 1) = U [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  eq [p3109-real-expressions-012] : realMultiply(R, piMultiple(S)) = piMultiple(R * S) [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  eq [p3109-real-expressions-013] : realMultiply(piMultiple(S), R) = piMultiple(R * S) [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  eq [p3109-real-expressions-014] : realNegate(R) = - R [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  eq [p3109-real-expressions-015] : realNegate(piMultiple(R)) = piMultiple(- R) [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  eq [p3109-real-expressions-016] : realNegate(realNegate(U)) = U [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  eq [p3109-real-expressions-017] : realAbs(R) = abs(R) [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  eq [p3109-real-expressions-018] : realAbs(piMultiple(R)) = piMultiple(abs(R)) [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  ceq [p3109-real-expressions-019] : realDivide(R, S) = R / S if S =/= 0 [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  ceq [p3109-real-expressions-020] : realDivide(piMultiple(R), piMultiple(S)) = R / S if S =/= 0 [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  ceq [p3109-real-expressions-021] : realDivide(piMultiple(R), S) = piMultiple(R / S) if S =/= 0 [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  cmb [p3109-real-divide-domain] : realDivide(U, V) : Real if xEq(V, 0) == false [metadata "clause=4.10.5; page=37"] .
+  eq [p3109-real-expressions-022] : omegaAdd(U, V) = realAdd(U, V) [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  eq [p3109-real-expressions-023] : omegaMultiply(U, V) = realMultiply(U, V) [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  eq [p3109-real-expressions-024] : omegaNegate(U) = realNegate(U) [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  eq [p3109-real-expressions-025] : omegaAbs(U) = realAbs(U) [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  ceq [p3109-real-expressions-026] : omegaDivide(U, V) = nan if xEq(V, 0) [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  ceq [p3109-real-expressions-027] : omegaDivide(U, V) = realDivide(U, V) if xEq(V, 0) == false [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  ceq [p3109-real-expressions-028] : omegaMultiply(I, U) = nan if xEq(U, 0) [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  ceq [p3109-real-expressions-029] : omegaMultiply(I, U) = if xMinus(I) == xMinus(U) then posInf else negInf fi if xEq(U, 0) == false [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  ceq [p3109-real-expressions-030] : omegaDivide(I, U) = if xMinus(I) == xMinus(U) then posInf else negInf fi if xEq(U, 0) == false [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  eq [p3109-real-expressions-031] : xEq(U, U) = true [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  eq [p3109-real-expressions-032] : xEq(piMultiple(R), piMultiple(S)) = (R == S) [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  eq [p3109-real-expressions-033] : xEq(piMultiple(R), 0) = (R == 0) [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  eq [p3109-real-expressions-034] : xEq(0, piMultiple(R)) = (R == 0) [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  eq [p3109-real-expressions-035] : xLt(piMultiple(R), piMultiple(S)) = (R < S) [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  eq [p3109-real-expressions-036] : xLt(piMultiple(R), 0) = (R < 0) [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  eq [p3109-real-expressions-037] : xLt(0, piMultiple(R)) = (R > 0) [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  eq [p3109-real-expressions-038] : xMinus(U) = xLt(U, 0) [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  ceq [p3109-real-expressions-039] : xSign(U) = -1 if xLt(U, 0) [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  ceq [p3109-real-expressions-040] : xSign(U) = 0 if xEq(U, 0) [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  ceq [p3109-real-expressions-041] : xSign(U) = 1 if xLt(0, U) [metadata "clause=3.1; 4.10; mathematical expression representation; page=16; 33-48"] .
+  ceq [p3109-real-zero-divide] : realDivide(0, V) = 0 if xEq(V, 0) == false [metadata "clause=4.10.5; page=37"] .
+  eq [p3109-real-unit-divide] : realDivide(U, 1) = U [metadata "clause=4.10.5; page=37"] .
+endfm

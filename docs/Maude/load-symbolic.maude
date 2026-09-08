@@ -1,0 +1,11 @@
+sload load-core.maude
+load symbolic/real-expressions.maude
+load symbolic/omega-elementary.maude
+load symbolic/scalar-ops.maude
+load symbolic/block-wrappers.maude
+load symbolic/block-ops.maude
+fmod P3109-SYMBOLIC is
+  including P3109-CORE .
+  including P3109-SYMBOLIC-SCALAR .
+  including P3109-SYMBOLIC-BLOCK .
+endfm

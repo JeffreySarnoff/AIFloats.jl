@@ -1,0 +1,10 @@
+--- Small standalone check; tools/run-tests.py runs the complete scalar suite.
+load ../load-core.maude
+load support.maude
+fmod P3109-TEST-SCALAR is
+  including P3109-CORE .
+  including P3109-TEST-SUPPORT .
+endfm
+red in P3109-TEST-SCALAR : check("scalar-standalone", (omegaFMA(negInf, negInf, negInf) == nan)) .
+red in P3109-TEST-SCALAR : suiteComplete(1) .
+quit
