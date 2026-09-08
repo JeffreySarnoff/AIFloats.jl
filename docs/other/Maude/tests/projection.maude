@@ -1,0 +1,10 @@
+--- Small standalone check; tools/run-tests.py runs the complete projection suite.
+load ../load-core.maude
+load support.maude
+fmod P3109-TEST-PROJECTION is
+  including P3109-CORE .
+  including P3109-TEST-SUPPORT .
+endfm
+red in P3109-TEST-PROJECTION : check("projection-standalone", (project(Binary(4, 2, Signed, Finite), proj(NearestTiesToEven, SatNone), 5/4) == 4)) .
+red in P3109-TEST-PROJECTION : suiteComplete(1) .
+quit

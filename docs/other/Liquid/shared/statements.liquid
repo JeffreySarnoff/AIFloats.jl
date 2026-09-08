@@ -1,0 +1,38 @@
+{%- comment -%}
+Inline rows: kind~label~body~metadata[~attributes].
+Formatted rows: kind~label~lhs~rhs~guard~metadata. - means no guard/default metadata.
+Full p3109- labels bypass prefix. An empty default omits metadata.
+! starts an unindented literal block; other literal rows receive two spaces.
+{%- endcomment -%}
+{%- assign rows = rows | split: '|' -%}
+{%- for record in rows -%}
+  {%- assign row = record | strip -%}
+  {%- assign fields = row | split: '~' -%}
+  {%- if fields[0] == 'eq' or fields[0] == 'ceq' or fields[0] == 'mb' or fields[0] == 'cmb' -%}
+    {%- assign label = fields[1] -%}
+    {%- assign start = label | slice: 0, 6 -%}
+    {%- unless start == 'p3109-' -%}{%- assign label = prefix | append: label -%}{%- endunless -%}
+    {%- if multiline -%}{%- assign citation = fields[5] -%}
+    {%- else -%}{%- assign citation = fields[3] -%}{%- endif -%}
+    {%- if citation == '-' -%}{%- assign citation = metadata -%}{%- endif -%}
+    {%- capture annotation -%}
+      {%- unless citation == '' %} [metadata "{{ citation }}"{% unless multiline %}{% if fields.size > 4 %} {{ fields[4] }}{% endif %}{% endunless %}]{% endunless -%}
+    {%- endcapture -%}
+    {%- if multiline == true -%}
+{{ '  ' }}{{ fields[0] }} [{{ label }}] :
+    {% render 'shared/wrap-term', text: fields[2] %}
+    {% assign rhs = '= ' | append: fields[3] %}{% render 'shared/wrap-term', text: rhs %}
+{% unless fields[4] == '-' %}    {% assign guard = 'if ' | append: fields[4] %}{% render 'shared/wrap-term', text: guard %}
+{% endunless %}    {{ annotation | remove_first: ' ' }} .
+{% else -%}
+{{ '  ' }}{{ fields[0] }} [{{ label }}] : {{ fields[2] }}{{ annotation }} .
+{% endif -%}
+  {%- else -%}
+    {%- assign start = row | slice: 0, 1 -%}
+    {%- if start == '!' -%}
+{{ row | remove_first: '!' }}
+{% else -%}
+{{ '  ' }}{{ row }}
+{% endif -%}
+  {%- endif -%}
+{%- endfor -%}

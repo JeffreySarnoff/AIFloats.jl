@@ -1,0 +1,6 @@
+(select tool CRC .)
+(ccr P3109-PROOF-SATURATION .)
+--- SCC is submitted in a separate fresh process only after CRC screening.
+(select tool SCC .)
+(scc P3109-PROOF-SATURATION .)
+quit

@@ -1,0 +1,35 @@
+{%- comment -%}Rows: kind~label~body~metadata; - uses the default; ! starts literal text.{%- endcomment -%}
+{%- capture rows -%}
+!--- Source: P3109/D1 4.12-4.13.1, printed page 53-57.
+fmod P3109-PREDICATES is
+  including P3109-FORMAT-QUERIES .
+  including P3109-OMEGA-ARITHMETIC .
+  sorts ClassEnum .
+  ops ClsNaN ClsNegativeInfinity ClsNegativeNormal ClsNegativeSubnormal ClsZero ClsPositiveSubnormal ClsPositiveNormal ClsPositiveInfinity : -> ClassEnum [ctor] .
+  ops CompareLess CompareLessEqual CompareEqual CompareGreaterEqual CompareGreater : Format Format Int Int ~> Bool .
+  ops IsZero IsOne IsNaN IsInfinite IsFinite IsSignMinus IsNormal IsSubnormal : Format Int ~> Bool .
+  op Class : Format Int ~> ClassEnum .
+  vars F G : Format .
+  vars C D : Int .|
+ceq~001~CompareLess(F, G, C, D) = xLt(decode(F, C), decode(G, D)) if validCode(F, C) /\ validCode(G, D)~-|
+ceq~002~CompareLessEqual(F, G, C, D) = xLe(decode(F, C), decode(G, D)) if validCode(F, C) /\ validCode(G, D)~-|
+ceq~003~CompareEqual(F, G, C, D) = xEq(decode(F, C), decode(G, D)) if validCode(F, C) /\ validCode(G, D)~-|
+ceq~004~CompareGreaterEqual(F, G, C, D) = xLe(decode(G, D), decode(F, C)) if validCode(F, C) /\ validCode(G, D)~-|
+ceq~005~CompareGreater(F, G, C, D) = xLt(decode(G, D), decode(F, C)) if validCode(F, C) /\ validCode(G, D)~-|
+ceq~006~IsZero(F, C) = xEq(decode(F, C), fin(0)) if validCode(F, C)~-|
+ceq~007~IsOne(F, C) = xEq(decode(F, C), fin(1)) if validCode(F, C)~-|
+ceq~008~IsNaN(F, C) = xNaN(decode(F, C)) if validCode(F, C)~-|
+ceq~009~IsInfinite(F, C) = xInfinite(decode(F, C)) if validCode(F, C)~-|
+ceq~010~IsFinite(F, C) = xFinite(decode(F, C)) if validCode(F, C)~-|
+ceq~011~IsSignMinus(F, C) = xMinus(decode(F, C)) if validCode(F, C)~-|
+ceq~012~IsNormal(F, C) = false if validCode(F, C) /\ (IsZero(F, C) or IsInfinite(F, C) or IsNaN(F, C))~-|
+ceq~013~IsNormal(F, C) = xLe(decode(F, MinNormalOf(F)), omegaAbs(decode(F, C))) if validCode(F, C) /\ IsFinite(F, C) /\ not IsZero(F, C)~-|
+ceq~014~IsSubnormal(F, C) = (IsFinite(F, C) and not IsZero(F, C) and not IsNormal(F, C)) if validCode(F, C)~-|
+ceq~015~Class(F, C) = ClsNaN if validCode(F, C) /\ IsNaN(F, C)~-|
+ceq~016~Class(F, C) = ClsZero if validCode(F, C) /\ IsZero(F, C)~-|
+ceq~017~Class(F, C) = if IsSignMinus(F, C) then ClsNegativeInfinity else ClsPositiveInfinity fi if validCode(F, C) /\ IsInfinite(F, C)~-|
+ceq~018~Class(F, C) = if IsSignMinus(F, C) then ClsNegativeNormal else ClsPositiveNormal fi if validCode(F, C) /\ IsNormal(F, C)~-|
+ceq~019~Class(F, C) = if IsSignMinus(F, C) then ClsNegativeSubnormal else ClsPositiveSubnormal fi if validCode(F, C) /\ IsSubnormal(F, C)~-|
+!endfm
+{%- endcapture -%}
+{% render 'shared/statements', rows: rows, prefix: 'p3109-predicates-', metadata: 'clause=4.12-4.13.1; page=53-57', multiline: false %}

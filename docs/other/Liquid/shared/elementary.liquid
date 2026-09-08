@@ -1,0 +1,19 @@
+{%- comment -%}Emit statement rows from the shared symbolic operation catalog.{%- endcomment -%}
+{%- capture operations -%}{%- render 'shared/operations', profile: 'symbolic' -%}{%- endcapture -%}
+{%- assign operations = operations | split: '|' -%}
+{%- for operation in operations -%}
+  {%- assign fields = operation | strip | split: '~' -%}
+  {%- assign name = fields[0] -%}
+  {%- if section == 'declarations' -%}
+    {%- if fields[1] == '1' -%}
+op omega{{ name }} : XReal ~> XReal .|
+{% endif -%}
+  {%- elsif fields.size == 4 -%}
+    {%- assign guard = fields[3] -%}
+    {%- assign nan_label = fields[2] | plus: 1 | prepend: '000' | slice: -3, 3 -%}
+op expr{{ name }} : Real {% if guard == '-' %}->{% else %}~>{% endif %} Real [ctor] .|
+{% unless guard == '-' %}cmb~p3109-expr-{{ name }}-domain~expr{{ name }}(U) : Real if {{ guard }}~clause=4.10; page=40-44|
+{% endunless %}{% if guard == '-' %}eq{% else %}ceq{% endif %}~{{ fields[2] }}~omega{{ name }}(U) = expr{{ name }}(U){% unless guard == '-' %} if {{ guard }}{% endunless %}~-|
+eq~{{ nan_label }}~omega{{ name }}(nan) = nan~-|
+{% endif -%}
+{%- endfor -%}

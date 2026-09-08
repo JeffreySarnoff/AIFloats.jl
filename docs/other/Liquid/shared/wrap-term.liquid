@@ -1,0 +1,16 @@
+{%- comment -%}Wrap space-separated Maude terms to 100 columns, with four-space continuation indentation.{%- endcomment -%}
+{%- assign words = text | split: ' ' -%}
+{%- assign width = 4 -%}
+{%- for word in words -%}
+  {%- assign next_width = width | plus: word.size | plus: 1 -%}
+  {%- if forloop.first -%}
+    {%- assign width = width | plus: word.size -%}
+  {%- elsif next_width > 100 %}
+{{ '    ' -}}
+    {%- assign width = word.size | plus: 4 -%}
+  {%- else -%}
+{{ ' ' -}}
+    {%- assign width = next_width -%}
+  {%- endif -%}
+{{ word -}}
+{%- endfor -%}

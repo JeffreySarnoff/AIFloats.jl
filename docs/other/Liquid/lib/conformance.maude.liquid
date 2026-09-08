@@ -1,0 +1,234 @@
+{%- comment -%}Formatted rows: kind~label~lhs~rhs~guard~metadata; - means no guard/default metadata.{%- endcomment -%}
+{%- capture rows -%}
+!--- Source: P3109/D1 4.4-4.6, printed page 21-24.
+view FormatElt from TRIV to P3109-FORMAT-CORE is
+  sort Elt to Format .
+endv
+fmod P3109-CONFORMANCE-DATA is
+  including P3109-BLOCK-CORE .
+  --- Declaration identifiers are Strings by 4.6. STRING declares subsort
+  --- Nat < FindResult, so FindResult joins the numeric kind of this module and
+  --- of P3109-CORE, which includes it; every module below this one is clean.
+  protecting STRING .
+  including P3109-SEQUENCE{FormatElt} * (sort Seq{FormatElt} to FormatSeq, op nil to fnil, op cons to fcons) .
+  sorts Specialization Kappa Observation Declaration Evidence KappaPart ArityEntry .
+  op entry : String Nat -> ArityEntry [ctor] .
+  op numeric : String FormatSeq ProjSpec -> Specialization [ctor] .
+  op plain : String FormatSeq -> Specialization [ctor] .
+  op blockElements : String Nat FormatSeq BlockProjSpec -> Specialization [ctor] .
+  op blockReduction : String Nat FormatSeq ProjSpec -> Specialization [ctor] .
+  op blockScale : String Nat FormatSeq ProjSpec BlockProjSpec -> Specialization [ctor] .
+  op steps : Nat -> Kappa [ctor] .
+  ops kNaN kInfinity : -> Kappa [ctor] .
+  op kappaPart : CodeSeq Kappa -> KappaPart [ctor] .
+  op observation : String CodeSeq Format Int Int -> Observation [ctor] .
+  ops pendingEvidence sampleEvidence exhaustiveEvidence proofEvidence : -> Evidence [ctor] .
+  op exact : Specialization String Evidence -> Declaration [ctor] .
+  op approximate : Specialization String Kappa Evidence -> Declaration [ctor] .
+endfm
+view ArityEntryElt from TRIV to P3109-CONFORMANCE-DATA is
+  sort Elt to ArityEntry .
+endv
+view ObservationElt from TRIV to P3109-CONFORMANCE-DATA is
+  sort Elt to Observation .
+endv
+view KappaPartElt from TRIV to P3109-CONFORMANCE-DATA is
+  sort Elt to KappaPart .
+endv
+view CodeSeqElt from TRIV to P3109-BLOCK-CORE is
+  sort Elt to CodeSeq .
+endv
+view DeclarationElt from TRIV to P3109-CONFORMANCE-DATA is
+  sort Elt to Declaration .
+endv
+view SpecializationElt from TRIV to P3109-CONFORMANCE-DATA is
+  sort Elt to Specialization .
+endv
+fmod P3109-CONFORMANCE is
+  including P3109-SEQUENCE{KappaPartElt} * (sort Seq{KappaPartElt} to KappaPartSeq, op nil to knil, op cons to kcons) .
+  op partitioned : Specialization String CodeSeq KappaPartSeq Evidence -> Declaration [ctor] .
+  op partRegions : KappaPartSeq -> PartitionSeq .
+  op partBound : KappaPartSeq -> Kappa .
+  op declarationKappa : Declaration ~> Kappa .
+  including P3109-SEQUENCE{CodeSeqElt} * (sort Seq{CodeSeqElt} to PartitionSeq, op nil to pnil, op cons to pcons) .
+  including P3109-SEQUENCE{DeclarationElt} * (sort Seq{DeclarationElt} to DeclarationSeq, op nil to dnil, op cons to dcons) .
+  including P3109-SEQUENCE{SpecializationElt} * (sort Seq{SpecializationElt} to SpecializationSeq, op nil to snil, op cons to scons) .
+  including P3109-CONFORMANCE-DATA .
+  including P3109-PREDICATES .
+  including P3109-SEQUENCE{ObservationElt} * (sort Seq{ObservationElt} to ObservationSeq, op nil to onil, op cons to ocons) .
+  ops inF4 inF8 inFs allowedExternal : Format -> Bool .
+  op containsFormat : Format FormatSeq -> Bool .
+  op validFX : FormatSeq -> Bool .
+  op validFXTail : FormatSeq -> Bool .
+  op allFormats : FormatSeq -> Bool .
+  op required : Specialization FormatSeq -> Bool .
+  ops requiredNumeric requiredPlain : String FormatSeq FormatSeq -> Bool .
+  ops minmaxName compareName predicateName formatNameOp : String -> Bool .
+  op specializationName : Specialization -> String .
+  op numericPlainName : String -> Bool .
+  op blockElementArity : String Nat -> Bool .
+  op numericResult : Specialization -> Bool .
+  op declaredIdentity : Declaration -> Specialization .
+  op hasDeclaration : Specialization DeclarationSeq -> Bool .
+  op declarationsCover : SpecializationSeq DeclarationSeq -> Bool .
+  op partition : CodeSeq PartitionSeq -> Bool .
+  op partitionUnion : PartitionSeq -> CodeSeq .
+  op partitionDisjoint : PartitionSeq -> Bool .
+  op validSpecialization : Specialization -> Bool .
+  op numericArity : String Nat -> Bool .
+  op plainArity : String Nat -> Bool .
+  op wellFormedDeclaration : Declaration -> Bool .
+  op evidenceComplete : Evidence -> Bool .
+  op finiteRank : Format Int ~> Nat .
+  op observationKappa : Observation ~> Kappa .
+  op batchKappa : ObservationSeq ~> Kappa .
+  op mergeKappa : Kappa Kappa -> Kappa .
+  op memberCode : Int CodeSeq -> Bool .
+  op disjointCodes : CodeSeq CodeSeq -> Bool .
+  op uniqueCodes : CodeSeq -> Bool .
+  op appendCodes : CodeSeq CodeSeq -> CodeSeq .
+  op subsetCodes : CodeSeq CodeSeq -> Bool .
+  op partition2 : CodeSeq CodeSeq CodeSeq -> Bool .
+  including P3109-SEQUENCE{ArityEntryElt} * (sort Seq{ArityEntryElt} to ArityTable, op nil to anil, op cons to acons) .
+  ops numericArityTable plainArityTable blockElementArityTable : -> ArityTable .
+  op inArityTable : String Nat ArityTable -> Bool .
+  vars F G H J L : Format .
+  vars FS FX : FormatSeq .
+  vars N NAME : String .
+  vars S T : Specialization .
+  var PS : ProjSpec .
+  vars C D : Int .
+  vars A B : Nat .
+  var AT : ArityTable .
+  vars CS DS ES : CodeSeq .
+  vars K Q : Kappa .
+  var O : Observation .
+  var OS : ObservationSeq .
+  var E : Evidence .
+  var BP : BlockProjSpec .
+  var PARTS : PartitionSeq .
+  var KP : KappaPartSeq .
+  var DEC : Declaration .
+  var DECS : DeclarationSeq .
+  var SPECS : SpecializationSeq .|
+eq~p3109-arity-table-nil~inArityTable(N, A, anil)~false~-~clause=4.3; page=19-20|
+eq~p3109-arity-table-cons~inArityTable(N, A, acons(entry(NAME, B), AT))~(N == NAME and A == B) or inArityTable(N, A, AT)~-~clause=4.3; page=19-20|
+eq~001~inF4(F)~(F == Binary(4, 2, Signed, Finite))~-~-|
+eq~002~inF8(F)~(F == Binary(8, 4, Signed, Extended) or F == Binary(8, 3, Signed, Extended))~-~-|
+eq~003~inFs(F)~(F == Binary(8, 1, Unsigned, Finite))~-~-|
+eq~004~allowedExternal(F)~(F == binary32 or F == binary16 or F == BFloat16)~-~-|
+eq~005~containsFormat(F, fnil)~false~-~-|
+eq~006~containsFormat(F, fcons(G, FS))~(F == G or containsFormat(F, FS))~-~-|
+eq~007~validFX(fnil)~false~-~-|
+eq~008~validFX(fcons(F, FS))~allowedExternal(F) and not containsFormat(F, FS) and validFXTail(FS)~-~-|
+eq~009~validFXTail(fnil)~true~-~-|
+eq~010~validFXTail(fcons(F, FS))~allowedExternal(F) and not containsFormat(F, FS) and validFXTail(FS)~-~-|
+eq~011~allFormats(fnil)~true~-~-|
+eq~012~allFormats(fcons(F, FS))~validFormat(F) and allFormats(FS)~-~-|
+eq~013~required(numeric(N, FS, PS), FX)~validFX(FX) and (PS == proj(NearestTiesToEven, SatNone)) and requiredNumeric(N, FS, FX)~-~-|
+eq~014~required(plain(N, FS), FX)~validFX(FX) and requiredPlain(N, FS, FX)~-~-|
+eq~015~requiredNumeric(N, fcons(F, fcons(G, fnil)), FX)~(((N == "Convert" or N == "Recip") and (inF4(F) or inF8(F) or containsFormat(F, FX)) and (inF4(G) or inF8(G) or containsFormat(G, FX))) or ((N == "Abs" or N == "Negate") and F == G and (inF4(F) or inF8(F))))~-~-|
+eq~016~requiredNumeric(N, fcons(F, fcons(G, fcons(H, fnil))), FX)~(((N == "Add" or N == "Subtract" or N == "Multiply") and (inF4(F) or inF8(F)) and (inF4(G) or inF8(G)) and (inF8(H) or containsFormat(H, FX))) or (minmaxName(N) and F == G and G == H and (inF4(F) or inF8(F))))~-~-|
+eq~017~requiredNumeric(N, fcons(F, fcons(G, fcons(H, fcons(J, fnil)))), FX)~((N == "FMA" or N == "FAA") and (inF4(F) or inF8(F)) and (inF4(G) or inF8(G)) and H == J and containsFormat(H, FX))~-~-|
+eq~018~requiredNumeric(N, fcons(F, fcons(G, fcons(H, fcons(J, fcons(L, fnil))))), FX)~((N == "ScaledAdd" or N == "ScaledSubtract" or N == "ScaledMultiply") and inFs(F) and F == H and (inF4(G) or inF8(G)) and (inF4(J) or inF8(J)) and (inF8(L) or containsFormat(L, FX)))~-~-|
+ceq~019~requiredNumeric(N, FS, FX)~false~length(FS) < 2 or length(FS) > 5~-|
+eq~020~requiredPlain(N, fcons(F, fnil), FX)~((predicateName(N) and (inF4(F) or inF8(F))) or (formatNameOp(N) and (inF4(F) or inF8(F) or containsFormat(F, FX))))~-~-|
+eq~021~requiredPlain(N, fcons(F, fcons(G, fnil)), FX)~(compareName(N) and F == G and (inF4(F) or inF8(F)))~-~-|
+ceq~022~requiredPlain(N, FS, FX)~false~length(FS) < 1 or length(FS) > 2~-|
+eq~023~minmaxName(N)~(N == "Minimum" or N == "Maximum" or N == "MinimumNumber" or N == "MaximumNumber" or N == "MinimumMagnitude" or N == "MaximumMagnitude" or N == "MinimumMagnitudeNumber" or N == "MaximumMagnitudeNumber" or N == "MinimumFinite" or N == "MaximumFinite")~-~-|
+eq~024~compareName(N)~(N == "CompareLess" or N == "CompareLessEqual" or N == "CompareEqual" or N == "CompareGreater" or N == "CompareGreaterEqual")~-~-|
+eq~025~predicateName(N)~(N == "IsZero" or N == "IsOne" or N == "IsNaN" or N == "IsInfinite" or N == "IsFinite" or N == "IsSignMinus" or N == "IsNormal" or N == "IsSubnormal" or N == "NextGreaterThan" or N == "NextLessThan")~-~-|
+eq~026~formatNameOp(N)~(N == "BitwidthOf" or N == "PrecisionOf" or N == "SignednessOf" or N == "DomainOf" or N == "ExponentBitwidthOf" or N == "TrailingSignificandBitwidthOf" or N == "ExponentBiasOf" or N == "MaxFiniteOf" or N == "MinFiniteOf" or N == "MinPositiveOf" or N == "MaxSubnormalOf" or N == "MinNormalOf")~-~-|
+eq~027~specializationName(numeric(N, FS, PS))~N~-~-|
+eq~028~specializationName(plain(N, FS))~N~-~-|
+eq~033~evidenceComplete(pendingEvidence)~false~-~-|
+eq~034~evidenceComplete(sampleEvidence)~false~-~-|
+eq~035~evidenceComplete(exhaustiveEvidence)~true~-~-|
+eq~036~evidenceComplete(proofEvidence)~true~-~-|
+ceq~037~finiteRank(F, C)~C~validCode(F, C) /\ internalFormat(F) /\ IsFinite(F, C) /\ SignednessOf(F) == Unsigned~-|
+ceq~038~finiteRank(F, C)~MaxFiniteOf(F) + C~validCode(F, C) /\ internalFormat(F) /\ IsFinite(F, C) /\ SignednessOf(F) == Signed /\ not IsSignMinus(F, C)~-|
+ceq~039~finiteRank(F, C)~MinFiniteOf(F) - C~validCode(F, C) /\ internalFormat(F) /\ IsFinite(F, C) /\ IsSignMinus(F, C)~-|
+ceq~040~observationKappa(observation(N, CS, F, C, D))~kNaN~validCode(F, C) /\ validCode(F, D) /\ IsNaN(F, C) =/= IsNaN(F, D)~-|
+ceq~041~observationKappa(observation(N, CS, F, C, D))~steps(0)~validCode(F, C) /\ validCode(F, D) /\ IsNaN(F, C) /\ IsNaN(F, D)~-|
+ceq~042~observationKappa(observation(N, CS, F, C, D))~steps(0)~validCode(F, C) /\ validCode(F, D) /\ IsInfinite(F, C) /\ IsInfinite(F, D) /\ IsSignMinus(F, C) == IsSignMinus(F, D)~-|
+ceq~043~observationKappa(observation(N, CS, F, C, D))~kInfinity~validCode(F, C) /\ validCode(F, D) /\ not IsNaN(F, C) /\ not IsNaN(F, D) /\ (IsInfinite(F, C) or IsInfinite(F, D)) /\ not (IsInfinite(F, C) and IsInfinite(F, D) and IsSignMinus(F, C) == IsSignMinus(F, D))~-|
+ceq~044~observationKappa(observation(N, CS, F, C, D))~steps(abs(finiteRank(F, C) - finiteRank(F, D)))~validCode(F, C) /\ validCode(F, D) /\ IsFinite(F, C) /\ IsFinite(F, D)~-|
+eq~045~batchKappa(onil)~steps(0)~-~-|
+eq~046~batchKappa(ocons(O, OS))~mergeKappa(observationKappa(O), batchKappa(OS))~-~-|
+eq~047~mergeKappa(kNaN, K)~kNaN~-~-|
+eq~048~mergeKappa(kInfinity, kNaN)~kNaN~-~-|
+eq~049~mergeKappa(steps(A), kNaN)~kNaN~-~-|
+eq~050~mergeKappa(kInfinity, kInfinity)~kInfinity~-~-|
+eq~051~mergeKappa(kInfinity, steps(A))~kInfinity~-~-|
+eq~052~mergeKappa(steps(A), kInfinity)~kInfinity~-~-|
+eq~053~mergeKappa(steps(A), steps(B))~steps(max(A, B))~-~-|
+eq~054~memberCode(C, cnil)~false~-~-|
+eq~055~memberCode(C, ccons(D, CS))~(C == D or memberCode(C, CS))~-~-|
+eq~056~disjointCodes(cnil, CS)~true~-~-|
+eq~057~disjointCodes(ccons(C, CS), DS)~(not memberCode(C, DS) and disjointCodes(CS, DS))~-~-|
+eq~058~uniqueCodes(cnil)~true~-~-|
+eq~059~uniqueCodes(ccons(C, CS))~(not memberCode(C, CS) and uniqueCodes(CS))~-~-|
+eq~060~appendCodes(cnil, CS)~CS~-~-|
+eq~061~appendCodes(ccons(C, CS), DS)~ccons(C, appendCodes(CS, DS))~-~-|
+eq~062~subsetCodes(cnil, CS)~true~-~-|
+eq~063~subsetCodes(ccons(C, CS), DS)~(memberCode(C, DS) and subsetCodes(CS, DS))~-~-|
+eq~064~partition2(CS, DS, ES)~partition(CS, pcons(DS, pcons(ES, pnil)))~-~-|
+!  --- Name/arity admissibility as MEMBERSHIP in an explicit finite table, by
+  --- structural recursion over the table. Replaces an owise fallback: owise is
+  --- an execution strategy, not an equational axiom, and a translator or proof
+  --- tool that reads it as a plain equation derives true = false. The arity is
+  --- the count of format parameters in the specialization (4.3.1 Parameters).
+  --- BEGIN GENERATED numericArityTable|
+eq~p3109-decl-numeric-table~numericArityTable~{% render 'shared/arity-table', groups: '2~Convert Abs Negate Sqrt Recip RSqrt Exp Exp2 Log Log2 LogOnePlus ExpMinusOne Sin Cos Tan ArcSin ArcCos ArcTan Sinh Cosh Tanh ArcSinh ArcCosh ArcTanh SinPi CosPi TanPi ArcSinPi ArcCosPi ArcTanPi Softplus|3~CopySign Add Subtract Multiply Divide Hypot ArcTan2 ArcTan2Pi Minimum Maximum MinimumNumber MaximumNumber MinimumMagnitude MaximumMagnitude MinimumMagnitudeNumber MaximumMagnitudeNumber MinimumFinite MaximumFinite ScaledConvert ScaledAbs ScaledNegate ScaledSqrt ScaledRecip ScaledRSqrt ScaledExp ScaledExp2 ScaledLog ScaledLog2 ScaledLogOnePlus ScaledExpMinusOne ScaledSin ScaledCos ScaledTan ScaledArcSin ScaledArcCos ScaledArcTan ScaledSinh ScaledCosh ScaledTanh ScaledArcSinh ScaledArcCosh ScaledArcTanh ScaledSinPi ScaledCosPi ScaledTanPi ScaledArcSinPi ScaledArcCosPi ScaledArcTanPi ScaledSoftplus|4~FMA FAA Clamp|5~ScaledCopySign ScaledAdd ScaledSubtract ScaledMultiply ScaledDivide ScaledHypot ScaledArcTan2 ScaledArcTan2Pi ScaledMinimum ScaledMaximum ScaledMinimumNumber ScaledMaximumNumber ScaledMinimumMagnitude ScaledMaximumMagnitude ScaledMinimumMagnitudeNumber ScaledMaximumMagnitudeNumber ScaledMinimumFinite ScaledMaximumFinite|7~ScaledFMA ScaledFAA ScaledClamp' %}~-~clause=4.3; page=19-20; clause=5.8; page=70|
+!  --- END GENERATED numericArityTable
+  --- BEGIN GENERATED plainArityTable|
+eq~p3109-decl-plain-table~plainArityTable~{% render 'shared/arity-table', groups: '0~RoundOf SatOf|1~IsZero IsOne IsNaN IsInfinite IsFinite IsSignMinus IsNormal IsSubnormal Class BitwidthOf PrecisionOf ExponentBitwidthOf TrailingSignificandBitwidthOf ExponentBiasOf SignednessOf DomainOf MaxFiniteOf MinFiniteOf MinPositiveOf MaxSubnormalOf MinNormalOf NextGreaterThan NextLessThan|2~CompareLess CompareLessEqual CompareEqual CompareGreater CompareGreaterEqual TotalOrder' %}~-~clause=4.3; page=19-20|
+!  --- END GENERATED plainArityTable|
+eq~p3109-decl-numeric~numericArity(N, A)~inArityTable(N, A, numericArityTable)~-~clause=4.3; 5.8; page=19-20; 70|
+eq~p3109-decl-plain~plainArity(N, A)~inArityTable(N, A, plainArityTable)~-~clause=4.3; page=19-20|
+eq~p3109-decl-specialization-numeric~validSpecialization(numeric(N, FS, PS))~numericArity(N, length(FS)) and allFormats(FS) and validProjection(PS)~-~clause=4.3; page=19-20|
+eq~p3109-decl-specialization-plain~validSpecialization(plain(N, FS))~plainArity(N, length(FS)) and allFormats(FS)~-~clause=4.3; page=19-20|
+eq~p3109-decl-numeric-plain~numericPlainName(N)~(N == "NextGreaterThan" or N == "NextLessThan" or N == "MaxFiniteOf" or N == "MinFiniteOf" or N == "MinPositiveOf" or N == "MaxSubnormalOf" or N == "MinNormalOf")~-~clause=4.4; page=21|
+eq~p3109-decl-exact~wellFormedDeclaration(exact(S, NAME, E))~(NAME =/= "" and validSpecialization(S))~-~clause=4.6; page=24|
+eq~p3109-decl-approximate~wellFormedDeclaration(approximate(S, NAME, K, E))~(NAME =/= "" and NAME =/= specializationName(S) and numericResult(S) and validSpecialization(S))~-~clause=4.4; page=21|
+eq~p3109-block-elements-name~specializationName(blockElements(N, A, FS, BP))~N~-~clause=5.5;5.7; page=64-66;69|
+eq~p3109-block-reduction-name~specializationName(blockReduction(N, A, FS, PS))~N~-~clause=5.6; page=67-68|
+eq~p3109-block-scale-name~specializationName(blockScale(N, A, FS, PS, BP))~N~-~clause=5.5.3; page=66|
+eq~p3109-block-elements-valid~validSpecialization(blockElements(N, A, FS, BP))~(A >= 1 and allFormats(FS) and validBlockProjection(BP, A) and blockElementArity(N, length(FS)))~-~clause=5.5;5.7; page=64-66;69|
+eq~p3109-block-reduction-valid~validSpecialization(blockReduction(N, A, FS, PS))~(A >= 1 and allFormats(FS) and validProjection(PS) and (((N == "BlockReduceAdd" or N == "BlockReduceMultiply") and length(FS) == 3) or (N == "BlockDotProduct" and length(FS) == 5)))~-~clause=5.6; page=67-68|
+eq~p3109-block-scale-valid~validSpecialization(blockScale(N, A, FS, PS, BP))~(N == "ConvertToBlockMaxAbsFinite" and A >= 1 and length(FS) == 3 and allFormats(FS) and validProjection(PS) and validBlockProjection(BP, A))~-~clause=5.5.3; page=66|
+eq~p3109-block-elements-not-required~required(blockElements(N, A, FS, BP), FX)~false~-~clause=4.5; page=22-23|
+eq~p3109-block-reduction-not-required~required(blockReduction(N, A, FS, PS), FX)~false~-~clause=4.5; page=22-23|
+eq~p3109-block-scale-not-required~required(blockScale(N, A, FS, PS, BP), FX)~false~-~clause=4.5; page=22-23|
+eq~p3109-result-projected-numeric~numericResult(numeric(N, FS, PS))~true~-~clause=4.4; page=21|
+eq~p3109-result-plain-numeric~numericResult(plain(N, FS))~numericPlainName(N)~-~clause=4.4; page=21|
+eq~p3109-result-block-elements-numeric~numericResult(blockElements(N, A, FS, BP))~true~-~clause=4.4; page=21|
+eq~p3109-result-block-reduction-numeric~numericResult(blockReduction(N, A, FS, PS))~true~-~clause=4.4; page=21|
+eq~p3109-result-block-scale-numeric~numericResult(blockScale(N, A, FS, PS, BP))~true~-~clause=4.4; page=21|
+eq~p3109-declared-exact~declaredIdentity(exact(S, NAME, E))~S~-~clause=4.6; page=24|
+eq~p3109-declared-approximate~declaredIdentity(approximate(S, NAME, K, E))~S~-~clause=4.6; page=24|
+eq~p3109-declared-empty~hasDeclaration(S, dnil)~false~-~clause=4.6; page=24|
+eq~p3109-declared-member~hasDeclaration(S, dcons(DEC, DECS))~((wellFormedDeclaration(DEC) and declaredIdentity(DEC) == S) or hasDeclaration(S, DECS))~-~clause=4.6; page=24|
+eq~p3109-declarations-cover-empty~declarationsCover(snil, DECS)~true~-~clause=4.5-4.6; page=22-24|
+eq~p3109-declarations-cover-cons~declarationsCover(scons(S, SPECS), DECS)~(hasDeclaration(S, DECS) and declarationsCover(SPECS, DECS))~-~clause=4.5-4.6; page=22-24|
+eq~p3109-partition-union-empty~partitionUnion(pnil)~cnil~-~clause=4.4; page=21|
+eq~p3109-partition-union-cons~partitionUnion(pcons(CS, PARTS))~appendCodes(CS, partitionUnion(PARTS))~-~clause=4.4; page=21|
+eq~p3109-partition-disjoint-empty~partitionDisjoint(pnil)~true~-~clause=4.4; page=21|
+eq~p3109-partition-disjoint-cons~partitionDisjoint(pcons(CS, PARTS))~(uniqueCodes(CS) and disjointCodes(CS, partitionUnion(PARTS)) and partitionDisjoint(PARTS))~-~clause=4.4; page=21|
+eq~p3109-partition-general~partition(CS, PARTS)~(uniqueCodes(CS) and partitionDisjoint(PARTS) and subsetCodes(CS, partitionUnion(PARTS)) and subsetCodes(partitionUnion(PARTS), CS))~-~clause=4.4; page=21|
+!  --- BEGIN GENERATED blockElementArityTable|
+eq~p3109-block-element-arity-table~blockElementArityTable~{% render 'shared/arity-table', groups: '3~ConvertFromBlock ConvertToBlock|4~BlockConvert BlockAbs BlockNegate BlockSqrt BlockRecip BlockRSqrt BlockExp BlockExp2 BlockLog BlockLog2 BlockLogOnePlus BlockExpMinusOne BlockSin BlockCos BlockTan BlockArcSin BlockArcCos BlockArcTan BlockSinh BlockCosh BlockTanh BlockArcSinh BlockArcCosh BlockArcTanh BlockSinPi BlockCosPi BlockTanPi BlockArcSinPi BlockArcCosPi BlockArcTanPi BlockSoftplus|6~BlockCopySign BlockAdd BlockSubtract BlockMultiply BlockDivide BlockHypot BlockArcTan2 BlockArcTan2Pi BlockMinimum BlockMaximum BlockMinimumNumber BlockMaximumNumber BlockMinimumMagnitude BlockMaximumMagnitude BlockMinimumMagnitudeNumber BlockMaximumMagnitudeNumber BlockMinimumFinite BlockMaximumFinite|8~BlockFMA BlockFAA BlockClamp' %}~-~clause=5.5.1-5.5.2; page=64-65; clause=5.7; page=69|
+!  --- END GENERATED blockElementArityTable|
+eq~p3109-block-element-arity~blockElementArity(N, A)~inArityTable(N, A, blockElementArityTable)~-~clause=5.5.1-5.5.2; 5.7; page=64-65; 69|
+eq~p3109-decl-partitioned-valid~wellFormedDeclaration(partitioned(S, NAME, CS, KP, E))~(NAME =/= "" and NAME =/= specializationName(S) and numericResult(S) and validSpecialization(S) and partition(CS, partRegions(KP)))~-~clause=4.4; page=21|
+eq~p3109-decl-partitioned-identity~declaredIdentity(partitioned(S, NAME, CS, KP, E))~S~-~clause=4.4; page=21|
+eq~p3109-part-regions-empty~partRegions(knil)~pnil~-~clause=4.4; page=21|
+eq~p3109-part-regions-cons~partRegions(kcons(kappaPart(CS, K), KP))~pcons(CS, partRegions(KP))~-~clause=4.4; page=21|
+eq~p3109-part-bound-empty~partBound(knil)~steps(0)~-~clause=4.4; page=21|
+eq~p3109-part-bound-cons~partBound(kcons(kappaPart(CS, K), KP))~mergeKappa(K, partBound(KP))~-~clause=4.4; page=21|
+ceq~p3109-decl-exact-kappa~declarationKappa(exact(S, NAME, E))~steps(0)~wellFormedDeclaration(exact(S, NAME, E)) /\ numericResult(S)~clause=4.4; page=21|
+ceq~p3109-decl-approx-kappa~declarationKappa(approximate(S, NAME, K, E))~K~wellFormedDeclaration(approximate(S, NAME, K, E))~clause=4.4; page=21|
+ceq~p3109-decl-partition-kappa~declarationKappa(partitioned(S, NAME, CS, KP, E))~partBound(KP)~wellFormedDeclaration(partitioned(S, NAME, CS, KP, E))~clause=4.4; page=21|
+!endfm
+{%- endcapture -%}
+{% render 'shared/statements', rows: rows, prefix: 'p3109-conformance-', metadata: 'clause=4.4-4.6; page=21-24', multiline: true %}

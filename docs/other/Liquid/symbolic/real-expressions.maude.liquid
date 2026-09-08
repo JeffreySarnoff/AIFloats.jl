@@ -1,0 +1,62 @@
+{%- comment -%}
+Rows: kind ~ label suffix (or full label) ~ body ~ metadata (- uses the default).
+Declarations stay literal. Row order preserves the source equation order.
+{%- endcomment -%}
+--- Source: P3109/D1 3.1; 4.10; mathematical expression representation, printed page 16; 33-48.
+fmod P3109-REAL-EXPRESSIONS is
+{% capture rows -%}
+including P3109-OMEGA-EXTREMA .|
+ops realAdd realMultiply : Real Real -> Real [ctor] .|
+ops realNegate realAbs : Real -> Real [ctor] .|
+op realDivide : Real Real ~> Real [ctor] .|
+op piMultiple : Rat -> Real [ctor] .|
+op pi : -> Real .|
+vars U V : Real .|
+vars R S : Rat .|
+var I : Infinity .|
+eq~001~pi = piMultiple(1)~-|
+eq~002~piMultiple(0) = fin(0)~-|
+eq~003~realAdd(fin(R), fin(S)) = fin(R + S)~-|
+eq~004~realAdd(fin(0), U) = U~-|
+eq~005~realAdd(U, fin(0)) = U~-|
+eq~006~realAdd(piMultiple(R), piMultiple(S)) = piMultiple(R + S)~-|
+eq~007~realMultiply(fin(R), fin(S)) = fin(R * S)~-|
+eq~008~realMultiply(fin(0), U) = fin(0)~-|
+eq~009~realMultiply(U, fin(0)) = fin(0)~-|
+eq~010~realMultiply(fin(1), U) = U~-|
+eq~011~realMultiply(U, fin(1)) = U~-|
+eq~012~realMultiply(fin(R), piMultiple(S)) = piMultiple(R * S)~-|
+eq~013~realMultiply(piMultiple(S), fin(R)) = piMultiple(R * S)~-|
+eq~014~realNegate(fin(R)) = fin(- R)~-|
+eq~015~realNegate(piMultiple(R)) = piMultiple(- R)~-|
+eq~016~realNegate(realNegate(U)) = U~-|
+eq~017~realAbs(fin(R)) = fin(abs(R))~-|
+eq~018~realAbs(piMultiple(R)) = piMultiple(abs(R))~-|
+ceq~019~realDivide(fin(R), fin(S)) = fin(R / S) if S =/= 0~-|
+ceq~020~realDivide(piMultiple(R), piMultiple(S)) = fin(R / S) if S =/= 0~-|
+ceq~021~realDivide(piMultiple(R), fin(S)) = piMultiple(R / S) if S =/= 0~-|
+cmb~p3109-real-divide-domain~realDivide(U, V) : Real if xEq(V, fin(0)) == false~clause=4.10.5; page=37|
+eq~022~omegaAdd(U, V) = realAdd(U, V)~-|
+eq~023~omegaMultiply(U, V) = realMultiply(U, V)~-|
+eq~024~omegaNegate(U) = realNegate(U)~-|
+eq~025~omegaAbs(U) = realAbs(U)~-|
+ceq~026~omegaDivide(U, V) = nan if xEq(V, fin(0))~-|
+ceq~027~omegaDivide(U, V) = realDivide(U, V) if xEq(V, fin(0)) == false~-|
+ceq~028~omegaMultiply(I, U) = nan if xEq(U, fin(0))~-|
+ceq~029~omegaMultiply(I, U) = if xMinus(I) == xMinus(U) then posInf else negInf fi if xEq(U, fin(0)) == false~-|
+ceq~030~omegaDivide(I, U) = if xMinus(I) == xMinus(U) then posInf else negInf fi if xEq(U, fin(0)) == false~-|
+eq~031~xEq(U, U) = true~-|
+eq~032~xEq(piMultiple(R), piMultiple(S)) = (R == S)~-|
+eq~033~xEq(piMultiple(R), fin(0)) = (R == 0)~-|
+eq~034~xEq(fin(0), piMultiple(R)) = (R == 0)~-|
+eq~035~xLt(piMultiple(R), piMultiple(S)) = (R < S)~-|
+eq~036~xLt(piMultiple(R), fin(0)) = (R < 0)~-|
+eq~037~xLt(fin(0), piMultiple(R)) = (R > 0)~-|
+eq~038~xMinus(U) = xLt(U, fin(0))~-|
+ceq~039~xSign(U) = -1 if xLt(U, fin(0))~-|
+ceq~040~xSign(U) = 0 if xEq(U, fin(0))~-|
+ceq~041~xSign(U) = 1 if xLt(fin(0), U)~-|
+ceq~p3109-real-zero-divide~realDivide(fin(0), V) = fin(0) if xEq(V, fin(0)) == false~clause=4.10.5; page=37|
+eq~p3109-real-unit-divide~realDivide(U, fin(1)) = U~clause=4.10.5; page=37
+{%- endcapture -%}
+{% render 'shared/statements', rows: rows, prefix: 'p3109-real-expressions-', metadata: 'clause=3.1; 4.10; mathematical expression representation; page=16; 33-48', multiline: false %}endfm

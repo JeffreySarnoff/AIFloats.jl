@@ -37,9 +37,9 @@ fmod P3109-BLOCK-CORE is
   ceq [p3109-block-core-008] : blockDecode(B, FS, FX, S, CS) = multiplyElements(decode(FS, S), decodeElements(FX, CS)) if validBlock(B, FS, FX, S, CS) [metadata "clause=5.2-5.4; page=61-63"] .
   eq [p3109-block-core-009] : normalizeElement(nan, X) = nan [metadata "clause=5.2-5.4; page=61-63"] .
   eq [p3109-block-core-010] : normalizeElement(A, nan) = nan [metadata "clause=5.2-5.4; page=61-63"] .
-  eq [p3109-block-core-011] : normalizeElement(0, V) = 0 [metadata "clause=5.2-5.4; page=61-63"] .
-  eq [p3109-block-core-012] : normalizeElement(I, V) = xSign(I) * xSign(V) [metadata "clause=5.2-5.4; page=61-63"] .
-  ceq [p3109-block-core-013] : normalizeElement(R, V) = omegaDivide(V, R) if R =/= 0 [metadata "clause=5.2-5.4; page=61-63"] .
+  eq [p3109-block-core-011] : normalizeElement(fin(0), V) = fin(0) [metadata "clause=5.2-5.4; page=61-63"] .
+  eq [p3109-block-core-012] : normalizeElement(I, V) = fin(xSign(I) * xSign(V)) [metadata "clause=5.2-5.4; page=61-63"] .
+  ceq [p3109-block-core-013] : normalizeElement(fin(R), V) = omegaDivide(V, fin(R)) if R =/= 0 [metadata "clause=5.2-5.4; page=61-63"] .
   ceq [p3109-block-core-014] : blockProject(B, FS, FR, BP, S, XS) = projectElements(FR, BP, decode(FS, S), XS, 0) if B >= 1 /\ length(XS) == B /\ validCode(FS, S) /\ validFormat(FR) /\ validBlockProjection(BP, B) [metadata "clause=5.2-5.4; page=61-63"] .
   eq [p3109-block-core-015] : projectElements(FR, BP, X, xnil, J) = cnil [metadata "clause=5.2-5.4; page=61-63"] .
   eq [p3109-block-core-016] : projectElements(FR, BP, X, xcons(Y, XS), J) = ccons(project(FR, projectionAt(BP, J), normalizeElement(X, Y)), projectElements(FR, BP, X, XS, J + 1)) [metadata "clause=5.2-5.4; page=61-63"] .

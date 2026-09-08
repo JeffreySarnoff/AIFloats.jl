@@ -1,0 +1,147 @@
+{%- comment -%}
+Rows: kind ~ label suffix (or full label) ~ body ~ metadata (- uses the default).
+Declarations stay literal. Row order preserves the source equation order.
+{%- endcomment -%}
+--- Source: P3109/D1 4.10.8-4.10.16, printed page 40-48.
+fmod P3109-OMEGA-ELEMENTARY is
+{% capture rows -%}
+including P3109-REAL-EXPRESSIONS .|
+ops omegaHypot omegaArcTan2 omegaArcTan2Pi : XReal XReal ~> XReal .|
+vars U V : Real .|
+vars R S : Rat .|
+vars A B : Number .|
+vars X Y : XReal .|
+vars I J : Infinity .|
+vars N D NS DS : Nat .|
+var K : Int .|
+{% render 'shared/elementary', section: 'declarations' %}{% render 'shared/elementary', section: 'expressions' %}eq~035~omegaSqrt(posInf) = posInf~-|
+eq~036~omegaSqrt(negInf) = nan~-|
+eq~037~omegaExp(posInf) = posInf~-|
+eq~038~omegaExp(negInf) = fin(0)~-|
+eq~039~omegaExp2(posInf) = posInf~-|
+eq~040~omegaExp2(negInf) = fin(0)~-|
+eq~041~omegaLog(posInf) = posInf~-|
+eq~042~omegaLog(negInf) = nan~-|
+eq~043~omegaLog2(posInf) = posInf~-|
+eq~044~omegaLog2(negInf) = nan~-|
+eq~045~omegaSin(posInf) = nan~-|
+eq~046~omegaSin(negInf) = nan~-|
+eq~047~omegaCos(posInf) = nan~-|
+eq~048~omegaCos(negInf) = nan~-|
+eq~049~omegaTan(posInf) = nan~-|
+eq~050~omegaTan(negInf) = nan~-|
+eq~051~omegaArcSin(posInf) = nan~-|
+eq~052~omegaArcSin(negInf) = nan~-|
+eq~053~omegaArcCos(posInf) = nan~-|
+eq~054~omegaArcCos(negInf) = nan~-|
+eq~055~omegaArcTan(posInf) = piMultiple(1/2)~-|
+eq~056~omegaArcTan(negInf) = piMultiple(-1/2)~-|
+eq~057~omegaSinh(posInf) = posInf~-|
+eq~058~omegaSinh(negInf) = negInf~-|
+eq~059~omegaCosh(posInf) = posInf~-|
+eq~060~omegaCosh(negInf) = posInf~-|
+eq~061~omegaTanh(posInf) = fin(1)~-|
+eq~062~omegaTanh(negInf) = fin(-1)~-|
+eq~063~omegaArcSinh(posInf) = posInf~-|
+eq~064~omegaArcSinh(negInf) = negInf~-|
+eq~065~omegaArcCosh(posInf) = posInf~-|
+eq~066~omegaArcCosh(negInf) = nan~-|
+eq~067~omegaArcTanh(posInf) = nan~-|
+eq~068~omegaArcTanh(negInf) = nan~-|
+ceq~069~omegaSqrt(U) = nan if xLt(U, fin(0))~-|
+ceq~070~omegaLog(U) = nan if xLt(U, fin(0))~-|
+ceq~071~omegaLog2(U) = nan if xLt(U, fin(0))~-|
+eq~072~omegaLog(fin(0)) = negInf~-|
+eq~073~omegaLog2(fin(0)) = negInf~-|
+ceq~074~omegaArcSin(U) = nan if xLt(U, fin(-1)) or xLt(fin(1), U)~-|
+ceq~075~omegaArcCos(U) = nan if xLt(U, fin(-1)) or xLt(fin(1), U)~-|
+ceq~076~omegaArcTanh(U) = nan if xLt(U, fin(-1)) or xLt(fin(1), U)~-|
+ceq~077~omegaArcCosh(U) = nan if xLt(U, fin(1))~-|
+eq~078~omegaArcTanh(fin(1)) = posInf~-|
+eq~079~omegaArcTanh(fin(-1)) = negInf~-|
+eq~080~omegaRSqrt(nan) = nan~-|
+eq~081~omegaRSqrt(negInf) = nan~-|
+eq~082~omegaRSqrt(posInf) = fin(0)~-|
+ceq~083~omegaRSqrt(U) = nan if xLe(U, fin(0))~-|
+ceq~084~omegaRSqrt(U) = omegaRecip(omegaSqrt(U)) if xLt(fin(0), U)~-|
+eq~085~omegaLogOnePlus(X) = omegaLog(omegaAdd(fin(1), X))~-|
+eq~086~omegaExpMinusOne(X) = omegaSubtract(omegaExp(X), fin(1))~-|
+eq~087~omegaSoftplus(X) = omegaLog(omegaAdd(fin(1), omegaExp(X)))~-|
+eq~088~omegaSinPi(X) = omegaSin(omegaMultiply(X, pi))~-|
+eq~089~omegaCosPi(X) = omegaCos(omegaMultiply(X, pi))~-|
+eq~090~omegaTanPi(X) = omegaTan(omegaMultiply(X, pi))~-|
+eq~091~omegaArcSinPi(X) = omegaDivide(omegaArcSin(X), pi)~-|
+eq~092~omegaArcCosPi(X) = omegaDivide(omegaArcCos(X), pi)~-|
+eq~093~omegaArcTanPi(X) = omegaDivide(omegaArcTan(X), pi)~-|
+ceq~094~omegaTan(U) = posInf if xEq(omegaCos(U), fin(0)) /\ xLt(fin(0), omegaSin(U))~-|
+ceq~095~omegaTan(U) = negInf if xEq(omegaCos(U), fin(0)) /\ xLt(omegaSin(U), fin(0))~-|
+op numeratorOf : Rat -> Int .|
+op denominatorOf : Rat -> Nat .|
+eq~096~numeratorOf(K) = K~-|
+eq~097~denominatorOf(K) = 1~-|
+vars NZ : NzInt .|
+var ND : NzNat .|
+eq~098~numeratorOf(NZ / ND) = NZ~-|
+eq~099~denominatorOf(NZ / ND) = ND~-|
+ceq~100~exprSqrt(fin(R)) = fin(NS / DS) if R >= 0 /\ N := numeratorOf(R) /\ D := denominatorOf(R) /\ NS := integerSqrt(N) /\ DS := integerSqrt(D) /\ NS * NS == N /\ DS * DS == D~-|
+eq~101~exprExp(fin(0)) = fin(1)~-|
+eq~102~exprExp2(fin(K)) = fin(pow2(K))~-|
+eq~103~exprLog(fin(1)) = fin(0)~-|
+ceq~104~exprLog2(fin(R)) = fin(K) if R > 0 /\ K := floorLog2(R) /\ R == pow2(K)~-|
+eq~105~exprSin(fin(0)) = fin(0)~-|
+eq~106~exprCos(fin(0)) = fin(1)~-|
+eq~107~exprTan(fin(0)) = fin(0)~-|
+eq~108~exprArcSin(fin(0)) = fin(0)~-|
+eq~109~exprArcSin(fin(1)) = piMultiple(1/2)~-|
+eq~110~exprArcSin(fin(-1)) = piMultiple(-1/2)~-|
+eq~111~exprArcCos(fin(0)) = piMultiple(1/2)~-|
+eq~112~exprArcCos(fin(1)) = fin(0)~-|
+eq~113~exprArcCos(fin(-1)) = pi~-|
+eq~114~exprArcTan(fin(0)) = fin(0)~-|
+eq~115~exprArcTan(fin(1)) = piMultiple(1/4)~-|
+eq~116~exprArcTan(fin(-1)) = piMultiple(-1/4)~-|
+eq~117~exprSinh(fin(0)) = fin(0)~-|
+eq~118~exprCosh(fin(0)) = fin(1)~-|
+eq~119~exprTanh(fin(0)) = fin(0)~-|
+eq~120~exprArcSinh(fin(0)) = fin(0)~-|
+eq~121~exprArcCosh(fin(1)) = fin(0)~-|
+eq~122~exprArcTanh(fin(0)) = fin(0)~-|
+ceq~123~exprSin(piMultiple(R)) = fin(0) if R == floor(R)~-|
+ceq~124~exprSin(piMultiple(R)) = if even(floor(R)) then fin(1) else fin(-1) fi if R - floor(R) == 1/2~-|
+ceq~125~exprCos(piMultiple(R)) = if even(floor(R)) then fin(1) else fin(-1) fi if R == floor(R)~-|
+ceq~126~exprCos(piMultiple(R)) = fin(0) if R - floor(R) == 1/2~-|
+ceq~127~exprTan(piMultiple(R)) = fin(0) if R == floor(R)~-|
+ceq~128~xEq(exprCos(fin(R)), fin(0)) = false if R =/= 0~-|
+eq~129~xLt(fin(0), exprExp(U)) = true~-|
+eq~130~xEq(exprExp(U), fin(0)) = false~-|
+eq~131~xLt(exprExp(U), fin(0)) = false~-|
+eq~132~xLt(fin(0), exprExp2(U)) = true~-|
+eq~133~xEq(exprExp2(U), fin(0)) = false~-|
+eq~134~xLt(exprExp2(U), fin(0)) = false~-|
+ceq~135~xLt(fin(0), exprSqrt(U)) = true if xLt(fin(0), U)~-|
+ceq~136~xEq(exprSqrt(U), fin(0)) = false if xLt(fin(0), U)~-|
+ceq~137~xLt(exprSqrt(U), fin(0)) = false if xLe(fin(0), U)~-|
+eq~138~omegaHypot(nan, X) = nan~-|
+eq~139~omegaHypot(A, nan) = nan~-|
+eq~140~omegaHypot(A, I) = posInf~-|
+eq~141~omegaHypot(I, U) = posInf~-|
+eq~142~omegaHypot(U, V) = omegaSqrt(realAdd(realMultiply(U, U), realMultiply(V, V)))~-|
+eq~143~omegaArcTan2(nan, X) = nan~-|
+eq~144~omegaArcTan2(A, nan) = nan~-|
+eq~145~omegaArcTan2(fin(0), fin(0)) = nan~-|
+eq~146~omegaArcTan2(I, J) = nan~-|
+eq~147~omegaArcTan2(U, posInf) = fin(0)~-|
+ceq~148~omegaArcTan2(fin(0), U) = fin(0) if xLt(fin(0), U)~-|
+eq~149~omegaArcTan2(posInf, U) = piMultiple(1/2)~-|
+ceq~150~omegaArcTan2(U, fin(0)) = piMultiple(1/2) if xLt(fin(0), U)~-|
+ceq~151~omegaArcTan2(U, negInf) = pi if xLe(fin(0), U)~-|
+ceq~152~omegaArcTan2(U, negInf) = piMultiple(-1) if xLt(U, fin(0))~-|
+ceq~153~omegaArcTan2(fin(0), U) = pi if xLt(U, fin(0))~-|
+eq~154~omegaArcTan2(negInf, U) = piMultiple(-1/2)~-|
+ceq~155~omegaArcTan2(U, fin(0)) = piMultiple(-1/2) if xLt(U, fin(0))~-|
+ceq~156~omegaArcTan2(U, V) = omegaArcTan(omegaDivide(U, V)) if xLt(fin(0), V) /\ xEq(U, fin(0)) == false~-|
+ceq~157~omegaArcTan2(U, V) = omegaAdd(omegaArcTan(omegaDivide(U, V)), pi) if xLt(fin(0), U) /\ xLt(V, fin(0))~-|
+ceq~158~omegaArcTan2(U, V) = omegaSubtract(omegaArcTan(omegaDivide(U, V)), pi) if xLt(U, fin(0)) /\ xLt(V, fin(0))~-|
+eq~159~omegaArcTan2Pi(X, Y) = omegaDivide(omegaArcTan2(X, Y), pi)~-
+{%- endcapture -%}
+{% render 'shared/statements', rows: rows, prefix: 'p3109-omega-elementary-', metadata: 'clause=4.10.8-4.10.16; page=40-48', multiline: false %}endfm

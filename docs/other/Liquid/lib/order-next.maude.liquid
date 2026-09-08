@@ -1,0 +1,21 @@
+{%- comment -%}Formatted rows: kind~label~lhs~rhs~guard~metadata; - means no guard/default metadata.{%- endcomment -%}
+{%- capture rows -%}
+!--- Source: P3109/D1 4.12.1; 4.16, printed page 54; 59-60.
+fmod P3109-ORDER-NEXT is
+  including P3109-PREDICATES .
+  op TotalOrder : Format Format Int Int ~> Bool .
+  ops NextGreaterThan NextLessThan : Format Int ~> Nat .
+  op nextCode : Format Int Bool ~> Nat .
+  vars F G : Format .
+  vars C D : Int .|
+ceq~001~TotalOrder(F, G, C, D)~if IsNaN(F, C) then true else if IsNaN(G, D) then false else CompareLessEqual(F, G, C, D) fi fi~validCode(F, C) /\ validCode(G, D) /\ internalFormat(F) /\ internalFormat(G)~-|
+ceq~004~NextGreaterThan(F, C)~if IsNaN(F, C) or xEq(decode(F, C), posInf) or (DomainOf(F) == Finite and C == MaxFiniteOf(F)) then nanCode(F) else nextCode(F, C, true) fi~validCode(F, C) /\ internalFormat(F)~-|
+ceq~006~NextLessThan(F, C)~if IsNaN(F, C) or xEq(decode(F, C), negInf) or (DomainOf(F) == Finite and C == MinFiniteOf(F)) or (SignednessOf(F) == Unsigned and C == 0) then nanCode(F) else nextCode(F, C, false) fi~validCode(F, C) /\ internalFormat(F)~-|
+ceq~008~nextCode(F, C, true)~if C == nanCode(F) + 1 then 0 else C - 1 fi~IsSignMinus(F, C)~-|
+ceq~009~nextCode(F, C, true)~C + 1~not IsSignMinus(F, C)~-|
+ceq~010~nextCode(F, C, false)~C + 1~IsSignMinus(F, C)~-|
+ceq~011~nextCode(F, 0, false)~nanCode(F) + 1~SignednessOf(F) == Signed~-|
+ceq~012~nextCode(F, C, false)~C - 1~C > 0 /\ not IsSignMinus(F, C)~-|
+!endfm
+{%- endcapture -%}
+{% render 'shared/statements', rows: rows, prefix: 'p3109-order-next-', metadata: 'clause=4.12.1; 4.16; page=54; 59-60', multiline: true %}

@@ -1,0 +1,42 @@
+{%- comment -%}Rows: kind~label~body~metadata; - uses the default; ! starts literal text.{%- endcomment -%}
+{%- capture rows -%}
+!--- Source: P3109/D1 4.7.5, printed page 29.
+fmod P3109-SATURATE is
+  including P3109-XREAL .
+  including P3109-FORMAT-CORE .
+  including P3109-PROJSPEC .
+  op saturate : Rat Rat SatMode RoundMode XReal Signedness Domain ~> XReal .
+  op overflow : Signedness Domain Bool -> XReal .
+  op clipsHigh : RoundMode -> Bool .
+  op clipsLow : RoundMode -> Bool .
+  vars L H R : Rat .
+  var X : XReal .
+  var I : Infinity .
+  var M : RoundMode .
+  var S : SatMode .
+  var SG : Signedness .
+  var D : Domain .|
+eq~001~clipsHigh(M) = (M == TowardZero or M == TowardNegative)~-|
+eq~002~clipsLow(M) = (M == TowardZero or M == TowardPositive)~-|
+eq~003~overflow(SG, Finite, true) = nan~-|
+eq~004~overflow(SG, Finite, false) = nan~-|
+eq~005~overflow(SG, Extended, true) = posInf~-|
+eq~006~overflow(Signed, Extended, false) = negInf~-|
+eq~007~overflow(Unsigned, Extended, false) = nan~-|
+ceq~008~saturate(L, H, S, M, nan, SG, D) = nan if L <= H /\ validRound(M)~-|
+ceq~009~saturate(L, H, S, M, fin(R), SG, D) = fin(R) if L <= R /\ R <= H /\ validRound(M)~-|
+ceq~010~saturate(L, H, SatFinite, M, X, SG, D) = fin(L) if L <= H /\ validRound(M) /\ xLt(X, fin(L))~-|
+ceq~011~saturate(L, H, SatFinite, M, X, SG, D) = fin(H) if L <= H /\ validRound(M) /\ xLt(fin(H), X)~-|
+ceq~012~saturate(L, H, SatPropagate, M, posInf, SG, D) = if D == Extended then posInf else fin(H) fi if L <= H /\ validRound(M)~-|
+ceq~013~saturate(L, H, SatPropagate, M, negInf, SG, D) = if SG == Signed and D == Extended then negInf else fin(L) fi if L <= H /\ validRound(M)~-|
+ceq~014~saturate(L, H, SatPropagate, M, fin(R), SG, D) = fin(L) if L <= H /\ validRound(M) /\ R < L~-|
+ceq~015~saturate(L, H, SatPropagate, M, fin(R), SG, D) = fin(H) if L <= H /\ validRound(M) /\ R > H~-|
+ceq~016~saturate(L, H, SatNone, M, fin(R), SG, D) = fin(H) if L <= H /\ validRound(M) /\ R > H /\ clipsHigh(M)~-|
+ceq~017~saturate(L, H, SatNone, M, fin(R), SG, D) = fin(L) if L <= H /\ validRound(M) /\ R < L /\ clipsLow(M)~-|
+ceq~018~saturate(L, H, SatNone, M, posInf, SG, D) = overflow(SG, D, true) if L <= H /\ validRound(M)~-|
+ceq~019~saturate(L, H, SatNone, M, negInf, SG, D) = overflow(SG, D, false) if L <= H /\ validRound(M)~-|
+ceq~020~saturate(L, H, SatNone, M, fin(R), SG, D) = overflow(SG, D, false) if L <= H /\ validRound(M) /\ R < L /\ not clipsLow(M)~-|
+ceq~021~saturate(L, H, SatNone, M, fin(R), SG, D) = overflow(SG, D, true) if L <= H /\ validRound(M) /\ R > H /\ not clipsHigh(M)~-|
+!endfm
+{%- endcapture -%}
+{% render 'shared/statements', rows: rows, prefix: 'p3109-saturation-', metadata: 'clause=4.7.5; page=29', multiline: false %}

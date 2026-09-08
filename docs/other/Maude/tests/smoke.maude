@@ -1,0 +1,10 @@
+--- Small standalone check; tools/run-tests.py runs the complete smoke suite.
+load ../load-core.maude
+load support.maude
+fmod P3109-TEST-SMOKE is
+  including P3109-CORE .
+  including P3109-TEST-SUPPORT .
+endfm
+red in P3109-TEST-SMOKE : check("smoke-standalone", (Convert(Binary(8, 4, Signed, Extended), Binary(4, 2, Signed, Finite), proj(NearestTiesToEven, SatNone), 72) == 6)) .
+red in P3109-TEST-SMOKE : suiteComplete(1) .
+quit

@@ -1,0 +1,61 @@
+{%- comment -%}Rows: kind~label~body~metadata; - uses the default; ! starts literal text.{%- endcomment -%}
+{%- capture rows -%}
+!--- Source: P3109/D1 4.11, printed page 49-52.
+fmod P3109-OMEGA-EXTREMA is
+  including P3109-OMEGA-ARITHMETIC .
+  ops omegaMinimum omegaMaximum omegaMinimumNumber omegaMaximumNumber omegaMinimumMagnitude omegaMaximumMagnitude omegaMinimumMagnitudeNumber omegaMaximumMagnitudeNumber omegaMinimumFinite omegaMaximumFinite : XReal XReal ~> XReal .
+  op omegaClamp : XReal XReal XReal ~> XReal .
+  vars X Y Z : XReal .
+  vars A B C : Number .
+  vars U V : Real .
+  vars I J : Infinity .|
+eq~001~omegaMinimum(nan, X) = nan~-|
+eq~002~omegaMinimum(A, nan) = nan~-|
+ceq~003~omegaMinimum(A, B) = A if xLt(A, B)~-|
+ceq~004~omegaMinimum(A, B) = B if xLe(B, A)~-|
+eq~005~omegaMinimumNumber(nan, X) = X~-|
+eq~006~omegaMinimumNumber(A, nan) = A~-|
+eq~007~omegaMinimumNumber(A, B) = omegaMinimum(A, B)~-|
+eq~008~omegaMinimumMagnitude(nan, X) = nan~-|
+eq~009~omegaMinimumMagnitude(A, nan) = nan~-|
+ceq~010~omegaMinimumMagnitude(A, B) = A if xLt(omegaAbs(A), omegaAbs(B))~-|
+ceq~011~omegaMinimumMagnitude(A, B) = B if xLt(omegaAbs(B), omegaAbs(A))~-|
+ceq~012~omegaMinimumMagnitude(A, B) = omegaMinimum(A, B) if xEq(omegaAbs(A), omegaAbs(B))~-|
+eq~013~omegaMinimumMagnitudeNumber(nan, X) = X~-|
+eq~014~omegaMinimumMagnitudeNumber(A, nan) = A~-|
+eq~015~omegaMinimumMagnitudeNumber(A, B) = omegaMinimumMagnitude(A, B)~-|
+eq~016~omegaMinimumFinite(nan, X) = X~-|
+eq~017~omegaMinimumFinite(A, nan) = A~-|
+eq~018~omegaMinimumFinite(I, J) = omegaMinimum(I, J)~-|
+eq~019~omegaMinimumFinite(I, U) = U~-|
+eq~020~omegaMinimumFinite(U, I) = U~-|
+eq~021~omegaMinimumFinite(U, V) = omegaMinimum(U, V)~-|
+eq~022~omegaMaximum(nan, X) = nan~-|
+eq~023~omegaMaximum(A, nan) = nan~-|
+ceq~024~omegaMaximum(A, B) = B if xLt(A, B)~-|
+ceq~025~omegaMaximum(A, B) = A if xLe(B, A)~-|
+eq~026~omegaMaximumNumber(nan, X) = X~-|
+eq~027~omegaMaximumNumber(A, nan) = A~-|
+eq~028~omegaMaximumNumber(A, B) = omegaMaximum(A, B)~-|
+eq~029~omegaMaximumMagnitude(nan, X) = nan~-|
+eq~030~omegaMaximumMagnitude(A, nan) = nan~-|
+ceq~031~omegaMaximumMagnitude(A, B) = B if xLt(omegaAbs(A), omegaAbs(B))~-|
+ceq~032~omegaMaximumMagnitude(A, B) = A if xLt(omegaAbs(B), omegaAbs(A))~-|
+ceq~033~omegaMaximumMagnitude(A, B) = omegaMaximum(A, B) if xEq(omegaAbs(A), omegaAbs(B))~-|
+eq~034~omegaMaximumMagnitudeNumber(nan, X) = X~-|
+eq~035~omegaMaximumMagnitudeNumber(A, nan) = A~-|
+eq~036~omegaMaximumMagnitudeNumber(A, B) = omegaMaximumMagnitude(A, B)~-|
+eq~037~omegaMaximumFinite(nan, X) = X~-|
+eq~038~omegaMaximumFinite(A, nan) = A~-|
+eq~039~omegaMaximumFinite(I, J) = omegaMaximum(I, J)~-|
+eq~040~omegaMaximumFinite(I, U) = U~-|
+eq~041~omegaMaximumFinite(U, I) = U~-|
+eq~042~omegaMaximumFinite(U, V) = omegaMaximum(U, V)~-|
+eq~043~omegaClamp(nan, X, Y) = nan~-|
+eq~044~omegaClamp(A, nan, X) = nan~-|
+eq~045~omegaClamp(A, B, nan) = nan~-|
+ceq~046~omegaClamp(A, B, C) = nan if xLt(C, B)~-|
+ceq~047~omegaClamp(A, B, C) = omegaMinimum(omegaMaximum(A, B), C) if xLe(B, C)~-|
+!endfm
+{%- endcapture -%}
+{% render 'shared/statements', rows: rows, prefix: 'p3109-omega-extrema-', metadata: 'clause=4.11; page=49-52', multiline: false %}

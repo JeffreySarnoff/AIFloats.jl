@@ -92,7 +92,10 @@ Random values are explicit operands; the model never generates them.
 
 Define this vocabulary once and apply it consistently to operation guards.
 
-- `Rat < Real < XReal`, with `Real` denoting finite mathematical reals.
+- `Real < XReal`, with `Real` denoting finite mathematical reals and the
+  rationals embedded by a constructor `fin : Rat -> Real` rather than declared
+  `Rat < Real`; the subsort form merges the built-in numeric tower into the
+  kind of `XReal`, which defeats sort-disjointness and every downstream tool.
   `NaN`, `+Inf`, and `-Inf` inhabit a separate `Exceptional` subsort of
   `XReal`. This internal name distinguishes them from the draft's term
   "special value", which also includes zero.

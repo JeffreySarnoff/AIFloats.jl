@@ -1,0 +1,246 @@
+{
+  "source": "../spec2.lean",
+  "source_sha256": "2a94d856a75b61df1bb3a59a48d9c4b602067a6d00af5b1e48cf2533071b24b6",
+  "source_lines": 20920,
+  "namespace": "Maude",
+  "modules": [
+    {
+      "module": "P3109.Foundations",
+      "file": "P3109/Foundations.lean",
+      "source_start": 2,
+      "source_end": 73,
+      "imports": [],
+      "body_sha256": "f2f958f69ccebe75c3f6ec93e68e0405739d8c48188aff128e7e2123c334312f"
+    },
+    {
+      "module": "P3109.Syntax",
+      "file": "P3109/Syntax.lean",
+      "source_start": 74,
+      "source_end": 549,
+      "imports": [
+        "P3109.Foundations"
+      ],
+      "body_sha256": "9380fb063ac3c9a47ec0aef51061f68df43ff60c29607867ee6c8db11b08028c"
+    },
+    {
+      "module": "P3109.Native.Operators",
+      "file": "P3109/Native/Operators.lean",
+      "source_start": 550,
+      "source_end": 724,
+      "imports": [
+        "P3109.Syntax"
+      ],
+      "body_sha256": "a94fe6aa46005477a9a85c6407f343a8f1bdd9ccd99cbecb357f6f3f071f9f88"
+    },
+    {
+      "module": "P3109.Predicates",
+      "file": "P3109/Predicates.lean",
+      "source_start": 725,
+      "source_end": 961,
+      "imports": [
+        "P3109.Native.Operators"
+      ],
+      "body_sha256": "16b9db642f288e8d900d374f005d993987f7b2743a2b8cd4d03431558dfb5a30"
+    },
+    {
+      "module": "P3109.Relations.AxiomaticEquality",
+      "file": "P3109/Relations/AxiomaticEquality.lean",
+      "source_start": 962,
+      "source_end": 1504,
+      "imports": [
+        "P3109.Predicates"
+      ],
+      "body_sha256": "902d33d14dfcdd2ccb0b822ae725b16a65950827d836a5a4269e25ddaf9388c4"
+    },
+    {
+      "module": "P3109.Relations.EquationalEquality",
+      "file": "P3109/Relations/EquationalEquality.lean",
+      "source_start": 1505,
+      "source_end": 3334,
+      "imports": [
+        "P3109.Relations.AxiomaticEquality"
+      ],
+      "body_sha256": "1c05e3d7c8e796594e20af7d8b00a9f334842a60065163c57d594ad5700d5b61"
+    },
+    {
+      "module": "P3109.Native.Equations",
+      "file": "P3109/Native/Equations.lean",
+      "source_start": 3335,
+      "source_end": 3734,
+      "imports": [
+        "P3109.Relations.EquationalEquality"
+      ],
+      "body_sha256": "684cd5fd10cd7f22f9a22434ff9207278ab913e5fc9cfaa0df9e63e1e74d701b"
+    },
+    {
+      "module": "P3109.Relations.Rewriting",
+      "file": "P3109/Relations/Rewriting.lean",
+      "source_start": 3735,
+      "source_end": 7870,
+      "imports": [
+        "P3109.Native.Equations"
+      ],
+      "body_sha256": "864331aa0ced958f567ef8b6b7de38fd88fbbca784acfe1243ac082f9ae00a23"
+    },
+    {
+      "module": "P3109.Lemmas.Congruence",
+      "file": "P3109/Lemmas/Congruence.lean",
+      "source_start": 7871,
+      "source_end": 7888,
+      "imports": [
+        "P3109.Relations.Rewriting"
+      ],
+      "body_sha256": "4b9bc5fb8faa0798f27fc1c36b69f18882d2f5e00e5c6c5aad728f76d41b33d4"
+    },
+    {
+      "module": "P3109.Lemmas.Equations.Bool",
+      "file": "P3109/Lemmas/Equations/Bool.lean",
+      "source_start": 7889,
+      "source_end": 8437,
+      "imports": [
+        "P3109.Lemmas.Congruence"
+      ],
+      "body_sha256": "eefcaaa348c659b28ecd1419b409717db2f7566384ce9f34557840f2b9865b1a"
+    },
+    {
+      "module": "P3109.Lemmas.Equations.XReal",
+      "file": "P3109/Lemmas/Equations/XReal.lean",
+      "source_start": 8438,
+      "source_end": 8978,
+      "imports": [
+        "P3109.Lemmas.Equations.Bool"
+      ],
+      "body_sha256": "7a2a1166c58e8e3a1a7983bfc99a212ed61070d483d79772d871bf855e7f684d"
+    },
+    {
+      "module": "P3109.Lemmas.Equations.Formats",
+      "file": "P3109/Lemmas/Equations/Formats.lean",
+      "source_start": 8979,
+      "source_end": 9266,
+      "imports": [
+        "P3109.Lemmas.Equations.XReal"
+      ],
+      "body_sha256": "e20f329a3043a8332b81234fedc99247179cec0131be9db1774a29674dcd9e49"
+    },
+    {
+      "module": "P3109.Lemmas.Equations.SequencesAndBlocks",
+      "file": "P3109/Lemmas/Equations/SequencesAndBlocks.lean",
+      "source_start": 9267,
+      "source_end": 9763,
+      "imports": [
+        "P3109.Lemmas.Equations.Formats"
+      ],
+      "body_sha256": "d049716f5abc7e2a71ace838c644deb94c76d7828c63b119ed7cead4b3bd5356"
+    },
+    {
+      "module": "P3109.Lemmas.Equations.Conformance",
+      "file": "P3109/Lemmas/Equations/Conformance.lean",
+      "source_start": 9764,
+      "source_end": 10250,
+      "imports": [
+        "P3109.Lemmas.Equations.SequencesAndBlocks"
+      ],
+      "body_sha256": "bcc8c4077ec0fa3acad82bbf8700827978aab03ccb510d2f255767027f7d9849"
+    },
+    {
+      "module": "P3109.Lemmas.Equations.Native",
+      "file": "P3109/Lemmas/Equations/Native.lean",
+      "source_start": 10251,
+      "source_end": 10260,
+      "imports": [
+        "P3109.Lemmas.Equations.Conformance"
+      ],
+      "body_sha256": "915c7f07ecdac847a280911bb8ce02394dc7189d2540e1f8ccb8d061d4405cef"
+    },
+    {
+      "module": "P3109.Lemmas.Rewriting.Bool",
+      "file": "P3109/Lemmas/Rewriting/Bool.lean",
+      "source_start": 10261,
+      "source_end": 11232,
+      "imports": [
+        "P3109.Lemmas.Equations.Native"
+      ],
+      "body_sha256": "4bca9a4f1c44845e8dbc991ebf9e4910eed15a6de23ecad3fe698f1238ab5b91"
+    },
+    {
+      "module": "P3109.Lemmas.Rewriting.XReal",
+      "file": "P3109/Lemmas/Rewriting/XReal.lean",
+      "source_start": 11233,
+      "source_end": 11922,
+      "imports": [
+        "P3109.Lemmas.Rewriting.Bool"
+      ],
+      "body_sha256": "3bfa8081c1f175722f7638f05a985eabf41b4481ee49de9242424812994b92d1"
+    },
+    {
+      "module": "P3109.Lemmas.Rewriting.Formats",
+      "file": "P3109/Lemmas/Rewriting/Formats.lean",
+      "source_start": 11923,
+      "source_end": 12257,
+      "imports": [
+        "P3109.Lemmas.Rewriting.XReal"
+      ],
+      "body_sha256": "d91e119d14bc3058dcd08caa0488afebded867754e56a6e895250a1ae2f66b66"
+    },
+    {
+      "module": "P3109.Lemmas.Rewriting.Sequences",
+      "file": "P3109/Lemmas/Rewriting/Sequences.lean",
+      "source_start": 12258,
+      "source_end": 12927,
+      "imports": [
+        "P3109.Lemmas.Rewriting.Formats"
+      ],
+      "body_sha256": "7bbdcf9f287e14d229f02e8ae7845cfab4e5a53361c62358785b853aed9a53fa"
+    },
+    {
+      "module": "P3109.Lemmas.Rewriting.Blocks",
+      "file": "P3109/Lemmas/Rewriting/Blocks.lean",
+      "source_start": 12928,
+      "source_end": 15842,
+      "imports": [
+        "P3109.Lemmas.Rewriting.Sequences"
+      ],
+      "body_sha256": "fdc93f5d906a4101015e00354bd7196f1b84a9c877b96a5402f07820256897b5"
+    },
+    {
+      "module": "P3109.Lemmas.Rewriting.Conformance",
+      "file": "P3109/Lemmas/Rewriting/Conformance.lean",
+      "source_start": 15843,
+      "source_end": 16527,
+      "imports": [
+        "P3109.Lemmas.Rewriting.Blocks"
+      ],
+      "body_sha256": "0daa552f75596e3d116a63e66e5e0538baf4e6d3923b3d48ce7f13088cd39faf"
+    },
+    {
+      "module": "P3109.Lemmas.Rewriting.Rationals",
+      "file": "P3109/Lemmas/Rewriting/Rationals.lean",
+      "source_start": 16528,
+      "source_end": 20395,
+      "imports": [
+        "P3109.Lemmas.Rewriting.Conformance"
+      ],
+      "body_sha256": "c2394e07301dad55d575b7c855a07855c9436abf84e686127003dfc7b8284933"
+    },
+    {
+      "module": "P3109.Lemmas.Rewriting.Strings",
+      "file": "P3109/Lemmas/Rewriting/Strings.lean",
+      "source_start": 20396,
+      "source_end": 20413,
+      "imports": [
+        "P3109.Lemmas.Rewriting.Rationals"
+      ],
+      "body_sha256": "a9dfd4e396740ea6f48cc2deed3517b6ae57a63e0a70e2c52245b7c43fc05fa4"
+    },
+    {
+      "module": "P3109.Representation",
+      "file": "P3109/Representation.lean",
+      "source_start": 20414,
+      "source_end": 20919,
+      "imports": [
+        "P3109.Lemmas.Rewriting.Strings"
+      ],
+      "body_sha256": "5fb5621d973f8600eda562e02050539d010e8b3e1d079d52bec5525729a924b1"
+    }
+  ]
+}

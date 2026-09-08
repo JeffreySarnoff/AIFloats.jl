@@ -1,0 +1,54 @@
+{%- comment -%}Rows: kind~label~body~metadata; - uses the default; ! starts literal text.{%- endcomment -%}
+{%- capture rows -%}
+!--- Source: P3109/D1 4.9-4.10.8, printed page 32-40.
+fmod P3109-OMEGA-ARITHMETIC is
+  including P3109-RATIONAL-MATH .
+  ops omegaConvert omegaAbs omegaNegate omegaRecip : XReal ~> XReal .
+  ops omegaCopySign omegaAdd omegaSubtract omegaMultiply omegaDivide : XReal XReal ~> XReal .
+  ops omegaFMA omegaFAA : XReal XReal XReal ~> XReal .
+  vars X Y Z : XReal .
+  vars A B : Number .
+  vars U V : Real .
+  vars R S : Rat .
+  vars I J : Infinity .|
+eq~001~omegaConvert(X) = X~-|
+eq~002~omegaAbs(nan) = nan~-|
+eq~003~omegaAbs(I) = posInf~-|
+eq~004~omegaAbs(fin(R)) = fin(abs(R))~-|
+eq~005~omegaNegate(nan) = nan~-|
+eq~006~omegaNegate(posInf) = negInf~-|
+eq~007~omegaNegate(negInf) = posInf~-|
+eq~008~omegaNegate(fin(R)) = fin(- R)~-|
+eq~009~omegaCopySign(nan, X) = nan~-|
+eq~010~omegaCopySign(A, nan) = nan~-|
+ceq~011~omegaCopySign(A, B) = omegaNegate(omegaAbs(A)) if xMinus(B)~-|
+ceq~012~omegaCopySign(A, B) = omegaAbs(A) if xMinus(B) == false~-|
+eq~013~omegaAdd(nan, X) = nan~-|
+eq~014~omegaAdd(A, nan) = nan~-|
+eq~015~omegaAdd(posInf, negInf) = nan~-|
+eq~016~omegaAdd(negInf, posInf) = nan~-|
+eq~017~omegaAdd(I, I) = I~-|
+eq~018~omegaAdd(I, U) = I~-|
+eq~019~omegaAdd(U, I) = I~-|
+eq~020~omegaAdd(fin(R), fin(S)) = fin(R + S)~-|
+eq~021~omegaSubtract(X, Y) = omegaAdd(X, omegaNegate(Y))~-|
+eq~022~omegaMultiply(nan, X) = nan~-|
+eq~023~omegaMultiply(A, nan) = nan~-|
+eq~024~omegaMultiply(I, J) = if xMinus(I) == xMinus(J) then posInf else negInf fi~-|
+eq~025~omegaMultiply(I, fin(0)) = nan~-|
+ceq~026~omegaMultiply(I, fin(R)) = if xMinus(I) == (R < 0) then posInf else negInf fi if R =/= 0~-|
+eq~027~omegaMultiply(U, I) = omegaMultiply(I, U)~-|
+eq~028~omegaMultiply(fin(R), fin(S)) = fin(R * S)~-|
+eq~029~omegaDivide(nan, X) = nan~-|
+eq~030~omegaDivide(A, nan) = nan~-|
+eq~031~omegaDivide(I, J) = nan~-|
+eq~032~omegaDivide(A, fin(0)) = nan~-|
+ceq~033~omegaDivide(I, fin(R)) = if xMinus(I) == (R < 0) then posInf else negInf fi if R =/= 0~-|
+eq~034~omegaDivide(U, I) = fin(0)~-|
+ceq~035~omegaDivide(fin(R), fin(S)) = fin(R / S) if S =/= 0~-|
+eq~036~omegaRecip(X) = omegaDivide(fin(1), X)~-|
+eq~037~omegaFMA(X, Y, Z) = omegaAdd(omegaMultiply(X, Y), Z)~-|
+eq~038~omegaFAA(X, Y, Z) = omegaAdd(omegaAdd(X, Y), Z)~-|
+!endfm
+{%- endcapture -%}
+{% render 'shared/statements', rows: rows, prefix: 'p3109-omega-arithmetic-', metadata: 'clause=4.9-4.10.8; page=32-40', multiline: false %}

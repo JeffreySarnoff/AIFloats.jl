@@ -1,0 +1,20 @@
+{%- comment -%}Rows: kind~label~body~metadata; - uses the default; ! starts literal text.{%- endcomment -%}
+{%- capture rows -%}
+!--- Source: P3109/D1 4.14, printed page 58.
+fmod P3109-FORMAT-QUERIES is
+  including P3109-CODEC .
+  ops MaxFiniteOf MinFiniteOf MinPositiveOf MaxSubnormalOf MinNormalOf : Format ~> Nat .
+  var F : Format .|
+ceq~001~MaxFiniteOf(F) = positiveLimit(F) - (if DomainOf(F) == Extended then 1 else 0 fi) if validFormat(F) /\ internalFormat(F)~-|
+ceq~002~MinFiniteOf(F) = if SignednessOf(F) == Signed then MaxFiniteOf(F) + 2 ^ (BitwidthOf(F) - 1) else 0 fi if validFormat(F) /\ internalFormat(F)~-|
+ceq~003~MinPositiveOf(F) = 1 if validFormat(F) /\ internalFormat(F)~-|
+ceq~004~MaxSubnormalOf(F) = if PrecisionOf(F) == 1 then nanCode(F) else 2 ^ (PrecisionOf(F) - 1) - 1 fi if validFormat(F) /\ internalFormat(F)~-|
+ceq~005~MinNormalOf(F) = 2 ^ (PrecisionOf(F) - 1) if validFormat(F) /\ internalFormat(F)~-|
+ceq~006~MaxFiniteOf(F) = externalBound(F, maxFiniteQuery) if validFormat(F) /\ not internalFormat(F)~-|
+ceq~007~MinFiniteOf(F) = externalBound(F, minFiniteQuery) if validFormat(F) /\ not internalFormat(F)~-|
+ceq~008~MinPositiveOf(F) = externalBound(F, minPositiveQuery) if validFormat(F) /\ not internalFormat(F)~-|
+ceq~009~MaxSubnormalOf(F) = externalBound(F, maxSubnormalQuery) if validFormat(F) /\ not internalFormat(F)~-|
+ceq~010~MinNormalOf(F) = externalBound(F, minNormalQuery) if validFormat(F) /\ not internalFormat(F)~-|
+!endfm
+{%- endcapture -%}
+{% render 'shared/statements', rows: rows, prefix: 'p3109-format-queries-', metadata: 'clause=4.14; page=58', multiline: false %}

@@ -1,0 +1,35 @@
+{%- comment -%}Rows: kind~label~body~metadata[~attributes]; - uses the default; ! starts literal text.{%- endcomment -%}
+{%- capture rows -%}
+!--- Source: P3109/D1 3.1; 4.10; interpretation obligation, printed page 16; 33-48.
+fth P3109-REAL-CONTRACT is
+  including P3109-XREAL .
+  ops realZero realOne : -> Real .
+  ops addReal multiplyReal : Real Real -> Real .
+  op negateReal : Real -> Real .
+  op inverseReal : Real ~> Real .
+  op lessReal : Real Real -> Bool .
+  vars A B C : Real .|
+eq~001~addReal(A, B) = addReal(B, A)~-|
+eq~002~addReal(addReal(A, B), C) = addReal(A, addReal(B, C))~-|
+eq~003~addReal(A, realZero) = A~-|
+eq~004~addReal(A, negateReal(A)) = realZero~-|
+eq~005~multiplyReal(A, B) = multiplyReal(B, A)~-|
+eq~006~multiplyReal(multiplyReal(A, B), C) = multiplyReal(A, multiplyReal(B, C))~-|
+eq~007~multiplyReal(A, realOne) = A~-|
+eq~008~multiplyReal(A, addReal(B, C)) = addReal(multiplyReal(A, B), multiplyReal(A, C))~-|
+ceq~009~multiplyReal(A, inverseReal(A)) = realOne if A =/= realZero~-|
+eq~010~lessReal(A, A) = false~-|
+ceq~011~lessReal(A, C) = true if lessReal(A, B) /\ lessReal(B, C)~-~nonexec|
+ceq~012~lessReal(addReal(A, C), addReal(B, C)) = true if lessReal(A, B)~-|
+ceq~013~lessReal(multiplyReal(A, C), multiplyReal(B, C)) = true if lessReal(A, B) /\ lessReal(realZero, C)~-|
+eq~014~realZero = fin(0)~-|
+eq~015~realOne = fin(1)~-|
+!endfth
+--- Additional semantic obligations (not first-order executable axioms):
+--- ordered-field totality and completeness; the intended embedding of RAT;
+--- standard elementary functions and pi; soundness of expression interpretation;
+--- any projection certificate must contain the real and stay inside one complete
+--- round/saturate/encode decision region for the fixed random operand.
+--- No implementation view into RAT or intervals is supplied.
+{%- endcapture -%}
+{% render 'shared/statements', rows: rows, prefix: 'p3109-real-', metadata: 'clause=3.1; 4.10; interpretation obligation; page=16; 33-48', multiline: false %}

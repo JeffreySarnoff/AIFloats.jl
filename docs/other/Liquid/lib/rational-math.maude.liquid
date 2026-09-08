@@ -1,0 +1,27 @@
+{%- comment -%}Rows: kind~label~body~metadata; - uses the default; ! starts literal text.{%- endcomment -%}
+{%- capture rows -%}
+!--- Source: P3109/D1 4.7.4; 4.10.8, printed page 27; 40.
+fmod P3109-RATIONAL-MATH is
+  including P3109-XREAL .
+  op pow2 : Int -> Rat .
+  op floorLog2 : Rat ~> Int .
+  op even : Int -> Bool .
+  op nearestEvenInteger : Rat -> Int .
+  op integerSqrt : Nat -> Nat .
+  op sqrtSearch : Nat Nat Nat -> Nat .
+  vars I : Int .
+  vars R : Rat .
+  vars N L H M : Nat .|
+eq~001~pow2(I) = if I >= 0 then 2 ^ I else 1 / (2 ^ (- I)) fi~-|
+ceq~002~floorLog2(R) = 0 if R >= 1 /\ R < 2~-|
+ceq~003~floorLog2(R) = 1 + floorLog2(R / 2) if R >= 2~-|
+ceq~004~floorLog2(R) = floorLog2(R * 2) - 1 if R > 0 /\ R < 1~-|
+eq~005~even(I) = (I rem 2 == 0)~-|
+eq~006~nearestEvenInteger(R) = if R - floor(R) < 1/2 or (R - floor(R) == 1/2 and even(floor(R))) then floor(R) else floor(R) + 1 fi~-|
+eq~007~integerSqrt(N) = sqrtSearch(N, 0, N + 1)~-|
+ceq~008~sqrtSearch(N, L, H) = L if H <= L + 1~-|
+ceq~009~sqrtSearch(N, L, H) = sqrtSearch(N, M, H) if H > L + 1 /\ M := (L + H) quo 2 /\ M * M <= N~-|
+ceq~010~sqrtSearch(N, L, H) = sqrtSearch(N, L, M) if H > L + 1 /\ M := (L + H) quo 2 /\ M * M > N~-|
+!endfm
+{%- endcapture -%}
+{% render 'shared/statements', rows: rows, prefix: 'p3109-rational-math-', metadata: 'clause=4.7.4; 4.10.8; page=27; 40', multiline: false %}

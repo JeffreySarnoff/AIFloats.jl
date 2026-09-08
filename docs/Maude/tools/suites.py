@@ -1,7 +1,7 @@
 """Exhaustive bounded scalar checks and independent §4.5 product fixtures."""
 import itertools,json,pathlib
 from fractions import Fraction as Q
-from reference import evaluate,finite
+from reference import evaluate,finite,fv
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 F4='Binary(4, 2, Signed, Finite)';E4='Binary(4, 2, Signed, Extended)';F8='Binary(8, 4, Signed, Extended)';G8='Binary(8, 3, Signed, Extended)';S8='Binary(8, 1, Unsigned, Finite)';PS='proj(NearestTiesToEven, SatNone)';BP='bproj(NearestTiesToEven, SatNone)'
 def seq(items,cons='fcons',nil='fnil'):
@@ -23,7 +23,7 @@ def extra_fixtures(suite,decode,rounder):
                     up=rounded+r>=2**n if variant!='B' else rounded+2*r+1>=2**(n+1)
                     expected=sgn*(1+up)*Q(2)**(1-p)
                     # Choose bias=1, so this entire grid lies at the minimum exponent.
-                    yield f'stochastic-{p}-{n}-{r}-{j}-{sgn}-{variant}',f'roundToPrecision({p}, 1, Stochastic{variant}({n}, {r}), {x}) == {expected}'
+                    yield f'stochastic-{p}-{n}-{r}-{j}-{sgn}-{variant}',f'roundToPrecision({p}, 1, Stochastic{variant}({n}, {r}), {fv(x)}) == {fv(expected)}'
     if suite=='codec':
         for r in json.loads((ROOT/'tests/vectors/tables-3-7.json').read_text())['tables_4_to_7']:
             f,c,v=r['format'],r['code'],r['value']
@@ -37,9 +37,9 @@ def extra_fixtures(suite,decode,rounder):
             f=f'Binary({k}, {p}, {sg}, {d})'
             for c in range(2**k):
                 v=decode(k,p,sg,d,c)
-                yield f'codec8-{f}-{c}',f'decode({f}, {c}) == {v}'
+                yield f'codec8-{f}-{c}',f'decode({f}, {c}) == {fv(v)}'
                 yield f'roundtrip8-{f}-{c}',f'encode({f}, decode({f}, {c})) == {c}'
-            yield f'table3-one-{f}',f'encode({f}, 1) == {2**(k-2 if sg=="Signed" else k-1)}'
+            yield f'table3-one-{f}',f'encode({f}, fin(1)) == {2**(k-2 if sg=="Signed" else k-1)}'
     if suite=='domains':
         yield 'invalid-code-format', 'validCode(Binary(2, 1, Signed, Finite), 0) == false'
         yield 'invalid-round-query','(RoundOf(proj(StochasticA(-1, 0), SatNone)) :: RoundMode) == false'
@@ -70,7 +70,7 @@ def extra_fixtures(suite,decode,rounder):
             for codes in itertools.product(range(16),repeat=n):
                 values=[vals[c] for c in codes];ans=evaluate(name,*values)
                 cargs=', '.join(map(str,codes));fargs=', '.join([E4]*(n+1))
-                yield f'omega-{name}-{cargs}',f'omega{name}('+', '.join(map(str,values))+f') == {ans}'
+                yield f'omega-{name}-{cargs}',f'omega{name}('+', '.join(map(fv,values))+f') == {fv(ans)}'
                 yield f'scalar-{name}-{cargs}',f'{name}({fargs}, {PS}, {cargs}) == {projected(ans)}'
     if suite in ['blocks','symbolic']:
         for o in ops:

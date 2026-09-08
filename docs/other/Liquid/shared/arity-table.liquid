@@ -1,0 +1,15 @@
+{%- comment -%}
+Groups are arity~space-separated names, separated by |, in source order.
+Expand a nested list; the statement renderer handles line wrapping.
+{%- endcomment -%}
+{%- assign groups = groups | split: '|' -%}
+{%- assign count = 0 -%}
+{% for group in groups -%}
+  {%- assign fields = group | split: '~' -%}
+  {%- assign names = fields[1] | split: ' ' -%}
+  {%- for name in names -%}
+    {%- assign count = count | plus: 1 -%}
+acons(entry("{{ name }}", {{ fields[0] }}), {{ ' ' -}}
+  {%- endfor -%}
+{%- endfor -%}
+anil{% for index in (1..count) %}){% endfor -%}

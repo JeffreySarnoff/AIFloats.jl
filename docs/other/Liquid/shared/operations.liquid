@@ -1,0 +1,60 @@
+{%- comment -%}
+Ordered operation rows: name~arity[~elementary label~domain guard].
+The optional fields define primitive real expressions; - means an unrestricted domain.
+Core/symbolic wrappers and elementary declarations/rules consume the same catalog.
+{%- endcomment -%}
+{%- if profile == 'core' -%}
+Convert~1|
+Abs~1|
+Negate~1|
+CopySign~2|
+Add~2|
+Subtract~2|
+Multiply~2|
+Divide~2|
+FMA~3|
+FAA~3|
+Recip~1|
+Minimum~2|
+Maximum~2|
+MinimumNumber~2|
+MaximumNumber~2|
+MinimumMagnitude~2|
+MaximumMagnitude~2|
+MinimumMagnitudeNumber~2|
+MaximumMagnitudeNumber~2|
+MinimumFinite~2|
+MaximumFinite~2|
+Clamp~3
+{%- else -%}
+Sqrt~1~001~xLe(fin(0), U)|
+RSqrt~1|
+Exp~1~003~-|
+Exp2~1~005~-|
+Log~1~007~xLt(fin(0), U)|
+Log2~1~009~xLt(fin(0), U)|
+LogOnePlus~1|
+ExpMinusOne~1|
+Sin~1~011~-|
+Cos~1~013~-|
+Tan~1~015~xEq(omegaCos(U), fin(0)) == false|
+ArcSin~1~017~xLe(fin(-1), U) /\ xLe(U, fin(1))|
+ArcCos~1~019~xLe(fin(-1), U) /\ xLe(U, fin(1))|
+ArcTan~1~021~-|
+Sinh~1~023~-|
+Cosh~1~025~-|
+Tanh~1~027~-|
+ArcSinh~1~029~-|
+ArcCosh~1~031~xLe(fin(1), U)|
+ArcTanh~1~033~xLt(fin(-1), U) /\ xLt(U, fin(1))|
+SinPi~1|
+CosPi~1|
+TanPi~1|
+ArcSinPi~1|
+ArcCosPi~1|
+ArcTanPi~1|
+Softplus~1|
+Hypot~2|
+ArcTan2~2|
+ArcTan2Pi~2
+{%- endif -%}

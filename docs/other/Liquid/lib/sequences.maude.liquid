@@ -1,0 +1,26 @@
+{%- assign metadata = '[metadata "clause=5.2-5.3; page=61"]' -%}
+--- Source: P3109/D1 5.2-5.3, printed page 61.
+fmod P3109-SEQUENCE{E :: TRIV} is
+  protecting NAT .
+  sort Seq{E} .
+  op nil : -> Seq{E} [ctor] .
+  op cons : E$Elt Seq{E} -> Seq{E} [ctor] .
+  op length : Seq{E} -> Nat .
+  op at : Seq{E} Nat ~> E$Elt .
+  var X : E$Elt .
+  var XS : Seq{E} .
+  var N : Nat .
+  eq [p3109-sequences-001] : length(nil) = 0 {{ metadata }} .
+  eq [p3109-sequences-002] : length(cons(X, XS)) = 1 + length(XS) {{ metadata }} .
+  eq [p3109-sequences-003] : at(cons(X, XS), 0) = X {{ metadata }} .
+  ceq [p3109-sequences-004] : at(cons(X, XS), N) = at(XS, sd(N, 1)) if N > 0 {{ metadata }} .
+endfm
+view XRealElt from TRIV to P3109-XREAL is
+  sort Elt to XReal .
+endv
+view CodeElt from TRIV to INT is
+  sort Elt to Int .
+endv
+view RandomElt from TRIV to INT is
+  sort Elt to Int .
+endv

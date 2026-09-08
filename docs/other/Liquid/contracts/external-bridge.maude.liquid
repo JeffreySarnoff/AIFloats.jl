@@ -1,0 +1,15 @@
+{%- comment -%}Rows: kind~label~body~metadata[~attributes]; - uses the default; ! starts literal text.{%- endcomment -%}
+{%- capture rows -%}
+!--- Source: P3109/D1 4.8; parameterized interface, printed page 31.
+fmod P3109-EXTERNAL-BRIDGE{B :: P3109-EXTERNAL-FORMAT} is
+  including P3109-CODEC .
+  var C : Int .
+  var X : XReal .
+  var N : BoundQuery .|
+ceq~001~externalDecode(backendFormat, C) = backendDecode(C) if backendValidCode(C)~-|
+ceq~002~externalEncode(backendFormat, X) = backendEncode(X) if backendDatum(X)~-|
+eq~003~externalDatum(backendFormat, X) = backendDatum(X)~-|
+eq~004~externalBound(backendFormat, N) = backendBound(N)~-|
+!endfm
+{%- endcapture -%}
+{% render 'shared/statements', rows: rows, prefix: 'p3109-external-bridge-', metadata: 'clause=4.8; parameterized interface; page=31', multiline: false %}

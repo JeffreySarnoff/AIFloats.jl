@@ -1,0 +1,27 @@
+{%- assign metadata = '[metadata "clause=3.1-3.2; 4.14; page=16-17; 58"]' -%}
+--- Source: P3109/D1 3.2, printed page 17.
+--- Presentation only: the short-name rendering of 3.2. Kept out of the semantic
+--- profile because it needs CONVERSION, whose STRING import declares
+--- subsort Nat < FindResult and thereby drags FindResult into the numeric kind
+--- of every module that imports P3109-FORMAT-CORE. Load it from load-spec.maude;
+--- P3109-CORE does not include it.
+fmod P3109-FORMAT-NAMES is
+  including P3109-FORMAT-CORE .
+  protecting CONVERSION .
+  op formatName : Format ~> String .
+  op signName : Signedness -> String .
+  op domainName : Domain -> String .
+  vars K P : Int .
+  var S : Signedness .
+  var D : Domain .
+  var F : Format .
+  ceq [p3109-format-core-010] : formatName(Binary(K, P, S, D)) = "Binary" + string(K, 10) + "p" + string(P, 10) + signName(S) + domainName(D) if validFormat(Binary(K, P, S, D)) {{ metadata }} .
+  eq [p3109-format-core-011] : signName(Signed) = "s" {{ metadata }} .
+  eq [p3109-format-core-012] : signName(Unsigned) = "u" {{ metadata }} .
+  eq [p3109-format-core-013] : domainName(Finite) = "f" {{ metadata }} .
+  eq [p3109-format-core-014] : domainName(Extended) = "e" {{ metadata }} .
+  eq [p3109-format-core-022] : formatName(binary64) = "binary64" {{ metadata }} .
+  eq [p3109-format-core-030] : formatName(binary32) = "binary32" {{ metadata }} .
+  eq [p3109-format-core-038] : formatName(binary16) = "binary16" {{ metadata }} .
+  eq [p3109-format-core-046] : formatName(BFloat16) = "BFloat16" {{ metadata }} .
+endfm

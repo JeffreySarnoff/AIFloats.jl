@@ -1,0 +1,1868 @@
+{
+  "source": "IEEE_D1_2026_09_07.pdf; normative definitions",
+  "operations": [
+    {
+      "name": "Convert",
+      "arity": 1,
+      "clause": "4.9.1",
+      "pages": [
+        32
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "core",
+      "wrapper": true
+    },
+    {
+      "name": "Abs",
+      "arity": 1,
+      "clause": "4.10.1",
+      "pages": [
+        33
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "core",
+      "wrapper": true
+    },
+    {
+      "name": "Negate",
+      "arity": 1,
+      "clause": "4.10.1",
+      "pages": [
+        33
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "core",
+      "wrapper": true
+    },
+    {
+      "name": "CopySign",
+      "arity": 2,
+      "clause": "4.10.2",
+      "pages": [
+        34
+      ],
+      "parameters": [
+        "fx",
+        "fy",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x",
+        "y"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "core",
+      "wrapper": true
+    },
+    {
+      "name": "Add",
+      "arity": 2,
+      "clause": "4.10.3",
+      "pages": [
+        35
+      ],
+      "parameters": [
+        "fx",
+        "fy",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x",
+        "y"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "core",
+      "wrapper": true
+    },
+    {
+      "name": "Subtract",
+      "arity": 2,
+      "clause": "4.10.3",
+      "pages": [
+        35
+      ],
+      "parameters": [
+        "fx",
+        "fy",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x",
+        "y"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "core",
+      "wrapper": true
+    },
+    {
+      "name": "Multiply",
+      "arity": 2,
+      "clause": "4.10.4",
+      "pages": [
+        36
+      ],
+      "parameters": [
+        "fx",
+        "fy",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x",
+        "y"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "core",
+      "wrapper": true
+    },
+    {
+      "name": "Divide",
+      "arity": 2,
+      "clause": "4.10.5",
+      "pages": [
+        37
+      ],
+      "parameters": [
+        "fx",
+        "fy",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x",
+        "y"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "core",
+      "wrapper": true
+    },
+    {
+      "name": "FMA",
+      "arity": 3,
+      "clause": "4.10.6",
+      "pages": [
+        38
+      ],
+      "parameters": [
+        "fx",
+        "fy",
+        "fz",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x",
+        "y",
+        "z"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "core",
+      "wrapper": true
+    },
+    {
+      "name": "FAA",
+      "arity": 3,
+      "clause": "4.10.7",
+      "pages": [
+        39
+      ],
+      "parameters": [
+        "fx",
+        "fy",
+        "fz",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x",
+        "y",
+        "z"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "core",
+      "wrapper": true
+    },
+    {
+      "name": "Sqrt",
+      "arity": 1,
+      "clause": "4.10.8",
+      "pages": [
+        40
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "Recip",
+      "arity": 1,
+      "clause": "4.10.8",
+      "pages": [
+        40
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "core",
+      "wrapper": true
+    },
+    {
+      "name": "RSqrt",
+      "arity": 1,
+      "clause": "4.10.8",
+      "pages": [
+        40
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "Exp",
+      "arity": 1,
+      "clause": "4.10.9",
+      "pages": [
+        41
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "Exp2",
+      "arity": 1,
+      "clause": "4.10.9",
+      "pages": [
+        41
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "Log",
+      "arity": 1,
+      "clause": "4.10.9",
+      "pages": [
+        41
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "Log2",
+      "arity": 1,
+      "clause": "4.10.9",
+      "pages": [
+        41
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "LogOnePlus",
+      "arity": 1,
+      "clause": "4.10.9",
+      "pages": [
+        41
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "ExpMinusOne",
+      "arity": 1,
+      "clause": "4.10.9",
+      "pages": [
+        41
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "Sin",
+      "arity": 1,
+      "clause": "4.10.10",
+      "pages": [
+        42
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "Cos",
+      "arity": 1,
+      "clause": "4.10.10",
+      "pages": [
+        42
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "Tan",
+      "arity": 1,
+      "clause": "4.10.10",
+      "pages": [
+        42
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "ArcSin",
+      "arity": 1,
+      "clause": "4.10.10",
+      "pages": [
+        42
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "ArcCos",
+      "arity": 1,
+      "clause": "4.10.10",
+      "pages": [
+        42
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "ArcTan",
+      "arity": 1,
+      "clause": "4.10.10",
+      "pages": [
+        42
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "Sinh",
+      "arity": 1,
+      "clause": "4.10.11",
+      "pages": [
+        43
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "Cosh",
+      "arity": 1,
+      "clause": "4.10.11",
+      "pages": [
+        43
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "Tanh",
+      "arity": 1,
+      "clause": "4.10.11",
+      "pages": [
+        43
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "ArcSinh",
+      "arity": 1,
+      "clause": "4.10.11",
+      "pages": [
+        43
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "ArcCosh",
+      "arity": 1,
+      "clause": "4.10.11",
+      "pages": [
+        43
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "ArcTanh",
+      "arity": 1,
+      "clause": "4.10.11",
+      "pages": [
+        43
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "SinPi",
+      "arity": 1,
+      "clause": "4.10.12",
+      "pages": [
+        44
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "CosPi",
+      "arity": 1,
+      "clause": "4.10.12",
+      "pages": [
+        44
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "TanPi",
+      "arity": 1,
+      "clause": "4.10.12",
+      "pages": [
+        44
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "ArcSinPi",
+      "arity": 1,
+      "clause": "4.10.12",
+      "pages": [
+        44
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "ArcCosPi",
+      "arity": 1,
+      "clause": "4.10.12",
+      "pages": [
+        44
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "ArcTanPi",
+      "arity": 1,
+      "clause": "4.10.12",
+      "pages": [
+        44
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "Softplus",
+      "arity": 1,
+      "clause": "4.10.13",
+      "pages": [
+        45
+      ],
+      "parameters": [
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "Hypot",
+      "arity": 2,
+      "clause": "4.10.14",
+      "pages": [
+        46
+      ],
+      "parameters": [
+        "fx",
+        "fy",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x",
+        "y"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "ArcTan2",
+      "arity": 2,
+      "clause": "4.10.15",
+      "pages": [
+        47
+      ],
+      "parameters": [
+        "fy",
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "y",
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "ArcTan2Pi",
+      "arity": 2,
+      "clause": "4.10.16",
+      "pages": [
+        48
+      ],
+      "parameters": [
+        "fy",
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "y",
+        "x"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "symbolic",
+      "wrapper": true
+    },
+    {
+      "name": "Minimum",
+      "arity": 2,
+      "clause": "4.11.1",
+      "pages": [
+        49
+      ],
+      "parameters": [
+        "fx",
+        "fy",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x",
+        "y"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "core",
+      "wrapper": true
+    },
+    {
+      "name": "Maximum",
+      "arity": 2,
+      "clause": "4.11.1",
+      "pages": [
+        49
+      ],
+      "parameters": [
+        "fx",
+        "fy",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x",
+        "y"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "core",
+      "wrapper": true
+    },
+    {
+      "name": "MinimumNumber",
+      "arity": 2,
+      "clause": "4.11.1",
+      "pages": [
+        49
+      ],
+      "parameters": [
+        "fx",
+        "fy",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x",
+        "y"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "core",
+      "wrapper": true
+    },
+    {
+      "name": "MaximumNumber",
+      "arity": 2,
+      "clause": "4.11.1",
+      "pages": [
+        49
+      ],
+      "parameters": [
+        "fx",
+        "fy",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x",
+        "y"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "core",
+      "wrapper": true
+    },
+    {
+      "name": "MinimumMagnitude",
+      "arity": 2,
+      "clause": "4.11.2",
+      "pages": [
+        50
+      ],
+      "parameters": [
+        "fx",
+        "fy",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x",
+        "y"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "core",
+      "wrapper": true
+    },
+    {
+      "name": "MaximumMagnitude",
+      "arity": 2,
+      "clause": "4.11.2",
+      "pages": [
+        50
+      ],
+      "parameters": [
+        "fx",
+        "fy",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x",
+        "y"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "core",
+      "wrapper": true
+    },
+    {
+      "name": "MinimumMagnitudeNumber",
+      "arity": 2,
+      "clause": "4.11.2",
+      "pages": [
+        50
+      ],
+      "parameters": [
+        "fx",
+        "fy",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x",
+        "y"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "core",
+      "wrapper": true
+    },
+    {
+      "name": "MaximumMagnitudeNumber",
+      "arity": 2,
+      "clause": "4.11.2",
+      "pages": [
+        50
+      ],
+      "parameters": [
+        "fx",
+        "fy",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x",
+        "y"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "core",
+      "wrapper": true
+    },
+    {
+      "name": "MinimumFinite",
+      "arity": 2,
+      "clause": "4.11.3",
+      "pages": [
+        51
+      ],
+      "parameters": [
+        "fx",
+        "fy",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x",
+        "y"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "core",
+      "wrapper": true
+    },
+    {
+      "name": "MaximumFinite",
+      "arity": 2,
+      "clause": "4.11.3",
+      "pages": [
+        51
+      ],
+      "parameters": [
+        "fx",
+        "fy",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x",
+        "y"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "core",
+      "wrapper": true
+    },
+    {
+      "name": "Clamp",
+      "arity": 3,
+      "clause": "4.11.4",
+      "pages": [
+        52
+      ],
+      "parameters": [
+        "fx",
+        "flo",
+        "fhi",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "x",
+        "lo",
+        "hi"
+      ],
+      "result": "code",
+      "block": true,
+      "scaled": true,
+      "profile": "core",
+      "wrapper": true
+    },
+    {
+      "name": "CompareLess",
+      "arity": 2,
+      "clause": "4.12",
+      "pages": [
+        53
+      ],
+      "parameters": [
+        "fx",
+        "fy"
+      ],
+      "operands": [
+        "x",
+        "y"
+      ],
+      "result": "bool",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "CompareLessEqual",
+      "arity": 2,
+      "clause": "4.12",
+      "pages": [
+        53
+      ],
+      "parameters": [
+        "fx",
+        "fy"
+      ],
+      "operands": [
+        "x",
+        "y"
+      ],
+      "result": "bool",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "CompareEqual",
+      "arity": 2,
+      "clause": "4.12",
+      "pages": [
+        53
+      ],
+      "parameters": [
+        "fx",
+        "fy"
+      ],
+      "operands": [
+        "x",
+        "y"
+      ],
+      "result": "bool",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "CompareGreater",
+      "arity": 2,
+      "clause": "4.12",
+      "pages": [
+        53
+      ],
+      "parameters": [
+        "fx",
+        "fy"
+      ],
+      "operands": [
+        "x",
+        "y"
+      ],
+      "result": "bool",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "CompareGreaterEqual",
+      "arity": 2,
+      "clause": "4.12",
+      "pages": [
+        53
+      ],
+      "parameters": [
+        "fx",
+        "fy"
+      ],
+      "operands": [
+        "x",
+        "y"
+      ],
+      "result": "bool",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "TotalOrder",
+      "arity": 2,
+      "clause": "4.12.1",
+      "pages": [
+        54
+      ],
+      "parameters": [
+        "fx",
+        "fy"
+      ],
+      "operands": [
+        "x",
+        "y"
+      ],
+      "result": "bool",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "IsZero",
+      "arity": 1,
+      "clause": "4.13",
+      "pages": [
+        56
+      ],
+      "parameters": [
+        "f"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "bool",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "IsOne",
+      "arity": 1,
+      "clause": "4.13",
+      "pages": [
+        56
+      ],
+      "parameters": [
+        "f"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "bool",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "IsNaN",
+      "arity": 1,
+      "clause": "4.13",
+      "pages": [
+        56
+      ],
+      "parameters": [
+        "f"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "bool",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "IsInfinite",
+      "arity": 1,
+      "clause": "4.13",
+      "pages": [
+        56
+      ],
+      "parameters": [
+        "f"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "bool",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "IsFinite",
+      "arity": 1,
+      "clause": "4.13",
+      "pages": [
+        56
+      ],
+      "parameters": [
+        "f"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "bool",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "IsSignMinus",
+      "arity": 1,
+      "clause": "4.13",
+      "pages": [
+        56
+      ],
+      "parameters": [
+        "f"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "bool",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "IsNormal",
+      "arity": 1,
+      "clause": "4.13",
+      "pages": [
+        56
+      ],
+      "parameters": [
+        "f"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "bool",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "IsSubnormal",
+      "arity": 1,
+      "clause": "4.13",
+      "pages": [
+        56
+      ],
+      "parameters": [
+        "f"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "bool",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "Class",
+      "arity": 1,
+      "clause": "4.13.1",
+      "pages": [
+        57
+      ],
+      "parameters": [
+        "f"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "enum",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "BitwidthOf",
+      "arity": 0,
+      "clause": "4.14",
+      "pages": [
+        58
+      ],
+      "parameters": [
+        "f"
+      ],
+      "operands": [],
+      "result": "integer",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "PrecisionOf",
+      "arity": 0,
+      "clause": "4.14",
+      "pages": [
+        58
+      ],
+      "parameters": [
+        "f"
+      ],
+      "operands": [],
+      "result": "integer",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "ExponentBitwidthOf",
+      "arity": 0,
+      "clause": "4.14",
+      "pages": [
+        58
+      ],
+      "parameters": [
+        "f"
+      ],
+      "operands": [],
+      "result": "integer",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "TrailingSignificandBitwidthOf",
+      "arity": 0,
+      "clause": "4.14",
+      "pages": [
+        58
+      ],
+      "parameters": [
+        "f"
+      ],
+      "operands": [],
+      "result": "integer",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "ExponentBiasOf",
+      "arity": 0,
+      "clause": "4.14",
+      "pages": [
+        58
+      ],
+      "parameters": [
+        "f"
+      ],
+      "operands": [],
+      "result": "integer",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "SignednessOf",
+      "arity": 0,
+      "clause": "4.14",
+      "pages": [
+        58
+      ],
+      "parameters": [
+        "f"
+      ],
+      "operands": [],
+      "result": "enum",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "DomainOf",
+      "arity": 0,
+      "clause": "4.14",
+      "pages": [
+        58
+      ],
+      "parameters": [
+        "f"
+      ],
+      "operands": [],
+      "result": "enum",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "MaxFiniteOf",
+      "arity": 0,
+      "clause": "4.14",
+      "pages": [
+        58
+      ],
+      "parameters": [
+        "f"
+      ],
+      "operands": [],
+      "result": "code",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "MinFiniteOf",
+      "arity": 0,
+      "clause": "4.14",
+      "pages": [
+        58
+      ],
+      "parameters": [
+        "f"
+      ],
+      "operands": [],
+      "result": "code",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "MinPositiveOf",
+      "arity": 0,
+      "clause": "4.14",
+      "pages": [
+        58
+      ],
+      "parameters": [
+        "f"
+      ],
+      "operands": [],
+      "result": "code",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "MaxSubnormalOf",
+      "arity": 0,
+      "clause": "4.14",
+      "pages": [
+        58
+      ],
+      "parameters": [
+        "f"
+      ],
+      "operands": [],
+      "result": "code",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "MinNormalOf",
+      "arity": 0,
+      "clause": "4.14",
+      "pages": [
+        58
+      ],
+      "parameters": [
+        "f"
+      ],
+      "operands": [],
+      "result": "code",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "RoundOf",
+      "arity": 1,
+      "clause": "4.15",
+      "pages": [
+        58
+      ],
+      "parameters": [],
+      "operands": [
+        "rho"
+      ],
+      "result": "enum",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "SatOf",
+      "arity": 1,
+      "clause": "4.15",
+      "pages": [
+        58
+      ],
+      "parameters": [],
+      "operands": [
+        "rho"
+      ],
+      "result": "enum",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "NextGreaterThan",
+      "arity": 1,
+      "clause": "4.16",
+      "pages": [
+        59
+      ],
+      "parameters": [
+        "f"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "NextLessThan",
+      "arity": 1,
+      "clause": "4.16",
+      "pages": [
+        59
+      ],
+      "parameters": [
+        "f"
+      ],
+      "operands": [
+        "x"
+      ],
+      "result": "code",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "ConvertFromBlock",
+      "arity": 2,
+      "clause": "5.5.1",
+      "pages": [
+        64
+      ],
+      "parameters": [
+        "B",
+        "fs",
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "s",
+        "xs"
+      ],
+      "result": "codes",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "ConvertToBlock",
+      "arity": 2,
+      "clause": "5.5.2",
+      "pages": [
+        65
+      ],
+      "parameters": [
+        "B",
+        "fx",
+        "fs",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "xs",
+        "s"
+      ],
+      "result": "codes",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "ConvertToBlockMaxAbsFinite",
+      "arity": 1,
+      "clause": "5.5.3",
+      "pages": [
+        66
+      ],
+      "parameters": [
+        "B",
+        "fx",
+        "fs",
+        "fr",
+        "rho_s",
+        "rho"
+      ],
+      "operands": [
+        "xs"
+      ],
+      "result": "block",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "BlockReduceAdd",
+      "arity": 2,
+      "clause": "5.6.1",
+      "pages": [
+        67
+      ],
+      "parameters": [
+        "B",
+        "fs",
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "s",
+        "xs"
+      ],
+      "result": "code",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "BlockReduceMultiply",
+      "arity": 2,
+      "clause": "5.6.1",
+      "pages": [
+        67
+      ],
+      "parameters": [
+        "B",
+        "fs",
+        "fx",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "s",
+        "xs"
+      ],
+      "result": "code",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    },
+    {
+      "name": "BlockDotProduct",
+      "arity": 4,
+      "clause": "5.6.2",
+      "pages": [
+        68
+      ],
+      "parameters": [
+        "B",
+        "fsx",
+        "fx",
+        "fsy",
+        "fy",
+        "fr",
+        "rho"
+      ],
+      "operands": [
+        "sx",
+        "xs",
+        "sy",
+        "ys"
+      ],
+      "result": "code",
+      "block": false,
+      "scaled": false,
+      "profile": "core",
+      "wrapper": false
+    }
+  ],
+  "public_call_convention": "Parameters precede operands; block tuples are flattened into scale, ordered CodeSeq arguments. All indexing helpers are zero-based; source index i corresponds to i-1.",
+  "external_dependency": "External codecs and bound queries require an authorized backend view; metadata only is executable."
+}

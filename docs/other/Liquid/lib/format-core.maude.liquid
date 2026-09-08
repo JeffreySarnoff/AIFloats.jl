@@ -1,0 +1,59 @@
+{%- comment -%}Rows: kind~label~body~metadata; - uses the default; ! starts literal text.{%- endcomment -%}
+{%- capture rows -%}
+!--- Source: P3109/D1 3.1-3.2; 4.14, printed page 16-17; 58.
+fmod P3109-FORMAT-CORE is
+  protecting INT .
+  sorts Format Signedness Domain .
+  ops Signed Unsigned : -> Signedness [ctor] .
+  ops Finite Extended : -> Domain [ctor] .
+  op Binary : Int Int Signedness Domain -> Format [ctor] .
+  ops binary64 binary32 binary16 BFloat16 : -> Format [ctor] .
+  op validFormat : Format -> Bool .
+  op internalFormat : Format -> Bool .
+  ops BitwidthOf PrecisionOf ExponentBitwidthOf TrailingSignificandBitwidthOf ExponentBiasOf : Format ~> Nat .
+  op SignednessOf : Format ~> Signedness .
+  op DomainOf : Format ~> Domain .
+  vars K P : Int .
+  var S : Signedness .
+  var D : Domain .
+  var F : Format .|
+eq~001~validFormat(Binary(K, P, S, D)) = (K > 2 and P > 0 and (if S == Signed then P < K else P <= K fi))~-|
+eq~002~internalFormat(Binary(K, P, S, D)) = true~-|
+ceq~003~BitwidthOf(Binary(K, P, S, D)) = K if validFormat(Binary(K, P, S, D))~-|
+ceq~004~PrecisionOf(Binary(K, P, S, D)) = P if validFormat(Binary(K, P, S, D))~-|
+ceq~005~SignednessOf(Binary(K, P, S, D)) = S if validFormat(Binary(K, P, S, D))~-|
+ceq~006~DomainOf(Binary(K, P, S, D)) = D if validFormat(Binary(K, P, S, D))~-|
+ceq~007~ExponentBiasOf(Binary(K, P, S, D)) = 2 ^ (if S == Signed then K - P - 1 else K - P fi) if validFormat(Binary(K, P, S, D))~-|
+ceq~008~ExponentBitwidthOf(F) = (BitwidthOf(F) - PrecisionOf(F)) + (if SignednessOf(F) == Signed then 0 else 1 fi) if validFormat(F)~-|
+ceq~009~TrailingSignificandBitwidthOf(F) = PrecisionOf(F) - 1 if validFormat(F)~-|
+eq~015~validFormat(binary64) = true~-|
+eq~016~internalFormat(binary64) = false~-|
+eq~017~BitwidthOf(binary64) = 64~-|
+eq~018~PrecisionOf(binary64) = 53~-|
+eq~019~ExponentBiasOf(binary64) = 1023~-|
+eq~020~SignednessOf(binary64) = Signed~-|
+eq~021~DomainOf(binary64) = Extended~-|
+eq~023~validFormat(binary32) = true~-|
+eq~024~internalFormat(binary32) = false~-|
+eq~025~BitwidthOf(binary32) = 32~-|
+eq~026~PrecisionOf(binary32) = 24~-|
+eq~027~ExponentBiasOf(binary32) = 127~-|
+eq~028~SignednessOf(binary32) = Signed~-|
+eq~029~DomainOf(binary32) = Extended~-|
+eq~031~validFormat(binary16) = true~-|
+eq~032~internalFormat(binary16) = false~-|
+eq~033~BitwidthOf(binary16) = 16~-|
+eq~034~PrecisionOf(binary16) = 11~-|
+eq~035~ExponentBiasOf(binary16) = 15~-|
+eq~036~SignednessOf(binary16) = Signed~-|
+eq~037~DomainOf(binary16) = Extended~-|
+eq~039~validFormat(BFloat16) = true~-|
+eq~040~internalFormat(BFloat16) = false~-|
+eq~041~BitwidthOf(BFloat16) = 16~-|
+eq~042~PrecisionOf(BFloat16) = 8~-|
+eq~043~ExponentBiasOf(BFloat16) = 127~-|
+eq~044~SignednessOf(BFloat16) = Signed~-|
+eq~045~DomainOf(BFloat16) = Extended~-|
+!endfm
+{%- endcapture -%}
+{% render 'shared/statements', rows: rows, prefix: 'p3109-format-core-', metadata: 'clause=3.1-3.2; 4.14; page=16-17; 58', multiline: false %}

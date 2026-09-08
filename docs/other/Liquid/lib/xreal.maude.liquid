@@ -1,0 +1,63 @@
+{%- comment -%}Rows: kind~label~body~metadata; - uses the default; ! starts literal text.{%- endcomment -%}
+{%- capture rows -%}
+!--- Source: P3109/D1 3.1; 4.12; 4.13, printed page 16; 53-56.
+fmod P3109-XREAL is
+  protecting RAT .
+  sorts Real Number Infinity XReal .
+  subsorts Real < Number < XReal .
+  subsort Infinity < Number .
+  --- The exact rationals are EMBEDDED, not a subsort: fin(R) is the finite
+  --- datum with value R. Declaring Rat < Real would merge the whole built-in
+  --- NAT/INT/RAT tower into the kind of XReal, so every literal, every built-in
+  --- operator and every omega operation would share one kind. With the
+  --- embedding, [XReal] is a constructor-only kind and [Rat] stays built-in.
+  op fin : Rat -> Real [ctor] .
+  op ratOf : XReal ~> Rat .
+  ops posInf negInf : -> Infinity [ctor] .
+  op nan : -> XReal [ctor] .
+  ops xNaN xInfinite xFinite xMinus : XReal ~> Bool .
+  ops xLt xLe xEq : XReal XReal ~> Bool .
+  op xSign : XReal ~> Int .
+  vars X Y : XReal .
+  vars A B : Number .
+  vars U V : Real .
+  vars R S : Rat .
+  var I : Infinity .|
+eq~000~ratOf(fin(R)) = R~clause=3.1; page=16|
+eq~001~xNaN(nan) = true~-|
+eq~002~xNaN(A) = false~-|
+eq~003~xInfinite(nan) = false~-|
+eq~004~xInfinite(I) = true~-|
+eq~005~xInfinite(U) = false~-|
+eq~006~xFinite(nan) = false~-|
+eq~007~xFinite(I) = false~-|
+eq~008~xFinite(U) = true~-|
+eq~009~xMinus(nan) = false~-|
+eq~010~xMinus(posInf) = false~-|
+eq~011~xMinus(negInf) = true~-|
+eq~012~xMinus(fin(R)) = (R < 0)~-|
+eq~013~xLt(nan, X) = false~-|
+eq~014~xLt(A, nan) = false~-|
+eq~015~xLt(negInf, posInf) = true~-|
+eq~016~xLt(posInf, negInf) = false~-|
+eq~017~xLt(I, I) = false~-|
+eq~018~xLt(negInf, U) = true~-|
+eq~019~xLt(U, posInf) = true~-|
+eq~020~xLt(posInf, U) = false~-|
+eq~021~xLt(U, negInf) = false~-|
+eq~022~xLt(fin(R), fin(S)) = (R < S)~-|
+eq~023~xEq(nan, X) = false~-|
+eq~024~xEq(A, nan) = false~-|
+eq~025~xEq(I, I) = true~-|
+eq~026~xEq(posInf, negInf) = false~-|
+eq~027~xEq(negInf, posInf) = false~-|
+eq~028~xEq(I, U) = false~-|
+eq~029~xEq(U, I) = false~-|
+eq~030~xEq(fin(R), fin(S)) = (R == S)~-|
+eq~031~xLe(X, Y) = xLt(X, Y) or xEq(X, Y)~-|
+eq~032~xSign(posInf) = 1~-|
+eq~033~xSign(negInf) = -1~-|
+eq~034~xSign(fin(R)) = if R == 0 then 0 else if R < 0 then -1 else 1 fi fi~-|
+!endfm
+{%- endcapture -%}
+{% render 'shared/statements', rows: rows, prefix: 'p3109-xreal-', metadata: 'clause=3.1; 4.12; 4.13; page=16; 53-56', multiline: false %}

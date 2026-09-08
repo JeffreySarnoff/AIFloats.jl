@@ -1,0 +1,32 @@
+{%- comment -%}Rows: kind~label~body~metadata[~attributes]; - uses the default; ! starts literal text.{%- endcomment -%}
+{%- capture rows -%}
+!--- Source: P3109/D1 4.8; 4.14, printed page 31; 58.
+fth P3109-EXTERNAL-FORMAT is
+  including P3109-EXTERNAL-SIGNATURE .
+  op backendFormat : -> Format .
+  op backendDecode : Int ~> XReal .
+  op backendEncode : XReal ~> Nat .
+  op backendDatum : XReal -> Bool .
+  op backendValidCode : Int -> Bool .
+  op backendCanonical : Int ~> Nat .
+  op backendQuietNaN : -> Nat .
+  op backendPositiveZero : -> Nat .
+  op backendBound : BoundQuery ~> Nat .
+  op backendFiniteCount : -> Nat .
+  vars C : Int .
+  var X : XReal .|
+ceq~001~backendDecode(backendEncode(X)) = X if backendDatum(X)~-|
+ceq~002~backendEncode(backendDecode(C)) = backendCanonical(C) if backendValidCode(C)~-|
+ceq~003~backendDatum(backendDecode(C)) = true if backendValidCode(C)~-|
+ceq~004~backendValidCode(backendEncode(X)) = true if backendDatum(X)~-|
+eq~005~backendEncode(nan) = backendQuietNaN~-|
+eq~006~backendDecode(backendQuietNaN) = nan~-|
+eq~007~backendEncode(fin(0)) = backendPositiveZero~-|
+eq~008~backendDecode(backendPositiveZero) = fin(0)~-|
+!endfth
+--- A backend must additionally identify all NaN encodings and both zeros,
+--- decode both infinities, justify all five bound queries and finite-value
+--- counting (single zero), and prove that backendFormat is an allowed external
+--- format. These obligations cannot be discharged from this draft alone.
+{%- endcapture -%}
+{% render 'shared/statements', rows: rows, prefix: 'p3109-external-format-', metadata: 'clause=4.8; 4.14; page=31; 58', multiline: false %}

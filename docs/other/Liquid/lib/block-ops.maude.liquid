@@ -1,0 +1,43 @@
+{%- comment -%}Formatted rows: kind~label~lhs~rhs~guard~metadata; - means no guard/default metadata.{%- endcomment -%}
+{%- capture rows -%}
+!--- Source: P3109/D1 5.5-5.6, printed page 64-68.
+fmod P3109-BLOCK is
+  including P3109-BLOCK-CORE .
+  including P3109-OMEGA-EXTREMA .
+  op ConvertFromBlock : Nat Format Format Format BlockProjSpec Int CodeSeq ~> CodeSeq .
+  op ConvertToBlock : Nat Format Format Format BlockProjSpec CodeSeq Int ~> CodeSeq .
+  op ConvertToBlockMaxAbsFinite : Nat Format Format Format ProjSpec BlockProjSpec CodeSeq ~> Block .
+  ops BlockReduceAdd BlockReduceMultiply : Nat Format Format Format ProjSpec Int CodeSeq ~> Nat .
+  op BlockDotProduct : Nat Format Format Format Format Format ProjSpec Int CodeSeq Int CodeSeq ~> Nat .
+  ops foldAdd foldMultiply foldMaximumFinite : XReal XSeq ~> XReal .
+  op absElements : XSeq ~> XSeq .
+  op pairProducts : XSeq XSeq ~> XSeq .
+  op computedBlock : Nat Format Format BlockProjSpec Int XSeq ~> Block .
+  var B : Nat .
+  vars FS FX FY FSY FR : Format .
+  vars S T : Int .
+  vars CS DS : CodeSeq .
+  vars XS YS : XSeq .
+  vars X Y A : XReal .
+  vars PS QS : ProjSpec .
+  var BP : BlockProjSpec .|
+eq~001~foldAdd(A, xnil)~A~-~-|
+eq~002~foldAdd(A, xcons(X, XS))~foldAdd(omegaAdd(A, X), XS)~-~-|
+eq~003~foldMultiply(A, xnil)~A~-~-|
+eq~004~foldMultiply(A, xcons(X, XS))~foldMultiply(omegaMultiply(A, X), XS)~-~-|
+eq~005~foldMaximumFinite(A, xnil)~A~-~-|
+eq~006~foldMaximumFinite(A, xcons(X, XS))~foldMaximumFinite(omegaMaximumFinite(A, X), XS)~-~-|
+eq~007~absElements(xnil)~xnil~-~-|
+eq~008~absElements(xcons(X, XS))~xcons(omegaAbs(X), absElements(XS))~-~-|
+eq~009~pairProducts(xnil, xnil)~xnil~-~-|
+eq~010~pairProducts(xcons(X, XS), xcons(Y, YS))~xcons(omegaMultiply(X, Y), pairProducts(XS, YS))~-~-|
+ceq~011~ConvertFromBlock(B, FS, FX, FR, BP, S, CS)~projectUnscaled(FR, BP, blockDecode(B, FS, FX, S, CS), 0)~validBlock(B, FS, FX, S, CS) /\ validFormat(FR) /\ validBlockProjection(BP, B)~-|
+ceq~012~ConvertToBlock(B, FX, FS, FR, BP, CS, S)~blockProject(B, FS, FR, BP, S, decodeElements(FX, CS))~B >= 1 /\ length(CS) == B /\ validCodes(FX, CS) /\ validCode(FS, S) /\ validFormat(FR) /\ validBlockProjection(BP, B)~-|
+ceq~013~ConvertToBlockMaxAbsFinite(B, FX, FS, FR, PS, BP, CS)~computedBlock(B, FS, FR, BP, project(FS, PS, foldMaximumFinite(nan, absElements(decodeElements(FX, CS)))) , decodeElements(FX, CS))~B >= 1 /\ length(CS) == B /\ validCodes(FX, CS) /\ validFormat(FS) /\ validFormat(FR) /\ validProjection(PS) /\ validBlockProjection(BP, B)~-|
+ceq~014~computedBlock(B, FS, FR, BP, S, XS)~block(S, blockProject(B, FS, FR, BP, S, XS))~validCode(FS, S)~-|
+ceq~015~BlockReduceAdd(B, FS, FX, FR, PS, S, CS)~project(FR, PS, foldAdd(fin(0), blockDecode(B, FS, FX, S, CS)))~validBlock(B, FS, FX, S, CS) /\ validFormat(FR) /\ validProjection(PS)~-|
+ceq~016~BlockReduceMultiply(B, FS, FX, FR, PS, S, CS)~project(FR, PS, foldMultiply(fin(1), blockDecode(B, FS, FX, S, CS)))~validBlock(B, FS, FX, S, CS) /\ validFormat(FR) /\ validProjection(PS)~-|
+ceq~017~BlockDotProduct(B, FS, FX, FSY, FY, FR, PS, S, CS, T, DS)~project(FR, PS, foldAdd(fin(0), pairProducts(blockDecode(B, FS, FX, S, CS), blockDecode(B, FSY, FY, T, DS))))~validBlock(B, FS, FX, S, CS) /\ validBlock(B, FSY, FY, T, DS) /\ validFormat(FR) /\ validProjection(PS)~-|
+!endfm
+{%- endcapture -%}
+{% render 'shared/statements', rows: rows, prefix: 'p3109-block-ops-', metadata: 'clause=5.5-5.6; page=64-68', multiline: true %}

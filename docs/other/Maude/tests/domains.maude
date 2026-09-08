@@ -1,0 +1,10 @@
+--- Small standalone check; tools/run-tests.py runs the complete domains suite.
+load ../load-core.maude
+load support.maude
+fmod P3109-TEST-DOMAINS is
+  including P3109-CORE .
+  including P3109-TEST-SUPPORT .
+endfm
+red in P3109-TEST-DOMAINS : check("domains-standalone", (validFormat(Binary(2, 1, Signed, Finite)) == false)) .
+red in P3109-TEST-DOMAINS : suiteComplete(1) .
+quit

@@ -58,9 +58,20 @@ have `K > 2`, `P > 0`, and `P < K` when signed or `P <= K` when unsigned.
 `binary16`, and `BFloat16` is supplied by the draft's §4.14 table; their codecs
 and code-valued bounds remain external interfaces.
 
-`Rat < Real < Number < XReal`, with `Infinity < Number`. The extra `Number`
-sort separates non-NaN values in guards. `nan`, `posInf`, and `negInf` denote
-the draft's NaN, +∞, and −∞. There is one zero and one NaN datum.
+`Real < Number < XReal`, with `Infinity < Number`. A finite datum is
+`fin(R)` for a built-in rational `R`: the rationals are *embedded*, not a
+subsort. Declaring `Rat < Real` would put the whole built-in NAT/INT/RAT tower
+into the kind of `XReal`, so every literal, built-in operator and ω operation
+would share one kind; with the embedding, `[XReal]` is a constructor-only kind
+(`fin`, `nan`, `posInf`, `negInf`, plus the symbolic `expr*`/`piMultiple`
+constructors in that profile) and `[Rat]` stays built-in. `ratOf(fin(R)) = R`
+is the inverse where a finite bound is needed. The extra `Number` sort
+separates non-NaN values in guards. `nan`, `posInf`, and `negInf` denote the
+draft's NaN, +∞, and −∞. There is one zero and one NaN datum.
+
+Consequence for readers and tests: a bare literal such as `2` is never an
+`XReal`; write `fin(2)`. A literal in an `XReal` position fails to parse, which
+is what makes the loader a completeness check for the embedding.
 
 Public numeric calls take **all parameters first, then operands**, in the
 order recorded in [operations.json](inventory/operations.json). Operands and

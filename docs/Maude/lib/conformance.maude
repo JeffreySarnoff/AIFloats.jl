@@ -4,6 +4,10 @@ view FormatElt from TRIV to P3109-FORMAT-CORE is
 endv
 fmod P3109-CONFORMANCE-DATA is
   including P3109-BLOCK-CORE .
+  --- Declaration identifiers are Strings by 4.6. STRING declares subsort
+  --- Nat < FindResult, so FindResult joins the numeric kind of this module and
+  --- of P3109-CORE, which includes it; every module below this one is clean.
+  protecting STRING .
   including P3109-SEQUENCE{FormatElt} * (sort Seq{FormatElt} to FormatSeq, op nil to fnil, op cons to fcons) .
   sorts Specialization Kappa Observation Declaration Evidence KappaPart ArityEntry .
   op entry : String Nat -> ArityEntry [ctor] .

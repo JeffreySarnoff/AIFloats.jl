@@ -1,0 +1,31 @@
+{%- comment -%}Rows: kind~label~body~metadata; - uses the default; ! starts literal text.{%- endcomment -%}
+{%- capture rows -%}
+!--- Source: P3109/D1 4.7.4, printed page 27-28.
+fmod P3109-ROUND is
+  including P3109-RATIONAL-MATH .
+  including P3109-PROJSPEC .
+  op roundToPrecision : Int Int RoundMode XReal ~> XReal .
+  op roundAway : RoundMode Rat Rat Bool -> Bool .
+  op roundScaled : Int Int RoundMode Rat Int Rat -> Rat .
+  vars P B Q N R : Int .
+  vars X T V : Rat .
+  var I : Infinity .
+  var M : RoundMode .
+  var E : Bool .|
+ceq~001~roundToPrecision(P, B, M, nan) = nan if P >= 1 /\ B >= 1 /\ validRound(M)~-|
+ceq~002~roundToPrecision(P, B, M, I) = I if P >= 1 /\ B >= 1 /\ validRound(M)~-|
+ceq~003~roundToPrecision(P, B, M, fin(0)) = fin(0) if P >= 1 /\ B >= 1 /\ validRound(M)~-|
+ceq~004~roundToPrecision(P, B, M, fin(X)) = fin(roundScaled(P, B, M, X, Q, abs(X) * pow2(- Q))) if P >= 1 /\ B >= 1 /\ validRound(M) /\ X =/= 0 /\ Q := (max(floorLog2(abs(X)), 1 - B) - P) + 1~-|
+eq~005~roundScaled(P, B, M, X, Q, T) = xSign(fin(X)) * (floor(T) + (if roundAway(M, X, T - floor(T), if P > 1 then even(floor(T)) else floor(T) == 0 or even(Q + B) fi) then 1 else 0 fi)) * pow2(Q)~-|
+eq~006~roundAway(TowardZero, X, V, E) = false~-|
+eq~007~roundAway(TowardPositive, X, V, E) = (V > 0 and X > 0)~-|
+eq~008~roundAway(TowardNegative, X, V, E) = (V > 0 and X < 0)~-|
+eq~009~roundAway(NearestTiesToAway, X, V, E) = (V >= 1/2)~-|
+eq~010~roundAway(NearestTiesToEven, X, V, E) = (V > 1/2 or (V == 1/2 and not E))~-|
+eq~011~roundAway(ToOdd, X, V, E) = (V > 0 and E)~-|
+eq~012~roundAway(StochasticA(N, R), X, V, E) = (floor(V * pow2(N)) + R >= pow2(N))~-|
+eq~013~roundAway(StochasticB(N, R), X, V, E) = (floor(V * pow2(N + 1)) + 2 * R + 1 >= pow2(N + 1))~-|
+eq~014~roundAway(StochasticC(N, R), X, V, E) = (nearestEvenInteger(V * pow2(N)) + R >= pow2(N))~-|
+!endfm
+{%- endcapture -%}
+{% render 'shared/statements', rows: rows, prefix: 'p3109-rounding-', metadata: 'clause=4.7.4; page=27-28', multiline: false %}

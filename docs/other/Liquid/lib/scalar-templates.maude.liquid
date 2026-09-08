@@ -1,0 +1,53 @@
+{%- assign metadata = '[metadata "clause=4.3.1; page=19-20"]' -%}
+--- Shared arity schemas; operation names and kernel views are generated separately.
+--- Source: P3109/D1 4.3.1, printed page 19-20.
+--- Per-operation clauses are recorded in inventory/operations.json and traceability.tsv.
+fth P3109-KERNEL1 is
+  including P3109-XREAL .
+  op kernel : XReal ~> XReal .
+endfth
+fmod P3109-SCALAR-TEMPLATE1{O :: P3109-KERNEL1} is
+  including P3109-PROJECT .
+  vars F1 FR : Format .
+  vars C1 : Int .
+  var PS : ProjSpec .
+  op scalar : Format Format ProjSpec Int ~> Nat .
+  ceq [p3109-template-scalar-1] :
+    scalar(F1, FR, PS, C1)
+    = project(FR, PS, kernel(decode(F1, C1)))
+    if validCode(F1, C1) /\ validFormat(FR) /\ validProjection(PS)
+    {{ metadata }} .
+endfm
+fth P3109-KERNEL2 is
+  including P3109-XREAL .
+  op kernel : XReal XReal ~> XReal .
+endfth
+fmod P3109-SCALAR-TEMPLATE2{O :: P3109-KERNEL2} is
+  including P3109-PROJECT .
+  vars F1 F2 FR : Format .
+  vars C1 C2 : Int .
+  var PS : ProjSpec .
+  op scalar : Format Format Format ProjSpec Int Int ~> Nat .
+  ceq [p3109-template-scalar-2] :
+    scalar(F1, F2, FR, PS, C1, C2)
+    = project(FR, PS, kernel(decode(F1, C1), decode(F2, C2)))
+    if validCode(F1, C1) /\ validCode(F2, C2) /\ validFormat(FR) /\ validProjection(PS)
+    {{ metadata }} .
+endfm
+fth P3109-KERNEL3 is
+  including P3109-XREAL .
+  op kernel : XReal XReal XReal ~> XReal .
+endfth
+fmod P3109-SCALAR-TEMPLATE3{O :: P3109-KERNEL3} is
+  including P3109-PROJECT .
+  vars F1 F2 F3 FR : Format .
+  vars C1 C2 C3 : Int .
+  var PS : ProjSpec .
+  op scalar : Format Format Format Format ProjSpec Int Int Int ~> Nat .
+  ceq [p3109-template-scalar-3] :
+    scalar(F1, F2, F3, FR, PS, C1, C2, C3)
+    = project(FR, PS, kernel(decode(F1, C1), decode(F2, C2), decode(F3, C3)))
+    if validCode(F1, C1) /\ validCode(F2, C2) /\ validCode(F3, C3) /\ validFormat(FR) /\
+    validProjection(PS)
+    {{ metadata }} .
+endfm

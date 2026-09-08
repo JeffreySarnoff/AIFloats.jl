@@ -1,0 +1,55 @@
+{%- comment -%}Rows: kind~label~body~metadata[~attributes]; - uses the default; ! starts literal text.{%- endcomment -%}
+{%- capture rows -%}
+!--- Constructor abstraction of D1 4.7.5, p.29. Refinement is an explicit obligation.
+set include BOOL off .
+fmod P3109-PROOF-SATURATION is
+  sorts Sat Round Sign Domain Location Outcome .
+  ops none finite propagate : -> Sat [ctor] .
+  ops up down zero other : -> Round [ctor] .
+  ops signed unsigned : -> Sign [ctor] .
+  ops extended finiteDomain : -> Domain [ctor] .
+  ops qnan inside below above plusInfinity minusInfinity : -> Location [ctor] .
+  ops outNaN unchanged low high outPlusInfinity outMinusInfinity : -> Outcome [ctor] .
+  op decision : Sat Round Location Sign Domain -> Outcome .
+  op highNone : Round Sign Domain -> Outcome .
+  op lowNone : Round Sign Domain -> Outcome .
+  op highOverflow : Domain -> Outcome .
+  op lowOverflow : Sign Domain -> Outcome .
+  var S : Sat .
+  var R : Round .
+  var SG : Sign .
+  var D : Domain .|
+eq~nan~decision(S, R, qnan, SG, D) = outNaN~-|
+eq~inrange~decision(S, R, inside, SG, D) = unchanged~-|
+eq~finite-posinf~decision(finite, R, plusInfinity, SG, D) = high~-|
+eq~finite-neginf~decision(finite, R, minusInfinity, SG, D) = low~-|
+eq~finite-high~decision(finite, R, above, SG, D) = high~-|
+eq~finite-low~decision(finite, R, below, SG, D) = low~-|
+eq~propagate-posinf-ext~decision(propagate, R, plusInfinity, SG, extended) = outPlusInfinity~-|
+eq~propagate-posinf-fin~decision(propagate, R, plusInfinity, SG, finiteDomain) = high~-|
+eq~propagate-neginf-signed-ext~decision(propagate, R, minusInfinity, signed, extended) = outMinusInfinity~-|
+eq~propagate-neginf-unsigned-ext~decision(propagate, R, minusInfinity, unsigned, extended) = low~-|
+eq~propagate-neginf-fin~decision(propagate, R, minusInfinity, SG, finiteDomain) = low~-|
+eq~propagate-low~decision(propagate, R, below, SG, D) = low~-|
+eq~propagate-high~decision(propagate, R, above, SG, D) = high~-|
+eq~none-posinf~decision(none, R, plusInfinity, SG, D) = highOverflow(D)~-|
+eq~none-neginf~decision(none, R, minusInfinity, SG, D) = lowOverflow(SG, D)~-|
+eq~none-high~decision(none, R, above, SG, D) = highNone(R, SG, D)~-|
+eq~none-low~decision(none, R, below, SG, D) = lowNone(R, SG, D)~-|
+eq~high-zero~highNone(zero, SG, D) = high~-|
+eq~high-down~highNone(down, SG, D) = high~-|
+eq~high-up~highNone(up, SG, D) = highOverflow(D)~-|
+eq~high-other~highNone(other, SG, D) = highOverflow(D)~-|
+eq~low-zero~lowNone(zero, SG, D) = low~-|
+eq~low-up~lowNone(up, SG, D) = low~-|
+eq~low-down~lowNone(down, SG, D) = lowOverflow(SG, D)~-|
+eq~low-other~lowNone(other, SG, D) = lowOverflow(SG, D)~-|
+eq~high-ext~highOverflow(extended) = outPlusInfinity~-|
+eq~high-fin~highOverflow(finiteDomain) = outNaN~-|
+eq~low-signed-ext~lowOverflow(signed, extended) = outMinusInfinity~-|
+eq~low-unsigned-ext~lowOverflow(unsigned, extended) = outNaN~-|
+eq~low-fin~lowOverflow(SG, finiteDomain) = outNaN~-|
+!endfm
+set include BOOL on .
+{%- endcapture -%}
+{% render 'shared/statements', rows: rows, prefix: 'p3109-slice-', metadata: '', multiline: false %}

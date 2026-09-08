@@ -1,0 +1,10 @@
+--- Small standalone check; tools/run-tests.py runs the complete symbolic suite.
+load ../load-symbolic.maude
+load support.maude
+fmod P3109-TEST-SYMBOLIC is
+  including P3109-SYMBOLIC .
+  including P3109-TEST-SUPPORT .
+endfm
+red in P3109-TEST-SYMBOLIC : check("symbolic-standalone", (omegaArcTan2Pi(1, -1) == 3/4)) .
+red in P3109-TEST-SYMBOLIC : suiteComplete(1) .
+quit

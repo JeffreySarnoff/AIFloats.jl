@@ -1,0 +1,18 @@
+==========================================
+erewrite in MFE : init .
+
+    Full Maude 3.5.1a Nov 12 2025
+
+    The Maude Formal Environment 3.0
+      Church-Rosser Checker 3t - Feb 14 2026
+      Coherence Checker 3t - Feb 14 2026
+      Sufficient Completeness Checker 2b - Feb 14 2026
+
+MFE> The CRC has been set as current tool.
+MFE> Church-Rosser check for P3109-PROOF-SMOKE
+All critical pairs have been joined.
+The specification is locally-confluent.
+The module is sort-decreasing.
+MFE> rewrites: 9174 in 21ms cpu (22ms real) (418292 rewrites/second)
+result Configuration: (none).Configuration
+Bye.
