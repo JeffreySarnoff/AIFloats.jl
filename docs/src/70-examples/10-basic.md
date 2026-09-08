@@ -81,6 +81,21 @@ x, y = F(1.5), F(0.25)
 (Add(F, RTE_SN, x, y), Multiply(F, RTZ_SF, x, y))
 ```
 
+The draft writes an operation as `Op_{fx,fy,fr,ρ}(x, y)` — parameters first,
+operands after — and that is the call above. When the operands read better
+first, put the parameters at the other end instead; it is the same call, and
+the same single projection:
+
+```@example basic_register_order
+using AIFloats
+
+F = Binary8p4se
+x, y = F(1.5), F(0.25)
+@assert Add(x, y, F, RTE_SN) === Add(F, RTE_SN, x, y)
+@assert Add(x, y, RTZ_SF)    === Add(F, RTZ_SF, x, y)   # format from the operands
+(Add(x, y, F, RTE_SN), Multiply(x, y, RTZ_SF))
+```
+
 See [Operations](@ref operations) for the full family: signatures, mixed operand
 formats, the correctness route each operation takes, and the refusals.
 

@@ -49,6 +49,11 @@ section("scalar — operations by registry group, K=8")
 
 let x = T8(1.5), y = T8(0.25), z = T8(0.75)
     row("Add       explicit ρ",         @b Add($F8, RTE_SN, $x, $y))
+    # the operands-first spellings and the bound specialization forward to the
+    # row above, so all four must read the same; a gap here is a lost @inline
+    row("Add       operands first",     @b Add($x, $y, $F8, RTE_SN))
+    row("Add       operands + ρ only",  @b Add($x, $y, RTE_SN))
+    row("Add       bound Op(fr, ρ)",    (let a = Add(F8, RTE_SN); @b a($x, $y) end))
     row("Add       task default ρ",     @b Add($x, $y))
     # the scoped seam (improveapi3 §4.3): the unscoped RTE_SN default is a
     # static call, a bound non-RTE projection costs one dynamic dispatch and

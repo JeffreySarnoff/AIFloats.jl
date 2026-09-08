@@ -138,7 +138,10 @@ function _op_docstring(op::OpInfo)
     route = _OP_GROUP_PROSE[op.group]
     """
         $n(fr, \u03c1, $ops; rng, R)
+        $n($ops, fr, \u03c1; rng, R)
+        $n($ops, \u03c1; rng, R)
         $n($ops)
+        $n(fr, \u03c1)
 
     The P3109 register operation `$n`, over $(op.arity) datum $plural.
 
@@ -148,9 +151,21 @@ function _op_docstring(op::OpInfo)
     onto a carrier wide enough for the exact result. The result is $route, so
     the returned datum is the correctly rounded one for `\u03c1`.
 
-    The second form takes same-format operands and resolves the task-local
+    The second and third forms are that same call written from the other end —
+    the draft's subscripts after the operands rather than before them. The
+    third takes `\u03c1` alone and gives the operands' shared format as the result
+    format.
+
+    The fourth takes same-format operands and resolves the task-local
     [`DefaultProjection`](@ref) once, returning that same format. It is a
     convenience, not a second semantics.
+
+    The fifth supplies the parameters and no operands, and returns an
+    [`AIFloats.OpSpecialization`](@ref) to apply later. It binds; it does not
+    project.
+
+    Every form accepts arrays of datums wherever it accepts datums, and an
+    array call runs the [`vmap`](@ref) kernel rather than a per-element loop.
 
     `rng` and `R` are consulted only under a stochastic `\u03c1`: `R` supplies the
     random bits directly and takes precedence over `rng`; with neither, a
@@ -219,6 +234,30 @@ for op in OP_REGISTRY
                       rng, R) where {T<:BinaryValue, RM, SM}
             $name(BinaryFormatOf(T), ρ, $(xs...); rng, R)::T
         end
+        # OPERANDS-FIRST SPELLINGS. `Op(x, y, fr, ρ)` and `Op(x, y, ρ)` are
+        # the mirrors of `Op(fr, ρ, x, y)` and of the unary `Op(ρ, x)`: the
+        # draft's subscripts moved to the other end of the call, for callers
+        # who read an operation as "these operands, in that format, under that
+        # projection". Each forwards to the leading-parameter method, so there
+        # is one implementation and one projection, and the shift is a
+        # spelling rather than a second semantics.
+        #
+        # POSITIONAL, not keyword. Keywords were measured and rejected: `fr`
+        # and `ρ` as defaulted keywords on the same-format method below cost
+        # the scoped call 27.9 -> 33.5 ns (36.3 with the guard body split into
+        # its own function), because the keyword machinery sits on the hot
+        # path whether or not a keyword is passed. These are separate methods
+        # over disjoint signatures — a leading `BinaryValue` can never be the
+        # leading `Type` of the draft form — so the tuned method below is
+        # untouched, and its measured 0-allocation scoped call is unchanged.
+        @inline $name($(spec...), fr::Type{<:Binary}, ρ::Projection; kw...) =
+            $name(fr, ρ, $(xs...); kw...)
+        @inline $name($(spec...), fr::Type{<:BinaryValue}, ρ::Projection; kw...) =
+            $name(BinaryFormatOf(fr), ρ, $(xs...); kw...)
+        # projection only: the result format is the operands' shared one, so
+        # this is the every-arity mirror of the unary `Op(ρ, x)`
+        @inline $name($(same...), ρ::Projection; kw...) where {T<:BinaryValue} =
+            $name(BinaryFormatOf(T), ρ, $(xs...); kw...)
         # same-format convenience under the task's default projection. The
         # SPECULATION GUARD: the untouched default RTE_SN is tested by
         # identity and called with the literal constant, so the overwhelmingly
@@ -321,10 +360,17 @@ const ConvertSource = Union{BinaryValue, ConvertNumber}
 
 """
     Convert(F, ρ, x; rng, R) -> BinaryValue
+    Convert(x, F, ρ; rng, R) -> BinaryValue
     Convert(F, ρ, A::AbstractArray; rng) -> Array
+    Convert(A::AbstractArray, F, ρ; rng) -> Array
     Convert(F, A::AbstractArray; rng) -> Array
+    Convert(F, ρ) -> AIFloats.OpSpecialization
 
 Project `x` into format `F` under projection `ρ` — the draft's Convert.
+
+The parameters may lead or trail, as for every register operation, and
+`Convert(F, ρ)` with no source binds them into an
+[`AIFloats.OpSpecialization`](@ref) to apply later.
 
 The accepted sources are the closed set `AIFloats.ConvertSource`: a
 `BinaryValue` of any format, `Float64`/`Float32`/`Float16`/`BFloat16` (exact
@@ -367,6 +413,12 @@ true
 @noinline Convert(fr::Type{<:Binary}, ρ::Projection, x::Irrational; kw...) =
     throw(ArgumentError("Convert does not accept Irrational: supply a rounded float, or use the interval route"))
 @inline Convert(fr::Type{<:BinaryValue}, ρ::Projection, x; kw...) =
+    Convert(BinaryFormatOf(fr), ρ, x; kw...)
+# the operands-first spellings, as for every register operation. The array
+# pair is in arrays/kernels.jl, beside the array methods they forward to.
+@inline Convert(x::ConvertSource, fr::Type{<:Binary}, ρ::Projection; kw...) =
+    Convert(fr, ρ, x; kw...)
+@inline Convert(x::ConvertSource, fr::Type{<:BinaryValue}, ρ::Projection; kw...) =
     Convert(BinaryFormatOf(fr), ρ, x; kw...)
 export Convert
 

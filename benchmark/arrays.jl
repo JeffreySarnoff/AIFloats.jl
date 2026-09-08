@@ -35,6 +35,21 @@ for N in (4096, 65536)
     println()
 end
 
+section("arrays — the call spellings reach the same kernel")
+
+# The spellings must not differ in cost, and `map` over a bound operation must
+# be visibly the wrong tool: it runs the scalar path per element and gathers
+# from no table. These rows are what docs/src/45-operations.md quotes.
+let N = 4096, A8 = codes8(4096), B8 = codes8(4096, 3), add = Add(AF8, RTE_SN)
+    Add(AF8, RTE_SN, A8, B8); add(A8, B8); map(add, A8, B8)
+    row("Add(F, ρ, A, B)       K=8 N=$N", (@b Add($AF8, RTE_SN, $A8, $B8)); elems = N)
+    row("Add(A, B, F, ρ)       K=8 N=$N", (@b Add($A8, $B8, $AF8, RTE_SN)); elems = N)
+    row("Add(A, B, ρ)          K=8 N=$N", (@b Add($A8, $B8, RTE_SN)); elems = N)
+    row("Add(F, ρ)(A, B)       K=8 N=$N", (@b $add($A8, $B8)); elems = N)
+    row("map(Add(F, ρ), A, B)  K=8 N=$N", (@b map($add, $A8, $B8)); elems = N)
+    println()
+end
+
 section("arrays — cold table build (evals=1)")
 
 let N = 4096, A8 = codes8(4096), B8 = codes8(4096, 3), D8 = similar(codes8(4096))

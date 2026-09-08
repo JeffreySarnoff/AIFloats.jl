@@ -28,10 +28,11 @@ This page says plainly what exists and what the deliberate limits are.
 | Projection vocabulary | 9 rounding modes (stochastic ones carry their random-bit budget `N`; [`isstochastic`](@ref), [`nrandbits`](@ref)), 3 saturation modes, [`Projection`](@ref) and its 27 constants |
 | **Projection behavior** | [`project`](@ref) — the single write path: round to precision → saturate → encode, for every rounding mode (sticky protocol, stochastic at fixed `R`) and all three saturation modes, from `Float64`/`Float128`/`BigFloat`; the interval oracle `AIFloats.project_interval` |
 | **Operations** | the draft register — `Add`, `Subtract`, `Multiply`, `Divide`, `FMA`, `FAA`, `Sqrt`, `Exp`, `Log`, the trig/hyperbolic families and their π-scaled forms, `Hypot`, `Clamp`, the extremum family — correctly rounded via exact evaluation or interval enclosure; [`Convert`](@ref) from datums, floats, and integers |
+| **Operation spellings** | the draft's parameters lead or trail — `Op(fr, ρ, xs...)`, `Op(xs..., fr, ρ)`, `Op(xs..., ρ)`, `Op(xs...)`, the unary `Op(ρ, x)` — or bind on their own into an `AIFloats.OpSpecialization`, `Op(fr, ρ)`, applied later. One implementation; the parameters move, the single projection does not |
 | **Value construction** | `Binary8p4se(1.5)` (via `Convert` under the task's default projection or an explicit `projection` keyword) |
 | **Default projection** | [`DefaultProjection`](@ref), bound for a dynamic extent by [`with_projection`](@ref); `DefaultRoundingMode`/`DefaultSaturationMode` derive from it |
 | **Random datums** | `rand` (default `RTZ_SN`, provably `< 1`) and `randn` (default `RTE_SF`, tails clamp; signed formats only) |
-| **Array kernels** | every register op elementwise over arrays — `Add(F, ρ, A, B)`, `Exp(A)` — via `vmap`/`vmap!`; pure projections gather from a memoized table when policy grants one, otherwise compute per element (same answer either way); stochastic projections run a sequential, seeded-reproducible loop |
+| **Array kernels** | every register op elementwise over arrays, in every scalar spelling — `Add(F, ρ, A, B)`, `Add(A, B, F, ρ)`, `Exp(A)`, `Add(F, ρ)(A, B)` — via `vmap`/`vmap!`; pure projections gather from a memoized table when policy grants one, otherwise compute per element (same answer either way); stochastic projections run a sequential, seeded-reproducible loop |
 | **Tables** | memoized result tables per `(op, formats, projection)`, fetched internally by the kernels. Public surface: [`table_policy`](@ref) (prospective, never mutates a counter), `AIFloats.table_stats` and `AIFloats.table_entries` (one locked snapshot each, details summing to totals), `AIFloats.empty_tables!`. Byte and build-time budgets refuse loudly; ternary eager/adaptive bands evict LRU |
 | **Base surface** | same-format `+ - * /`, `abs`, `sqrt`, `exp`, `log`, the trig/hyperbolic families, `hypot`, `copysign`, `max`/`min` (NaN-propagating), `fma`/`muladd`, `clamp` — each one register call under the task's default projection; `Op(ρ, x)` projection-first convenience; comparison (`==`/`<` unordered on NaN), `isless`/`sort` in the draft's **NaN-first** total order (a counting sort, `AIFloats.CodeCountingSort`); `hash`/`Dict`/`Set` via `Base.decompose` |
 | **AbstractFloat contract** | `zero`/`one`/`eps`/`typemin`/`typemax`/`floatmin`/`floatmax`/`precision`; `exponent`/`significand`/`frexp`/`ldexp`; `round`/`floor`/`ceil`/`trunc` and `round(x, RoundUp)` etc. as one projection each; `nextfloat`/`prevfloat` (off-lattice into NaN) |
@@ -221,6 +222,10 @@ compiles on first use, and a first scoped broadcast is the expensive case.
 
 - Everything a datum can do runs through the register under an explicit or
   task-local-default [`Projection`](@ref) — `Add(F, ρ, x, y)`, `Add(x, y)`, or `x + y`.
+- An operation does not decompose. `Convert(fr, ρ, Op(x, y))` is **not**
+  `Op(x, y, fr, ρ)`: it projects twice, and a doubly rounded result is not the
+  correctly rounded one. The [Operations](@ref operations) page carries the
+  counterexample in both directions.
 - `sort` places NaN **first** (the draft's total order), not last as for `Float64`.
 - The engine is verified against an independent `BigInt` reference — millions of
   compared decisions per test run, every rounding and saturation mode, plus a

@@ -446,3 +446,193 @@ end
         @test r === Add(F, ρ4, a, b; R = 3)
     end
 end
+
+# =============================================================================
+# The call spellings: the draft's parameters lead, trail, or bind on their own.
+# One implementation, so every spelling must be `===` to the draft form — not
+# merely equal, and not merely close.
+# =============================================================================
+
+@testset "operand-first and parameter-bound spellings" begin
+    F = Binary8p4se
+    G = Binary8p3se                      # a second format, for the mixed case
+    W = AIFloats.Formats.Binary16p8se    # wider than F: exposes a lost bit
+    ρ = RTZ_SF                           # not the task default, so a slip shows
+
+    # one representative operand set per arity, drawn from real code points
+    # rather than round numbers
+    d(fmt, c) = fromcode(fmt, c)
+    xs1 = (d(F, 0x35),)
+    xs2 = (d(F, 0x35), d(F, 0x22))
+    xs3 = (d(F, 0x35), d(F, 0x22), d(F, 0x41))
+
+    for o in AIFloats.operations()
+        o.name === :Convert && continue
+        op = getfield(AIFloats, o.name)
+        xs = o.arity == 1 ? xs1 : o.arity == 2 ? xs2 : xs3
+        want = op(F, ρ, xs...)
+
+        @test op(xs..., F, ρ) === want                      # parameters trail
+        @test op(xs..., BinaryValue(F), ρ) === want         # …named by datum type
+        @test op(xs..., ρ) === want                         # ρ alone; format from operands
+        @test op(F, ρ)(xs...) === want                      # parameters bound first
+        @test op(BinaryValue(F), ρ)(xs...) === want
+
+        # a result format that is NOT the operands' — the case the trailing
+        # form has to get right, and the one `Op(xs..., ρ)` cannot express
+        @test op(xs..., W, ρ) === op(W, ρ, xs...)
+        @test op(W, ρ)(xs...) === op(W, ρ, xs...)
+    end
+
+    # mixed operand formats survive the move: fx and fy ride in the operands'
+    # types, so only fr and ρ ever change position
+    @test Multiply(F(1.5), G(0.25), W, ρ) === Multiply(W, ρ, F(1.5), G(0.25))
+    @test Multiply(W, ρ)(F(1.5), G(0.25)) === Multiply(W, ρ, F(1.5), G(0.25))
+
+    # Convert's own trailing and bound forms
+    @test Convert(1.3, F, ρ) === Convert(F, ρ, 1.3)
+    @test Convert(F(1.5), W, ρ) === Convert(W, ρ, F(1.5))
+    @test Convert(F, ρ)(1.3) === Convert(F, ρ, 1.3)
+    @test Convert(3, F, ρ) === Convert(F, ρ, 3)
+
+    # the unary projection-first form is unchanged by any of this
+    @test Exp(ρ, F(1.5)) === Exp(F, ρ, F(1.5))
+end
+
+@testset "operation specializations" begin
+    F = Binary8p4se
+    W = AIFloats.Formats.Binary16p8se
+    ρ = RTZ_SF
+    mul = Multiply(W, ρ)
+
+    @test mul isa AIFloats.OpSpecialization
+    @test nameof(mul) === :Multiply
+    @test formatof(mul) === W
+    @test BinaryFormatOf(mul) === W
+    @test Projection(mul) === ρ
+    @test mul.ρ === ρ
+
+    # zero-size and isbits: a specialization over a constant projection must
+    # cost nothing to hold or to pass
+    @test isbits(mul)
+    @test sizeof(mul) == 0
+
+    @test sprint(show, mul) == "Multiply(Binary16p8se, ρ(RoundTowardZero, SatFinite))"
+    # `<: Function` puts Base's "generic function with N methods" MIME show
+    # ahead of the two-argument one, so the REPL needs its own method
+    @test sprint(show, MIME"text/plain"(), mul) == sprint(show, mul)
+    @test mul isa Function
+
+    # binding is not projecting: it happens before any operand exists
+    @test Multiply(W, ρ) === Multiply(W, ρ)
+
+    # wrong operand count names the operation and its arity, never the struct
+    err = try; mul(F(1.5)); catch e; e; end
+    @test err isa ArgumentError
+    @test occursin("takes 2 operands, got 1", err.msg)
+    @test occursin("Multiply(Binary16p8se", err.msg)
+    err0 = try; mul(); catch e; e; end
+    @test err0 isa ArgumentError && occursin("got 0", err0.msg)
+
+    # right count, wrong thing
+    errT = try; mul(1.5, 2.5); catch e; e; end
+    @test errT isa ArgumentError
+    @test occursin("datum operands", errT.msg)
+
+    # unary and ternary arities carry the same contract
+    @test Exp(F, ρ)(F(1.5)) === Exp(F, ρ, F(1.5))
+    @test FMA(F, ρ)(F(1.5), F(0.25), F(2.0)) === FMA(F, ρ, F(1.5), F(0.25), F(2.0))
+    err1 = try; Exp(F, ρ)(F(1.5), F(0.25)); catch e; e; end
+    @test err1 isa ArgumentError && occursin("takes 1 operand, got 2", err1.msg)
+end
+
+@testset "array spellings land in the kernel" begin
+    F = Binary8p4se
+    W = AIFloats.Formats.Binary16p8se
+    T = BinaryValue(F)
+    ρ = RTZ_SF
+    A = T[fromcode(F, UInt8(c)) for c in (0x35, 0x22, 0x41, 0x02)]
+    B = T[fromcode(F, UInt8(c)) for c in (0x22, 0x41, 0x02, 0x35)]
+
+    want = Add(F, ρ, A, B)
+    # `==` on datum arrays is unordered on NaN; compare code points
+    same(u, v) = codepoint.(u) == codepoint.(v)
+
+    @test same(Add(A, B, F, ρ), want)
+    @test same(Add(A, B, ρ), want)
+    @test same(Add(F, ρ)(A, B), want)
+    @test same(vmap(:Add, F, ρ, A, B), want)
+    @test same(map(Add(F, ρ), A, B), want)       # the slow route, same answer
+    @test eltype(Add(F, ρ)(A, B)) === T
+
+    # a result format that is not the operands'
+    @test same(Add(A, B, W, ρ), Add(W, ρ, A, B))
+    @test eltype(Add(W, ρ)(A, B)) === BinaryValue(W)
+
+    # unary, ternary, and Convert
+    @test same(Exp(A, ρ), Exp(F, ρ, A))
+    @test same(Exp(F, ρ)(A), Exp(F, ρ, A))
+    @test same(FMA(A, B, A, ρ), FMA(F, ρ, A, B, A))
+    @test same(Convert(A, W, ρ), Convert(W, ρ, A))
+    @test same(Convert(W, ρ)(A), Convert(W, ρ, A))
+    @test same(Convert([1.3, 2.7], F, ρ), Convert(F, ρ, [1.3, 2.7]))
+    @test same(Convert(F, ρ)([1.3, 2.7]), Convert(F, ρ, [1.3, 2.7]))
+
+    # a PackedVector is an AbstractVector of datums, so every spelling reaches
+    # the unpack -> compute -> emit path the same way
+    pv = PackedVector(A)
+    @test same(Exp(F, ρ)(pv), Exp(F, ρ, pv))
+    @test same(Exp(pv, ρ), Exp(F, ρ, pv))
+end
+
+# =============================================================================
+# An operation does NOT decompose. `Convert(fr, ρ, Op(x, y))` projects twice;
+# `Op(x, y, fr, ρ)` projects once, on the exact ω-domain result. These pins
+# exist so no future refactor can quietly implement the first as the second —
+# the two agree exactly when fr is the operand format, which is the case a
+# suite is most likely to cover by accident.
+# =============================================================================
+
+@testset "one projection: the operation does not decompose" begin
+    F = Binary8p4se                      # P = 4
+    W = AIFloats.Formats.Binary16p8se    # P = 8, wider
+    N = Binary8p2se                      # P = 2, narrower
+    ρ = RTE_SN
+    u, v = F(1.5), F(1.75)               # exact product 2.625 needs 6 bits
+
+    # the operation is the projection of the EXACT product, once
+    exact = Float64(decode(u)) * Float64(decode(v))
+    @test exact == 2.625
+    @test Multiply(u, v, W, ρ) === Convert(W, ρ, exact)
+    @test Multiply(u, v, N, ρ) === Convert(N, ρ, exact)
+
+    # the decomposition is a different number, in both directions
+    @test Multiply(u, v, W, ρ) !== Convert(W, ρ, Multiply(u, v))
+    @test Float64(Multiply(u, v, W, ρ)) == 2.625
+    @test Float64(Convert(W, ρ, Multiply(u, v))) == 2.5
+
+    @test Multiply(u, v, N, ρ) !== Convert(N, ρ, Multiply(u, v))
+    @test Float64(Multiply(u, v, N, ρ)) == 3.0
+    @test Float64(Convert(N, ρ, Multiply(u, v))) == 2.0
+
+    # and it agrees exactly where the Convert is the identity — the trap
+    @test Multiply(u, v, F, ρ) === Convert(F, ρ, Multiply(u, v))
+
+    # the same for a specialization: binding parameters is not composing
+    # operations, so `Multiply(W, ρ)(u, v)` is the one-projection answer
+    @test Multiply(W, ρ)(u, v) === Multiply(u, v, W, ρ)
+
+    # a sweep, not one lucky pair: over the whole F × F grid, projecting the
+    # exact product into W once is never the same function as projecting twice,
+    # and the operation always agrees with the once-rounded reference
+    K = 1 << Int(BitwidthOf(F))
+    disagreements = 0
+    for c1 in 0:(K - 1), c2 in 0:(K - 1)
+        a, b = fromcode(F, c1), fromcode(F, c2)
+        once = Multiply(a, b, W, ρ)
+        @test once === Convert(W, ρ, Float64(decode(a)) * Float64(decode(b)))
+        twice = Convert(W, ρ, Multiply(a, b))
+        codepoint(once) == codepoint(twice) || (disagreements += 1)
+    end
+    @test disagreements > 0
+end

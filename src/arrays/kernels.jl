@@ -274,6 +274,13 @@ for op in OP_REGISTRY
             vmap($(QuoteNode(name)), fr, ρ, $(xs...); rng)
         @inline $name(fr::Type{<:BinaryValue}, ρ::Projection, $(spec...); kw...) =
             $name(BinaryFormatOf(fr), ρ, $(xs...); kw...)
+        # the operands-first spellings, as in scalar.jl
+        @inline $name($(spec...), fr::Type{<:Binary}, ρ::Projection; kw...) =
+            $name(fr, ρ, $(xs...); kw...)
+        @inline $name($(spec...), fr::Type{<:BinaryValue}, ρ::Projection; kw...) =
+            $name(BinaryFormatOf(fr), ρ, $(xs...); kw...)
+        @inline $name($(same...), ρ::Projection; kw...) where {T<:BinaryValue} =
+            $name(BinaryFormatOf(T), ρ, $(xs...); kw...)
         @inline function $name($(same...); kw...) where {T<:BinaryValue}
             ρ = DefaultProjection()                     # the speculation guard, as in scalar.jl
             ρ === RTE_SN && return $name(BinaryFormatOf(T), RTE_SN, $(xs...); kw...)
@@ -318,6 +325,15 @@ end
         "rounding you get is one you chose."))
 
 Convert(fr::Type{<:BinaryValue}, ρ::Projection, A::AbstractArray; kw...) =
+    Convert(BinaryFormatOf(fr), ρ, A; kw...)
+
+# Convert's operands-first array spellings, written by hand for the same reason
+# its other array methods are: the element set includes external numbers no
+# other operation takes. The scalar pair is in ops/scalar.jl, beside the
+# scalar methods they forward to.
+@inline Convert(A::AbstractArray, fr::Type{<:Binary}, ρ::Projection; kw...) =
+    Convert(fr, ρ, A; kw...)
+@inline Convert(A::AbstractArray, fr::Type{<:BinaryValue}, ρ::Projection; kw...) =
     Convert(BinaryFormatOf(fr), ρ, A; kw...)
 
 # same-format array convenience under the task's default projection. The

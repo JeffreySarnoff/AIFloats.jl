@@ -170,7 +170,7 @@ take it for a compliance determination. → P1-12.
 ```julia
 (designation = "IEEE P3109/D1", uploaded = "2026-07-17",
  retained_source = "docs/other/IEEE_D1.md",
- transliteration_sha256 = "820cb500…")
+ transliteration_sha256 = "75f38b4c…")
 ```
 
 That names a **retained transliteration** and its upload date, not the cover

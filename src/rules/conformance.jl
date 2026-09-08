@@ -29,9 +29,9 @@ const DRAFT_IDENTITY = (
     report_sha256 = "7de115ed6882b7550b8fa61e81e5173857b340c3bfe30db8d4ad74b472229b9e",
     report_status = "unapproved draft; not for conformance/compliance use",
     retained_designation = "IEEE P3109/D1",
-    retained_uploaded = "2026-07-17",
+    retained_uploaded = "2026-09-07",
     retained_source = "docs/other/IEEE_D1.md",
-    transliteration_sha256 = "820cb5009cd6fe9032f5bdfb661bc639e33296f716a552eafc81f899411bb5f2",
+    transliteration_sha256 = "75f38b4c68547af985af81f5cdcafcf9fa3a83961f2cd5aae22042e4cfba1a1f",
 )
 const DRAFT_REVISION =
     "$(DRAFT_IDENTITY.designation), version $(DRAFT_IDENTITY.report_revision) " *

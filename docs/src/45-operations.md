@@ -24,7 +24,34 @@ julia> AIFloats.operationinfo(:Add)
 `factors` is the carrier-width driver: the largest number of datum factors in any monomial
 of the exact result. It is not the arity — `FAA` has three operands and one factor.
 
-## The four signatures
+## Parameters and operands
+
+§4.3.1 gives every operation the same signature schema:
+
+```
+Operation_{p1,...}(x1, ...) → r
+```
+
+The **parameters** are subscripts and the **operands** are the parenthesized list. For a
+binary arithmetic operation the subscripts are `{fx, fy, fr, ρ}` — the two operand
+formats, the result format, and the projection — so §4.10 writes multiplication as
+
+```
+Multiply_{fx,fy,fr,ρ}(x, y) → r
+```
+
+Julia gets `fx` and `fy` for free: a datum carries its format in its type, and dispatch
+reads it. That leaves `fr` and `ρ` as the only subscripts without a carrier, and they keep
+the report's position — ahead of the operands:
+
+```julia
+Multiply(fr, ρ, x, y)
+```
+
+Everything else on this page is that call with parameters supplied some other way. There
+is exactly one implementation.
+
+## The signatures
 
 Take any register name — `Add`, `Exp`, `FMA`, `MinimumMagnitude`, … — and it has these
 shapes:
@@ -35,13 +62,22 @@ julia> F = Binary8p4se; G = Binary8p3se; x = F(1.5); y = F(0.25);
 julia> Add(F, RTE_SN, x, y)          # 1. the draft form: result format, ρ, operands
 1.75
 
-julia> Add(x, y)                     # 2. same-format convenience, task default ρ
+julia> Add(x, y, F, RTE_SN)          # 2. the same call, operands first
 1.75
 
-julia> Exp(RTZ_SF, x)                # 3. projection-first (unary only)
+julia> Add(x, y, RTZ_SF)             # 3. projection only; format from the operands
+1.75
+
+julia> Add(x, y)                     # 4. same-format convenience, task default ρ
+1.75
+
+julia> Exp(RTZ_SF, x)                # 5. projection-first (unary only)
 4.0
 
-julia> vmap(:Add, F, RTE_SN, [x, y], [y, x])   # 4. elementwise over arrays
+julia> Add(F, RTE_SN)(x, y)          # 6. parameters bound, operands applied later
+1.75
+
+julia> vmap(:Add, F, RTE_SN, [x, y], [y, x])   # 7. elementwise over arrays
 2-element Vector{BinaryValue(Binary8p4se)}:
  1.75
  1.75
@@ -50,9 +86,15 @@ julia> vmap(:Add, F, RTE_SN, [x, y], [y, x])   # 4. elementwise over arrays
 | Form | Result format | Projection | Notes |
 |:--|:--|:--|:--|
 | `Op(fr, ρ, xs...)` | `fr`, explicit | `ρ`, explicit | the draft's shape; operands may be of **different** formats |
+| `Op(xs..., fr, ρ)` | `fr`, explicit | `ρ`, explicit | the same call read from the other end; operands may differ |
+| `Op(xs..., ρ)` | the shared operand format | `ρ`, explicit | every arity; operands must share a format |
 | `Op(xs...)` | the shared operand format | [`DefaultProjection`](@ref) (task) resolves once | operands must share a format |
 | `Op(ρ, x)` | the operand's format | `ρ`, explicit | unary operations only |
+| `Op(fr, ρ)` | `fr`, explicit | `ρ`, explicit | no operands: an [`AIFloats.OpSpecialization`](@ref), applied later |
 | `vmap(:Op, fr, ρ, As...)` | `fr`, explicit | `ρ`, resolved once per call | see [`vmap!`](@ref) to write into an existing array, which takes the result format from `dest` instead |
+
+Every one of them accepts arrays of datums wherever it accepts datums, and the array call
+is the [`vmap`](@ref) kernel — see [Arrays take the kernel](@ref ops-arrays) below.
 
 `fr` accepts a [`Binary`](@ref) format type, a datum type, or an alias — all three name the
 same format:
@@ -61,6 +103,58 @@ same format:
 julia> Add(Binary8p4se, RTE_SN, x, y) === Add(BinaryValue(Binary8p4se), RTE_SN, x, y)
 true
 ```
+
+## Binding the parameters
+
+`Op(fr, ρ)` supplies the subscripts and nothing else. It returns an
+[`AIFloats.OpSpecialization`](@ref) — the draft's *operation specialization* (§4.3.2.4) as
+a value you can name, pass, and store:
+
+```jldoctest operations
+julia> mul = Multiply(F, RTE_SN)
+Multiply(Binary8p4se, ρ(RoundToEven, SatNone))
+
+julia> mul(x, y) === Multiply(F, RTE_SN, x, y)
+true
+
+julia> nameof(mul), formatof(mul) === F, Projection(mul) === RTE_SN
+(:Multiply, true, true)
+```
+
+Nothing is projected when the parameters are bound; the call forwards to the method the
+draft form would have run. A specialization over a constant projection is a zero-size
+`isbits` value, so the forwarded call is the same static call, at the same cost.
+
+### [Arrays take the kernel](@id ops-arrays)
+
+A specialization applied to arrays is the *array* operation, not a `map` of the scalar
+one. That matters more than it sounds:
+
+```jldoctest operations
+julia> A = [x, y]; B = [y, x];
+
+julia> mul(A, B) == Multiply(F, RTE_SN, A, B) == map(mul, A, B)
+true
+```
+
+All three agree, and two of them are fast. `mul(A, B)` runs [`vmap`](@ref) — the memoized
+Shape-A gather when [`table_policy`](@ref) grants a table, the threaded compute loop past
+`AIFloats.THREAD_MIN_ELEMS` otherwise. `map(mul, A, B)` runs the scalar path per element
+and gathers from nothing. From `benchmark/arrays.jl`, `Add` over 4096 `Binary8p4se`
+datums under `RTE_SN`:
+
+| Spelling | ns/element |
+|:--|--:|
+| `Add(F, ρ, A, B)` | 0.26 |
+| `Add(A, B, F, ρ)` | 0.26 |
+| `Add(A, B, ρ)` | 0.26 |
+| `Add(F, ρ)(A, B)` | 0.26 |
+| `map(Add(F, ρ), A, B)` | 9.6 |
+
+Prefer the operation over `map` for the same reason you prefer `vmap` over a hand-written
+loop — it is the same answer through a kernel that was built for it. The scalar spellings
+are on the same footing: `benchmark/scalar.jl` reads 8.7, 8.7, 8.6, and 8.6 ns for the
+four forms of `Add` at `K = 8`.
 
 ## Mixed operand formats
 
@@ -127,6 +221,54 @@ precision could do the same.
     rigorous MPFR ladder. The pure-Julia `AIFloats.fma128` and `AIFloats.faa128` carry
     their own documented guarantees. `AIFloats.FAST_ARITH` and `AIFloats.FAST_ENCLOSURE`
     switch the fast stages off for differential testing.
+
+## An operation does not decompose
+
+Every route above projects **exactly once**, and that is a property of the whole
+operation, not of its pieces. It is tempting to read `Multiply_{fx,fy,fr,ρ}(x, y)` as a
+same-format multiply followed by a conversion:
+
+```julia
+Multiply(x, y, fr, ρ)  ==  Convert(fr, ρ, Multiply(x, y, ρ))   # WRONG
+```
+
+It is not. The behavior line in §4.10 is
+
+```
+Multiply(x, y) → ωProject_{fr,ρ}(ωMultiply(ωDecode_{fx}(x), ωDecode_{fy}(y)))
+```
+
+`ωMultiply` runs on the ω-domain — exact values, not datums. No datum exists between the
+decode and the project, so there is nowhere for a `Convert` to stand. Writing one there
+forces a projection to have happened already, and two projections of one exact value is
+the definition of a double rounding. [`Convert`](@ref) is itself a register operation
+(`Convert_{fx,fr,ρ}`), so composing the two composes their projections.
+
+The damage runs in both directions. With operands in a `P = 4` format whose exact product
+needs six significand bits:
+
+```jldoctest operations
+julia> W = AIFloats.Formats.Binary16p8se; N = Binary8p2se;
+
+julia> u = F(1.5); v = F(1.75); decode(u) * decode(v)          # the exact product
+2.625
+
+julia> Multiply(u, v, W, RTE_SN), Convert(W, RTE_SN, Multiply(u, v))
+(2.625, 2.5)
+
+julia> Multiply(u, v, N, RTE_SN), Convert(N, RTE_SN, Multiply(u, v))
+(3.0, 2.0)
+```
+
+Into a **wider** result format the decomposition has already thrown away the bits the
+exact product needed; into a **narrower** one it rounds twice and lands a full ulp away.
+It agrees only when `fr` is the operand format, where the `Convert` is the identity — which
+is exactly the case a test suite is most likely to cover.
+
+This is why an [`AIFloats.OpSpecialization`](@ref) binds parameters and never composes
+operations, and why there is no `∘` for them. A third defect settles it: `Multiply(x, y)`
+has no result format to name when `fx ≠ fy`, and the mixed-format case is the one the
+`fx`, `fy` subscripts exist for.
 
 ## Randomness
 

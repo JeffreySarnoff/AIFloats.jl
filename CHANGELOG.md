@@ -7,7 +7,50 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+### Added
+
+Ergonomics for the operation register. The draft writes an operation as
+`Op_{fx,fy,fr,ρ}(x, y)` — parameters as subscripts, operands in the
+parentheses. Julia reads `fx` and `fy` off the operands' own types, which
+leaves `fr` and `ρ` as the only positional parameters; they may now sit at
+either end of the call, or bind on their own. Every spelling forwards to the
+one implementation, so there is still exactly one projection.
+
+- **Operands-first spellings** for every register operation and `Convert`:
+  `Op(xs..., fr, ρ)` mirrors `Op(fr, ρ, xs...)`, and `Op(xs..., ρ)` takes the
+  result format from the operands — the every-arity mirror of the unary
+  `Op(ρ, x)`. Positional, not keyword: `fr`/`ρ` as defaulted keywords on the
+  same-format method were measured to cost the scoped call 27.9 → 33.5 ns
+  because the keyword machinery sits on the hot path whether or not a keyword
+  is passed. As separate methods over disjoint signatures they cost the tuned
+  path nothing, and its 0-allocation scoped call is pinned unchanged.
+- **`AIFloats.OpSpecialization`**, the draft's *operation specialization*
+  (§4.3.2.4) as a value: `Op(fr, ρ)` with no operands returns a callable
+  carrying just the two parameters, and `nameof`, `formatof`, and `Projection`
+  read them back. It is zero-size and `isbits`, so a specialization over a
+  constant projection forwards at the cost of the explicit call.
+- A specialization applied to **arrays** is the array operation, so it takes
+  the `vmap` kernel — the memoized gather, the threaded loop — rather than a
+  per-element `map`. New rows in `benchmark/scalar.jl` and `benchmark/arrays.jl`
+  pin the spellings against each other: 8.7/8.7/8.6/8.6 ns for the four scalar
+  forms of `Add` at K = 8, and 0.26 ns/element for every array form against
+  9.6 for `map(Add(F, ρ), A, B)` over 4096 `Binary8p4se` datums.
+
+`OpSpecialization` **binds** parameters; it never composes operations, and
+there is deliberately no `∘` for it. `Convert(fr, ρ, Op(x, y))` is not
+`Op(x, y, fr, ρ)`: the first projects twice. New tests in `test/test-ops.jl`
+pin the counterexample in both directions — into a wider result format the
+decomposition has already discarded the bits the exact result needed, and into
+a narrower one it lands a full ulp away — over the whole `Binary8p4se` grid.
+
 ### Documentation
+
+- The Operations page gained *Parameters and operands* (the §4.3.1 signature
+  schema, and why `fr` and `ρ` are the only subscripts Julia has to carry),
+  *Binding the parameters*, *Arrays take the kernel*, and *An operation does
+  not decompose*. The signature table now lists all seven shapes.
+- New basic and intermediate examples for the operand-first spellings and for
+  a bound operation over arrays.
 
 A documentation-correctness pass (`docs/refinedocs2.md`). Every claim is now
 measured against one normative source — the IEEE Working Group P3109 Interim

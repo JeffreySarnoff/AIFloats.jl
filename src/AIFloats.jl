@@ -81,7 +81,7 @@ public resolve_fields, encode, order_key,
        blockdecode, blockproject, PACK_TILE, codedistance, ApproxImpl, ConformanceDeclaration,
        packedfromwords, packedwords, packedfrombytes, packedbytes,
        table_policy, table_stats, table_entries, empty_tables!,
-       operationinfo, operations
+       operationinfo, operations, OpSpecialization
 
 # working with other Julia packages
 using Quadmath
@@ -125,6 +125,7 @@ include("tables/cache.jl")
 include("tables/policy.jl")
 include("tables/build.jl")
 include("arrays/kernels.jl")
+include("ops/specialize.jl")  # after kernels.jl: the array call forwards to vmap
 include("arrays/blocks.jl")
 include("arrays/packed.jl")
 include("compat/base.jl")          # Base veneers, order, AbstractFloat contract, promotion

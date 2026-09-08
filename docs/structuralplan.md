@@ -321,7 +321,9 @@ rules/constraints.jl → rules/defaults.jl   (before ops: the generated
   same-format methods read the defaults' guard constants)
 ops/registry.jl (also rung(op, Fs...)) → ops/oracle.jl → ops/scalar.jl
 tables/cache.jl → tables/policy.jl → tables/build.jl
-arrays/kernels.jl → arrays/blocks.jl → arrays/packed.jl
+arrays/kernels.jl → ops/specialize.jl (after kernels.jl: an OpSpecialization
+  applied to arrays forwards to the array method, which is vmap)
+  → arrays/blocks.jl → arrays/packed.jl
 compat/base.jl → arrays/broadcast.jl → compat/rand.jl
   (broadcast.jl builds its veneer table from compat/base.jl's _BASE_UNARY /
    _BASE_BINARY, so it CANNOT sit with the other arrays/ files)

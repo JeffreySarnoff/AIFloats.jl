@@ -1,9 +1,9 @@
 <!--
-IEEE P3109/D1 (July 2026) draft — plain-Markdown rendering of IEEE_P3109_D1.md.
-Derived by mechanical markup conversion only; wording, spacing and line breaks are unchanged.
+IEEE P3109/D1 (September 2026) revised draft — plain-Markdown rendering.
+Updated from the July 2026 rendering using IEEE_SA_P3109_Revised_Draft_diff_2026_09_07.pdf;
+wording, spacing and line breaks follow the revised column of that comparison.
 Notation: **bold**  *italic*  _{subscript}  ^{superscript}  <u>underline</u>.
 Fixed-width alignment inside operation tables and brace stacks is significant.
-Section index: IEEE_P3109.json
 -->
 
 
@@ -11,7 +11,7 @@ Section index: IEEE_P3109.json
 
 
 
-**Draft for Arithmetic Formats for Machine Learning**
+**Draft Standard for Arithmetic Formats for Machine Learning**
 
 
 
@@ -23,115 +23,150 @@ and software implementations.
 
 **Keywords:** floating-point formats, floating-point operations, 3109
 
+**Introduction**
+
+This introduction is not part of IEEE P3109/D1, Draft Standard for Arithmetic Formats for Machine Learning.
+
+Machine learning systems increasingly use narrow floating-point formats to reduce energy use, conserve memory,
+and save computation time. Implementations have made differing choices concerning precision, signedness, special
+values, rounding, saturation, and scaling. These differences complicate data exchange and the consistent specification
+of arithmetic behavior across hardware and software. This standard provides a common framework intended to improve
+interoperability among machine learning systems and with dependent systems.
+
+This standard defines a parameterized family of compact binary floating-point formats. Each format is specified by its
+bitwidth, precision, signedness, and domain. The standard also defines conversions, scalar operations, and operations
+on blocks of values that share a scale factor. Many numeric operations are specified through a common model that
+decodes operands to closed extended real values, performs a mathematical operation, and projects the result to a des-
+tination format using specified rounding and saturation modes. Conversions to and from selected IEEE Std 754-2019
+binary formats connect this family with established floating-point environments.
+
+The following objectives guided the development of this standard:
+
+   a) Make the relevant properties of compact formats explicit through a small set of format-defining parameters.
+
+   b) Provide consistent operation definitions for combinations of operand and result formats.
+
+   c) Support a broad range of rounding modes, including directed rounding, round to odd, and stochastic rounding.
+
+   d) Define methods for handling results outside a format’s finite range, via saturation or overflow to infinity.
+
+   e) Accommodate blocks of values that share a scale factor, including elementwise, reduction, and conversion
+      operations.
+
+   f) Provide a declaration framework for approximate implementations.
+
+In machine learning environments, this standard is intended to provide a common basis for communication among
+numerical practitioners and designers of hardware, compilers, programming frameworks, and software libraries. Its
+format parameters, operation specializations, projection specifications, and conformance declarations make arithmetic
+behavior explicit without prescribing a particular hardware or software realization.
+
 
 **Contents**
 
-**1 Overview**                                                                                **11**
-   1.1 Scope . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
-   1.2 Word usage . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
-**2 Definitions and abbreviations**                                                               **12**
-   2.1 Definitions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
-   2.2 Abbreviations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13
-   2.3 Mathematical notations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13
+**1 Overview**                                                                                **12**
+   1.1 Scope . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
+   1.2 Word usage . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
+**2 Definitions and abbreviations**                                                               **13**
+   2.1 Definitions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13
+   2.2 Abbreviations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14
+   2.3 Mathematical notations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15
 
-**3 Floating-point formats**                                                                     **14**
-   3.1 Formats . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14
-   3.2 Naming . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15
+**3 Floating-point formats**                                                                     **16**
+   3.1 Formats . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16
+   3.2 Naming . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17
 
-**4 Operations**                                                                               **16**
-   4.1 General  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16
-   4.2 Projection specifications  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16
-   4.3 Operation definitions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17
-        4.3.1 Operation definition schema . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17
-        4.3.2 Pattern-matching declarations  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17
-   4.4 Approximate implementations  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
-   4.5 Conforming implementations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 20
-   4.6 Conformance declarations  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
-   4.7 Internal functions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 23
-        4.7.1 General . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 23
-        4.7.2 Decoding . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 23
-        4.7.3 Projection . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 24
-        4.7.4 Rounding to precision  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
-        4.7.5 Saturation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 27
-        4.7.6 Encoding . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 28
-   4.8 Decoding and encoding for external formats . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 29
-        4.8.1 Decoding . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 29
-        4.8.2 Encoding . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 29
-   4.9 Converting between formats  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
-        4.9.1 Conversion . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
-   4.10 Arithmetic operations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
-        4.10.1 Absolute value, Negation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
-        4.10.2 Copying the sign . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 32
-        4.10.3 Addition, Subtraction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 33
-        4.10.4 Multiplication . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 34
-        4.10.5 Division . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 35
-        4.10.6 Fused Multiply–Add . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 36
-        4.10.7 Fused Add–Add  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 37
-        4.10.8 Square root, Reciprocal, Reciprocal square root . . . . . . . . . . . . . . . . . . . . . . . . . 38
-        4.10.9 Logarithm, Exponentiation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 39
-        4.10.10 Trigonometric functions  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 40
-        4.10.11 Hyperbolic functions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 41
-        4.10.12 Trigonometric *π*-functions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 42
-        4.10.13 Softplus . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 43
-        4.10.14 Hypotenuse . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 44
-        4.10.15 Inverse tangent of two variables  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 45
+**4 Operations**                                                                               **18**
+   4.1 General  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18
+   4.2 Projection specifications  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18
+   4.3 Operation definitions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
+        4.3.1 Operation definition schema . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
+        4.3.2 Pattern-matching declarations  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
+   4.4 Approximate implementations  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21
+   4.5 Conforming implementations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
+   4.6 Conformance declarations  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 24
+   4.7 Internal functions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
+        4.7.1 General . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
+        4.7.2 Decoding . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
+        4.7.3 Projection . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 26
+        4.7.4 Rounding to precision  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 27
+        4.7.5 Saturation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 29
+        4.7.6 Encoding . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
+   4.8 Decoding and encoding for external formats . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
+        4.8.1 Decoding . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
+        4.8.2 Encoding . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
+   4.9 Converting between formats  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 32
+        4.9.1 Conversion . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 32
+   4.10 Arithmetic operations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 33
+        4.10.1 Absolute value, Negation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 33
+        4.10.2 Copying the sign . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 34
+        4.10.3 Addition, Subtraction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 35
+        4.10.4 Multiplication . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 36
+        4.10.5 Division . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 37
+        4.10.6 Fused Multiply–Add . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 38
+        4.10.7 Fused Add–Add  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 39
+        4.10.8 Square root, Reciprocal, Reciprocal square root . . . . . . . . . . . . . . . . . . . . . . . . 40
+        4.10.9 Logarithm, Exponentiation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 41
+        4.10.10 Trigonometric functions  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 42
+        4.10.11 Hyperbolic functions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 43
+        4.10.12 Trigonometric *π*-functions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 44
+        4.10.13 Softplus . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 45
+        4.10.14 Hypotenuse . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 46
+        4.10.15 Inverse tangent of two variables  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 47
+        4.10.16 Inverse tangent of two variables (*π*-variant) . . . . . . . . . . . . . . . . . . . . . . . . . . . 48
+   4.11 Extrema . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 49
+        4.11.1 Minimum and maximum, and number variants  . . . . . . . . . . . . . . . . . . . . . . . . 49
+        4.11.2 Minimum and maximum magnitude, and number variants  . . . . . . . . . . . . . . . . . . . 50
+        4.11.3 Minimum and maximum finite variants  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 51
+        4.11.4 Clamping . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 52
+   4.12 Comparisons  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 53
+        4.12.1 Total order predicate . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 54
+        4.12.2 Comparison operator symbols . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 55
+   4.13 Predicates and classification  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 56
+        4.13.1 Classifier operation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 57
+   4.14 Format-level operations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 58
+   4.15 Projection specification operations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 58
+   4.16 Next greater than and next less than  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 59
 
+**5 Block operations**                                                                          **61**
+   5.1 General . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 61
+   5.2 Definitions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 61
+   5.3 Stochastic rounding in block operations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 61
+   5.4 Internal functions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 62
+        5.4.1 Decoding . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 62
+        5.4.2 Projection . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 63
+   5.5 Conversion of blocks . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 64
+        5.5.1 Conversion from a block . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 64
+        5.5.2 Conversion to a block . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 65
+        5.5.3 Conversion to a block with scale factor computation  . . . . . . . . . . . . . . . . . . . . . . 66
+   5.6 Block reduction operations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 67
+        5.6.1 Sum and product . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 67
+        5.6.2 Dot product . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 68
+   5.7 Elementwise operations on blocks  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 69
+   5.8 Scaled operations via block operations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 70
+**Appendices**                                                                                 **71**
 
-                                                  8
-        4.10.16 Inverse tangent of two variables (*π*-variant) . . . . . . . . . . . . . . . . . . . . . . . . . . . 46
-   4.11 Extrema . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 47
-        4.11.1 Minimum and maximum, and number variants  . . . . . . . . . . . . . . . . . . . . . . . . . 47
-        4.11.2 Minimum and maximum magnitude, and number variants  . . . . . . . . . . . . . . . . . . . 48
-        4.11.3 Minimum and maximum finite variants  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 49
-        4.11.4 Clamping . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 50
-   4.12 Comparisons  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 51
-        4.12.1 Total order predicate . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 52
-        4.12.2 Comparison operator symbols . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 53
-   4.13 Predicates and classification  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 54
-        4.13.1 Classifier operation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 55
-   4.14 Format-level operations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 56
-   4.15 Projection specification operations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 56
-   4.16 Next greater than and next less than  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 57
+**Annex A (informative) Rationales and discussion**                                                  **71**
+   A.1 General  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 71
+   A.2 Not a number (NaN)  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 71
+   A.3 Zero . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 71
+   A.4 Infinities . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 72
+   A.5 Exponent bias . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 74
+   A.6 Subnormals . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 74
 
-**5 Block operations**                                                                          **58**
-   5.1 Internal functions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 59
-        5.1.1 Decoding . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 59
-        5.1.2 Projection . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 60
-   5.2 Conversion of blocks . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 61
-        5.2.1 Conversion from a block . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 61
-        5.2.2 Conversion to a block . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 62
-        5.2.3 Conversion to a block with scale factor computation  . . . . . . . . . . . . . . . . . . . . . . 63
-   5.3 Block reduction operations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 64
-        5.3.1 Sum and product . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 64
-        5.3.2 Dot product . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 65
-   5.4 Elementwise operations on blocks  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 66
-   5.5 Scaled operations via block operations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 67
-**Appendices**                                                                                 **68**
+**Annex B (informative) Encoding**                                                                **75**
+   B.1 Value tables . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 76
+**Annex C (informative) Value tables for K=2**                                                      **78**
 
-**Annex A (informative) Rationales and discussion**                                                  **68**
-   A.1 General  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 68
-   A.2 Not a number (NaN)  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 68
-   A.3 Zero . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 68
-   A.4 Infinities . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 69
-   A.5 Exponent bias . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 71
-   A.6 Subnormals . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 71
+**Annex D (informative) Examples of approximation declarations**                                     **79**
+   D.1 Example: Approximate implementation of Exp  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 79
+   D.2 Example: Approximate implementation of BlockDotProduct . . . . . . . . . . . . . . . . . . . . . . 79
+**Annex E (informative) Recommendations for reduction accuracy specifications**                         **80**
+   E.1 BlockReduceAdd . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 80
+   E.2 BlockReduceMultiply . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 80
+   E.3 BlockDotProduct . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 81
 
-**Annex B (informative) Encoding**                                                                **72**
-   B.1 Value tables . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 73
-**Annex C (informative) Value tables for K=2**                                                      **75**
-
-**Annex D (informative) Examples of approximation declarations**                                     **76**
-   D.1 Example: Approximate implementation of Exp  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 76
-   D.2 Example: Approximate implementation of BlockDotProduct . . . . . . . . . . . . . . . . . . . . . . 76
-**Annex E (informative) Recommendations for reduction accuracy specifications**                         **77**
-   E.1 BlockReduceAdd . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 77
-   E.2 BlockReduceMultiply . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 77
-   E.3 BlockDotProduct . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 78
-
-**Annex F (informative) External formats**                                                         **79**
-
-**Annex G (informative) Operation groups**                                                        **80**
-**Annex H (informative) Bibliography**                                                            **82**
+**Annex F (informative) Operation groups**                                                        **82**
+**Annex G (informative) Bibliography**                                                            **85**
 
 # 1 Overview
 
@@ -145,7 +180,7 @@ aligned with the IEEE Std 754-2019 Standard for Floating-Point Arithmetic.
 
 ## 1.2 Word usage
 The word *shall* indicates mandatory requirements strictly to be followed in order to conform to the standard and from
-which no deviation is permitted (*shall* equals *is required to*).
+which no deviation is permitted (*shall* equals *is required to*).^{1,2}
 
 The word *should* indicates that among several possibilities one is recommended as particularly suitable, without men-
 tioning or excluding others; or that a certain course of action is preferred but not necessarily required (*should* equals *is*
@@ -156,17 +191,22 @@ The word *may* is used to indicate a course of action permissible within the lim
 The word *can* is used for statements of possibility and capability, whether material, physical, or causal (*can* equals *is*
 *able to*).
 
+  ^{1}The use of the word *must* is deprecated when stating mandatory requirements; *must* is used only to describe unavoidable situations.
+
+  ^{2}The use of *will* is deprecated when stating mandatory requirements; *will* is only used in statements of fact.
+
 # 2 Definitions and abbreviations
 
 ## 2.1 Definitions
 
-For the purposes of this document, the following terms and definitions apply.
-**bitwidth:** the minimum number of bits required to encode a floating-point value in a given format, denoted K.
+For the purposes of this document, the following terms and definitions apply. The IEEE Standards Dictionary Online
+should be consulted for terms not defined in this clause.^{3}
+**bitwidth:** the number of bits required to represent a floating-point value in a given format, denoted K.
 
 **block:** a pair comprising a scale factor and a sequence of one or more floating-point values.
 
 **canonical form:** of a nonzero finite floating-point datum *X* in format *f*, its representation as sgn(*X*)×*S*×2^{1−P}×2^{*E*}
-for minimal integer *E >* −B, and nonnegative integer *S*, where P = PrecisionOf(*f*) and B = ExponentBiasOf(*f*).
+for minimal integer *E >* −B, and nonnegative integer *S* < 2^{P}, where P = PrecisionOf(*f*) and B = ExponentBiasOf(*f*).
 For zero, *S* = 0 and *E* = 0.
 **closed extended reals:** set denoted ℝ^{*ω*}, consisting of the real numbers augmented with positive infinity, negative in-
 
@@ -193,8 +233,9 @@ finities.
 **floating-point datum:** a closed extended real value representable in a given format, an element of the datum set of the
 format.
 
+**floating-point format:** binary floating-point representation parameterized by bitwidth, precision, signedness, and domain.
+
 **floating-point value:** a code point representing a floating-point datum in a given format.
-**format:** binary floating-point representation parameterized by bitwidth, precision, signedness, and domain.
 
 **format-defining parameters:** bitwidth (K), precision (P), signedness (Σ), and domain (Δ).
 
@@ -202,6 +243,10 @@ format.
 
 **normal:** finite floating-point datum whose significand *S* satisfies 2^{P−1} ≤ *S <* 2^{P}. A floating-point value is normal
 iff its datum is normal.
+
+  ^{3}IEEE Standards Dictionary Online is available at: http://dictionary.ieee.org. An IEEE account is required for access to the dictionary,
+and one can be created at no charge on the dictionary sign-in page.
+
 **operand:** an argument to an operation.
 
 **operation:** a set of operation specializations parameterized over operation parameters, e.g., format, projection speci-
@@ -257,6 +302,9 @@ The number of elements in a set *S* is denoted #*S*.
 The signum function sgn(*X*) is defined as −1 for *X <* 0, 0 for *X* = 0, and +1 for *X >* 0.
 
 Division of nonnegative integers is denoted by *x* ÷ *y*, modulo by *x* mod *y*.
+
+The notation *x*_{*i*..*j*} denotes the sequence [*x*_{*i*}, *x*_{*i*+1}, ..., *x*_{*j*}].
+
 Comments are right-justified and parenthesized.                                            (A comment)
 
 # 3 Floating-point formats
@@ -273,13 +321,13 @@ of the format.
 
 A floating-point format has four *format-defining* parameters:
 
-   • Bitwidth K, an integer greater than two;^{1}
+   • Bitwidth K, an integer greater than two;^{4}
    • Precision P, an integer greater than zero. P shall be strictly less than K (0 < P < K) for signed formats, and
      less than or equal to K (0 < P ≤ K) for unsigned formats;
    • Signedness Σ, in {Signed, Unsigned};
-   • Domain Δ, in {Finite, Extended}.^{2}
+   • Domain Δ, in {Finite, Extended}.^{5}
 
-The *exponent bias* is derived from the format-defining parameters.^{3} For signed formats, the exponent bias shall be
+The *exponent bias* is derived from the format-defining parameters.^{6} For signed formats, the exponent bias shall be
 B = 2^{K−P−1}. For unsigned formats, the exponent bias shall be B = 2^{K−P}.
 A *floating-point datum* in a format *f* is an element of D_{*f*}, i.e., a closed extended real that encodes to a code point in *f*.
 
@@ -289,10 +337,9 @@ are denoted Inf and −Inf.
 NOTE 2—While a floating-point value is synonymous with a code point, the term is used in contexts where a format is
 associated with the value. For example, in an operation definition, a value might be declared “*x*: floating-point value,
 format *f*”. In such contexts, the interpretation of a real constant, e.g., 2.0, as a floating-point value is to be read as
-*ω*Encode_{*f*}(2.0). In cases where the format may be ambiguous, a real constant may be subscripted with its associated
+*ω*Encode_{*f*}(2.0). In cases where the format is ambiguous, a real constant is subscripted with its associated
 format, e.g., *X*_{*f*} = *ω*Encode_{*f*}(*X*). For example, 2.0_{Binary8p4se} = *ω*Encode_{Binary8p4se}(2.0) represents the code point
-0x48. Similarly, a format may be associated to infinity or NaN, e.g., Inf_{Binary8p4se} = ∞_{Binary8p4se} represents the code
-point 0x7F.
+0x48. Similarly, Inf_{Binary8p4se} = ∞_{Binary8p4se} represents the code point 0x7F.
 The word *finite* applied to a datum signifies that the datum is not ±∞ or NaN. Applied to a value, it signifies that the
 value encodes a finite datum.
 
@@ -301,16 +348,16 @@ A finite floating-point datum is a real number whose absolute value has the form
                                         *S* × 2^{1−P} × 2^{*E*},
 where the *exponent* *E* is an integer such that *E >* −B, and *S*, the *significand*, is an integer 0 ≤ *S <* 2^{P}. This
 decomposition is made canonical for nonzero values by choosing the smallest *E >* −B. For *S* = 0, *E* is chosen to
-be 0. The datum is *normal* if 2^{P−1} ≤ *S <* 2^{P}. The datum is *subnormal*^{4} if 0 *< S <* 2^{P−1}. The datum zero is neither
+be 0. The datum is *normal* if 2^{P−1} ≤ *S <* 2^{P}. The datum is *subnormal*^{7} if 0 *< S <* 2^{P−1}. The datum zero is neither
 normal nor subnormal.
 
 The *trailing significand* is the integer *S* mod 2^{P−1}.
 
 NOTE 3—The encoding of formats is described in §4.7.6; properties of encodings are described in Annex B.
-  ^{1}See Annex C for rationale for K > 2.
-  ^{2}See Annex A.4 for rationale for parameterization of domain.
-  ^{3}See Annex A.5 for rationale for this choice of exponent bias.
-  ^{4}See Annex A.6 for rationale for inclusion of subnormals.
+  ^{4}See Annex C for rationale for K > 2.
+  ^{5}See Annex A.4 for rationale for parameterization of domain.
+  ^{6}See Annex A.5 for rationale for this choice of exponent bias.
+  ^{7}See Annex A.6 for rationale for inclusion of subnormals.
 
 ## 3.2 Naming
 Formats defined in this document shall be named Binary{K, P, Σ, Δ}.
@@ -339,8 +386,8 @@ by an identifier, followed by a list of operation parameter values, either as su
 *Example:*
   Exp*<f*_{*x*}*, f*_{*r*}*, ρ>* is an operation, and Exp<Binary8p4se, Binary8p3ue, (NearestTiesToEven, SatNone)> is a spe-
   cialization of this operation.
-An *auxiliary operation* may be defined which operates on the closed extended reals. Such operations are named with
-the prefix *ω*. These operations handle non-finite values explicitly and immediately, ensuring that all arithmetic and
+In some cases, an *auxiliary operation* is defined, which operates on the closed extended reals. Such operations are named with
+the prefix *ω*. These operations handle non-finite values explicitly and immediately; all arithmetic and
 other mathematical operations are over (finite) real values.
 
 NOTE 1—Specifications operate on code points using integer arithmetic (e.g., divide and modulo) operations. These
@@ -353,8 +400,8 @@ NOTE 3—The operation definitions herein describe no side effects, such as the 
 interrupts, and do not return values other than the defined result. Generally, NaN is returned when operands are out of
 
 domain (e.g., Log(−1.0)).
-NOTE 4—Many properties of the formats and operations are formally verified [15, 2]. Auxiliary operations are auto-
-matically extracted from a formal specification [15].
+NOTE 4—Many properties of the formats and operations are formally verified [12, 2]. Auxiliary operations are auto-
+matically extracted from a formal specification [12].
 
 
 ## 4.2 Projection specifications
@@ -471,12 +518,12 @@ An operation is a *numeric operation* if one or more of its results is a floatin
 An operation’s *defined results* are the result values specified in the definitions in this document.
 
 For numeric operations, a system that provides approximate implementations shall declare them as *κ-approximate*
-operations as follows.^{5} A *κ*-approximate implementation shall compute values whose maximum difference from the
-defined results does not exceed *κ* *value steps*, as defined in this section.
+operations as follows.^{8} A *κ*-approximate implementation shall compute values whose maximum difference from the
+defined results does not exceed *κ* *value steps*, as described in this section.
 A numeric operation *a*, for a given set of parameters, has a defined result *â*(*x*) for operands *x*. A *κ*-approximate
 implementation produces a floating-point value *ã*(*x*), which for some operands *x* has *ã*(*x*) ≠ *â*(*x*).
 
-Where an approximate implementation does not “match on NaNs”, that is where IsNaN(*â*(*x*)) ≠ IsNaN(*ã*(*x*)) for any
+Where an approximate implementation does not “match on NaNs”, that is where IsNaN(*â*(*x*)) ≠ IsNaN(*ã*(*x*)) for some
 input *x*, then it shall declare *κ* = NaN.
 
 Define
@@ -487,18 +534,18 @@ Define
                         ⎩False  otherwise
 
 Where an approximate implementation matches on NaNs but does not match on infinities, that is where
-MatchOnInfinity(*â*(*x*), *ã*(*x*)) is false for any input *x*, then it shall declare *κ* = ∞.
+MatchOnInfinity(*â*(*x*), *ã*(*x*)) is false for some input *x*, then it shall declare *κ* = ∞.
 For operations which match on NaNs and infinities, the value of *κ* is defined as follows.
 
     Let the set of operands producing finite results be *I*, so that for all *x* ∈ *I* we have *â*(*x*) ∈ *V* , where *V* is the
     result format’s finite value set. For all *x* ∈ *I*, *ã*(*x*) shall be in *V* .
 
-    The value of *κ* will be the maximum over all operands *x* ∈ *I* of the number of values in *V* between *ã*(*x*) and
-    *â*(*x*) inclusive of the former, exclusive of the latter. Formally,^{6}
+    The value of *κ* is the maximum over all operands *x* ∈ *I* of the number of values in *V* between *ã*(*x*) and
+    *â*(*x*) inclusive of the former, exclusive of the latter. Formally,^{9}
 
                           *κ* = max_{*x*∈*I*} #(((*â*(*x*), *ã*(*x*)] ∪ [*ã*(*x*), *â*(*x*))) ∩ *V*).
 
-    The value of *κ* will in general be specific to each operation specialization, for example a system may supply
+    The value of *κ* is, in general, specific to each operation specialization. For example a system might supply
     implementations of Add_{*fx,fy,fr,ρ*} where *κ* depends on *f*_{*r*}.
 
     For each *κ*-approximate operation specialization, *κ* shall be specified. Such a specification may be over *I* or
@@ -506,27 +553,20 @@ For operations which match on NaNs and infinities, the value of *κ* is defined 
 
                 *κ* ∈ {*I*₁ : *κ*_{*I*₁}, ..., *I*ₙ : *κ*_{*I*ₙ}} where *I* = ⋃ᵢ *I*ᵢ and ∀*i* ≠ *j* : *I*ᵢ ∩ *I*ⱼ = {}.
 
-    This may be attested by any proof method, including direct computation.
+    This can be attested by any proof method, including direct computation.
 Operations returning multiple floating-point values shall declare *κ* as follows, where *κ*[*m*] is *κ* for the operation which
 returns the *m*^{th} return value, that is *ã*(*x*)[*m*]. If any *κ*[*m*] is NaN, *κ* = NaN shall be declared. Otherwise, if any *κ*[*m*]
 is infinite, *κ* = ∞ shall be declared. If all *κ*[*m*] are finite, *κ* = max_{*m*} *κ*[*m*] shall be declared.
 
 Approximate implementations shall be named differently from the name of the operation that is approximated.
 
-Additional accuracy declarations may be supplied.^{7}
-  ^{5}See Annex D for worked examples of approximation declarations.
-  ^{6}The intervals (*ℓ, u*] and [*ℓ, u*) where *u* ≤ *ℓ* are empty sets.
-  ^{7}See Annex E for examples.
+Additional accuracy declarations may be supplied.^{10}
+  ^{8}See Annex D for worked examples of approximation declarations.
+  ^{9}The intervals (*ℓ, u*] and [*ℓ, u*) where *u* ≤ *ℓ* are empty sets.
+  ^{10}See Annex E for examples.
 
 ## 4.5 Conforming implementations
-An implementation shall provide the following operation specializations, where the two format sets F_{4} and F_{8} and the
-external format^{8} set F_{*X*} are defined as
-
-                                 F_{8}  =  {Binary8p4se, Binary8p3se}
-                                 F_{4}  =  {Binary4p2sf}
-
-                           {} ≠ F_{*X*}  ⊆  {binary32, binary16, BFloat16}
-with operation specializations as follows, for all *f*, *f*_{1}, *f*_{2}, and *f*_{*r*} in the indicated sets, and *ρ* = (NearestTiesToEven, SatNone).
+An implementation shall provide the following operation specializations:
 
 Convert*<f, f*_{*r*}*, ρ>*      where  {*f, f*_{*r*}} ⊂ F_{4} ∪ F_{8} ∪ F_{*X*}
 
@@ -552,6 +592,17 @@ MinmaxOp*<f, f, f, ρ>*  where  *f* ∈ F_{4} ∪ F_{8}
                                           ⎪ MinimumMagnitudeNumber,  MaximumMagnitudeNumber, ⎪
                                           ⎩ MinimumFinite,             MaximumFinite         ⎭
 
+where the two format sets F_{4} and F_{8} are defined as
+
+                                 F_{8}  =  {Binary8p4se, Binary8p3se}
+                                 F_{4}  =  {Binary4p2sf}
+
+and the external format^{11} set F_{*X*} is defined as
+
+                           {} ≠ F_{*X*}  ⊆  {binary32, binary16, BFloat16}
+
+and where *ρ* = (NearestTiesToEven, SatNone).
+
 For CompareOp ∈ {CompareLess, CompareLessEqual, CompareEqual, CompareGreater, CompareGreaterEqual} the
 following operation specializations shall be provided:
 
@@ -568,9 +619,9 @@ For each format in F_{4} ∪ F_{8} ∪ F_{*X*}, the following format-level opera
 
 
 
-  ^{8}See §4.14 about external formats.
+  ^{11}See §4.14 about external formats.
 
-In addition, scaled operations, as defined in §5.5, shall be provided as follows, with F_{*s*} = {Binary8p1uf}:
+In addition, scaled operations, as defined in §5.8, shall be provided as follows, with F_{*s*} = {Binary8p1uf}:
 
   ScaledAdd<(*f*_{*s*}*, f*_{1}), (*f*_{*s*}*, f*_{2})*, f*_{*r*}*, ρ>*      where  *f*_{*s*} ∈ F_{*s*}
                                        and  {*f*_{1}*, f*_{2}} ⊂ F_{4} ∪ F_{8}
@@ -590,13 +641,13 @@ Note that an implementation provides a subset of operation specializations for a
 standard.
 
 Where an operation specialization is supplied, the implementation shall compute the same result as does the defined
-operation specialization for all possible operand values. This may be attested by any proof method, including direct
+operation specialization for all possible operand values. This should be attested by any appropriate proof method, including direct
 computation.
 
 Where an approximate implementation of an operation specialization is supplied, the implementation shall declare *κ*
 as defined in §4.4. Such an implementation should use an implementation-specific identifier which indicates that the
 implementation is approximate.
-It is recommended that an implementation supply a means whereby a user may query the presence of an implementation
+An implementation should supply a means whereby a user can query the presence of an implementation
 of a given operation specialization defined by a string representation.
 
 *Example:*
@@ -620,7 +671,6 @@ themselves are not required of a conforming implementation.
 
 **Signature**
     *ω*Decode_{*f*}(*x*) → *X*
-    *ω*DecodeAux_{*f*}(Σ, Δ*, x*) → *X*
 
 **Parameters**
      *f* : format of *x*
@@ -632,7 +682,7 @@ themselves are not required of a conforming implementation.
     *X* : floating-point datum, a closed extended real value in D_{*f*}
 **Behavior**
 
-    *ω*Decode(*x*) → *ω*DecodeExternal_{*f*}(*x*)  if *f* ∈ {binary64, binary32, binary16, BFloat16} ^{9}
+    *ω*Decode(*x*) → *ω*DecodeExternal_{*f*}(*x*)  if *f* ∈ {binary64, binary32, binary16, BFloat16} ^{12}
     *ω*Decode(*x*) → *ω*DecodeAux_{*f*}(SignednessOf(*f*), DomainOf(*f*)*, x*)
     *ω*DecodeAux(Signed, ∗, 2^{K−1}) → NaN
     *ω*DecodeAux(Unsigned, ∗, 2^{K} − 1) → NaN
@@ -660,7 +710,7 @@ themselves are not required of a conforming implementation.
 
 
 
-  ^{9}See §4.14 about external formats.
+  ^{12}See §4.14 about external formats.
 
 ### 4.7.3 Projection
 Project closed extended real value to format *f*, applying specified rounding and saturation.
@@ -761,11 +811,8 @@ number of random bits.
 NOTE 1—The quality of the random bits is not specified in this document.
 NOTE 2—The variants StochasticA, StochasticB, StochasticC offer a balance between accuracy and complexity [3].
 
-NOTE 3—The notation StochasticA  _{∗} may be used to indicate that *N* random bits are supplied but not further spec-
+NOTE 3—The notation StochasticA  _{∗} is used to indicate that *N* random bits are supplied but not further spec-
 ified.                         *N,*
-
-NOTE 4—The intermediate value *S* may be set to 2^{P}, which might appear to preclude its representation in P − 1 bits
-of explicit significand, but the computed real value is represented as the first number in the next binade.
 
 ### 4.7.5 Saturation
 Saturate closed extended real to ±∞, or to maximum/minimum finite value.
@@ -816,9 +863,7 @@ NOTE—Whilst rounding precedes saturation in *ω*Project, the rounding mode is 
 resolve cases where rounding direction requires a finite result. Saturation does not round any value.
 
 ### 4.7.6 Encoding
-Encode a closed extended real value to a code point in format *f*. *ω*Encode is applied only to a value which is in the
-datum set of *f*. This value may be produced by *ω*RoundToPrecision and *ω*Saturate, or the argument may be known
-to be in the datum set, for example, the absolute value of a number already in the set.
+Encode a closed extended real value to a code point in format *f*.
 
 **Signature**
     *ω*Encode_{*f*}(*X*) → *r*
@@ -859,8 +904,9 @@ to be in the datum set, for example, the absolute value of a number already in t
         B = ExponentBiasOf(*f*)
         Σ = SignednessOf(*f*)
 
-NOTE—From the precondition that *X* is in the datum set of format *f*, it follows that *S* ∈ ℕ, and that *X* is finite in
-finite formats.
+NOTE—*ω*Encode is applied only to a value which is in the datum set of *f*. Generally this value is produced by
+*ω*RoundToPrecision and *ω*Saturate, or the argument is known to be in the datum set, for example, the absolute value
+of a number already in the set. From this precondition, it follows that *S* ∈ ℕ, and that *X* is finite in finite formats.
 
 ## 4.8 Decoding and encoding for external formats
 The *ω*DecodeExternal and *ω*EncodeExternal functions convert between external formats and closed extended reals.
@@ -904,13 +950,10 @@ Encode floating-point datum to a floating-point value in external format *f*.
 
      *r* : floating-point value, in format *f*
 **Behavior**
-    *ω*EncodeExternal(NaN) → Any quiet NaN
+    *ω*EncodeExternal(NaN) → A quiet NaN, which should be the quiet NaN with zero payload and sign bit zero
     *ω*EncodeExternal(0) → The code in *f* that decodes to the non-negative 0
 
     *ω*EncodeExternal(*X*) → The code in *f* that decodes to *X*
-**Details**
-While an implementation may return any quiet NaN, it is recommended that the quiet NaN with zero payload is returned.
-
 NOTE— The *ω*EncodeExternal function is only called with arguments in the datum set of format *f*, therefore the
 encoding is unambiguous and independent of rounding mode.
 
@@ -1130,7 +1173,7 @@ NOTE 2—Divide(*x,* 0) yields NaN. Returning Inf for finite *x* would imply 1/(
 
 ### 4.10.6 Fused Multiply–Add
 Compute *R* = *X*×*Y* +*Z*, with computation in the reals. Rounding and the determination of overflow and underflow are
-applied only on the result. The behavior of *ω*FMA(*X, Y, Z*) is equivalent [15] to the behavior of *ω*Add(*ω*Multiply(*X, Y* )*, Z*).
+applied only on the result. The behavior of *ω*FMA(*X, Y, Z*) is equivalent [12] to the behavior of *ω*Add(*ω*Multiply(*X, Y* )*, Z*).
 
 **Signature**
     FMA_{*fx,fy,fz,fr,ρ*}(*x, y, z*) → *r*
@@ -1181,7 +1224,7 @@ applied only on the result. The behavior of *ω*FMA(*X, Y, Z*) is equivalent [15
 
 ### 4.10.7 Fused Add–Add
 Compute *R* = *X*+*Y* +*Z*, with computation in the reals. Rounding and the determination of overflow and underflow are
-applied only on the result. The behavior of *ω*FAA(*X, Y, Z*) is equivalent [15] to the behavior of *ω*Add(*ω*Add(*X, Y* )*, Z*),
+applied only on the result. The behavior of *ω*FAA(*X, Y, Z*) is equivalent [12] to the behavior of *ω*Add(*ω*Add(*X, Y* )*, Z*),
 which is in turn equivalent to *ω*Add(*X,* *ω*Add(*Y, Z*)).
 
 **Signature**
@@ -1870,8 +1913,7 @@ Comparison operators take two operands and return a Boolean value.
 
 
 NOTE 1—The TotalOrder(*x, y*) predicate provides a total ordering over each format’s value set.
-NOTE 2—The above definition is consistent with the IEEE-754 definition of TotalOrder. There is a single NaN and it
-always compares as the most negative value.
+NOTE 2—TotalOrder is not defined when either format is an external format.
 
 ### 4.12.2 Comparison operator symbols
 This section defines the mapping between comparison operator symbols that a system may make available with floating-
@@ -1973,7 +2015,7 @@ The classifier operation Class(*x*) tells which of the eight classes *x* falls i
                   ClsPositiveInfinity         IsInfinite(x) and not IsSignMinus(x)
 
 ## 4.14 Format-level operations
-Certain operations act on formats rather than values, for example, determining the precision of a format.^{10}
+Certain operations act on formats rather than values, for example, determining the precision of a format.^{13}
 
 The following operations return integers or enumerations:
 
@@ -1995,8 +2037,8 @@ The following operations return floating-point values, in the format *f*:
 
  MaxFiniteOf(*f*)         Maximum finite value representable in format *f*.
  MinFiniteOf(*f*)          Minimum finite value representable in format *f*.
-                        In signed formats, MinFiniteOf(*f*) = −MaxFiniteOf(*f*).
-                        In unsigned formats, MinFiniteOf(*f*) = 0.
+                        In signed formats, *ω*Decode_{*f*}(MinFiniteOf(*f*)) = −*ω*Decode_{*f*}(MaxFiniteOf(*f*)).
+                        In unsigned formats, MinFiniteOf(*f*) = 0_{*f*}.
  MinPositiveOf(*f*)        Minimum strictly positive value representable in format *f*.
  MaxSubnormalOf(*f*)     Maximum positive subnormal value representable in format *f*, or NaN if no values are
                         subnormal.
@@ -2022,9 +2064,12 @@ These operations query projection specifications and return enumerations:
 
 
 
-  ^{10}The external formats binary64,binary32,binary16 are from [7], and BFloat16 from [8].
+  ^{13}The external formats binary64,binary32,binary16 are from [7], and BFloat16 from [8].
 
 ## 4.16 Next greater than and next less than
+Return the least (or greatest) floating-point value that compares greater than (or less than) the argument. If no such
+value exists, return NaN.
+
 **Signature**
 
     NextGreaterThan_{*f*}(*x*) → *r*
@@ -2039,9 +2084,10 @@ These operations query projection specifications and return enumerations:
      *r* : floating-point value, format *f*
 
 **Behavior**
-    NextGreaterThanAux(∗, ∗, NaN) → NaN
-    NextGreaterThanAux(∗, Extended, Inf) → NaN
-    NextGreaterThanAux(∗, Finite, MaxFinite) → NaN
+    NextGreaterThanAux(∗, ∗*, x*) if IsNaN(*x*) → *x*
+    NextGreaterThanAux(Signed, ∗, 2^{K−1}) → 1
+    NextGreaterThanAux(∗, Extended, Inf) → *ω*Encode_{*f*}(NaN)
+    NextGreaterThanAux(∗, Finite, MaxFinite) → *ω*Encode_{*f*}(NaN)
     NextGreaterThanAux(∗, Extended, MaxFinite) → Inf
     NextGreaterThanAux(Signed, Extended, −Inf) → MinFinite
     NextGreaterThanAux(Signed, ∗, SmallestNegative) → 0
@@ -2050,10 +2096,11 @@ These operations query projection specifications and return enumerations:
 
     NextGreaterThan(*x*) → NextGreaterThanAux(SignednessOf(*f*), DomainOf(*f*)*, x*)
 
-    NextLessThanAux(∗, ∗, NaN) → NaN
-    NextLessThanAux(∗, Finite, MinFinite) → NaN
-    NextLessThanAux(Unsigned, ∗, 0) → NaN
-    NextLessThanAux(Signed, Extended, −Inf) → NaN
+    NextLessThanAux(∗, ∗*, x*) if IsNaN(*x*) → *x*
+    NextLessThanAux(Signed, ∗, 2^{K−1}) → 2^{K−1} + 1
+    NextLessThanAux(∗, Finite, MinFinite) → *ω*Encode_{*f*}(NaN)
+    NextLessThanAux(Unsigned, ∗, 0) → *ω*Encode_{*f*}(NaN)
+    NextLessThanAux(Signed, Extended, −Inf) → *ω*Encode_{*f*}(NaN)
     NextLessThanAux(Signed, Extended, MinFinite) → −Inf
     NextLessThanAux(∗, Extended, Inf) → MaxFinite
     NextLessThanAux(Signed, ∗, 0) → SmallestNegative
@@ -2063,6 +2110,7 @@ These operations query projection specifications and return enumerations:
 
     where
 
+    K = BitwidthOf(*f*)
     MaxFinite = MaxFiniteOf(*f*)
     MinFinite = MinFiniteOf(*f*)
     SmallestNegative = *ω*Encode_{*f*}(−*ω*Decode_{*f*}(MinPositiveOf(*f*)))   (The negative number of least magnitude)
@@ -2076,18 +2124,36 @@ than” to “least floating-point number that compares greater than, or NaN”.
 
 # 5 Block operations
 
+## 5.1 General
+
 A block is a pair (*s,* [*x*_{1}*, ..., x*_{*B*}]) comprising a scale factor *s* in format *f*_{*s*} and a sequence of one or more elements *x*_{*i*},
 each in format *f*_{*x*}.
 
-These operations make use of the function reduce, defined as follows, for binary function *f*, and arguments *x*_{1}*, . . . , x*_{*n*}:
+NOTE— Scaled operations are available as block operations using blocks of one element (§5.8).
+
+## 5.2 Definitions
+
+Some operations in this section make use of the function reduce, defined as follows.
+
+For binary function *f*, and arguments *x*_{1}*, . . . , x*_{*m*}:
 
                     reduce(*f,* [*x*_{1}*, x*_{2}])  =  *f*(*x*_{1}*, x*_{2})
-                reduce(*f,* [*x*_{1}*, . . . , x*_{*n*}])  =  reduce(*f,* [*f*(*x*_{1}*, x*_{2})*, x*_{3}*, . . . , x*_{*n*}])  for *n* ≥ 3
+                reduce(*f,* [*x*_{1}*, . . . , x*_{*m*}])  =  reduce(*f,* [*f*(*x*_{1}*, x*_{2})*, x*_{3}*, . . . , x*_{*m*}])  for *m* ≥ 3
 
-NOTE— Scaled operations are available as block operations using blocks of one element (§5.5).
+## 5.3 Stochastic rounding in block operations
 
-## 5.1 Internal functions
-### 5.1.1 Decoding
+When stochastic rounding is applied to operations returning sequences, the meaning of the random bits *R* is altered
+to mean a sequence of integers *R* = [*R*_{1}, ..., *R*_{*B*}]. Specifically, when RoundOf(*ρ*) = Stochastic[A, B, C]_{*N,R*}, define
+*ρ*[*i*] := (Stochastic[A, B, C]_{*N,Rᵢ*}, SatOf(*ρ*)). For such operations, the constraint that *R* is an integer such that 0 ≤
+*R* < 2^{*N*} is replaced by a constraint that *R*_{*i*} is an integer and 0 ≤ *R*_{*i*} < 2^{*N*}. For non-stochastic rounding modes, define
+*ρ*[*i*] := *ρ*.
+
+NOTE—While the specification is in terms of a sequence of integers, an implementation may choose to define that
+sequence in any appropriate manner, for example by indexing into an array of integers, or by sampling from a random
+number generator specified by *R*, or by the calling of a defined function that generates the sequence.
+
+## 5.4 Internal functions
+### 5.4.1 Decoding
 
 **Signature**
     *ω*BlockDecode_{*B,fs,fx*}(*s,* [*x*_{1}*, ..., x*_{*B*}]) → [*Z*_{1}*, ..., Z*_{*B*}]
@@ -2109,8 +2175,8 @@ NOTE— Scaled operations are available as block operations using blocks of one 
                                 where
                                  *Z*_{*i*} = *ω*Multiply(*ω*Decode_{*fs*}(*s*), *ω*Decode_{*fx*}(*x*_{*i*}))
 
-### 5.1.2 Projection
-Convert a sequence of closed extended reals *X*_{1*..B*} to a block (*s,* [*r*_{1*..B*}]), with scale factor *s* supplied as an operand.
+### 5.4.2 Projection
+Convert a sequence of closed extended reals *X*_{1*..B*} to a block (*s,* [*r*_{1}, ..., *r*_{*B*}]), with scale factor *s* supplied as an operand.
 
 **Signature**
     *ω*BlockProject_{*B,fs,fr,ρ*}(*s,* [*X*_{1}*, ..., X*_{*B*}]) → [*r*_{1}*, ..., r*_{*B*}]
@@ -2137,14 +2203,14 @@ Convert a sequence of closed extended reals *X*_{1*..B*} to a block (*s,* [*r*_{
                         *Z*_{*i*} =
                             ⎪sgn(*X*_{*i*}) × sgn(*S*)  if *S* = ±∞
                             ⎩*ω*Divide(*X*_{*i*}*, S*)    otherwise
-                        *r*_{*i*} = *ω*Project_{*fr,ρ*}(*Z*_{*i*})
+                        *r*_{*i*} = *ω*Project_{*fr,ρ[i]*}(*Z*_{*i*})
 
 NOTE 1—If the scale factor *s* is zero, all non-NaN result elements are zero.
 
 NOTE 2—If the scale factor *s* is infinite, all nonzero, non-NaN result elements are ±1.
 
-## 5.2 Conversion of blocks
-### 5.2.1 Conversion from a block
+## 5.5 Conversion of blocks
+### 5.5.1 Conversion from a block
 
 Convert a block (*s,* [*x*_{1*..B*}]) to a sequence of floating-point values *r*_{1*..B*}.
 
@@ -2168,10 +2234,10 @@ Convert a block (*s,* [*x*_{1*..B*}]) to a sequence of floating-point values *r*
     ConvertFromBlock(*s,* [*x*_{1}*, ..., x*_{*B*}]) → [*r*_{1}*, ..., r*_{*B*}]
                       where
                         [*Z*_{1}*, ..., Z*_{*B*}] = *ω*BlockDecode(*s,* [*x*_{1}*, ..., x*_{*B*}])
-                        *r*_{*i*} = *ω*Project_{*fr,ρ*}(*Z*_{*i*})
+                        *r*_{*i*} = *ω*Project_{*fr,ρ[i]*}(*Z*_{*i*})
 
-### 5.2.2 Conversion to a block
-Convert a sequence of floating-point values *x*_{1*..B*} to a block (*s,* [*r*_{1*..B*}]), with scale factor supplied as an operand.
+### 5.5.2 Conversion to a block
+Convert a sequence of floating-point values *x*_{1*..B*} to a block (*s,* [*r*_{1}, ..., *r*_{*B*}]), with scale factor supplied as an operand.
 
 **Signature**
     ConvertToBlock_{*B,fx,fs,fr,ρ*}([*x*_{1}*, ..., x*_{*B*}]*, s*) → (*s,* [*r*_{1}*, ..., r*_{*B*}])
@@ -2197,8 +2263,8 @@ Convert a sequence of floating-point values *x*_{1*..B*} to a block (*s,* [*r*_{
                         *X*_{*i*} = *ω*Decode_{*fx*}(*x*_{*i*})
                         [*r*_{1}*, ..., r*_{*B*}] = *ω*BlockProject_{*B,fs,fr,ρ*}(*s,* [*X*_{1}*, ..., X*_{*B*}])
 
-### 5.2.3 Conversion to a block with scale factor computation
-Convert a sequence of floating-point values *x*_{1*..B*} to a block (*s,* [*r*_{1*..B*}]), computing the scale factor as a maximum over
+### 5.5.3 Conversion to a block with scale factor computation
+Convert a sequence of floating-point values *x*_{1*..B*} to a block (*s,* [*r*_{1}, ..., *r*_{*B*}]), computing the scale factor as a maximum over
 finite absolute values of *x*_{*i*}.
 
 **Signature**
@@ -2230,19 +2296,18 @@ finite absolute values of *x*_{*i*}.
 
 NOTE 1—If all *x*_{*i*} are NaN, the result scale factor and elements will be NaN.
 
-NOTE 2—If all *x*_{*i*} are infinite, the result scale factor will be Inf or MaxFiniteOf(*f*_{*s*}) and the elements will be ±1 or
+NOTE 2—If all *x*_{*i*} are infinite, and *f*_{*s*} is in the extended domain, the result scale factor will be Inf or MaxFiniteOf(*f*_{*s*}) and the elements will be ±1 or
 ±MaxFiniteOf(*f*_{*r*}).
-NOTE 3—If some *x* are infinite, they are preserved (or saturated, according to *ρ*) in the result, and do not influence
-the scale of finite elements.*i*
+NOTE 3—If some *x*_{*i*} are infinite, they do not influence the scale of finite elements.
 
-NOTE 4—If the maximum value *S* rounds to zero under *ρ* , the result scale factor will be zero, and all result elements
-will be zero.                                    *s*
+NOTE 4—If the maximum value *S* rounds to zero under *ρ*_{*s*}, the result scale factor will be zero, and all non-NaN result elements
+will be zero.
 
 NOTE 5—The projection specifications for the scale factor and elements allow implementation of some common
 strategies, e.g., rounding *s* using TowardPositive and saturating *r*.
 
-## 5.3 Block reduction operations
-### 5.3.1 Sum and product
+## 5.6 Block reduction operations
+### 5.6.1 Sum and product
 
 **Signature**
     BlockReduceAdd_{*B, fs,fx, fr,ρ*}((*s,* [*x*_{1}*, ..., x*_{*B*}])) → *r*
@@ -2274,7 +2339,7 @@ strategies, e.g., rounding *s* using TowardPositive and saturating *r*.
                         *R* = reduce(*ω*Multiply, [1*, X*_{1}*, ..., X*_{*B*}])
                         *r* = *ω*Project_{*fr,ρ*}(*R*)
 
-### 5.3.2 Dot product
+### 5.6.2 Dot product
 Dot product of two blocks of floating-point values.
 
 **Signature**
@@ -2307,14 +2372,14 @@ Dot product of two blocks of floating-point values.
                         *R* = reduce(*ω*Add, [0*, P*_{1}*, ..., P*_{*B*}])
                         *r* = *ω*Project_{*fr,ρ*}(*R*)
 
-## 5.4 Elementwise operations on blocks
+## 5.7 Elementwise operations on blocks
 Operations on blocks are declared according to the following schema, where BlockOp is defined in terms of *ω*Op.
 
 Note that the scale factor of the result block *s* is supplied as an *input* operand. Implementations are free to supply any
 method of computation of this scale factor, and to supply an operation in which that computation is composed with the*r*
 elementwise operation.
 
-Valid substitutions for Op are:
+Valid substitutions for Op are, with arity *n*:
    • Unary (*n* = 1): Convert, Abs, Negate, Sqrt, RSqrt, Recip, Exp, Log, ExpMinusOne, LogOnePlus, Exp2,
      Log2, Sin, Cos, Tan, ArcSin, ArcCos, ArcTan, Sinh, Cosh, Tanh, ArcSinh, ArcCosh, ArcTanh, SinPi, CosPi,
      TanPi, ArcSinPi, ArcCosPi, ArcTanPi, Softplus;
@@ -2354,14 +2419,25 @@ Valid substitutions for Op are:
 
                         [*r*_{1}*, ..., r*_{*B*}] = *ω*BlockProject_{*B,fs,fr,ρ*}(*s*_{*r*}, [*Z*_{1}*, ..., Z*_{*B*}])
 
-## 5.5 Scaled operations via block operations
+## 5.8 Scaled operations via block operations
 A block size of *B* = 1 provides scaled operations.
 
 An *n*-ary scaled operation is defined as follows:
 
-    ScaledOp_{(*f*} _{*,f*}  ),...,(*f*  *,f*  _{)*,f*} _{*,ρ*}(*s*_{1}*, x*_{1}*, ..., s*_{*n*}*, x*_{*n*}) → *r*
-             *s*1 *x*1    *sn* *xn*  *r*                where
-                                                (1, [*r*]) = BlockOp((*s*_{1}, [*x*_{1}]), ..., (*s*_{*n*}, [*x*_{*n*}]), 1)
+    ScaledOp_{(*fs*1*,fx*1),...,(*fsn,fxn*),*fr,ρ*}(*s*_{1}*, x*_{1}*, ..., s*_{*n*}*, x*_{*n*}) → *r*
+                                                where
+                                                (1, [*r*]) = BlockOp_{1,(*fs*1*,fx*1),...,(*fsn,fxn*),*fs,fr,ρ′*}((*s*_{1}, [*x*_{1}]), ..., (*s*_{*n*}, [*x*_{*n*}]), 1)
+
+where the result scale factor format *f*_{*s*} is any format which allows the exact representation of the number 1. This applies
+to all conforming formats in this document.
+
+The notation *ρ′* denotes the projection specification
+
+                      ⎧(Stochastic[A, B, C]_{*N,[R]*}, SatOf(*ρ*))  if RoundOf(*ρ*) = Stochastic[A, B, C]_{*N,R*}
+                 *ρ′* := ⎨
+                      ⎩*ρ*                                            otherwise
+
+where [*R*] is the sequence of length one whose sole element is *R*.
 
 NOTE—A choice of scale factor format with P = 1 allows scale factors to be restricted to powers of two.
 
@@ -2390,7 +2466,7 @@ In the context of machine learning systems, uses of NaN include:
      calculations to indicate that an error has occurred.
 
    • Use as a sentinel value. In some datasets, for example, where individual element values may be missing or out of
-     range, a sentinel may be used to record the position of these values. In many cases, this will require less memory
+     range, a sentinel may be used to record the position of these values. In many cases, this requires less memory
      than storing such information out-of-band, such as in a coordinate-list (COO) format array. In some cases, ±Inf
      can be used as a missing value, but given the restricted range of the formats, it is likely that infinity will be used
      as a separate indicator of rounding from values outside of the finite range.
@@ -2430,9 +2506,9 @@ Representing infinite values requires two code points in a signed format, and fo
 number of finite values may be significant. Hence formats are defined using the finite and extended domains.
 
 Infinite values are used widely in machine learning systems. Examples of such usage are:
-   • Mask values, for example in transformer models in machine learning [13].
+   • Mask values, for example in transformer models in machine learning [11].
 
-   • Representation of overflow, for example to adjust dynamic loss scaling factors [16].
+   • Representation of overflow, for example to adjust dynamic loss scaling factors [13].
 
 The following example shows that in certain machine learning computations, it is insufficient to substitute an infinity
 with the largest finite value.
@@ -2466,20 +2542,20 @@ with the largest finite value.
 
 *Example:*
   Consider the use of infinity in computation of attention masks. These values, assembled in a mask vector *M* with
-  values *M*_{*i*} ∈ {0, −∞}, are typically added to computed values *A* in a computation such as:
+  values *M*_{*i*} ∈ {0, ∞}, are typically combined with computed values *A* in a computation such as:
 
 
-                                   log(∑_{*i*} exp(*τ* × (*A*_{*i*} + *M*_{*i*})))
+                                   log(∑_{*i*} exp(*τ* × (*A*_{*i*} − *M*_{*i*})))
 
   where *τ >* 0 is a “temperature” or “base” parameter [4]. This calculation depends on the fact that exp(*τ* × (*A*_{*i*} −
   ∞)) = 0. The operation sequence log(∑_{*i*} exp(*v*_{*i*})) is typically fused into a single block operation logsumexp(*v*).
-  For formats without infinities, *M*_{*i*} = ∞ will be replaced by a large float (e.g., the largest finite Binary8p4sf value
+  For formats without infinities, *M*_{*i*} = ∞ is replaced by a large float (e.g., the largest finite Binary8p4sf value
   is 240.0). This is not in itself a difficulty: if all the *A* values are bounded (e.g., the results of a softmax operation
   are bounded above by 1.0), then exp(1.0 − 240.0) is an extremely small number, sufficiently small to round to zero.
   Therefore, an explicit representation of infinity is *not* needed in order for this computation to yield its desired value.
 
   However, careful implementations do not execute the calculation as written; instead, the implementation of
-  logsumexp makes use of the identity transformation
+  logsumexp makes use of the transformation
 
                           logsumexp(*v*) → logsumexp(*v* − max(*v*)) + max(*v*)
 
@@ -2488,13 +2564,13 @@ with the largest finite value.
   domain. In both cases, the value 224.0 is representable, and the logsumexp calculation on a two-element vector
   might be, in a format with infinity:
 
-                       logsumexp(*τ* × [−224.0, −∞]) → logsumexp(*τ* × [0, −∞]),
+                       logsumexp(*τ* × [−224.0, −∞]) → logsumexp(*τ* × [0, −∞]) + *τ* × (−224.0),
 
   and in a format without infinity:
 
-                     logsumexp(*τ* × [−224.0, −240.0]) → logsumexp(*τ* × [0, −16.0]).
+                     logsumexp(*τ* × [−224.0, −240.0]) → logsumexp(*τ* × [0, −16.0]) + *τ* × (−224.0).
 
-  If *τ* = 1 and all calculations are done in 8-bit floating-point, then the two answers will be the same, because
+  If *τ* = 1 and all calculations are done in 8-bit floating-point, then the two answers are the same, because
   exp(−16) ≈ 1.1×10^{−7}, which will round to zero in all precisions P > 2. However, if *τ* is small, or calculations are
   done in mixed precision, the loss of “stickiness” will silently yield unexpected answers. It is not expected that the
   full calculation would be done in 8-bit floating-point, but the subtraction of the maximum value (and computation
@@ -2676,12 +2752,12 @@ peculiarities are evident:
 Consider an implementation of Exp<binary32, Binary8p4se, (NearestTiesToEven, SatNone)> which flushes subnor-
 mals in the result to zero or to the smallest normal, whichever is nearest, with ties going to zero. There are seven
 nonzero positive subnormals in Binary8p4se, of which four will be flushed to zero, and three will be returned as the
-smallest normal. Hence the value of *κ* over all inputs producing finite results is 4. Writing the cut points *a, b, c* =
-ln(2^{−11}), ln(9 · 2^{−11}), ln(15 · 2^{−11}), the intervals are:
+smallest normal. Hence the value of *κ* over all inputs producing finite results is 4. Let *I* be the set of inputs for which
+the defined result is finite. Writing the cut points *a, b, c* = ln(2^{−11}), ln(9 · 2^{−11}), ln(15 · 2^{−11}), the subsets are:
 
-                   *I*_{0} = D_{binary32} ∩ ((−∞*, a*) ∪ (*c,* +∞))                   *κ*_{*I*0} = 0
                    *I*_{4} = D_{binary32} ∩ (*a, b*)                                *κ*_{*I*4} = 4
                    *I*_{3} = D_{binary32} ∩ (*b, c*)                                *κ*_{*I*3} = 3
+                   *I*_{0} = *I* ∖ (*I*_{3} ∪ *I*_{4})                              *κ*_{*I*0} = 0
 
 and the implementation would declare
                                     *κ* ∈ {*I*_{0} : 0*, I*_{3} : 3*, I*_{4} : 4}.
@@ -2723,7 +2799,7 @@ It is suggested that a finite error bound for the operation BlockReduceAdd be pr
 least whenever the output is finite. Examples of such bounds are given by Higham [6, §4.2] and by Blanchard et al. [1].
 
 *Example:*
-  Consider a block of length *B* = 8, with arguments and output in Binary8p4se, where the accumulation is performed
+  Consider a block of length *B* = 8, with arguments and output in Binary8p4se, and scale factor 1, where the accumulation is performed
   in binary16 using NearestTiesToEven, and the inputs are summed sequentially in any order. Let
 
                                        *S* = *X*_{1} + · · · + *X*_{8}
@@ -2742,7 +2818,7 @@ It is suggested that a finite error bound for the operation BlockReduceMultiply 
 at least whenever the output is finite. Examples of such bounds are given by Higham [6, §2.2].
 
 *Example:*
-  Consider a block of length 8, with arguments and output in Binary8p4se, where the multiplications are performed in
+  Consider a block of length 8, with arguments and output in Binary8p4se, and scale factor 1, where the multiplications are performed in
   binary16 using NearestTiesToEven, sequentially in any order. Let
 
                                        *P* = *X*_{1} × · · · × *X*_{8}
@@ -2762,7 +2838,7 @@ Higham [6, §3.1] and by Blanchard et al. [1]. More generally applicable bounds 
 choices, for example when the precision used for the individual products varies during the computation.
 
 *Example:*
-  Consider a block of length 8, with arguments and output in Binary8p4se, where the multiplications and accumulation
+  Consider a block of length 8, with arguments and output in Binary8p4se, and scale factors 1, where the multiplications and accumulation
   are performed in binary16 using NearestTiesToEven, and the products are summed sequentially in any order. Let
 
                                    *D* = *X*_{1} × *Y*_{1} + · · · + *X*_{8} × *Y*_{8}
@@ -2778,31 +2854,7 @@ choices, for example when the precision used for the individual products varies 
   as follows: 11 is the accumulator precision, i.e., PrecisionOf(binary16); 7 = *B* − 1 is the number of additions; and
    16 = 2^{PrecisionOf(Binary8p4se)}.
 
-# Annex F (informative) External formats
-
-This table summarizes the points of agreement and of difference between a number of existing format families, some
-of which have hardware implementations, and their P3109 analogs.
-
-OCP: Open Compute Platform [11], describing hardware implementations including nVidia, Intel, and ARM.
-AGQ: AMD, Graphcore, Qualcomm[12], implemented in Graphcore’s C600 product, and AMD’s gfx940.
-
-TSL: Tesla Dojo Technology [14].
-
-    Format               Binary{K, P, Σ, Δ}           OCP             AGQ         TSL
-    Subformat          k8p1uf k8p3se k8p4se E8M0 E5M2 E4M3 E5M2 E4M3 E5M2 E4M3
-    Special values shared           Y                   N               Y            N
-
-    Exactly one NaN              Y             Y        N            Y            Y
-    Include negative zero           N             N        Y            N            N
-    Has infinity           N         Y         N     Y     N        N            N
-    Max exponent emax    126     15      7     127    15     8     15     7    N/A   N/A
-
-Max exponent for TSL is marked as N/A given the configurable bias.
-
-“Special values shared” means that format families within an implementation with the same signedness and domain
-share the encodings of special values.
-
-# Annex G (informative) Operation groups
+# Annex F (informative) Operation groups
 
 Operations are defined in groups as follows
 Group A (Core)                               Group KA (Block Core)
@@ -2891,7 +2943,86 @@ ArcTanPi*<f*_{*x*}*, f*_{*r*}*, ρ>*                               BlockArcTanPi
                                                BlockReduceMultiply*<B, f*_{*s*}*, f*_{*x*}*, f*_{*r*}*, ρ>*
                                                BlockDotProduct*<B, f*_{*sx*}*, f*_{*x*}*, f*_{*sy*}*, f*_{*y*}*, f*_{*r*}*, ρ>*
 
-# Annex H (informative) Bibliography
+Group SA (Scaled Core)
+
+ScaledConvert*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+
+ScaledNegate*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+
+ScaledAbs*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+
+ScaledAdd*<(*f*_{*s*1}*, f*_{*x*1}), (*f*_{*s*2}*, f*_{*x*2})*, f*_{*r*}*, ρ>*
+
+ScaledSubtract*<(*f*_{*s*1}*, f*_{*x*1}), (*f*_{*s*2}*, f*_{*x*2})*, f*_{*r*}*, ρ>*
+
+ScaledMultiply*<(*f*_{*s*1}*, f*_{*x*1}), (*f*_{*s*2}*, f*_{*x*2})*, f*_{*r*}*, ρ>*
+
+ScaledFMA*<(*f*_{*s*1}*, f*_{*x*1}), (*f*_{*s*2}*, f*_{*x*2}), (*f*_{*s*3}*, f*_{*x*3})*, f*_{*r*}*, ρ>*
+
+ScaledFAA*<(*f*_{*s*1}*, f*_{*x*1}), (*f*_{*s*2}*, f*_{*x*2}), (*f*_{*s*3}*, f*_{*x*3})*, f*_{*r*}*, ρ>*
+
+ScaledMinimum*<(*f*_{*s*1}*, f*_{*x*1}), (*f*_{*s*2}*, f*_{*x*2})*, f*_{*r*}*, ρ>*
+
+ScaledMaximum*<(*f*_{*s*1}*, f*_{*x*1}), (*f*_{*s*2}*, f*_{*x*2})*, f*_{*r*}*, ρ>*
+
+ScaledMinimumNumber*<(*f*_{*s*1}*, f*_{*x*1}), (*f*_{*s*2}*, f*_{*x*2})*, f*_{*r*}*, ρ>*
+
+ScaledMaximumNumber*<(*f*_{*s*1}*, f*_{*x*1}), (*f*_{*s*2}*, f*_{*x*2})*, f*_{*r*}*, ρ>*
+
+ScaledMinimumMagnitude*<(*f*_{*s*1}*, f*_{*x*1}), (*f*_{*s*2}*, f*_{*x*2})*, f*_{*r*}*, ρ>*
+
+ScaledMaximumMagnitude*<(*f*_{*s*1}*, f*_{*x*1}), (*f*_{*s*2}*, f*_{*x*2})*, f*_{*r*}*, ρ>*
+
+ScaledMinimumMagnitudeNumber*<(*f*_{*s*1}*, f*_{*x*1}), (*f*_{*s*2}*, f*_{*x*2})*, f*_{*r*}*, ρ>*
+
+ScaledMaximumMagnitudeNumber*<(*f*_{*s*1}*, f*_{*x*1}), (*f*_{*s*2}*, f*_{*x*2})*, f*_{*r*}*, ρ>*
+
+ScaledMinimumFinite*<(*f*_{*s*1}*, f*_{*x*1}), (*f*_{*s*2}*, f*_{*x*2})*, f*_{*r*}*, ρ>*
+
+ScaledMaximumFinite*<(*f*_{*s*1}*, f*_{*x*1}), (*f*_{*s*2}*, f*_{*x*2})*, f*_{*r*}*, ρ>*
+
+ScaledClamp*<(*f*_{*s*1}*, f*_{*x*1}), (*f*_{*s*2}*, f*_{*x*2}), (*f*_{*s*3}*, f*_{*x*3})*, f*_{*r*}*, ρ>*
+
+Group SB (Scaled Basic)
+
+ScaledDivide*<(*f*_{*s*1}*, f*_{*x*1}), (*f*_{*s*2}*, f*_{*x*2})*, f*_{*r*}*, ρ>*
+ScaledSqrt*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+ScaledRecip*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+ScaledRSqrt*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+ScaledExp*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+ScaledExp2*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+ScaledExpMinusOne*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+ScaledLog*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+ScaledLog2*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+ScaledLogOnePlus*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+ScaledSoftplus*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+ScaledCopySign*<(*f*_{*s*1}*, f*_{*x*1}), (*f*_{*s*2}*, f*_{*x*2})*, f*_{*r*}*, ρ>*
+
+Group SC (Scaled Full)
+
+ScaledHypot*<(*f*_{*s*1}*, f*_{*x*1}), (*f*_{*s*2}*, f*_{*x*2})*, f*_{*r*}*, ρ>*
+ScaledArcTan2*<(*f*_{*s*1}*, f*_{*x*1}), (*f*_{*s*2}*, f*_{*x*2})*, f*_{*r*}*, ρ>*
+ScaledArcTan2Pi*<(*f*_{*s*1}*, f*_{*x*1}), (*f*_{*s*2}*, f*_{*x*2})*, f*_{*r*}*, ρ>*
+ScaledSin*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+ScaledCos*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+ScaledTan*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+ScaledArcSin*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+ScaledArcCos*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+ScaledArcTan*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+ScaledSinh*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+ScaledCosh*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+ScaledTanh*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+ScaledArcSinh*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+ScaledArcCosh*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+ScaledArcTanh*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+ScaledSinPi*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+ScaledCosPi*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+ScaledTanPi*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+ScaledArcSinPi*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+ScaledArcCosPi*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+ScaledArcTanPi*<(*f*_{*s*1}*, f*_{*x*1})*, f*_{*r*}*, ρ>*
+
+# Annex G (informative) Bibliography
 
 **References**
 
@@ -2900,7 +3031,7 @@ ArcTanPi*<f*_{*x*}*, f*_{*r*}*, ρ>*                               BlockArcTanPi
     C124–C141, 2020.
 
  [2] T.-C. Chang, S. Park, J. P. Lim, and S. Nagarakatte, “FLoPS: Semantics, operations, and properties of P3109
-    floating-point representations in Lean,” 2026, rutgers Department of Computer Science Technical Report
+    floating-point representations in Lean,” 2026, Rutgers Department of Computer Science Technical Report
     DCS-TR-762. [Online]. Available: https://arxiv.org/abs/2602.15965
 
  [3] A. W. Fitzgibbon and S. Felix, “On stochastic rounding with few random bits,” in *IEEE 32nd Symposium on*
@@ -2927,21 +3058,12 @@ ArcTanPi*<f*_{*x*}*, f*_{*r*}*, ρ>*                               BlockArcTanPi
     ment, University of California, Berkeley, Tech. Rep. UCB/CSD-92-667, 1991, https://www2.eecs.berkeley.edu/
     Pubs/TechRpts/1992/6127.html.
 
-[11] P. Micikevicius, S. Oberman, P. Dubey, M. Cornea, A. Rodriguez, I. Bratt, R. Grisenthwaite, N. Jouppi, C. Chou,
-    A. Huffman, M. Schulte, R. Wittig, D. Jani, and S. Deng, “OCP 8-bit floating point specification (OFP8) revision
-    1.0,” opencompute.org, Tech. Rep., 2023.
-
-[12] B. Noune, P. Jones, D. Justus, D. Masters, and C. Luschi, “8-bit numerical formats for deep neural networks,”
-    arXiv cs.LG, Tech. Rep., 2022, https://arxiv.org/abs/2206.02915.
-[13] PyTorch authors, “Pytorch torchtext package:   t5 multi head attention forward ,” https://github.com/pytorch/
+[11] PyTorch authors, “Pytorch torchtext package:   t5 multi head attention forward ,” https://github.com/pytorch/
     text/blob/a933cbe5a008bc2cb61d985cf5864069194157eb/torchtext/prototype/models/t5/modules.py#L236.
 
-[14] Tesla, Inc., “Tesla Dojo Technology: A guide to Tesla’s configurable floating point formats and
-    arithmetic,” 2023, https://web.archive.org/web/20230503235751/https://tesla-cdn.thron.com/static/MXMU3S
-    tesla-dojo-technology 1WDVZN.pdf.
-[15] C. M. Wintersteiger, “Formal verification of the IEEE P3109 standard for binary floating-point formats for ma-
+[12] C. M. Wintersteiger, “Formal verification of the IEEE P3109 standard for binary floating-point formats for ma-
     chine learning,” in *IEEE 32nd Symposium on Computer Arithmetic, ARITH 2025, El Paso, TX, USA, May 4-7*.
     IEEE, 2025, https://github.com/imandra-ai/ieee-p3109.
 
-[16] R. Zhao, B. Vogel, and T. Ahmed, “Adaptive loss scaling for mixed precision training,” arXiv cs.LG, Tech. Rep.,
+[13] R. Zhao, B. Vogel, and T. Ahmed, “Adaptive loss scaling for mixed precision training,” arXiv cs.LG, Tech. Rep.,
     2019, https://arxiv.org/abs/1910.12385.

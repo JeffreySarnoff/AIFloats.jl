@@ -244,6 +244,27 @@ vmap!(D, :Multiply, RTE_SN, A, B)
 (C, D)
 ```
 
+Every scalar spelling accepts arrays too, and each one lands in the same
+kernel — including an operation whose parameters were bound ahead of time:
+
+```@example intermediate_arrays_spellings
+using AIFloats
+
+F = Binary(8, 3, SIGNED, EXTENDED)
+T = BinaryValue(F)
+A = T[0.25, 0.5, 1.0, 2.0]
+B = T[2.0, 1.0, 0.5, 0.25]
+
+add = Add(F, RTE_SN)                 # parameters bound; no operands, no projection yet
+@assert add(A, B) == Add(A, B, F, RTE_SN) == vmap(:Add, F, RTE_SN, A, B)
+(add, add(A, B))
+```
+
+`add(A, B)` is the *array* operation, so it takes the table gather or the
+threaded loop. `map(add, A, B)` gives the same answer through the scalar path,
+one element at a time — `benchmark/arrays.jl` reads 9.6 ns/element against 0.26
+for the kernel. Reach for the operation, not for `map`.
+
 Registered same-format broadcasts use the same array machinery:
 
 ```@example intermediate_broadcast
