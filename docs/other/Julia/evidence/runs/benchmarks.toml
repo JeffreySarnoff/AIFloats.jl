@@ -1,0 +1,24 @@
+cpu = "raptorlake"
+first_projection_seconds = 0.176389343
+julia_version = "1.13.0-rc4"
+note = "first invocation timed outside the benchmark function; may reuse precompiled code; warmed medians are workload-specific"
+
+[block_reduce_32]
+allocations = 4802
+bytes = 137848
+median_ns = 49162.0
+
+[decode]
+allocations = 104
+bytes = 2832
+median_ns = 1370.95
+
+[fma]
+allocations = 986
+bytes = 27624
+median_ns = 17595.5
+
+[project]
+allocations = 675
+bytes = 18864
+median_ns = 7017.2

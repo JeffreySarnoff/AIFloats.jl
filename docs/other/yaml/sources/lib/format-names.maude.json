@@ -1,0 +1,276 @@
+{
+  "version": 1,
+  "path": "lib/format-names.maude",
+  "sha256": "b86b06353e02650a87d02aee0bb3ceddbb723ed72f6c6a2b7d198e4c6edd56b4",
+  "type": "maude",
+  "records": [
+    {
+      "line": 1,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- Source: P3109/D1 3.2, printed page 17.\n"
+    },
+    {
+      "line": 2,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- Presentation only: the short-name rendering of 3.2. Kept out of the semantic\n"
+    },
+    {
+      "line": 3,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- profile because it needs CONVERSION, whose STRING import declares\n"
+    },
+    {
+      "line": 4,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- subsort Nat < FindResult and thereby drags FindResult into the numeric kind\n"
+    },
+    {
+      "line": 5,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- of every module that imports P3109-FORMAT-CORE. Load it from load-spec.maude;\n"
+    },
+    {
+      "line": 6,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- P3109-CORE does not include it.\n"
+    },
+    {
+      "line": 7,
+      "kind": "fmod",
+      "fields": {
+        "name": "P3109-FORMAT-NAMES",
+        "parameters": []
+      },
+      "text": "fmod P3109-FORMAT-NAMES is\n"
+    },
+    {
+      "line": 8,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-FORMAT-CORE"
+      },
+      "text": "  including P3109-FORMAT-CORE .\n"
+    },
+    {
+      "line": 9,
+      "kind": "protecting",
+      "fields": {
+        "expression": "CONVERSION"
+      },
+      "text": "  protecting CONVERSION .\n"
+    },
+    {
+      "line": 10,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "formatName"
+        ],
+        "domain": [
+          "Format"
+        ],
+        "arrow": "~>",
+        "range": "String",
+        "attributes": ""
+      },
+      "text": "  op formatName : Format ~> String .\n"
+    },
+    {
+      "line": 11,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "signName"
+        ],
+        "domain": [
+          "Signedness"
+        ],
+        "arrow": "->",
+        "range": "String",
+        "attributes": ""
+      },
+      "text": "  op signName : Signedness -> String .\n"
+    },
+    {
+      "line": 12,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "domainName"
+        ],
+        "domain": [
+          "Domain"
+        ],
+        "arrow": "->",
+        "range": "String",
+        "attributes": ""
+      },
+      "text": "  op domainName : Domain -> String .\n"
+    },
+    {
+      "line": 13,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "K",
+          "P"
+        ],
+        "sort": "Int"
+      },
+      "text": "  vars K P : Int .\n"
+    },
+    {
+      "line": 14,
+      "kind": "var",
+      "fields": {
+        "names": [
+          "S"
+        ],
+        "sort": "Signedness"
+      },
+      "text": "  var S : Signedness .\n"
+    },
+    {
+      "line": 15,
+      "kind": "var",
+      "fields": {
+        "names": [
+          "D"
+        ],
+        "sort": "Domain"
+      },
+      "text": "  var D : Domain .\n"
+    },
+    {
+      "line": 16,
+      "kind": "var",
+      "fields": {
+        "names": [
+          "F"
+        ],
+        "sort": "Format"
+      },
+      "text": "  var F : Format .\n"
+    },
+    {
+      "line": 17,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-format-core-010",
+        "lhs": "formatName(Binary(K, P, S, D))",
+        "rhs": "\"Binary\" + string(K, 10) + \"p\" + string(P, 10) + signName(S) + domainName(D)",
+        "condition": "validFormat(Binary(K, P, S, D))",
+        "attributes": "metadata \"clause=3.1-3.2; 4.14; page=16-17; 58\""
+      },
+      "text": "  ceq [p3109-format-core-010] : formatName(Binary(K, P, S, D)) = \"Binary\" + string(K, 10) + \"p\" + string(P, 10) + signName(S) + domainName(D) if validFormat(Binary(K, P, S, D)) [metadata \"clause=3.1-3.2; 4.14; page=16-17; 58\"] .\n"
+    },
+    {
+      "line": 18,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-format-core-011",
+        "lhs": "signName(Signed)",
+        "rhs": "\"s\"",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1-3.2; 4.14; page=16-17; 58\""
+      },
+      "text": "  eq [p3109-format-core-011] : signName(Signed) = \"s\" [metadata \"clause=3.1-3.2; 4.14; page=16-17; 58\"] .\n"
+    },
+    {
+      "line": 19,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-format-core-012",
+        "lhs": "signName(Unsigned)",
+        "rhs": "\"u\"",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1-3.2; 4.14; page=16-17; 58\""
+      },
+      "text": "  eq [p3109-format-core-012] : signName(Unsigned) = \"u\" [metadata \"clause=3.1-3.2; 4.14; page=16-17; 58\"] .\n"
+    },
+    {
+      "line": 20,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-format-core-013",
+        "lhs": "domainName(Finite)",
+        "rhs": "\"f\"",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1-3.2; 4.14; page=16-17; 58\""
+      },
+      "text": "  eq [p3109-format-core-013] : domainName(Finite) = \"f\" [metadata \"clause=3.1-3.2; 4.14; page=16-17; 58\"] .\n"
+    },
+    {
+      "line": 21,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-format-core-014",
+        "lhs": "domainName(Extended)",
+        "rhs": "\"e\"",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1-3.2; 4.14; page=16-17; 58\""
+      },
+      "text": "  eq [p3109-format-core-014] : domainName(Extended) = \"e\" [metadata \"clause=3.1-3.2; 4.14; page=16-17; 58\"] .\n"
+    },
+    {
+      "line": 22,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-format-core-022",
+        "lhs": "formatName(binary64)",
+        "rhs": "\"binary64\"",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1-3.2; 4.14; page=16-17; 58\""
+      },
+      "text": "  eq [p3109-format-core-022] : formatName(binary64) = \"binary64\" [metadata \"clause=3.1-3.2; 4.14; page=16-17; 58\"] .\n"
+    },
+    {
+      "line": 23,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-format-core-030",
+        "lhs": "formatName(binary32)",
+        "rhs": "\"binary32\"",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1-3.2; 4.14; page=16-17; 58\""
+      },
+      "text": "  eq [p3109-format-core-030] : formatName(binary32) = \"binary32\" [metadata \"clause=3.1-3.2; 4.14; page=16-17; 58\"] .\n"
+    },
+    {
+      "line": 24,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-format-core-038",
+        "lhs": "formatName(binary16)",
+        "rhs": "\"binary16\"",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1-3.2; 4.14; page=16-17; 58\""
+      },
+      "text": "  eq [p3109-format-core-038] : formatName(binary16) = \"binary16\" [metadata \"clause=3.1-3.2; 4.14; page=16-17; 58\"] .\n"
+    },
+    {
+      "line": 25,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-format-core-046",
+        "lhs": "formatName(BFloat16)",
+        "rhs": "\"BFloat16\"",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1-3.2; 4.14; page=16-17; 58\""
+      },
+      "text": "  eq [p3109-format-core-046] : formatName(BFloat16) = \"BFloat16\" [metadata \"clause=3.1-3.2; 4.14; page=16-17; 58\"] .\n"
+    },
+    {
+      "line": 26,
+      "kind": "endfm",
+      "fields": {},
+      "text": "endfm\n"
+    }
+  ]
+}

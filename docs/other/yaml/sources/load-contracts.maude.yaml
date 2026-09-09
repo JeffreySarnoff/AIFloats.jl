@@ -1,0 +1,29 @@
+version: 1
+path: load-contracts.maude
+sha256: 1ca7c967cd92f943b4e8bc709eb5482eec1a76d409867135db1ff142870f47de
+type: maude
+records:
+- line: 1
+  kind: sload
+  fields:
+    path: load-core.maude
+  text: |
+    sload load-core.maude
+- line: 2
+  kind: load
+  fields:
+    path: contracts/real.maude
+  text: |
+    load contracts/real.maude
+- line: 3
+  kind: load
+  fields:
+    path: contracts/external-format.maude
+  text: |
+    load contracts/external-format.maude
+- line: 4
+  kind: load
+  fields:
+    path: contracts/external-bridge.maude
+  text: |
+    load contracts/external-bridge.maude

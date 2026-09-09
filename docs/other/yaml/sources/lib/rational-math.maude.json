@@ -1,0 +1,291 @@
+{
+  "version": 1,
+  "path": "lib/rational-math.maude",
+  "sha256": "f48a99f04148326dd8a956a8f5c9b616a248d1a8ffc378bc5c5b2c11e50c0d56",
+  "type": "maude",
+  "records": [
+    {
+      "line": 1,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- Source: P3109/D1 4.7.4; 4.10.8, printed page 27; 40.\n"
+    },
+    {
+      "line": 2,
+      "kind": "fmod",
+      "fields": {
+        "name": "P3109-RATIONAL-MATH",
+        "parameters": []
+      },
+      "text": "fmod P3109-RATIONAL-MATH is\n"
+    },
+    {
+      "line": 3,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-XREAL"
+      },
+      "text": "  including P3109-XREAL .\n"
+    },
+    {
+      "line": 4,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "pow2"
+        ],
+        "domain": [
+          "Int"
+        ],
+        "arrow": "->",
+        "range": "Rat",
+        "attributes": ""
+      },
+      "text": "  op pow2 : Int -> Rat .\n"
+    },
+    {
+      "line": 5,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "floorLog2"
+        ],
+        "domain": [
+          "Rat"
+        ],
+        "arrow": "~>",
+        "range": "Int",
+        "attributes": ""
+      },
+      "text": "  op floorLog2 : Rat ~> Int .\n"
+    },
+    {
+      "line": 6,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "even"
+        ],
+        "domain": [
+          "Int"
+        ],
+        "arrow": "->",
+        "range": "Bool",
+        "attributes": ""
+      },
+      "text": "  op even : Int -> Bool .\n"
+    },
+    {
+      "line": 7,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "nearestEvenInteger"
+        ],
+        "domain": [
+          "Rat"
+        ],
+        "arrow": "->",
+        "range": "Int",
+        "attributes": ""
+      },
+      "text": "  op nearestEvenInteger : Rat -> Int .\n"
+    },
+    {
+      "line": 8,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "integerSqrt"
+        ],
+        "domain": [
+          "Nat"
+        ],
+        "arrow": "->",
+        "range": "Nat",
+        "attributes": ""
+      },
+      "text": "  op integerSqrt : Nat -> Nat .\n"
+    },
+    {
+      "line": 9,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "sqrtSearch"
+        ],
+        "domain": [
+          "Nat",
+          "Nat",
+          "Nat"
+        ],
+        "arrow": "->",
+        "range": "Nat",
+        "attributes": ""
+      },
+      "text": "  op sqrtSearch : Nat Nat Nat -> Nat .\n"
+    },
+    {
+      "line": 10,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "I"
+        ],
+        "sort": "Int"
+      },
+      "text": "  vars I : Int .\n"
+    },
+    {
+      "line": 11,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "R"
+        ],
+        "sort": "Rat"
+      },
+      "text": "  vars R : Rat .\n"
+    },
+    {
+      "line": 12,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "N",
+          "L",
+          "H",
+          "M"
+        ],
+        "sort": "Nat"
+      },
+      "text": "  vars N L H M : Nat .\n"
+    },
+    {
+      "line": 13,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-rational-math-001",
+        "lhs": "pow2(I)",
+        "rhs": "if I >= 0 then 2 ^ I else 1 / (2 ^ (- I)) fi",
+        "condition": null,
+        "attributes": "metadata \"clause=4.7.4; 4.10.8; page=27; 40\""
+      },
+      "text": "  eq [p3109-rational-math-001] : pow2(I) = if I >= 0 then 2 ^ I else 1 / (2 ^ (- I)) fi [metadata \"clause=4.7.4; 4.10.8; page=27; 40\"] .\n"
+    },
+    {
+      "line": 14,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-rational-math-002",
+        "lhs": "floorLog2(R)",
+        "rhs": "0",
+        "condition": "R >= 1 /\\ R < 2",
+        "attributes": "metadata \"clause=4.7.4; 4.10.8; page=27; 40\""
+      },
+      "text": "  ceq [p3109-rational-math-002] : floorLog2(R) = 0 if R >= 1 /\\ R < 2 [metadata \"clause=4.7.4; 4.10.8; page=27; 40\"] .\n"
+    },
+    {
+      "line": 15,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-rational-math-003",
+        "lhs": "floorLog2(R)",
+        "rhs": "1 + floorLog2(R / 2)",
+        "condition": "R >= 2",
+        "attributes": "metadata \"clause=4.7.4; 4.10.8; page=27; 40\""
+      },
+      "text": "  ceq [p3109-rational-math-003] : floorLog2(R) = 1 + floorLog2(R / 2) if R >= 2 [metadata \"clause=4.7.4; 4.10.8; page=27; 40\"] .\n"
+    },
+    {
+      "line": 16,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-rational-math-004",
+        "lhs": "floorLog2(R)",
+        "rhs": "floorLog2(R * 2) - 1",
+        "condition": "R > 0 /\\ R < 1",
+        "attributes": "metadata \"clause=4.7.4; 4.10.8; page=27; 40\""
+      },
+      "text": "  ceq [p3109-rational-math-004] : floorLog2(R) = floorLog2(R * 2) - 1 if R > 0 /\\ R < 1 [metadata \"clause=4.7.4; 4.10.8; page=27; 40\"] .\n"
+    },
+    {
+      "line": 17,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-rational-math-005",
+        "lhs": "even(I)",
+        "rhs": "(I rem 2 == 0)",
+        "condition": null,
+        "attributes": "metadata \"clause=4.7.4; 4.10.8; page=27; 40\""
+      },
+      "text": "  eq [p3109-rational-math-005] : even(I) = (I rem 2 == 0) [metadata \"clause=4.7.4; 4.10.8; page=27; 40\"] .\n"
+    },
+    {
+      "line": 18,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-rational-math-006",
+        "lhs": "nearestEvenInteger(R)",
+        "rhs": "if R - floor(R) < 1/2 or (R - floor(R) == 1/2 and even(floor(R))) then floor(R) else floor(R) + 1 fi",
+        "condition": null,
+        "attributes": "metadata \"clause=4.7.4; 4.10.8; page=27; 40\""
+      },
+      "text": "  eq [p3109-rational-math-006] : nearestEvenInteger(R) = if R - floor(R) < 1/2 or (R - floor(R) == 1/2 and even(floor(R))) then floor(R) else floor(R) + 1 fi [metadata \"clause=4.7.4; 4.10.8; page=27; 40\"] .\n"
+    },
+    {
+      "line": 19,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-rational-math-007",
+        "lhs": "integerSqrt(N)",
+        "rhs": "sqrtSearch(N, 0, N + 1)",
+        "condition": null,
+        "attributes": "metadata \"clause=4.7.4; 4.10.8; page=27; 40\""
+      },
+      "text": "  eq [p3109-rational-math-007] : integerSqrt(N) = sqrtSearch(N, 0, N + 1) [metadata \"clause=4.7.4; 4.10.8; page=27; 40\"] .\n"
+    },
+    {
+      "line": 20,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-rational-math-008",
+        "lhs": "sqrtSearch(N, L, H)",
+        "rhs": "L",
+        "condition": "H <= L + 1",
+        "attributes": "metadata \"clause=4.7.4; 4.10.8; page=27; 40\""
+      },
+      "text": "  ceq [p3109-rational-math-008] : sqrtSearch(N, L, H) = L if H <= L + 1 [metadata \"clause=4.7.4; 4.10.8; page=27; 40\"] .\n"
+    },
+    {
+      "line": 21,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-rational-math-009",
+        "lhs": "sqrtSearch(N, L, H)",
+        "rhs": "sqrtSearch(N, M, H)",
+        "condition": "H > L + 1 /\\ M := (L + H) quo 2 /\\ M * M <= N",
+        "attributes": "metadata \"clause=4.7.4; 4.10.8; page=27; 40\""
+      },
+      "text": "  ceq [p3109-rational-math-009] : sqrtSearch(N, L, H) = sqrtSearch(N, M, H) if H > L + 1 /\\ M := (L + H) quo 2 /\\ M * M <= N [metadata \"clause=4.7.4; 4.10.8; page=27; 40\"] .\n"
+    },
+    {
+      "line": 22,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-rational-math-010",
+        "lhs": "sqrtSearch(N, L, H)",
+        "rhs": "sqrtSearch(N, L, M)",
+        "condition": "H > L + 1 /\\ M := (L + H) quo 2 /\\ M * M > N",
+        "attributes": "metadata \"clause=4.7.4; 4.10.8; page=27; 40\""
+      },
+      "text": "  ceq [p3109-rational-math-010] : sqrtSearch(N, L, H) = sqrtSearch(N, L, M) if H > L + 1 /\\ M := (L + H) quo 2 /\\ M * M > N [metadata \"clause=4.7.4; 4.10.8; page=27; 40\"] .\n"
+    },
+    {
+      "line": 23,
+      "kind": "endfm",
+      "fields": {},
+      "text": "endfm\n"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+version: 1
+path: tests/vectors/regressions.json
+sha256: 7175bae48fc6f625b3eb416134fda64844406f51e68670805f3e850bbc4bbaaa
+type: support
+format: json
+text: |
+  [
+   {
+    "id": "D1-positive-subnormal-count",
+    "expression": "MaxSubnormalOf(Binary(8, 4, Signed, Extended)) == 7"
+   },
+   {
+    "id": "D1-worst-step",
+    "expression": "observationKappa(observation(\"D1\", cnil, Binary(8, 4, Signed, Extended), 4, 0)) == steps(4)"
+   },
+   {
+    "id": "D2-trivial-bound",
+    "expression": "(2 ^ 32 - 2 ^ 24 - 1) == 4278190079"
+   },
+   {
+    "id": "D2-input-subset-size",
+    "expression": "145 ^ 4 == 442050625"
+   }
+  ]
+data:
+- id: D1-positive-subnormal-count
+  expression: MaxSubnormalOf(Binary(8, 4, Signed, Extended)) == 7
+- id: D1-worst-step
+  expression: observationKappa(observation("D1", cnil, Binary(8, 4, Signed, Extended), 4, 0)) == steps(4)
+- id: D2-trivial-bound
+  expression: (2 ^ 32 - 2 ^ 24 - 1) == 4278190079
+- id: D2-input-subset-size
+  expression: 145 ^ 4 == 442050625

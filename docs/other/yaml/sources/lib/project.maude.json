@@ -1,0 +1,128 @@
+{
+  "version": 1,
+  "path": "lib/project.maude",
+  "sha256": "bdd9d6113fad21973eacd1844b736eaf95e784582d58ac2a279f55766f1c7938",
+  "type": "maude",
+  "records": [
+    {
+      "line": 1,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- Source: P3109/D1 4.7.3, printed page 26.\n"
+    },
+    {
+      "line": 2,
+      "kind": "fmod",
+      "fields": {
+        "name": "P3109-PROJECT",
+        "parameters": []
+      },
+      "text": "fmod P3109-PROJECT is\n"
+    },
+    {
+      "line": 3,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-FORMAT-QUERIES"
+      },
+      "text": "  including P3109-FORMAT-QUERIES .\n"
+    },
+    {
+      "line": 4,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-ROUND"
+      },
+      "text": "  including P3109-ROUND .\n"
+    },
+    {
+      "line": 5,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-SATURATE"
+      },
+      "text": "  including P3109-SATURATE .\n"
+    },
+    {
+      "line": 6,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "project"
+        ],
+        "domain": [
+          "Format",
+          "ProjSpec",
+          "XReal"
+        ],
+        "arrow": "~>",
+        "range": "Nat",
+        "attributes": ""
+      },
+      "text": "  op project : Format ProjSpec XReal ~> Nat .\n"
+    },
+    {
+      "line": 7,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "F"
+        ],
+        "sort": "Format"
+      },
+      "text": "  vars F : Format .\n"
+    },
+    {
+      "line": 8,
+      "kind": "var",
+      "fields": {
+        "names": [
+          "PS"
+        ],
+        "sort": "ProjSpec"
+      },
+      "text": "  var PS : ProjSpec .\n"
+    },
+    {
+      "line": 9,
+      "kind": "var",
+      "fields": {
+        "names": [
+          "X"
+        ],
+        "sort": "Number"
+      },
+      "text": "  var X : Number .\n"
+    },
+    {
+      "line": 10,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-project-001",
+        "lhs": "project(F, PS, nan)",
+        "rhs": "encode(F, nan)",
+        "condition": "validFormat(F) /\\ validProjection(PS)",
+        "attributes": "metadata \"clause=4.7.3; page=26\""
+      },
+      "text": "  ceq [p3109-project-001] : project(F, PS, nan) = encode(F, nan) if validFormat(F) /\\ validProjection(PS) [metadata \"clause=4.7.3; page=26\"] .\n"
+    },
+    {
+      "line": 11,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-project-002",
+        "lhs": "project(F, PS, X)",
+        "rhs": "encode(F, saturate(ratOf(decode(F, MinFiniteOf(F))), ratOf(decode(F, MaxFiniteOf(F))), SatOf(PS), RoundOf(PS), roundToPrecision(PrecisionOf(F), ExponentBiasOf(F), RoundOf(PS), X), SignednessOf(F), DomainOf(F)))",
+        "condition": "validFormat(F) /\\ validProjection(PS)",
+        "attributes": "metadata \"clause=4.7.3; page=26\""
+      },
+      "text": "  ceq [p3109-project-002] : project(F, PS, X) = encode(F, saturate(ratOf(decode(F, MinFiniteOf(F))), ratOf(decode(F, MaxFiniteOf(F))), SatOf(PS), RoundOf(PS), roundToPrecision(PrecisionOf(F), ExponentBiasOf(F), RoundOf(PS), X), SignednessOf(F), DomainOf(F))) if validFormat(F) /\\ validProjection(PS) [metadata \"clause=4.7.3; page=26\"] .\n"
+    },
+    {
+      "line": 12,
+      "kind": "endfm",
+      "fields": {},
+      "text": "endfm\n"
+    }
+  ]
+}

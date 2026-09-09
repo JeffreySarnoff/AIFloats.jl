@@ -1,0 +1,348 @@
+{
+  "version": 1,
+  "path": "contracts/real.maude",
+  "sha256": "e7d65b929c8041e4bc19cf506bef0829ab9beb95df8267a237b82871b1ef8f9c",
+  "type": "maude",
+  "records": [
+    {
+      "line": 1,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- Source: P3109/D1 3.1; 4.10; interpretation obligation, printed page 16; 33-48.\n"
+    },
+    {
+      "line": 2,
+      "kind": "fth",
+      "fields": {
+        "name": "P3109-REAL-CONTRACT",
+        "parameters": []
+      },
+      "text": "fth P3109-REAL-CONTRACT is\n"
+    },
+    {
+      "line": 3,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-XREAL"
+      },
+      "text": "  including P3109-XREAL .\n"
+    },
+    {
+      "line": 4,
+      "kind": "ops",
+      "fields": {
+        "names": [
+          "realZero",
+          "realOne"
+        ],
+        "domain": [],
+        "arrow": "->",
+        "range": "Real",
+        "attributes": ""
+      },
+      "text": "  ops realZero realOne : -> Real .\n"
+    },
+    {
+      "line": 5,
+      "kind": "ops",
+      "fields": {
+        "names": [
+          "addReal",
+          "multiplyReal"
+        ],
+        "domain": [
+          "Real",
+          "Real"
+        ],
+        "arrow": "->",
+        "range": "Real",
+        "attributes": ""
+      },
+      "text": "  ops addReal multiplyReal : Real Real -> Real .\n"
+    },
+    {
+      "line": 6,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "negateReal"
+        ],
+        "domain": [
+          "Real"
+        ],
+        "arrow": "->",
+        "range": "Real",
+        "attributes": ""
+      },
+      "text": "  op negateReal : Real -> Real .\n"
+    },
+    {
+      "line": 7,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "inverseReal"
+        ],
+        "domain": [
+          "Real"
+        ],
+        "arrow": "~>",
+        "range": "Real",
+        "attributes": ""
+      },
+      "text": "  op inverseReal : Real ~> Real .\n"
+    },
+    {
+      "line": 8,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "lessReal"
+        ],
+        "domain": [
+          "Real",
+          "Real"
+        ],
+        "arrow": "->",
+        "range": "Bool",
+        "attributes": ""
+      },
+      "text": "  op lessReal : Real Real -> Bool .\n"
+    },
+    {
+      "line": 9,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "A",
+          "B",
+          "C"
+        ],
+        "sort": "Real"
+      },
+      "text": "  vars A B C : Real .\n"
+    },
+    {
+      "line": 10,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-001",
+        "lhs": "addReal(A, B)",
+        "rhs": "addReal(B, A)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-001] : addReal(A, B) = addReal(B, A) [metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 11,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-002",
+        "lhs": "addReal(addReal(A, B), C)",
+        "rhs": "addReal(A, addReal(B, C))",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-002] : addReal(addReal(A, B), C) = addReal(A, addReal(B, C)) [metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 12,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-003",
+        "lhs": "addReal(A, realZero)",
+        "rhs": "A",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-003] : addReal(A, realZero) = A [metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 13,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-004",
+        "lhs": "addReal(A, negateReal(A))",
+        "rhs": "realZero",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-004] : addReal(A, negateReal(A)) = realZero [metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 14,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-005",
+        "lhs": "multiplyReal(A, B)",
+        "rhs": "multiplyReal(B, A)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-005] : multiplyReal(A, B) = multiplyReal(B, A) [metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 15,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-006",
+        "lhs": "multiplyReal(multiplyReal(A, B), C)",
+        "rhs": "multiplyReal(A, multiplyReal(B, C))",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-006] : multiplyReal(multiplyReal(A, B), C) = multiplyReal(A, multiplyReal(B, C)) [metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 16,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-007",
+        "lhs": "multiplyReal(A, realOne)",
+        "rhs": "A",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-007] : multiplyReal(A, realOne) = A [metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 17,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-008",
+        "lhs": "multiplyReal(A, addReal(B, C))",
+        "rhs": "addReal(multiplyReal(A, B), multiplyReal(A, C))",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-008] : multiplyReal(A, addReal(B, C)) = addReal(multiplyReal(A, B), multiplyReal(A, C)) [metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 18,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-real-009",
+        "lhs": "multiplyReal(A, inverseReal(A))",
+        "rhs": "realOne",
+        "condition": "A =/= realZero",
+        "attributes": "metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\""
+      },
+      "text": "  ceq [p3109-real-009] : multiplyReal(A, inverseReal(A)) = realOne if A =/= realZero [metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 19,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-010",
+        "lhs": "lessReal(A, A)",
+        "rhs": "false",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-010] : lessReal(A, A) = false [metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 20,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-real-011",
+        "lhs": "lessReal(A, C)",
+        "rhs": "true",
+        "condition": "lessReal(A, B) /\\ lessReal(B, C)",
+        "attributes": "metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\" nonexec"
+      },
+      "text": "  ceq [p3109-real-011] : lessReal(A, C) = true if lessReal(A, B) /\\ lessReal(B, C) [metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\" nonexec] .\n"
+    },
+    {
+      "line": 21,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-real-012",
+        "lhs": "lessReal(addReal(A, C), addReal(B, C))",
+        "rhs": "true",
+        "condition": "lessReal(A, B)",
+        "attributes": "metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\""
+      },
+      "text": "  ceq [p3109-real-012] : lessReal(addReal(A, C), addReal(B, C)) = true if lessReal(A, B) [metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 22,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-real-013",
+        "lhs": "lessReal(multiplyReal(A, C), multiplyReal(B, C))",
+        "rhs": "true",
+        "condition": "lessReal(A, B) /\\ lessReal(realZero, C)",
+        "attributes": "metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\""
+      },
+      "text": "  ceq [p3109-real-013] : lessReal(multiplyReal(A, C), multiplyReal(B, C)) = true if lessReal(A, B) /\\ lessReal(realZero, C) [metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 23,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-014",
+        "lhs": "realZero",
+        "rhs": "fin(0)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-014] : realZero = fin(0) [metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 24,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-015",
+        "lhs": "realOne",
+        "rhs": "fin(1)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-015] : realOne = fin(1) [metadata \"clause=3.1; 4.10; interpretation obligation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 25,
+      "kind": "endfth",
+      "fields": {},
+      "text": "endfth\n"
+    },
+    {
+      "line": 26,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- Additional semantic obligations (not first-order executable axioms):\n"
+    },
+    {
+      "line": 27,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- ordered-field totality and completeness; the intended embedding of RAT;\n"
+    },
+    {
+      "line": 28,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- standard elementary functions and pi; soundness of expression interpretation;\n"
+    },
+    {
+      "line": 29,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- any projection certificate must contain the real and stay inside one complete\n"
+    },
+    {
+      "line": 30,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- round/saturate/encode decision region for the fixed random operand.\n"
+    },
+    {
+      "line": 31,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- No implementation view into RAT or intervals is supplied.\n"
+    }
+  ]
+}

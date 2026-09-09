@@ -1,0 +1,682 @@
+{
+  "version": 1,
+  "path": "symbolic/real-expressions.maude",
+  "sha256": "1ae6b428b1772d2b3bd29dc4164ef261f5f7088c286a085d09f920fcaf27b441",
+  "type": "maude",
+  "records": [
+    {
+      "line": 1,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- Source: P3109/D1 3.1; 4.10; mathematical expression representation, printed page 16; 33-48.\n"
+    },
+    {
+      "line": 2,
+      "kind": "fmod",
+      "fields": {
+        "name": "P3109-REAL-EXPRESSIONS",
+        "parameters": []
+      },
+      "text": "fmod P3109-REAL-EXPRESSIONS is\n"
+    },
+    {
+      "line": 3,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-OMEGA-EXTREMA"
+      },
+      "text": "  including P3109-OMEGA-EXTREMA .\n"
+    },
+    {
+      "line": 4,
+      "kind": "ops",
+      "fields": {
+        "names": [
+          "realAdd",
+          "realMultiply"
+        ],
+        "domain": [
+          "Real",
+          "Real"
+        ],
+        "arrow": "->",
+        "range": "Real",
+        "attributes": "ctor"
+      },
+      "text": "  ops realAdd realMultiply : Real Real -> Real [ctor] .\n"
+    },
+    {
+      "line": 5,
+      "kind": "ops",
+      "fields": {
+        "names": [
+          "realNegate",
+          "realAbs"
+        ],
+        "domain": [
+          "Real"
+        ],
+        "arrow": "->",
+        "range": "Real",
+        "attributes": "ctor"
+      },
+      "text": "  ops realNegate realAbs : Real -> Real [ctor] .\n"
+    },
+    {
+      "line": 6,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "realDivide"
+        ],
+        "domain": [
+          "Real",
+          "Real"
+        ],
+        "arrow": "~>",
+        "range": "Real",
+        "attributes": "ctor"
+      },
+      "text": "  op realDivide : Real Real ~> Real [ctor] .\n"
+    },
+    {
+      "line": 7,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "piMultiple"
+        ],
+        "domain": [
+          "Rat"
+        ],
+        "arrow": "->",
+        "range": "Real",
+        "attributes": "ctor"
+      },
+      "text": "  op piMultiple : Rat -> Real [ctor] .\n"
+    },
+    {
+      "line": 8,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "pi"
+        ],
+        "domain": [],
+        "arrow": "->",
+        "range": "Real",
+        "attributes": ""
+      },
+      "text": "  op pi : -> Real .\n"
+    },
+    {
+      "line": 9,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "U",
+          "V"
+        ],
+        "sort": "Real"
+      },
+      "text": "  vars U V : Real .\n"
+    },
+    {
+      "line": 10,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "R",
+          "S"
+        ],
+        "sort": "Rat"
+      },
+      "text": "  vars R S : Rat .\n"
+    },
+    {
+      "line": 11,
+      "kind": "var",
+      "fields": {
+        "names": [
+          "I"
+        ],
+        "sort": "Infinity"
+      },
+      "text": "  var I : Infinity .\n"
+    },
+    {
+      "line": 12,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-001",
+        "lhs": "pi",
+        "rhs": "piMultiple(1)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-001] : pi = piMultiple(1) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 13,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-002",
+        "lhs": "piMultiple(0)",
+        "rhs": "fin(0)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-002] : piMultiple(0) = fin(0) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 14,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-003",
+        "lhs": "realAdd(fin(R), fin(S))",
+        "rhs": "fin(R + S)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-003] : realAdd(fin(R), fin(S)) = fin(R + S) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 15,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-004",
+        "lhs": "realAdd(fin(0), U)",
+        "rhs": "U",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-004] : realAdd(fin(0), U) = U [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 16,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-005",
+        "lhs": "realAdd(U, fin(0))",
+        "rhs": "U",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-005] : realAdd(U, fin(0)) = U [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 17,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-006",
+        "lhs": "realAdd(piMultiple(R), piMultiple(S))",
+        "rhs": "piMultiple(R + S)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-006] : realAdd(piMultiple(R), piMultiple(S)) = piMultiple(R + S) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 18,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-007",
+        "lhs": "realMultiply(fin(R), fin(S))",
+        "rhs": "fin(R * S)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-007] : realMultiply(fin(R), fin(S)) = fin(R * S) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 19,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-008",
+        "lhs": "realMultiply(fin(0), U)",
+        "rhs": "fin(0)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-008] : realMultiply(fin(0), U) = fin(0) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 20,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-009",
+        "lhs": "realMultiply(U, fin(0))",
+        "rhs": "fin(0)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-009] : realMultiply(U, fin(0)) = fin(0) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 21,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-010",
+        "lhs": "realMultiply(fin(1), U)",
+        "rhs": "U",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-010] : realMultiply(fin(1), U) = U [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 22,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-011",
+        "lhs": "realMultiply(U, fin(1))",
+        "rhs": "U",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-011] : realMultiply(U, fin(1)) = U [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 23,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-012",
+        "lhs": "realMultiply(fin(R), piMultiple(S))",
+        "rhs": "piMultiple(R * S)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-012] : realMultiply(fin(R), piMultiple(S)) = piMultiple(R * S) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 24,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-013",
+        "lhs": "realMultiply(piMultiple(S), fin(R))",
+        "rhs": "piMultiple(R * S)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-013] : realMultiply(piMultiple(S), fin(R)) = piMultiple(R * S) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 25,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-014",
+        "lhs": "realNegate(fin(R))",
+        "rhs": "fin(- R)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-014] : realNegate(fin(R)) = fin(- R) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 26,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-015",
+        "lhs": "realNegate(piMultiple(R))",
+        "rhs": "piMultiple(- R)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-015] : realNegate(piMultiple(R)) = piMultiple(- R) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 27,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-016",
+        "lhs": "realNegate(realNegate(U))",
+        "rhs": "U",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-016] : realNegate(realNegate(U)) = U [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 28,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-017",
+        "lhs": "realAbs(fin(R))",
+        "rhs": "fin(abs(R))",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-017] : realAbs(fin(R)) = fin(abs(R)) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 29,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-018",
+        "lhs": "realAbs(piMultiple(R))",
+        "rhs": "piMultiple(abs(R))",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-018] : realAbs(piMultiple(R)) = piMultiple(abs(R)) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 30,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-real-expressions-019",
+        "lhs": "realDivide(fin(R), fin(S))",
+        "rhs": "fin(R / S)",
+        "condition": "S =/= 0",
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  ceq [p3109-real-expressions-019] : realDivide(fin(R), fin(S)) = fin(R / S) if S =/= 0 [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 31,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-real-expressions-020",
+        "lhs": "realDivide(piMultiple(R), piMultiple(S))",
+        "rhs": "fin(R / S)",
+        "condition": "S =/= 0",
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  ceq [p3109-real-expressions-020] : realDivide(piMultiple(R), piMultiple(S)) = fin(R / S) if S =/= 0 [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 32,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-real-expressions-021",
+        "lhs": "realDivide(piMultiple(R), fin(S))",
+        "rhs": "piMultiple(R / S)",
+        "condition": "S =/= 0",
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  ceq [p3109-real-expressions-021] : realDivide(piMultiple(R), fin(S)) = piMultiple(R / S) if S =/= 0 [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 33,
+      "kind": "cmb",
+      "fields": {
+        "label": "p3109-real-divide-domain",
+        "lhs": "realDivide(U, V)",
+        "sort": "Real",
+        "condition": "xEq(V, fin(0)) == false",
+        "attributes": "metadata \"clause=4.10.5; page=37\""
+      },
+      "text": "  cmb [p3109-real-divide-domain] : realDivide(U, V) : Real if xEq(V, fin(0)) == false [metadata \"clause=4.10.5; page=37\"] .\n"
+    },
+    {
+      "line": 34,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-022",
+        "lhs": "omegaAdd(U, V)",
+        "rhs": "realAdd(U, V)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-022] : omegaAdd(U, V) = realAdd(U, V) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 35,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-023",
+        "lhs": "omegaMultiply(U, V)",
+        "rhs": "realMultiply(U, V)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-023] : omegaMultiply(U, V) = realMultiply(U, V) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 36,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-024",
+        "lhs": "omegaNegate(U)",
+        "rhs": "realNegate(U)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-024] : omegaNegate(U) = realNegate(U) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 37,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-025",
+        "lhs": "omegaAbs(U)",
+        "rhs": "realAbs(U)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-025] : omegaAbs(U) = realAbs(U) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 38,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-real-expressions-026",
+        "lhs": "omegaDivide(U, V)",
+        "rhs": "nan",
+        "condition": "xEq(V, fin(0))",
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  ceq [p3109-real-expressions-026] : omegaDivide(U, V) = nan if xEq(V, fin(0)) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 39,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-real-expressions-027",
+        "lhs": "omegaDivide(U, V)",
+        "rhs": "realDivide(U, V)",
+        "condition": "xEq(V, fin(0)) == false",
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  ceq [p3109-real-expressions-027] : omegaDivide(U, V) = realDivide(U, V) if xEq(V, fin(0)) == false [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 40,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-real-expressions-028",
+        "lhs": "omegaMultiply(I, U)",
+        "rhs": "nan",
+        "condition": "xEq(U, fin(0))",
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  ceq [p3109-real-expressions-028] : omegaMultiply(I, U) = nan if xEq(U, fin(0)) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 41,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-real-expressions-029",
+        "lhs": "omegaMultiply(I, U)",
+        "rhs": "if xMinus(I) == xMinus(U) then posInf else negInf fi",
+        "condition": "xEq(U, fin(0)) == false",
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  ceq [p3109-real-expressions-029] : omegaMultiply(I, U) = if xMinus(I) == xMinus(U) then posInf else negInf fi if xEq(U, fin(0)) == false [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 42,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-real-expressions-030",
+        "lhs": "omegaDivide(I, U)",
+        "rhs": "if xMinus(I) == xMinus(U) then posInf else negInf fi",
+        "condition": "xEq(U, fin(0)) == false",
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  ceq [p3109-real-expressions-030] : omegaDivide(I, U) = if xMinus(I) == xMinus(U) then posInf else negInf fi if xEq(U, fin(0)) == false [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 43,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-031",
+        "lhs": "xEq(U, U)",
+        "rhs": "true",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-031] : xEq(U, U) = true [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 44,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-032",
+        "lhs": "xEq(piMultiple(R), piMultiple(S))",
+        "rhs": "(R == S)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-032] : xEq(piMultiple(R), piMultiple(S)) = (R == S) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 45,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-033",
+        "lhs": "xEq(piMultiple(R), fin(0))",
+        "rhs": "(R == 0)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-033] : xEq(piMultiple(R), fin(0)) = (R == 0) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 46,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-034",
+        "lhs": "xEq(fin(0), piMultiple(R))",
+        "rhs": "(R == 0)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-034] : xEq(fin(0), piMultiple(R)) = (R == 0) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 47,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-035",
+        "lhs": "xLt(piMultiple(R), piMultiple(S))",
+        "rhs": "(R < S)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-035] : xLt(piMultiple(R), piMultiple(S)) = (R < S) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 48,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-036",
+        "lhs": "xLt(piMultiple(R), fin(0))",
+        "rhs": "(R < 0)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-036] : xLt(piMultiple(R), fin(0)) = (R < 0) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 49,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-037",
+        "lhs": "xLt(fin(0), piMultiple(R))",
+        "rhs": "(R > 0)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-037] : xLt(fin(0), piMultiple(R)) = (R > 0) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 50,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-expressions-038",
+        "lhs": "xMinus(U)",
+        "rhs": "xLt(U, fin(0))",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  eq [p3109-real-expressions-038] : xMinus(U) = xLt(U, fin(0)) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 51,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-real-expressions-039",
+        "lhs": "xSign(U)",
+        "rhs": "-1",
+        "condition": "xLt(U, fin(0))",
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  ceq [p3109-real-expressions-039] : xSign(U) = -1 if xLt(U, fin(0)) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 52,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-real-expressions-040",
+        "lhs": "xSign(U)",
+        "rhs": "0",
+        "condition": "xEq(U, fin(0))",
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  ceq [p3109-real-expressions-040] : xSign(U) = 0 if xEq(U, fin(0)) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 53,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-real-expressions-041",
+        "lhs": "xSign(U)",
+        "rhs": "1",
+        "condition": "xLt(fin(0), U)",
+        "attributes": "metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\""
+      },
+      "text": "  ceq [p3109-real-expressions-041] : xSign(U) = 1 if xLt(fin(0), U) [metadata \"clause=3.1; 4.10; mathematical expression representation; page=16; 33-48\"] .\n"
+    },
+    {
+      "line": 54,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-real-zero-divide",
+        "lhs": "realDivide(fin(0), V)",
+        "rhs": "fin(0)",
+        "condition": "xEq(V, fin(0)) == false",
+        "attributes": "metadata \"clause=4.10.5; page=37\""
+      },
+      "text": "  ceq [p3109-real-zero-divide] : realDivide(fin(0), V) = fin(0) if xEq(V, fin(0)) == false [metadata \"clause=4.10.5; page=37\"] .\n"
+    },
+    {
+      "line": 55,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-real-unit-divide",
+        "lhs": "realDivide(U, fin(1))",
+        "rhs": "U",
+        "condition": null,
+        "attributes": "metadata \"clause=4.10.5; page=37\""
+      },
+      "text": "  eq [p3109-real-unit-divide] : realDivide(U, fin(1)) = U [metadata \"clause=4.10.5; page=37\"] .\n"
+    },
+    {
+      "line": 56,
+      "kind": "endfm",
+      "fields": {},
+      "text": "endfm\n"
+    }
+  ]
+}

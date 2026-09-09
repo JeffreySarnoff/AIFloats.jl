@@ -1,0 +1,123 @@
+version: 1
+path: lib/external-signature.maude
+sha256: 1ee5b52a5ee9adf6e29780c8dbf0cf80f9139bd20d1a158d83bccc36af04a4d4
+type: maude
+records:
+- line: 1
+  kind: comment
+  fields: {}
+  text: |
+    --- Source: P3109/D1 4.8; 4.14, printed page 31; 58.
+- line: 2
+  kind: fmod
+  fields:
+    name: P3109-EXTERNAL-SIGNATURE
+    parameters: []
+  text: |
+    fmod P3109-EXTERNAL-SIGNATURE is
+- line: 3
+  kind: including
+  fields:
+    expression: P3109-XREAL
+  text: |2
+      including P3109-XREAL .
+- line: 4
+  kind: including
+  fields:
+    expression: P3109-FORMAT-CORE
+  text: |2
+      including P3109-FORMAT-CORE .
+- line: 5
+  kind: op
+  fields:
+    names:
+    - externalDecode
+    domain:
+    - Format
+    - Int
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op externalDecode : Format Int ~> XReal .
+- line: 6
+  kind: op
+  fields:
+    names:
+    - externalEncode
+    domain:
+    - Format
+    - XReal
+    arrow: ~>
+    range: Nat
+    attributes: ''
+  text: |2
+      op externalEncode : Format XReal ~> Nat .
+- line: 7
+  kind: op
+  fields:
+    names:
+    - externalDatum
+    domain:
+    - Format
+    - XReal
+    arrow: ~>
+    range: Bool
+    attributes: ''
+  text: |2
+      op externalDatum : Format XReal ~> Bool .
+- line: 8
+  kind: comment
+  fields: {}
+  text: |2
+      --- Bound queries are an enumeration, not String literals: STRING declares
+- line: 9
+  kind: comment
+  fields: {}
+  text: |2
+      --- subsort Nat < FindResult, which would put FindResult into the numeric
+- line: 10
+  kind: comment
+  fields: {}
+  text: |2
+      --- kind of every semantic module importing this signature.
+- line: 11
+  kind: sort
+  fields:
+    names:
+    - BoundQuery
+  text: |2
+      sort BoundQuery .
+- line: 12
+  kind: ops
+  fields:
+    names:
+    - maxFiniteQuery
+    - minFiniteQuery
+    - minPositiveQuery
+    - maxSubnormalQuery
+    - minNormalQuery
+    domain: []
+    arrow: ->
+    range: BoundQuery
+    attributes: ctor
+  text: |2
+      ops maxFiniteQuery minFiniteQuery minPositiveQuery maxSubnormalQuery minNormalQuery : -> BoundQuery [ctor] .
+- line: 13
+  kind: op
+  fields:
+    names:
+    - externalBound
+    domain:
+    - Format
+    - BoundQuery
+    arrow: ~>
+    range: Nat
+    attributes: ''
+  text: |2
+      op externalBound : Format BoundQuery ~> Nat .
+- line: 14
+  kind: endfm
+  fields: {}
+  text: |
+    endfm

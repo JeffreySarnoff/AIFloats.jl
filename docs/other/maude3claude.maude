@@ -615,3 +615,4 @@ red in P3109-SECTION-3-TESTS : isFinite(posInfinity) .  --- T-29  false
 ---      decreases |N|; every other equation is non-recursive; the guards of
 ---      each conditional group are mutually exclusive). Confirm with Maude's
 ---      Church-Rosser and termination tools rather than by inspection.
+ tw

@@ -1,10 +1,9 @@
---- Small standalone check; tools/run-tests.py runs the complete codec suite.
+--- Load-only check; tools/run-tests.py runs the complete codec suite.
 load ../load-core.maude
 load support.maude
 fmod P3109-TEST-CODEC is
   including P3109-CORE .
   including P3109-TEST-SUPPORT .
 endfm
-red in P3109-TEST-CODEC : check("codec-standalone", (datum(Binary(8, 4, Signed, Extended), 240) == false)) .
-red in P3109-TEST-CODEC : suiteComplete(1) .
+red in P3109-TEST-CODEC : suiteComplete(0) .
 quit

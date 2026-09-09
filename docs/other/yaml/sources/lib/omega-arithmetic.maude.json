@@ -1,0 +1,613 @@
+{
+  "version": 1,
+  "path": "lib/omega-arithmetic.maude",
+  "sha256": "1e688340e41e45e1627b968a89143d7d22cbdc5ca7df350d037082346d8c80e7",
+  "type": "maude",
+  "records": [
+    {
+      "line": 1,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- Source: P3109/D1 4.9-4.10.8, printed page 32-40.\n"
+    },
+    {
+      "line": 2,
+      "kind": "fmod",
+      "fields": {
+        "name": "P3109-OMEGA-ARITHMETIC",
+        "parameters": []
+      },
+      "text": "fmod P3109-OMEGA-ARITHMETIC is\n"
+    },
+    {
+      "line": 3,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-RATIONAL-MATH"
+      },
+      "text": "  including P3109-RATIONAL-MATH .\n"
+    },
+    {
+      "line": 4,
+      "kind": "ops",
+      "fields": {
+        "names": [
+          "omegaConvert",
+          "omegaAbs",
+          "omegaNegate",
+          "omegaRecip"
+        ],
+        "domain": [
+          "XReal"
+        ],
+        "arrow": "~>",
+        "range": "XReal",
+        "attributes": ""
+      },
+      "text": "  ops omegaConvert omegaAbs omegaNegate omegaRecip : XReal ~> XReal .\n"
+    },
+    {
+      "line": 5,
+      "kind": "ops",
+      "fields": {
+        "names": [
+          "omegaCopySign",
+          "omegaAdd",
+          "omegaSubtract",
+          "omegaMultiply",
+          "omegaDivide"
+        ],
+        "domain": [
+          "XReal",
+          "XReal"
+        ],
+        "arrow": "~>",
+        "range": "XReal",
+        "attributes": ""
+      },
+      "text": "  ops omegaCopySign omegaAdd omegaSubtract omegaMultiply omegaDivide : XReal XReal ~> XReal .\n"
+    },
+    {
+      "line": 6,
+      "kind": "ops",
+      "fields": {
+        "names": [
+          "omegaFMA",
+          "omegaFAA"
+        ],
+        "domain": [
+          "XReal",
+          "XReal",
+          "XReal"
+        ],
+        "arrow": "~>",
+        "range": "XReal",
+        "attributes": ""
+      },
+      "text": "  ops omegaFMA omegaFAA : XReal XReal XReal ~> XReal .\n"
+    },
+    {
+      "line": 7,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "X",
+          "Y",
+          "Z"
+        ],
+        "sort": "XReal"
+      },
+      "text": "  vars X Y Z : XReal .\n"
+    },
+    {
+      "line": 8,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "A",
+          "B"
+        ],
+        "sort": "Number"
+      },
+      "text": "  vars A B : Number .\n"
+    },
+    {
+      "line": 9,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "U",
+          "V"
+        ],
+        "sort": "Real"
+      },
+      "text": "  vars U V : Real .\n"
+    },
+    {
+      "line": 10,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "R",
+          "S"
+        ],
+        "sort": "Rat"
+      },
+      "text": "  vars R S : Rat .\n"
+    },
+    {
+      "line": 11,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "I",
+          "J"
+        ],
+        "sort": "Infinity"
+      },
+      "text": "  vars I J : Infinity .\n"
+    },
+    {
+      "line": 12,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-001",
+        "lhs": "omegaConvert(X)",
+        "rhs": "X",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-001] : omegaConvert(X) = X [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 13,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-002",
+        "lhs": "omegaAbs(nan)",
+        "rhs": "nan",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-002] : omegaAbs(nan) = nan [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 14,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-003",
+        "lhs": "omegaAbs(I)",
+        "rhs": "posInf",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-003] : omegaAbs(I) = posInf [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 15,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-004",
+        "lhs": "omegaAbs(fin(R))",
+        "rhs": "fin(abs(R))",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-004] : omegaAbs(fin(R)) = fin(abs(R)) [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 16,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-005",
+        "lhs": "omegaNegate(nan)",
+        "rhs": "nan",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-005] : omegaNegate(nan) = nan [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 17,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-006",
+        "lhs": "omegaNegate(posInf)",
+        "rhs": "negInf",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-006] : omegaNegate(posInf) = negInf [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 18,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-007",
+        "lhs": "omegaNegate(negInf)",
+        "rhs": "posInf",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-007] : omegaNegate(negInf) = posInf [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 19,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-008",
+        "lhs": "omegaNegate(fin(R))",
+        "rhs": "fin(- R)",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-008] : omegaNegate(fin(R)) = fin(- R) [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 20,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-009",
+        "lhs": "omegaCopySign(nan, X)",
+        "rhs": "nan",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-009] : omegaCopySign(nan, X) = nan [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 21,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-010",
+        "lhs": "omegaCopySign(A, nan)",
+        "rhs": "nan",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-010] : omegaCopySign(A, nan) = nan [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 22,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-011",
+        "lhs": "omegaCopySign(A, B)",
+        "rhs": "omegaNegate(omegaAbs(A))",
+        "condition": "xMinus(B)",
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  ceq [p3109-omega-arithmetic-011] : omegaCopySign(A, B) = omegaNegate(omegaAbs(A)) if xMinus(B) [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 23,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-012",
+        "lhs": "omegaCopySign(A, B)",
+        "rhs": "omegaAbs(A)",
+        "condition": "xMinus(B) == false",
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  ceq [p3109-omega-arithmetic-012] : omegaCopySign(A, B) = omegaAbs(A) if xMinus(B) == false [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 24,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-013",
+        "lhs": "omegaAdd(nan, X)",
+        "rhs": "nan",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-013] : omegaAdd(nan, X) = nan [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 25,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-014",
+        "lhs": "omegaAdd(A, nan)",
+        "rhs": "nan",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-014] : omegaAdd(A, nan) = nan [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 26,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-015",
+        "lhs": "omegaAdd(posInf, negInf)",
+        "rhs": "nan",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-015] : omegaAdd(posInf, negInf) = nan [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 27,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-016",
+        "lhs": "omegaAdd(negInf, posInf)",
+        "rhs": "nan",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-016] : omegaAdd(negInf, posInf) = nan [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 28,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-017",
+        "lhs": "omegaAdd(I, I)",
+        "rhs": "I",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-017] : omegaAdd(I, I) = I [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 29,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-018",
+        "lhs": "omegaAdd(I, U)",
+        "rhs": "I",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-018] : omegaAdd(I, U) = I [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 30,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-019",
+        "lhs": "omegaAdd(U, I)",
+        "rhs": "I",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-019] : omegaAdd(U, I) = I [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 31,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-020",
+        "lhs": "omegaAdd(fin(R), fin(S))",
+        "rhs": "fin(R + S)",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-020] : omegaAdd(fin(R), fin(S)) = fin(R + S) [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 32,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-021",
+        "lhs": "omegaSubtract(X, Y)",
+        "rhs": "omegaAdd(X, omegaNegate(Y))",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-021] : omegaSubtract(X, Y) = omegaAdd(X, omegaNegate(Y)) [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 33,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-022",
+        "lhs": "omegaMultiply(nan, X)",
+        "rhs": "nan",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-022] : omegaMultiply(nan, X) = nan [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 34,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-023",
+        "lhs": "omegaMultiply(A, nan)",
+        "rhs": "nan",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-023] : omegaMultiply(A, nan) = nan [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 35,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-024",
+        "lhs": "omegaMultiply(I, J)",
+        "rhs": "if xMinus(I) == xMinus(J) then posInf else negInf fi",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-024] : omegaMultiply(I, J) = if xMinus(I) == xMinus(J) then posInf else negInf fi [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 36,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-025",
+        "lhs": "omegaMultiply(I, fin(0))",
+        "rhs": "nan",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-025] : omegaMultiply(I, fin(0)) = nan [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 37,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-026",
+        "lhs": "omegaMultiply(I, fin(R))",
+        "rhs": "if xMinus(I) == (R < 0) then posInf else negInf fi",
+        "condition": "R =/= 0",
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  ceq [p3109-omega-arithmetic-026] : omegaMultiply(I, fin(R)) = if xMinus(I) == (R < 0) then posInf else negInf fi if R =/= 0 [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 38,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-027",
+        "lhs": "omegaMultiply(U, I)",
+        "rhs": "omegaMultiply(I, U)",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-027] : omegaMultiply(U, I) = omegaMultiply(I, U) [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 39,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-028",
+        "lhs": "omegaMultiply(fin(R), fin(S))",
+        "rhs": "fin(R * S)",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-028] : omegaMultiply(fin(R), fin(S)) = fin(R * S) [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 40,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-029",
+        "lhs": "omegaDivide(nan, X)",
+        "rhs": "nan",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-029] : omegaDivide(nan, X) = nan [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 41,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-030",
+        "lhs": "omegaDivide(A, nan)",
+        "rhs": "nan",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-030] : omegaDivide(A, nan) = nan [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 42,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-031",
+        "lhs": "omegaDivide(I, J)",
+        "rhs": "nan",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-031] : omegaDivide(I, J) = nan [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 43,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-032",
+        "lhs": "omegaDivide(A, fin(0))",
+        "rhs": "nan",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-032] : omegaDivide(A, fin(0)) = nan [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 44,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-033",
+        "lhs": "omegaDivide(I, fin(R))",
+        "rhs": "if xMinus(I) == (R < 0) then posInf else negInf fi",
+        "condition": "R =/= 0",
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  ceq [p3109-omega-arithmetic-033] : omegaDivide(I, fin(R)) = if xMinus(I) == (R < 0) then posInf else negInf fi if R =/= 0 [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 45,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-034",
+        "lhs": "omegaDivide(U, I)",
+        "rhs": "fin(0)",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-034] : omegaDivide(U, I) = fin(0) [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 46,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-035",
+        "lhs": "omegaDivide(fin(R), fin(S))",
+        "rhs": "fin(R / S)",
+        "condition": "S =/= 0",
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  ceq [p3109-omega-arithmetic-035] : omegaDivide(fin(R), fin(S)) = fin(R / S) if S =/= 0 [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 47,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-036",
+        "lhs": "omegaRecip(X)",
+        "rhs": "omegaDivide(fin(1), X)",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-036] : omegaRecip(X) = omegaDivide(fin(1), X) [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 48,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-037",
+        "lhs": "omegaFMA(X, Y, Z)",
+        "rhs": "omegaAdd(omegaMultiply(X, Y), Z)",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-037] : omegaFMA(X, Y, Z) = omegaAdd(omegaMultiply(X, Y), Z) [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 49,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-arithmetic-038",
+        "lhs": "omegaFAA(X, Y, Z)",
+        "rhs": "omegaAdd(omegaAdd(X, Y), Z)",
+        "condition": null,
+        "attributes": "metadata \"clause=4.9-4.10.8; page=32-40\""
+      },
+      "text": "  eq [p3109-omega-arithmetic-038] : omegaFAA(X, Y, Z) = omegaAdd(omegaAdd(X, Y), Z) [metadata \"clause=4.9-4.10.8; page=32-40\"] .\n"
+    },
+    {
+      "line": 50,
+      "kind": "endfm",
+      "fields": {},
+      "text": "endfm\n"
+    }
+  ]
+}

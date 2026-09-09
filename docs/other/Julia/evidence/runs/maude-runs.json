@@ -1,0 +1,90 @@
+[
+  {
+    "command": [
+      "python3",
+      "-B",
+      "docs/other/Maude/tools/check-loads.py"
+    ],
+    "exit_code": 0,
+    "seconds": 0.5928137169976253,
+    "log": "maude-0.txt",
+    "status": "pass"
+  },
+  {
+    "command": [
+      "python3",
+      "-B",
+      "docs/other/Maude/tools/generate-wrappers.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "seconds": 0.02808900700256345,
+    "log": "maude-1.txt",
+    "status": "pass"
+  },
+  {
+    "command": [
+      "python3",
+      "-B",
+      "docs/other/Maude/tools/run-tests.py",
+      "--suite",
+      "core"
+    ],
+    "exit_code": 0,
+    "seconds": 8.750682484002027,
+    "log": "maude-2.txt",
+    "status": "pass"
+  },
+  {
+    "command": [
+      "python3",
+      "-B",
+      "docs/other/Maude/tools/run-tests.py",
+      "--suite",
+      "symbolic"
+    ],
+    "exit_code": 0,
+    "seconds": 0.15825668099932955,
+    "log": "maude-3.txt",
+    "status": "pass"
+  },
+  {
+    "command": [
+      "python3",
+      "-B",
+      "docs/other/Maude/tools/run-tests.py",
+      "--suite",
+      "order-full"
+    ],
+    "exit_code": 0,
+    "seconds": 47.5473411210005,
+    "log": "maude-4.txt",
+    "status": "pass"
+  },
+  {
+    "command": [
+      "python3",
+      "-B",
+      "docs/other/Maude/tools/run-tests.py",
+      "--suite",
+      "core",
+      "--profile",
+      "symbolic"
+    ],
+    "exit_code": 0,
+    "seconds": 10.568678840998473,
+    "log": "maude-5.txt",
+    "status": "pass"
+  },
+  {
+    "command": [
+      "python3",
+      "-B",
+      "docs/other/Maude/tools/check-inventory.py"
+    ],
+    "exit_code": 1,
+    "seconds": 0.059119319997989805,
+    "log": "maude-6.txt",
+    "status": "known historical discrepancy"
+  }
+]

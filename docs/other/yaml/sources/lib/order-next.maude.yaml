@@ -1,0 +1,207 @@
+version: 1
+path: lib/order-next.maude
+sha256: e0af20c6f4f7026d6962051465549955fd470cc100e4627de3038fb1280aac43
+type: maude
+records:
+- line: 1
+  kind: comment
+  fields: {}
+  text: |
+    --- Source: P3109/D1 4.12.1; 4.16, printed page 54; 59-60.
+- line: 2
+  kind: fmod
+  fields:
+    name: P3109-ORDER-NEXT
+    parameters: []
+  text: |
+    fmod P3109-ORDER-NEXT is
+- line: 3
+  kind: including
+  fields:
+    expression: P3109-PREDICATES
+  text: |2
+      including P3109-PREDICATES .
+- line: 4
+  kind: op
+  fields:
+    names:
+    - TotalOrder
+    domain:
+    - Format
+    - Format
+    - Int
+    - Int
+    arrow: ~>
+    range: Bool
+    attributes: ''
+  text: |2
+      op TotalOrder : Format Format Int Int ~> Bool .
+- line: 5
+  kind: ops
+  fields:
+    names:
+    - NextGreaterThan
+    - NextLessThan
+    domain:
+    - Format
+    - Int
+    arrow: ~>
+    range: Nat
+    attributes: ''
+  text: |2
+      ops NextGreaterThan NextLessThan : Format Int ~> Nat .
+- line: 6
+  kind: op
+  fields:
+    names:
+    - nextCode
+    domain:
+    - Format
+    - Int
+    - Bool
+    arrow: ~>
+    range: Nat
+    attributes: ''
+  text: |2
+      op nextCode : Format Int Bool ~> Nat .
+- line: 7
+  kind: vars
+  fields:
+    names:
+    - F
+    - G
+    sort: Format
+  text: |2
+      vars F G : Format .
+- line: 8
+  kind: vars
+  fields:
+    names:
+    - C
+    - D
+    sort: Int
+  text: |2
+      vars C D : Int .
+- line: 9
+  kind: ceq
+  fields:
+    label: p3109-order-next-001
+    lhs: TotalOrder(F, G, C, D)
+    rhs: if IsNaN(F, C) then true else if IsNaN(G, D) then false else CompareLessEqual(F, G, C, D) fi
+      fi
+    condition: validCode(F, C) /\ validCode(G, D) /\ internalFormat(F) /\ internalFormat(G)
+    attributes: metadata "clause=4.12.1; 4.16; page=54; 59-60"
+  text: |2
+      ceq [p3109-order-next-001] :
+        TotalOrder(F, G, C, D)
+        = if IsNaN(F, C) then true else if IsNaN(G, D) then false else CompareLessEqual(F, G, C, D) fi
+        fi
+        if validCode(F, C) /\ validCode(G, D) /\ internalFormat(F) /\ internalFormat(G)
+        [metadata "clause=4.12.1; 4.16; page=54; 59-60"] .
+- line: 15
+  kind: ceq
+  fields:
+    label: p3109-order-next-004
+    lhs: NextGreaterThan(F, C)
+    rhs: if IsNaN(F, C) or xEq(decode(F, C), posInf) or (DomainOf(F) == Finite and C == MaxFiniteOf(F))
+      then nanCode(F) else nextCode(F, C, true) fi
+    condition: validCode(F, C) /\ internalFormat(F)
+    attributes: metadata "clause=4.12.1; 4.16; page=54; 59-60"
+  text: |2
+      ceq [p3109-order-next-004] :
+        NextGreaterThan(F, C)
+        = if IsNaN(F, C) or xEq(decode(F, C), posInf) or (DomainOf(F) == Finite and C == MaxFiniteOf(F))
+        then nanCode(F) else nextCode(F, C, true) fi
+        if validCode(F, C) /\ internalFormat(F)
+        [metadata "clause=4.12.1; 4.16; page=54; 59-60"] .
+- line: 21
+  kind: ceq
+  fields:
+    label: p3109-order-next-006
+    lhs: NextLessThan(F, C)
+    rhs: if IsNaN(F, C) or xEq(decode(F, C), negInf) or (DomainOf(F) == Finite and C == MinFiniteOf(F))
+      or (SignednessOf(F) == Unsigned and C == 0) then nanCode(F) else nextCode(F, C, false) fi
+    condition: validCode(F, C) /\ internalFormat(F)
+    attributes: metadata "clause=4.12.1; 4.16; page=54; 59-60"
+  text: |2
+      ceq [p3109-order-next-006] :
+        NextLessThan(F, C)
+        = if IsNaN(F, C) or xEq(decode(F, C), negInf) or (DomainOf(F) == Finite and C == MinFiniteOf(F))
+        or (SignednessOf(F) == Unsigned and C == 0) then nanCode(F) else nextCode(F, C, false) fi
+        if validCode(F, C) /\ internalFormat(F)
+        [metadata "clause=4.12.1; 4.16; page=54; 59-60"] .
+- line: 27
+  kind: ceq
+  fields:
+    label: p3109-order-next-008
+    lhs: nextCode(F, C, true)
+    rhs: if C == nanCode(F) + 1 then 0 else C - 1 fi
+    condition: IsSignMinus(F, C)
+    attributes: metadata "clause=4.12.1; 4.16; page=54; 59-60"
+  text: |2
+      ceq [p3109-order-next-008] :
+        nextCode(F, C, true)
+        = if C == nanCode(F) + 1 then 0 else C - 1 fi
+        if IsSignMinus(F, C)
+        [metadata "clause=4.12.1; 4.16; page=54; 59-60"] .
+- line: 32
+  kind: ceq
+  fields:
+    label: p3109-order-next-009
+    lhs: nextCode(F, C, true)
+    rhs: C + 1
+    condition: not IsSignMinus(F, C)
+    attributes: metadata "clause=4.12.1; 4.16; page=54; 59-60"
+  text: |2
+      ceq [p3109-order-next-009] :
+        nextCode(F, C, true)
+        = C + 1
+        if not IsSignMinus(F, C)
+        [metadata "clause=4.12.1; 4.16; page=54; 59-60"] .
+- line: 37
+  kind: ceq
+  fields:
+    label: p3109-order-next-010
+    lhs: nextCode(F, C, false)
+    rhs: C + 1
+    condition: IsSignMinus(F, C)
+    attributes: metadata "clause=4.12.1; 4.16; page=54; 59-60"
+  text: |2
+      ceq [p3109-order-next-010] :
+        nextCode(F, C, false)
+        = C + 1
+        if IsSignMinus(F, C)
+        [metadata "clause=4.12.1; 4.16; page=54; 59-60"] .
+- line: 42
+  kind: ceq
+  fields:
+    label: p3109-order-next-011
+    lhs: nextCode(F, 0, false)
+    rhs: nanCode(F) + 1
+    condition: SignednessOf(F) == Signed
+    attributes: metadata "clause=4.12.1; 4.16; page=54; 59-60"
+  text: |2
+      ceq [p3109-order-next-011] :
+        nextCode(F, 0, false)
+        = nanCode(F) + 1
+        if SignednessOf(F) == Signed
+        [metadata "clause=4.12.1; 4.16; page=54; 59-60"] .
+- line: 47
+  kind: ceq
+  fields:
+    label: p3109-order-next-012
+    lhs: nextCode(F, C, false)
+    rhs: C - 1
+    condition: C > 0 /\ not IsSignMinus(F, C)
+    attributes: metadata "clause=4.12.1; 4.16; page=54; 59-60"
+  text: |2
+      ceq [p3109-order-next-012] :
+        nextCode(F, C, false)
+        = C - 1
+        if C > 0 /\ not IsSignMinus(F, C)
+        [metadata "clause=4.12.1; 4.16; page=54; 59-60"] .
+- line: 52
+  kind: endfm
+  fields: {}
+  text: |
+    endfm

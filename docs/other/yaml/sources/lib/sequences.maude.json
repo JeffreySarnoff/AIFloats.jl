@@ -1,0 +1,281 @@
+{
+  "version": 1,
+  "path": "lib/sequences.maude",
+  "sha256": "e337e7ba31ae93388adcdae9d0c1edefd0178c2bb4cb83cf13838e7092547fa5",
+  "type": "maude",
+  "records": [
+    {
+      "line": 1,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- Source: P3109/D1 5.2-5.3, printed page 61.\n"
+    },
+    {
+      "line": 2,
+      "kind": "fmod",
+      "fields": {
+        "name": "P3109-SEQUENCE",
+        "parameters": [
+          {
+            "name": "E",
+            "theory": "TRIV"
+          }
+        ]
+      },
+      "text": "fmod P3109-SEQUENCE{E :: TRIV} is\n"
+    },
+    {
+      "line": 3,
+      "kind": "protecting",
+      "fields": {
+        "expression": "NAT"
+      },
+      "text": "  protecting NAT .\n"
+    },
+    {
+      "line": 4,
+      "kind": "sort",
+      "fields": {
+        "names": [
+          "Seq{E}"
+        ]
+      },
+      "text": "  sort Seq{E} .\n"
+    },
+    {
+      "line": 5,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "nil"
+        ],
+        "domain": [],
+        "arrow": "->",
+        "range": "Seq{E}",
+        "attributes": "ctor"
+      },
+      "text": "  op nil : -> Seq{E} [ctor] .\n"
+    },
+    {
+      "line": 6,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "cons"
+        ],
+        "domain": [
+          "E$Elt",
+          "Seq{E}"
+        ],
+        "arrow": "->",
+        "range": "Seq{E}",
+        "attributes": "ctor"
+      },
+      "text": "  op cons : E$Elt Seq{E} -> Seq{E} [ctor] .\n"
+    },
+    {
+      "line": 7,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "length"
+        ],
+        "domain": [
+          "Seq{E}"
+        ],
+        "arrow": "->",
+        "range": "Nat",
+        "attributes": ""
+      },
+      "text": "  op length : Seq{E} -> Nat .\n"
+    },
+    {
+      "line": 8,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "at"
+        ],
+        "domain": [
+          "Seq{E}",
+          "Nat"
+        ],
+        "arrow": "~>",
+        "range": "E$Elt",
+        "attributes": ""
+      },
+      "text": "  op at : Seq{E} Nat ~> E$Elt .\n"
+    },
+    {
+      "line": 9,
+      "kind": "var",
+      "fields": {
+        "names": [
+          "X"
+        ],
+        "sort": "E$Elt"
+      },
+      "text": "  var X : E$Elt .\n"
+    },
+    {
+      "line": 10,
+      "kind": "var",
+      "fields": {
+        "names": [
+          "XS"
+        ],
+        "sort": "Seq{E}"
+      },
+      "text": "  var XS : Seq{E} .\n"
+    },
+    {
+      "line": 11,
+      "kind": "var",
+      "fields": {
+        "names": [
+          "N"
+        ],
+        "sort": "Nat"
+      },
+      "text": "  var N : Nat .\n"
+    },
+    {
+      "line": 12,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-sequences-001",
+        "lhs": "length(nil)",
+        "rhs": "0",
+        "condition": null,
+        "attributes": "metadata \"clause=5.2-5.3; page=61\""
+      },
+      "text": "  eq [p3109-sequences-001] : length(nil) = 0 [metadata \"clause=5.2-5.3; page=61\"] .\n"
+    },
+    {
+      "line": 13,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-sequences-002",
+        "lhs": "length(cons(X, XS))",
+        "rhs": "1 + length(XS)",
+        "condition": null,
+        "attributes": "metadata \"clause=5.2-5.3; page=61\""
+      },
+      "text": "  eq [p3109-sequences-002] : length(cons(X, XS)) = 1 + length(XS) [metadata \"clause=5.2-5.3; page=61\"] .\n"
+    },
+    {
+      "line": 14,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-sequences-003",
+        "lhs": "at(cons(X, XS), 0)",
+        "rhs": "X",
+        "condition": null,
+        "attributes": "metadata \"clause=5.2-5.3; page=61\""
+      },
+      "text": "  eq [p3109-sequences-003] : at(cons(X, XS), 0) = X [metadata \"clause=5.2-5.3; page=61\"] .\n"
+    },
+    {
+      "line": 15,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-sequences-004",
+        "lhs": "at(cons(X, XS), N)",
+        "rhs": "at(XS, sd(N, 1))",
+        "condition": "N > 0",
+        "attributes": "metadata \"clause=5.2-5.3; page=61\""
+      },
+      "text": "  ceq [p3109-sequences-004] : at(cons(X, XS), N) = at(XS, sd(N, 1)) if N > 0 [metadata \"clause=5.2-5.3; page=61\"] .\n"
+    },
+    {
+      "line": 16,
+      "kind": "endfm",
+      "fields": {},
+      "text": "endfm\n"
+    },
+    {
+      "line": 17,
+      "kind": "view",
+      "fields": {
+        "name": "XRealElt",
+        "from": "TRIV",
+        "to": "P3109-XREAL"
+      },
+      "text": "view XRealElt from TRIV to P3109-XREAL is\n"
+    },
+    {
+      "line": 18,
+      "kind": "sort",
+      "fields": {
+        "names": [
+          "Elt",
+          "to",
+          "XReal"
+        ]
+      },
+      "text": "  sort Elt to XReal .\n"
+    },
+    {
+      "line": 19,
+      "kind": "endv",
+      "fields": {},
+      "text": "endv\n"
+    },
+    {
+      "line": 20,
+      "kind": "view",
+      "fields": {
+        "name": "CodeElt",
+        "from": "TRIV",
+        "to": "INT"
+      },
+      "text": "view CodeElt from TRIV to INT is\n"
+    },
+    {
+      "line": 21,
+      "kind": "sort",
+      "fields": {
+        "names": [
+          "Elt",
+          "to",
+          "Int"
+        ]
+      },
+      "text": "  sort Elt to Int .\n"
+    },
+    {
+      "line": 22,
+      "kind": "endv",
+      "fields": {},
+      "text": "endv\n"
+    },
+    {
+      "line": 23,
+      "kind": "view",
+      "fields": {
+        "name": "RandomElt",
+        "from": "TRIV",
+        "to": "INT"
+      },
+      "text": "view RandomElt from TRIV to INT is\n"
+    },
+    {
+      "line": 24,
+      "kind": "sort",
+      "fields": {
+        "names": [
+          "Elt",
+          "to",
+          "Int"
+        ]
+      },
+      "text": "  sort Elt to Int .\n"
+    },
+    {
+      "line": 25,
+      "kind": "endv",
+      "fields": {},
+      "text": "endv\n"
+    }
+  ]
+}

@@ -1,0 +1,664 @@
+version: 1
+path: lib/block-templates.maude
+sha256: 6a5440ddb1d72484a89885106dbaa4c3252e78775fcffcec487be7a18203a181
+type: maude
+records:
+- line: 1
+  kind: comment
+  fields: {}
+  text: |
+    --- Shared arity schemas; operation names and kernel views are generated separately.
+- line: 2
+  kind: comment
+  fields: {}
+  text: |
+    --- Source: P3109/D1 5.7-5.8, printed page 69-70.
+- line: 3
+  kind: comment
+  fields: {}
+  text: |
+    --- Per-operation clauses are recorded in inventory/operations.json and traceability.tsv.
+- line: 4
+  kind: fmod
+  fields:
+    name: P3109-BLOCK-TEMPLATE1
+    parameters:
+    - name: O
+      theory: P3109-KERNEL1
+  text: |
+    fmod P3109-BLOCK-TEMPLATE1{O :: P3109-KERNEL1} is
+- line: 5
+  kind: including
+  fields:
+    expression: P3109-BLOCK
+  text: |2
+      including P3109-BLOCK .
+- line: 6
+  kind: vars
+  fields:
+    names:
+    - F1
+    - FS1
+    - FS
+    - FR
+    sort: Format
+  text: |2
+      vars F1 FS1 FS FR : Format .
+- line: 7
+  kind: vars
+  fields:
+    names:
+    - C1
+    - S1
+    - S
+    sort: Int
+  text: |2
+      vars C1 S1 S : Int .
+- line: 8
+  kind: var
+  fields:
+    names:
+    - PS
+    sort: ProjSpec
+  text: |2
+      var PS : ProjSpec .
+- line: 9
+  kind: var
+  fields:
+    names:
+    - B
+    sort: Nat
+  text: |2
+      var B : Nat .
+- line: 10
+  kind: var
+  fields:
+    names:
+    - BP
+    sort: BlockProjSpec
+  text: |2
+      var BP : BlockProjSpec .
+- line: 11
+  kind: var
+  fields:
+    names:
+    - CS1
+    sort: CodeSeq
+  text: |2
+      var CS1 : CodeSeq .
+- line: 12
+  kind: var
+  fields:
+    names:
+    - XS1
+    sort: XSeq
+  text: |2
+      var XS1 : XSeq .
+- line: 13
+  kind: var
+  fields:
+    names:
+    - X1
+    sort: XReal
+  text: |2
+      var X1 : XReal .
+- line: 14
+  kind: op
+  fields:
+    names:
+    - elementwise
+    domain:
+    - Nat
+    - Format
+    - Format
+    - Format
+    - Format
+    - BlockProjSpec
+    - Int
+    - CodeSeq
+    - Int
+    arrow: ~>
+    range: Block
+    attributes: ''
+  text: |2
+      op elementwise : Nat Format Format Format Format BlockProjSpec Int CodeSeq Int ~> Block .
+- line: 15
+  kind: op
+  fields:
+    names:
+    - mapped
+    domain:
+    - XSeq
+    arrow: ~>
+    range: XSeq
+    attributes: ''
+  text: |2
+      op mapped : XSeq ~> XSeq .
+- line: 16
+  kind: ceq
+  fields:
+    label: p3109-template-block-1
+    lhs: elementwise(B, FS1, F1, FS, FR, BP, S1, CS1, S)
+    rhs: block(S, blockProject(B, FS, FR, BP, S, mapped(blockDecode(B, FS1, F1, S1, CS1))))
+    condition: validBlock(B, FS1, F1, S1, CS1) /\ validCode(FS, S) /\ validFormat(FR) /\ validBlockProjection(BP,
+      B)
+    attributes: metadata "clause=5.7-5.8; page=69-70"
+  text: |2
+      ceq [p3109-template-block-1] :
+        elementwise(B, FS1, F1, FS, FR, BP, S1, CS1, S)
+        = block(S, blockProject(B, FS, FR, BP, S, mapped(blockDecode(B, FS1, F1, S1, CS1))))
+        if validBlock(B, FS1, F1, S1, CS1) /\ validCode(FS, S) /\ validFormat(FR) /\
+        validBlockProjection(BP, B)
+        [metadata "clause=5.7-5.8; page=69-70"] .
+- line: 22
+  kind: eq
+  fields:
+    label: p3109-template-map-1-nil
+    lhs: mapped(xnil)
+    rhs: xnil
+    condition: null
+    attributes: metadata "clause=5.7-5.8; page=69-70"
+  text: |2
+      eq [p3109-template-map-1-nil] :
+        mapped(xnil)
+        = xnil
+        [metadata "clause=5.7-5.8; page=69-70"] .
+- line: 26
+  kind: eq
+  fields:
+    label: p3109-template-map-1-cons
+    lhs: mapped(xcons(X1, XS1))
+    rhs: xcons(kernel(X1), mapped(XS1))
+    condition: null
+    attributes: metadata "clause=5.7-5.8; page=69-70"
+  text: |2
+      eq [p3109-template-map-1-cons] :
+        mapped(xcons(X1, XS1))
+        = xcons(kernel(X1), mapped(XS1))
+        [metadata "clause=5.7-5.8; page=69-70"] .
+- line: 30
+  kind: op
+  fields:
+    names:
+    - scaled
+    domain:
+    - Format
+    - Format
+    - Format
+    - ProjSpec
+    - Int
+    - Int
+    arrow: ~>
+    range: Nat
+    attributes: ''
+  text: |2
+      op scaled : Format Format Format ProjSpec Int Int ~> Nat .
+- line: 31
+  kind: ceq
+  fields:
+    label: p3109-template-scaled-1
+    lhs: scaled(FS1, F1, FR, PS, S1, C1)
+    rhs: scaledResult(elementwise(1, FS1, F1, Binary(4, 2, Signed, Finite), FR, singletonLift(PS), S1,
+      ccons(C1, cnil), 4))
+    condition: validCode(FS1, S1) /\ validCode(F1, C1) /\ validFormat(FR) /\ validProjection(PS)
+    attributes: metadata "clause=5.7-5.8; page=69-70"
+  text: |2
+      ceq [p3109-template-scaled-1] :
+        scaled(FS1, F1, FR, PS, S1, C1)
+        = scaledResult(elementwise(1, FS1, F1, Binary(4, 2, Signed, Finite), FR, singletonLift(PS), S1,
+        ccons(C1, cnil), 4))
+        if validCode(FS1, S1) /\ validCode(F1, C1) /\ validFormat(FR) /\ validProjection(PS)
+        [metadata "clause=5.7-5.8; page=69-70"] .
+- line: 37
+  kind: endfm
+  fields: {}
+  text: |
+    endfm
+- line: 38
+  kind: fmod
+  fields:
+    name: P3109-BLOCK-TEMPLATE2
+    parameters:
+    - name: O
+      theory: P3109-KERNEL2
+  text: |
+    fmod P3109-BLOCK-TEMPLATE2{O :: P3109-KERNEL2} is
+- line: 39
+  kind: including
+  fields:
+    expression: P3109-BLOCK
+  text: |2
+      including P3109-BLOCK .
+- line: 40
+  kind: vars
+  fields:
+    names:
+    - F1
+    - F2
+    - FS1
+    - FS2
+    - FS
+    - FR
+    sort: Format
+  text: |2
+      vars F1 F2 FS1 FS2 FS FR : Format .
+- line: 41
+  kind: vars
+  fields:
+    names:
+    - C1
+    - C2
+    - S1
+    - S2
+    - S
+    sort: Int
+  text: |2
+      vars C1 C2 S1 S2 S : Int .
+- line: 42
+  kind: var
+  fields:
+    names:
+    - PS
+    sort: ProjSpec
+  text: |2
+      var PS : ProjSpec .
+- line: 43
+  kind: var
+  fields:
+    names:
+    - B
+    sort: Nat
+  text: |2
+      var B : Nat .
+- line: 44
+  kind: var
+  fields:
+    names:
+    - BP
+    sort: BlockProjSpec
+  text: |2
+      var BP : BlockProjSpec .
+- line: 45
+  kind: vars
+  fields:
+    names:
+    - CS1
+    - CS2
+    sort: CodeSeq
+  text: |2
+      vars CS1 CS2 : CodeSeq .
+- line: 46
+  kind: vars
+  fields:
+    names:
+    - XS1
+    - XS2
+    sort: XSeq
+  text: |2
+      vars XS1 XS2 : XSeq .
+- line: 47
+  kind: vars
+  fields:
+    names:
+    - X1
+    - X2
+    sort: XReal
+  text: |2
+      vars X1 X2 : XReal .
+- line: 48
+  kind: op
+  fields:
+    names:
+    - elementwise
+    domain:
+    - Nat
+    - Format
+    - Format
+    - Format
+    - Format
+    - Format
+    - Format
+    - BlockProjSpec
+    - Int
+    - CodeSeq
+    - Int
+    - CodeSeq
+    - Int
+    arrow: ~>
+    range: Block
+    attributes: ''
+  text: |2
+      op elementwise : Nat Format Format Format Format Format Format BlockProjSpec Int CodeSeq Int CodeSeq Int ~> Block .
+- line: 49
+  kind: op
+  fields:
+    names:
+    - mapped
+    domain:
+    - XSeq
+    - XSeq
+    arrow: ~>
+    range: XSeq
+    attributes: ''
+  text: |2
+      op mapped : XSeq XSeq ~> XSeq .
+- line: 50
+  kind: ceq
+  fields:
+    label: p3109-template-block-2
+    lhs: elementwise(B, FS1, F1, FS2, F2, FS, FR, BP, S1, CS1, S2, CS2, S)
+    rhs: block(S, blockProject(B, FS, FR, BP, S, mapped(blockDecode(B, FS1, F1, S1, CS1), blockDecode(B,
+      FS2, F2, S2, CS2))))
+    condition: validBlock(B, FS1, F1, S1, CS1) /\ validBlock(B, FS2, F2, S2, CS2) /\ validCode(FS, S)
+      /\ validFormat(FR) /\ validBlockProjection(BP, B)
+    attributes: metadata "clause=5.7-5.8; page=69-70"
+  text: |2
+      ceq [p3109-template-block-2] :
+        elementwise(B, FS1, F1, FS2, F2, FS, FR, BP, S1, CS1, S2, CS2, S)
+        = block(S, blockProject(B, FS, FR, BP, S, mapped(blockDecode(B, FS1, F1, S1, CS1),
+        blockDecode(B, FS2, F2, S2, CS2))))
+        if validBlock(B, FS1, F1, S1, CS1) /\ validBlock(B, FS2, F2, S2, CS2) /\ validCode(FS, S) /\
+        validFormat(FR) /\ validBlockProjection(BP, B)
+        [metadata "clause=5.7-5.8; page=69-70"] .
+- line: 57
+  kind: eq
+  fields:
+    label: p3109-template-map-2-nil
+    lhs: mapped(xnil, xnil)
+    rhs: xnil
+    condition: null
+    attributes: metadata "clause=5.7-5.8; page=69-70"
+  text: |2
+      eq [p3109-template-map-2-nil] :
+        mapped(xnil, xnil)
+        = xnil
+        [metadata "clause=5.7-5.8; page=69-70"] .
+- line: 61
+  kind: eq
+  fields:
+    label: p3109-template-map-2-cons
+    lhs: mapped(xcons(X1, XS1), xcons(X2, XS2))
+    rhs: xcons(kernel(X1, X2), mapped(XS1, XS2))
+    condition: null
+    attributes: metadata "clause=5.7-5.8; page=69-70"
+  text: |2
+      eq [p3109-template-map-2-cons] :
+        mapped(xcons(X1, XS1), xcons(X2, XS2))
+        = xcons(kernel(X1, X2), mapped(XS1, XS2))
+        [metadata "clause=5.7-5.8; page=69-70"] .
+- line: 65
+  kind: op
+  fields:
+    names:
+    - scaled
+    domain:
+    - Format
+    - Format
+    - Format
+    - Format
+    - Format
+    - ProjSpec
+    - Int
+    - Int
+    - Int
+    - Int
+    arrow: ~>
+    range: Nat
+    attributes: ''
+  text: |2
+      op scaled : Format Format Format Format Format ProjSpec Int Int Int Int ~> Nat .
+- line: 66
+  kind: ceq
+  fields:
+    label: p3109-template-scaled-2
+    lhs: scaled(FS1, F1, FS2, F2, FR, PS, S1, C1, S2, C2)
+    rhs: scaledResult(elementwise(1, FS1, F1, FS2, F2, Binary(4, 2, Signed, Finite), FR, singletonLift(PS),
+      S1, ccons(C1, cnil), S2, ccons(C2, cnil), 4))
+    condition: validCode(FS1, S1) /\ validCode(F1, C1) /\ validCode(FS2, S2) /\ validCode(F2, C2) /\ validFormat(FR)
+      /\ validProjection(PS)
+    attributes: metadata "clause=5.7-5.8; page=69-70"
+  text: |2
+      ceq [p3109-template-scaled-2] :
+        scaled(FS1, F1, FS2, F2, FR, PS, S1, C1, S2, C2)
+        = scaledResult(elementwise(1, FS1, F1, FS2, F2, Binary(4, 2, Signed, Finite), FR,
+        singletonLift(PS), S1, ccons(C1, cnil), S2, ccons(C2, cnil), 4))
+        if validCode(FS1, S1) /\ validCode(F1, C1) /\ validCode(FS2, S2) /\ validCode(F2, C2) /\
+        validFormat(FR) /\ validProjection(PS)
+        [metadata "clause=5.7-5.8; page=69-70"] .
+- line: 73
+  kind: endfm
+  fields: {}
+  text: |
+    endfm
+- line: 74
+  kind: fmod
+  fields:
+    name: P3109-BLOCK-TEMPLATE3
+    parameters:
+    - name: O
+      theory: P3109-KERNEL3
+  text: |
+    fmod P3109-BLOCK-TEMPLATE3{O :: P3109-KERNEL3} is
+- line: 75
+  kind: including
+  fields:
+    expression: P3109-BLOCK
+  text: |2
+      including P3109-BLOCK .
+- line: 76
+  kind: vars
+  fields:
+    names:
+    - F1
+    - F2
+    - F3
+    - FS1
+    - FS2
+    - FS3
+    - FS
+    - FR
+    sort: Format
+  text: |2
+      vars F1 F2 F3 FS1 FS2 FS3 FS FR : Format .
+- line: 77
+  kind: vars
+  fields:
+    names:
+    - C1
+    - C2
+    - C3
+    - S1
+    - S2
+    - S3
+    - S
+    sort: Int
+  text: |2
+      vars C1 C2 C3 S1 S2 S3 S : Int .
+- line: 78
+  kind: var
+  fields:
+    names:
+    - PS
+    sort: ProjSpec
+  text: |2
+      var PS : ProjSpec .
+- line: 79
+  kind: var
+  fields:
+    names:
+    - B
+    sort: Nat
+  text: |2
+      var B : Nat .
+- line: 80
+  kind: var
+  fields:
+    names:
+    - BP
+    sort: BlockProjSpec
+  text: |2
+      var BP : BlockProjSpec .
+- line: 81
+  kind: vars
+  fields:
+    names:
+    - CS1
+    - CS2
+    - CS3
+    sort: CodeSeq
+  text: |2
+      vars CS1 CS2 CS3 : CodeSeq .
+- line: 82
+  kind: vars
+  fields:
+    names:
+    - XS1
+    - XS2
+    - XS3
+    sort: XSeq
+  text: |2
+      vars XS1 XS2 XS3 : XSeq .
+- line: 83
+  kind: vars
+  fields:
+    names:
+    - X1
+    - X2
+    - X3
+    sort: XReal
+  text: |2
+      vars X1 X2 X3 : XReal .
+- line: 84
+  kind: op
+  fields:
+    names:
+    - elementwise
+    domain:
+    - Nat
+    - Format
+    - Format
+    - Format
+    - Format
+    - Format
+    - Format
+    - Format
+    - Format
+    - BlockProjSpec
+    - Int
+    - CodeSeq
+    - Int
+    - CodeSeq
+    - Int
+    - CodeSeq
+    - Int
+    arrow: ~>
+    range: Block
+    attributes: ''
+  text: |2
+      op elementwise : Nat Format Format Format Format Format Format Format Format BlockProjSpec Int CodeSeq Int CodeSeq Int CodeSeq Int ~> Block .
+- line: 85
+  kind: op
+  fields:
+    names:
+    - mapped
+    domain:
+    - XSeq
+    - XSeq
+    - XSeq
+    arrow: ~>
+    range: XSeq
+    attributes: ''
+  text: |2
+      op mapped : XSeq XSeq XSeq ~> XSeq .
+- line: 86
+  kind: ceq
+  fields:
+    label: p3109-template-block-3
+    lhs: elementwise(B, FS1, F1, FS2, F2, FS3, F3, FS, FR, BP, S1, CS1, S2, CS2, S3, CS3, S)
+    rhs: block(S, blockProject(B, FS, FR, BP, S, mapped(blockDecode(B, FS1, F1, S1, CS1), blockDecode(B,
+      FS2, F2, S2, CS2), blockDecode(B, FS3, F3, S3, CS3))))
+    condition: validBlock(B, FS1, F1, S1, CS1) /\ validBlock(B, FS2, F2, S2, CS2) /\ validBlock(B, FS3,
+      F3, S3, CS3) /\ validCode(FS, S) /\ validFormat(FR) /\ validBlockProjection(BP, B)
+    attributes: metadata "clause=5.7-5.8; page=69-70"
+  text: |2
+      ceq [p3109-template-block-3] :
+        elementwise(B, FS1, F1, FS2, F2, FS3, F3, FS, FR, BP, S1, CS1, S2, CS2, S3, CS3, S)
+        = block(S, blockProject(B, FS, FR, BP, S, mapped(blockDecode(B, FS1, F1, S1, CS1),
+        blockDecode(B, FS2, F2, S2, CS2), blockDecode(B, FS3, F3, S3, CS3))))
+        if validBlock(B, FS1, F1, S1, CS1) /\ validBlock(B, FS2, F2, S2, CS2) /\ validBlock(B, FS3, F3,
+        S3, CS3) /\ validCode(FS, S) /\ validFormat(FR) /\ validBlockProjection(BP, B)
+        [metadata "clause=5.7-5.8; page=69-70"] .
+- line: 93
+  kind: eq
+  fields:
+    label: p3109-template-map-3-nil
+    lhs: mapped(xnil, xnil, xnil)
+    rhs: xnil
+    condition: null
+    attributes: metadata "clause=5.7-5.8; page=69-70"
+  text: |2
+      eq [p3109-template-map-3-nil] :
+        mapped(xnil, xnil, xnil)
+        = xnil
+        [metadata "clause=5.7-5.8; page=69-70"] .
+- line: 97
+  kind: eq
+  fields:
+    label: p3109-template-map-3-cons
+    lhs: mapped(xcons(X1, XS1), xcons(X2, XS2), xcons(X3, XS3))
+    rhs: xcons(kernel(X1, X2, X3), mapped(XS1, XS2, XS3))
+    condition: null
+    attributes: metadata "clause=5.7-5.8; page=69-70"
+  text: |2
+      eq [p3109-template-map-3-cons] :
+        mapped(xcons(X1, XS1), xcons(X2, XS2), xcons(X3, XS3))
+        = xcons(kernel(X1, X2, X3), mapped(XS1, XS2, XS3))
+        [metadata "clause=5.7-5.8; page=69-70"] .
+- line: 101
+  kind: op
+  fields:
+    names:
+    - scaled
+    domain:
+    - Format
+    - Format
+    - Format
+    - Format
+    - Format
+    - Format
+    - Format
+    - ProjSpec
+    - Int
+    - Int
+    - Int
+    - Int
+    - Int
+    - Int
+    arrow: ~>
+    range: Nat
+    attributes: ''
+  text: |2
+      op scaled : Format Format Format Format Format Format Format ProjSpec Int Int Int Int Int Int ~> Nat .
+- line: 102
+  kind: ceq
+  fields:
+    label: p3109-template-scaled-3
+    lhs: scaled(FS1, F1, FS2, F2, FS3, F3, FR, PS, S1, C1, S2, C2, S3, C3)
+    rhs: scaledResult(elementwise(1, FS1, F1, FS2, F2, FS3, F3, Binary(4, 2, Signed, Finite), FR, singletonLift(PS),
+      S1, ccons(C1, cnil), S2, ccons(C2, cnil), S3, ccons(C3, cnil), 4))
+    condition: validCode(FS1, S1) /\ validCode(F1, C1) /\ validCode(FS2, S2) /\ validCode(F2, C2) /\ validCode(FS3,
+      S3) /\ validCode(F3, C3) /\ validFormat(FR) /\ validProjection(PS)
+    attributes: metadata "clause=5.7-5.8; page=69-70"
+  text: |2
+      ceq [p3109-template-scaled-3] :
+        scaled(FS1, F1, FS2, F2, FS3, F3, FR, PS, S1, C1, S2, C2, S3, C3)
+        = scaledResult(elementwise(1, FS1, F1, FS2, F2, FS3, F3, Binary(4, 2, Signed, Finite), FR,
+        singletonLift(PS), S1, ccons(C1, cnil), S2, ccons(C2, cnil), S3, ccons(C3, cnil), 4))
+        if validCode(FS1, S1) /\ validCode(F1, C1) /\ validCode(FS2, S2) /\ validCode(F2, C2) /\
+        validCode(FS3, S3) /\ validCode(F3, C3) /\ validFormat(FR) /\ validProjection(PS)
+        [metadata "clause=5.7-5.8; page=69-70"] .
+- line: 109
+  kind: endfm
+  fields: {}
+  text: |
+    endfm

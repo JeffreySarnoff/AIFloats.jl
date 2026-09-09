@@ -1,0 +1,616 @@
+{
+  "version": 1,
+  "path": "lib/codec.maude",
+  "sha256": "bfcbd14d3cf4d531c0f3232f474b2b580b359c8894e317ed8efbd4f90f227a29",
+  "type": "maude",
+  "records": [
+    {
+      "line": 1,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- Source: P3109/D1 3.1; 4.7.2; 4.7.6; 4.8, printed page 16; 25; 30-31.\n"
+    },
+    {
+      "line": 2,
+      "kind": "fmod",
+      "fields": {
+        "name": "P3109-CODEC",
+        "parameters": []
+      },
+      "text": "fmod P3109-CODEC is\n"
+    },
+    {
+      "line": 3,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-RATIONAL-MATH"
+      },
+      "text": "  including P3109-RATIONAL-MATH .\n"
+    },
+    {
+      "line": 4,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-EXTERNAL-SIGNATURE"
+      },
+      "text": "  including P3109-EXTERNAL-SIGNATURE .\n"
+    },
+    {
+      "line": 5,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "validCode"
+        ],
+        "domain": [
+          "Format",
+          "Int"
+        ],
+        "arrow": "->",
+        "range": "Bool",
+        "attributes": ""
+      },
+      "text": "  op validCode : Format Int -> Bool .\n"
+    },
+    {
+      "line": 6,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "nanCode"
+        ],
+        "domain": [
+          "Format"
+        ],
+        "arrow": "~>",
+        "range": "Nat",
+        "attributes": ""
+      },
+      "text": "  op nanCode : Format ~> Nat .\n"
+    },
+    {
+      "line": 7,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "positiveLimit"
+        ],
+        "domain": [
+          "Format"
+        ],
+        "arrow": "~>",
+        "range": "Nat",
+        "attributes": ""
+      },
+      "text": "  op positiveLimit : Format ~> Nat .\n"
+    },
+    {
+      "line": 8,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "datum"
+        ],
+        "domain": [
+          "Format",
+          "XReal"
+        ],
+        "arrow": "~>",
+        "range": "Bool",
+        "attributes": ""
+      },
+      "text": "  op datum : Format XReal ~> Bool .\n"
+    },
+    {
+      "line": 9,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "decode"
+        ],
+        "domain": [
+          "Format",
+          "Int"
+        ],
+        "arrow": "~>",
+        "range": "XReal",
+        "attributes": ""
+      },
+      "text": "  op decode : Format Int ~> XReal .\n"
+    },
+    {
+      "line": 10,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "decodePositive"
+        ],
+        "domain": [
+          "Format",
+          "Nat"
+        ],
+        "arrow": "~>",
+        "range": "Rat",
+        "attributes": ""
+      },
+      "text": "  op decodePositive : Format Nat ~> Rat .\n"
+    },
+    {
+      "line": 11,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "encode"
+        ],
+        "domain": [
+          "Format",
+          "XReal"
+        ],
+        "arrow": "~>",
+        "range": "Nat",
+        "attributes": ""
+      },
+      "text": "  op encode : Format XReal ~> Nat .\n"
+    },
+    {
+      "line": 12,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "magnitudeCode"
+        ],
+        "domain": [
+          "Format",
+          "Rat"
+        ],
+        "arrow": "~>",
+        "range": "Int",
+        "attributes": ""
+      },
+      "text": "  op magnitudeCode : Format Rat ~> Int .\n"
+    },
+    {
+      "line": 13,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "candidateDatum"
+        ],
+        "domain": [
+          "Format",
+          "Rat",
+          "Int"
+        ],
+        "arrow": "->",
+        "range": "Bool",
+        "attributes": ""
+      },
+      "text": "  op candidateDatum : Format Rat Int -> Bool .\n"
+    },
+    {
+      "line": 14,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "F"
+        ],
+        "sort": "Format"
+      },
+      "text": "  vars F : Format .\n"
+    },
+    {
+      "line": 15,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "K",
+          "P",
+          "C",
+          "E",
+          "T"
+        ],
+        "sort": "Int"
+      },
+      "text": "  vars K P C E T : Int .\n"
+    },
+    {
+      "line": 16,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "S"
+        ],
+        "sort": "Signedness"
+      },
+      "text": "  vars S : Signedness .\n"
+    },
+    {
+      "line": 17,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "D"
+        ],
+        "sort": "Domain"
+      },
+      "text": "  vars D : Domain .\n"
+    },
+    {
+      "line": 18,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "R",
+          "V"
+        ],
+        "sort": "Rat"
+      },
+      "text": "  vars R V : Rat .\n"
+    },
+    {
+      "line": 19,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "X"
+        ],
+        "sort": "XReal"
+      },
+      "text": "  vars X : XReal .\n"
+    },
+    {
+      "line": 20,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-code-invalid-format",
+        "lhs": "validCode(F, C)",
+        "rhs": "false",
+        "condition": "not validFormat(F)",
+        "attributes": "metadata \"clause=3.1; page=16\""
+      },
+      "text": "  ceq [p3109-code-invalid-format] : validCode(F, C) = false if not validFormat(F) [metadata \"clause=3.1; page=16\"] .\n"
+    },
+    {
+      "line": 21,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-codec-001",
+        "lhs": "validCode(F, C)",
+        "rhs": "C >= 0 and C < 2 ^ BitwidthOf(F)",
+        "condition": "validFormat(F)",
+        "attributes": "metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\""
+      },
+      "text": "  ceq [p3109-codec-001] : validCode(F, C) = C >= 0 and C < 2 ^ BitwidthOf(F) if validFormat(F) [metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\"] .\n"
+    },
+    {
+      "line": 22,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-codec-002",
+        "lhs": "nanCode(F)",
+        "rhs": "if SignednessOf(F) == Signed then 2 ^ (BitwidthOf(F) - 1) else 2 ^ BitwidthOf(F) - 1 fi",
+        "condition": "validFormat(F) /\\ internalFormat(F)",
+        "attributes": "metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\""
+      },
+      "text": "  ceq [p3109-codec-002] : nanCode(F) = if SignednessOf(F) == Signed then 2 ^ (BitwidthOf(F) - 1) else 2 ^ BitwidthOf(F) - 1 fi if validFormat(F) /\\ internalFormat(F) [metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\"] .\n"
+    },
+    {
+      "line": 23,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-codec-003",
+        "lhs": "positiveLimit(F)",
+        "rhs": "if SignednessOf(F) == Signed then 2 ^ (BitwidthOf(F) - 1) - 1 else 2 ^ BitwidthOf(F) - 2 fi",
+        "condition": "validFormat(F) /\\ internalFormat(F)",
+        "attributes": "metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\""
+      },
+      "text": "  ceq [p3109-codec-003] : positiveLimit(F) = if SignednessOf(F) == Signed then 2 ^ (BitwidthOf(F) - 1) - 1 else 2 ^ BitwidthOf(F) - 2 fi if validFormat(F) /\\ internalFormat(F) [metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\"] .\n"
+    },
+    {
+      "line": 24,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-codec-004",
+        "lhs": "decode(F, C)",
+        "rhs": "externalDecode(F, C)",
+        "condition": "validCode(F, C) /\\ not internalFormat(F)",
+        "attributes": "metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\""
+      },
+      "text": "  ceq [p3109-codec-004] : decode(F, C) = externalDecode(F, C) if validCode(F, C) /\\ not internalFormat(F) [metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\"] .\n"
+    },
+    {
+      "line": 25,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-codec-005",
+        "lhs": "decode(F, C)",
+        "rhs": "nan",
+        "condition": "validCode(F, C) /\\ internalFormat(F) /\\ C == nanCode(F)",
+        "attributes": "metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\""
+      },
+      "text": "  ceq [p3109-codec-005] : decode(F, C) = nan if validCode(F, C) /\\ internalFormat(F) /\\ C == nanCode(F) [metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\"] .\n"
+    },
+    {
+      "line": 26,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-codec-006",
+        "lhs": "decode(F, C)",
+        "rhs": "posInf",
+        "condition": "validCode(F, C) /\\ internalFormat(F) /\\ DomainOf(F) == Extended /\\ C == positiveLimit(F)",
+        "attributes": "metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\""
+      },
+      "text": "  ceq [p3109-codec-006] : decode(F, C) = posInf if validCode(F, C) /\\ internalFormat(F) /\\ DomainOf(F) == Extended /\\ C == positiveLimit(F) [metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\"] .\n"
+    },
+    {
+      "line": 27,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-codec-007",
+        "lhs": "decode(F, C)",
+        "rhs": "negInf",
+        "condition": "validCode(F, C) /\\ internalFormat(F) /\\ SignednessOf(F) == Signed /\\ DomainOf(F) == Extended /\\ C == 2 ^ BitwidthOf(F) - 1",
+        "attributes": "metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\""
+      },
+      "text": "  ceq [p3109-codec-007] : decode(F, C) = negInf if validCode(F, C) /\\ internalFormat(F) /\\ SignednessOf(F) == Signed /\\ DomainOf(F) == Extended /\\ C == 2 ^ BitwidthOf(F) - 1 [metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\"] .\n"
+    },
+    {
+      "line": 28,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-codec-008",
+        "lhs": "decode(F, C)",
+        "rhs": "fin(- decodePositive(F, C - 2 ^ (BitwidthOf(F) - 1)))",
+        "condition": "validCode(F, C) /\\ internalFormat(F) /\\ SignednessOf(F) == Signed /\\ C > nanCode(F) /\\ (DomainOf(F) == Finite or C < 2 ^ BitwidthOf(F) - 1)",
+        "attributes": "metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\""
+      },
+      "text": "  ceq [p3109-codec-008] : decode(F, C) = fin(- decodePositive(F, C - 2 ^ (BitwidthOf(F) - 1))) if validCode(F, C) /\\ internalFormat(F) /\\ SignednessOf(F) == Signed /\\ C > nanCode(F) /\\ (DomainOf(F) == Finite or C < 2 ^ BitwidthOf(F) - 1) [metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\"] .\n"
+    },
+    {
+      "line": 29,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-codec-009",
+        "lhs": "decode(F, C)",
+        "rhs": "fin(decodePositive(F, C))",
+        "condition": "validCode(F, C) /\\ internalFormat(F) /\\ C < nanCode(F) /\\ (DomainOf(F) == Finite or C < positiveLimit(F))",
+        "attributes": "metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\""
+      },
+      "text": "  ceq [p3109-codec-009] : decode(F, C) = fin(decodePositive(F, C)) if validCode(F, C) /\\ internalFormat(F) /\\ C < nanCode(F) /\\ (DomainOf(F) == Finite or C < positiveLimit(F)) [metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\"] .\n"
+    },
+    {
+      "line": 30,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-codec-010",
+        "lhs": "decodePositive(F, C)",
+        "rhs": "(C rem (2 ^ (PrecisionOf(F) - 1))) * pow2(2 - PrecisionOf(F) - ExponentBiasOf(F))",
+        "condition": "C >= 0 /\\ C < 2 ^ (PrecisionOf(F) - 1)",
+        "attributes": "metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\""
+      },
+      "text": "  ceq [p3109-codec-010] : decodePositive(F, C) = (C rem (2 ^ (PrecisionOf(F) - 1))) * pow2(2 - PrecisionOf(F) - ExponentBiasOf(F)) if C >= 0 /\\ C < 2 ^ (PrecisionOf(F) - 1) [metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\"] .\n"
+    },
+    {
+      "line": 31,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-codec-011",
+        "lhs": "decodePositive(F, C)",
+        "rhs": "(1 + (C rem (2 ^ (PrecisionOf(F) - 1))) * pow2(1 - PrecisionOf(F))) * pow2((C quo (2 ^ (PrecisionOf(F) - 1))) - ExponentBiasOf(F))",
+        "condition": "C >= 2 ^ (PrecisionOf(F) - 1)",
+        "attributes": "metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\""
+      },
+      "text": "  ceq [p3109-codec-011] : decodePositive(F, C) = (1 + (C rem (2 ^ (PrecisionOf(F) - 1))) * pow2(1 - PrecisionOf(F))) * pow2((C quo (2 ^ (PrecisionOf(F) - 1))) - ExponentBiasOf(F)) if C >= 2 ^ (PrecisionOf(F) - 1) [metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\"] .\n"
+    },
+    {
+      "line": 32,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-codec-012",
+        "lhs": "datum(F, X)",
+        "rhs": "false",
+        "condition": "not validFormat(F)",
+        "attributes": "metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\""
+      },
+      "text": "  ceq [p3109-codec-012] : datum(F, X) = false if not validFormat(F) [metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\"] .\n"
+    },
+    {
+      "line": 33,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-codec-013",
+        "lhs": "datum(F, X)",
+        "rhs": "externalDatum(F, X)",
+        "condition": "validFormat(F) /\\ not internalFormat(F)",
+        "attributes": "metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\""
+      },
+      "text": "  ceq [p3109-codec-013] : datum(F, X) = externalDatum(F, X) if validFormat(F) /\\ not internalFormat(F) [metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\"] .\n"
+    },
+    {
+      "line": 34,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-codec-014",
+        "lhs": "datum(F, nan)",
+        "rhs": "true",
+        "condition": "validFormat(F) /\\ internalFormat(F)",
+        "attributes": "metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\""
+      },
+      "text": "  ceq [p3109-codec-014] : datum(F, nan) = true if validFormat(F) /\\ internalFormat(F) [metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\"] .\n"
+    },
+    {
+      "line": 35,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-codec-015",
+        "lhs": "datum(F, posInf)",
+        "rhs": "(DomainOf(F) == Extended)",
+        "condition": "validFormat(F) /\\ internalFormat(F)",
+        "attributes": "metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\""
+      },
+      "text": "  ceq [p3109-codec-015] : datum(F, posInf) = (DomainOf(F) == Extended) if validFormat(F) /\\ internalFormat(F) [metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\"] .\n"
+    },
+    {
+      "line": 36,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-codec-016",
+        "lhs": "datum(F, negInf)",
+        "rhs": "(DomainOf(F) == Extended and SignednessOf(F) == Signed)",
+        "condition": "validFormat(F) /\\ internalFormat(F)",
+        "attributes": "metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\""
+      },
+      "text": "  ceq [p3109-codec-016] : datum(F, negInf) = (DomainOf(F) == Extended and SignednessOf(F) == Signed) if validFormat(F) /\\ internalFormat(F) [metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\"] .\n"
+    },
+    {
+      "line": 37,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-codec-017",
+        "lhs": "datum(F, fin(R))",
+        "rhs": "false",
+        "condition": "validFormat(F) /\\ internalFormat(F) /\\ R < 0 /\\ SignednessOf(F) == Unsigned",
+        "attributes": "metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\""
+      },
+      "text": "  ceq [p3109-codec-017] : datum(F, fin(R)) = false if validFormat(F) /\\ internalFormat(F) /\\ R < 0 /\\ SignednessOf(F) == Unsigned [metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\"] .\n"
+    },
+    {
+      "line": 38,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-codec-018",
+        "lhs": "datum(F, fin(0))",
+        "rhs": "true",
+        "condition": "validFormat(F) /\\ internalFormat(F)",
+        "attributes": "metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\""
+      },
+      "text": "  ceq [p3109-codec-018] : datum(F, fin(0)) = true if validFormat(F) /\\ internalFormat(F) [metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\"] .\n"
+    },
+    {
+      "line": 39,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-codec-019",
+        "lhs": "datum(F, fin(R))",
+        "rhs": "candidateDatum(F, abs(R), magnitudeCode(F, abs(R)))",
+        "condition": "validFormat(F) /\\ internalFormat(F) /\\ R =/= 0 /\\ (R > 0 or SignednessOf(F) == Signed)",
+        "attributes": "metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\""
+      },
+      "text": "  ceq [p3109-codec-019] : datum(F, fin(R)) = candidateDatum(F, abs(R), magnitudeCode(F, abs(R))) if validFormat(F) /\\ internalFormat(F) /\\ R =/= 0 /\\ (R > 0 or SignednessOf(F) == Signed) [metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\"] .\n"
+    },
+    {
+      "line": 40,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-codec-020",
+        "lhs": "magnitudeCode(F, R)",
+        "rhs": "floor(R * pow2((PrecisionOf(F) - 1) - E)) + (if E == (1 - ExponentBiasOf(F)) and R < pow2(E) then 0 else ((E + ExponentBiasOf(F)) - 1) * (2 ^ (PrecisionOf(F) - 1)) fi)",
+        "condition": "R > 0 /\\ E := max(floorLog2(R), 1 - ExponentBiasOf(F))",
+        "attributes": "metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\""
+      },
+      "text": "  ceq [p3109-codec-020] : magnitudeCode(F, R) = floor(R * pow2((PrecisionOf(F) - 1) - E)) + (if E == (1 - ExponentBiasOf(F)) and R < pow2(E) then 0 else ((E + ExponentBiasOf(F)) - 1) * (2 ^ (PrecisionOf(F) - 1)) fi) if R > 0 /\\ E := max(floorLog2(R), 1 - ExponentBiasOf(F)) [metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\"] .\n"
+    },
+    {
+      "line": 41,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-codec-021",
+        "lhs": "candidateDatum(F, R, C)",
+        "rhs": "false",
+        "condition": "C < 0 or C > positiveLimit(F) or (DomainOf(F) == Extended and C == positiveLimit(F))",
+        "attributes": "metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\""
+      },
+      "text": "  ceq [p3109-codec-021] : candidateDatum(F, R, C) = false if C < 0 or C > positiveLimit(F) or (DomainOf(F) == Extended and C == positiveLimit(F)) [metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\"] .\n"
+    },
+    {
+      "line": 42,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-codec-022",
+        "lhs": "candidateDatum(F, R, C)",
+        "rhs": "xEq(decode(F, C), fin(R))",
+        "condition": "C >= 0 /\\ C <= positiveLimit(F) /\\ (DomainOf(F) == Finite or C < positiveLimit(F))",
+        "attributes": "metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\""
+      },
+      "text": "  ceq [p3109-codec-022] : candidateDatum(F, R, C) = xEq(decode(F, C), fin(R)) if C >= 0 /\\ C <= positiveLimit(F) /\\ (DomainOf(F) == Finite or C < positiveLimit(F)) [metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\"] .\n"
+    },
+    {
+      "line": 43,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-codec-023",
+        "lhs": "encode(F, X)",
+        "rhs": "externalEncode(F, X)",
+        "condition": "validFormat(F) /\\ not internalFormat(F) /\\ datum(F, X)",
+        "attributes": "metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\""
+      },
+      "text": "  ceq [p3109-codec-023] : encode(F, X) = externalEncode(F, X) if validFormat(F) /\\ not internalFormat(F) /\\ datum(F, X) [metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\"] .\n"
+    },
+    {
+      "line": 44,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-codec-024",
+        "lhs": "encode(F, nan)",
+        "rhs": "nanCode(F)",
+        "condition": "validFormat(F) /\\ internalFormat(F)",
+        "attributes": "metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\""
+      },
+      "text": "  ceq [p3109-codec-024] : encode(F, nan) = nanCode(F) if validFormat(F) /\\ internalFormat(F) [metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\"] .\n"
+    },
+    {
+      "line": 45,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-codec-025",
+        "lhs": "encode(F, posInf)",
+        "rhs": "positiveLimit(F)",
+        "condition": "validFormat(F) /\\ internalFormat(F) /\\ datum(F, posInf)",
+        "attributes": "metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\""
+      },
+      "text": "  ceq [p3109-codec-025] : encode(F, posInf) = positiveLimit(F) if validFormat(F) /\\ internalFormat(F) /\\ datum(F, posInf) [metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\"] .\n"
+    },
+    {
+      "line": 46,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-codec-026",
+        "lhs": "encode(F, negInf)",
+        "rhs": "2 ^ BitwidthOf(F) - 1",
+        "condition": "validFormat(F) /\\ internalFormat(F) /\\ datum(F, negInf)",
+        "attributes": "metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\""
+      },
+      "text": "  ceq [p3109-codec-026] : encode(F, negInf) = 2 ^ BitwidthOf(F) - 1 if validFormat(F) /\\ internalFormat(F) /\\ datum(F, negInf) [metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\"] .\n"
+    },
+    {
+      "line": 47,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-codec-027",
+        "lhs": "encode(F, fin(0))",
+        "rhs": "0",
+        "condition": "validFormat(F) /\\ internalFormat(F)",
+        "attributes": "metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\""
+      },
+      "text": "  ceq [p3109-codec-027] : encode(F, fin(0)) = 0 if validFormat(F) /\\ internalFormat(F) [metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\"] .\n"
+    },
+    {
+      "line": 48,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-codec-028",
+        "lhs": "encode(F, fin(R))",
+        "rhs": "magnitudeCode(F, abs(R)) + (if R < 0 then 2 ^ (BitwidthOf(F) - 1) else 0 fi)",
+        "condition": "validFormat(F) /\\ internalFormat(F) /\\ R =/= 0 /\\ datum(F, fin(R))",
+        "attributes": "metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\""
+      },
+      "text": "  ceq [p3109-codec-028] : encode(F, fin(R)) = magnitudeCode(F, abs(R)) + (if R < 0 then 2 ^ (BitwidthOf(F) - 1) else 0 fi) if validFormat(F) /\\ internalFormat(F) /\\ R =/= 0 /\\ datum(F, fin(R)) [metadata \"clause=3.1; 4.7.2; 4.7.6; 4.8; page=16; 25; 30-31\"] .\n"
+    },
+    {
+      "line": 49,
+      "kind": "endfm",
+      "fields": {},
+      "text": "endfm\n"
+    }
+  ]
+}

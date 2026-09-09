@@ -1,0 +1,2764 @@
+version: 1
+path: lib/conformance.maude
+sha256: ffdf11d8a760b45dd95933ff2c3f5a0ce469dacf6e442af3af0bd3f4d1e93112
+type: maude
+records:
+- line: 1
+  kind: comment
+  fields: {}
+  text: |
+    --- Source: P3109/D1 4.4-4.6, printed page 21-24.
+- line: 2
+  kind: view
+  fields:
+    name: FormatElt
+    from: TRIV
+    to: P3109-FORMAT-CORE
+  text: |
+    view FormatElt from TRIV to P3109-FORMAT-CORE is
+- line: 3
+  kind: sort
+  fields:
+    names:
+    - Elt
+    - to
+    - Format
+  text: |2
+      sort Elt to Format .
+- line: 4
+  kind: endv
+  fields: {}
+  text: |
+    endv
+- line: 5
+  kind: fmod
+  fields:
+    name: P3109-CONFORMANCE-DATA
+    parameters: []
+  text: |
+    fmod P3109-CONFORMANCE-DATA is
+- line: 6
+  kind: including
+  fields:
+    expression: P3109-BLOCK-CORE
+  text: |2
+      including P3109-BLOCK-CORE .
+- line: 7
+  kind: comment
+  fields: {}
+  text: |2
+      --- Declaration identifiers are Strings by 4.6. STRING declares subsort
+- line: 8
+  kind: comment
+  fields: {}
+  text: |2
+      --- Nat < FindResult, so FindResult joins the numeric kind of this module and
+- line: 9
+  kind: comment
+  fields: {}
+  text: |2
+      --- of P3109-CORE, which includes it; every module below this one is clean.
+- line: 10
+  kind: protecting
+  fields:
+    expression: STRING
+  text: |2
+      protecting STRING .
+- line: 11
+  kind: including
+  fields:
+    expression: P3109-SEQUENCE{FormatElt} * (sort Seq{FormatElt} to FormatSeq, op nil to fnil, op cons
+      to fcons)
+  text: |2
+      including P3109-SEQUENCE{FormatElt} * (sort Seq{FormatElt} to FormatSeq, op nil to fnil, op cons to fcons) .
+- line: 12
+  kind: sorts
+  fields:
+    names:
+    - Specialization
+    - Kappa
+    - Observation
+    - Declaration
+    - Evidence
+    - KappaPart
+    - ArityEntry
+  text: |2
+      sorts Specialization Kappa Observation Declaration Evidence KappaPart ArityEntry .
+- line: 13
+  kind: op
+  fields:
+    names:
+    - entry
+    domain:
+    - String
+    - Nat
+    arrow: ->
+    range: ArityEntry
+    attributes: ctor
+  text: |2
+      op entry : String Nat -> ArityEntry [ctor] .
+- line: 14
+  kind: op
+  fields:
+    names:
+    - numeric
+    domain:
+    - String
+    - FormatSeq
+    - ProjSpec
+    arrow: ->
+    range: Specialization
+    attributes: ctor
+  text: |2
+      op numeric : String FormatSeq ProjSpec -> Specialization [ctor] .
+- line: 15
+  kind: op
+  fields:
+    names:
+    - plain
+    domain:
+    - String
+    - FormatSeq
+    arrow: ->
+    range: Specialization
+    attributes: ctor
+  text: |2
+      op plain : String FormatSeq -> Specialization [ctor] .
+- line: 16
+  kind: op
+  fields:
+    names:
+    - blockElements
+    domain:
+    - String
+    - Nat
+    - FormatSeq
+    - BlockProjSpec
+    arrow: ->
+    range: Specialization
+    attributes: ctor
+  text: |2
+      op blockElements : String Nat FormatSeq BlockProjSpec -> Specialization [ctor] .
+- line: 17
+  kind: op
+  fields:
+    names:
+    - blockReduction
+    domain:
+    - String
+    - Nat
+    - FormatSeq
+    - ProjSpec
+    arrow: ->
+    range: Specialization
+    attributes: ctor
+  text: |2
+      op blockReduction : String Nat FormatSeq ProjSpec -> Specialization [ctor] .
+- line: 18
+  kind: op
+  fields:
+    names:
+    - blockScale
+    domain:
+    - String
+    - Nat
+    - FormatSeq
+    - ProjSpec
+    - BlockProjSpec
+    arrow: ->
+    range: Specialization
+    attributes: ctor
+  text: |2
+      op blockScale : String Nat FormatSeq ProjSpec BlockProjSpec -> Specialization [ctor] .
+- line: 19
+  kind: op
+  fields:
+    names:
+    - steps
+    domain:
+    - Nat
+    arrow: ->
+    range: Kappa
+    attributes: ctor
+  text: |2
+      op steps : Nat -> Kappa [ctor] .
+- line: 20
+  kind: ops
+  fields:
+    names:
+    - kNaN
+    - kInfinity
+    domain: []
+    arrow: ->
+    range: Kappa
+    attributes: ctor
+  text: |2
+      ops kNaN kInfinity : -> Kappa [ctor] .
+- line: 21
+  kind: op
+  fields:
+    names:
+    - kappaPart
+    domain:
+    - CodeSeq
+    - Kappa
+    arrow: ->
+    range: KappaPart
+    attributes: ctor
+  text: |2
+      op kappaPart : CodeSeq Kappa -> KappaPart [ctor] .
+- line: 22
+  kind: op
+  fields:
+    names:
+    - observation
+    domain:
+    - String
+    - CodeSeq
+    - Format
+    - Int
+    - Int
+    arrow: ->
+    range: Observation
+    attributes: ctor
+  text: |2
+      op observation : String CodeSeq Format Int Int -> Observation [ctor] .
+- line: 23
+  kind: ops
+  fields:
+    names:
+    - pendingEvidence
+    - sampleEvidence
+    - exhaustiveEvidence
+    - proofEvidence
+    domain: []
+    arrow: ->
+    range: Evidence
+    attributes: ctor
+  text: |2
+      ops pendingEvidence sampleEvidence exhaustiveEvidence proofEvidence : -> Evidence [ctor] .
+- line: 24
+  kind: op
+  fields:
+    names:
+    - exact
+    domain:
+    - Specialization
+    - String
+    - Evidence
+    arrow: ->
+    range: Declaration
+    attributes: ctor
+  text: |2
+      op exact : Specialization String Evidence -> Declaration [ctor] .
+- line: 25
+  kind: op
+  fields:
+    names:
+    - approximate
+    domain:
+    - Specialization
+    - String
+    - Kappa
+    - Evidence
+    arrow: ->
+    range: Declaration
+    attributes: ctor
+  text: |2
+      op approximate : Specialization String Kappa Evidence -> Declaration [ctor] .
+- line: 26
+  kind: endfm
+  fields: {}
+  text: |
+    endfm
+- line: 27
+  kind: view
+  fields:
+    name: ArityEntryElt
+    from: TRIV
+    to: P3109-CONFORMANCE-DATA
+  text: |
+    view ArityEntryElt from TRIV to P3109-CONFORMANCE-DATA is
+- line: 28
+  kind: sort
+  fields:
+    names:
+    - Elt
+    - to
+    - ArityEntry
+  text: |2
+      sort Elt to ArityEntry .
+- line: 29
+  kind: endv
+  fields: {}
+  text: |
+    endv
+- line: 30
+  kind: view
+  fields:
+    name: ObservationElt
+    from: TRIV
+    to: P3109-CONFORMANCE-DATA
+  text: |
+    view ObservationElt from TRIV to P3109-CONFORMANCE-DATA is
+- line: 31
+  kind: sort
+  fields:
+    names:
+    - Elt
+    - to
+    - Observation
+  text: |2
+      sort Elt to Observation .
+- line: 32
+  kind: endv
+  fields: {}
+  text: |
+    endv
+- line: 33
+  kind: view
+  fields:
+    name: KappaPartElt
+    from: TRIV
+    to: P3109-CONFORMANCE-DATA
+  text: |
+    view KappaPartElt from TRIV to P3109-CONFORMANCE-DATA is
+- line: 34
+  kind: sort
+  fields:
+    names:
+    - Elt
+    - to
+    - KappaPart
+  text: |2
+      sort Elt to KappaPart .
+- line: 35
+  kind: endv
+  fields: {}
+  text: |
+    endv
+- line: 36
+  kind: view
+  fields:
+    name: CodeSeqElt
+    from: TRIV
+    to: P3109-BLOCK-CORE
+  text: |
+    view CodeSeqElt from TRIV to P3109-BLOCK-CORE is
+- line: 37
+  kind: sort
+  fields:
+    names:
+    - Elt
+    - to
+    - CodeSeq
+  text: |2
+      sort Elt to CodeSeq .
+- line: 38
+  kind: endv
+  fields: {}
+  text: |
+    endv
+- line: 39
+  kind: view
+  fields:
+    name: DeclarationElt
+    from: TRIV
+    to: P3109-CONFORMANCE-DATA
+  text: |
+    view DeclarationElt from TRIV to P3109-CONFORMANCE-DATA is
+- line: 40
+  kind: sort
+  fields:
+    names:
+    - Elt
+    - to
+    - Declaration
+  text: |2
+      sort Elt to Declaration .
+- line: 41
+  kind: endv
+  fields: {}
+  text: |
+    endv
+- line: 42
+  kind: view
+  fields:
+    name: SpecializationElt
+    from: TRIV
+    to: P3109-CONFORMANCE-DATA
+  text: |
+    view SpecializationElt from TRIV to P3109-CONFORMANCE-DATA is
+- line: 43
+  kind: sort
+  fields:
+    names:
+    - Elt
+    - to
+    - Specialization
+  text: |2
+      sort Elt to Specialization .
+- line: 44
+  kind: endv
+  fields: {}
+  text: |
+    endv
+- line: 45
+  kind: fmod
+  fields:
+    name: P3109-CONFORMANCE
+    parameters: []
+  text: |
+    fmod P3109-CONFORMANCE is
+- line: 46
+  kind: including
+  fields:
+    expression: P3109-SEQUENCE{KappaPartElt} * (sort Seq{KappaPartElt} to KappaPartSeq, op nil to knil,
+      op cons to kcons)
+  text: |2
+      including P3109-SEQUENCE{KappaPartElt} * (sort Seq{KappaPartElt} to KappaPartSeq, op nil to knil, op cons to kcons) .
+- line: 47
+  kind: op
+  fields:
+    names:
+    - partitioned
+    domain:
+    - Specialization
+    - String
+    - CodeSeq
+    - KappaPartSeq
+    - Evidence
+    arrow: ->
+    range: Declaration
+    attributes: ctor
+  text: |2
+      op partitioned : Specialization String CodeSeq KappaPartSeq Evidence -> Declaration [ctor] .
+- line: 48
+  kind: op
+  fields:
+    names:
+    - partRegions
+    domain:
+    - KappaPartSeq
+    arrow: ->
+    range: PartitionSeq
+    attributes: ''
+  text: |2
+      op partRegions : KappaPartSeq -> PartitionSeq .
+- line: 49
+  kind: op
+  fields:
+    names:
+    - partBound
+    domain:
+    - KappaPartSeq
+    arrow: ->
+    range: Kappa
+    attributes: ''
+  text: |2
+      op partBound : KappaPartSeq -> Kappa .
+- line: 50
+  kind: op
+  fields:
+    names:
+    - declarationKappa
+    domain:
+    - Declaration
+    arrow: ~>
+    range: Kappa
+    attributes: ''
+  text: |2
+      op declarationKappa : Declaration ~> Kappa .
+- line: 51
+  kind: including
+  fields:
+    expression: P3109-SEQUENCE{CodeSeqElt} * (sort Seq{CodeSeqElt} to PartitionSeq, op nil to pnil, op
+      cons to pcons)
+  text: |2
+      including P3109-SEQUENCE{CodeSeqElt} * (sort Seq{CodeSeqElt} to PartitionSeq, op nil to pnil, op cons to pcons) .
+- line: 52
+  kind: including
+  fields:
+    expression: P3109-SEQUENCE{DeclarationElt} * (sort Seq{DeclarationElt} to DeclarationSeq, op nil to
+      dnil, op cons to dcons)
+  text: |2
+      including P3109-SEQUENCE{DeclarationElt} * (sort Seq{DeclarationElt} to DeclarationSeq, op nil to dnil, op cons to dcons) .
+- line: 53
+  kind: including
+  fields:
+    expression: P3109-SEQUENCE{SpecializationElt} * (sort Seq{SpecializationElt} to SpecializationSeq,
+      op nil to snil, op cons to scons)
+  text: |2
+      including P3109-SEQUENCE{SpecializationElt} * (sort Seq{SpecializationElt} to SpecializationSeq, op nil to snil, op cons to scons) .
+- line: 54
+  kind: including
+  fields:
+    expression: P3109-CONFORMANCE-DATA
+  text: |2
+      including P3109-CONFORMANCE-DATA .
+- line: 55
+  kind: including
+  fields:
+    expression: P3109-PREDICATES
+  text: |2
+      including P3109-PREDICATES .
+- line: 56
+  kind: including
+  fields:
+    expression: P3109-SEQUENCE{ObservationElt} * (sort Seq{ObservationElt} to ObservationSeq, op nil to
+      onil, op cons to ocons)
+  text: |2
+      including P3109-SEQUENCE{ObservationElt} * (sort Seq{ObservationElt} to ObservationSeq, op nil to onil, op cons to ocons) .
+- line: 57
+  kind: ops
+  fields:
+    names:
+    - inF4
+    - inF8
+    - inFs
+    - allowedExternal
+    domain:
+    - Format
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      ops inF4 inF8 inFs allowedExternal : Format -> Bool .
+- line: 58
+  kind: op
+  fields:
+    names:
+    - containsFormat
+    domain:
+    - Format
+    - FormatSeq
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      op containsFormat : Format FormatSeq -> Bool .
+- line: 59
+  kind: op
+  fields:
+    names:
+    - validFX
+    domain:
+    - FormatSeq
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      op validFX : FormatSeq -> Bool .
+- line: 60
+  kind: op
+  fields:
+    names:
+    - validFXTail
+    domain:
+    - FormatSeq
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      op validFXTail : FormatSeq -> Bool .
+- line: 61
+  kind: op
+  fields:
+    names:
+    - allFormats
+    domain:
+    - FormatSeq
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      op allFormats : FormatSeq -> Bool .
+- line: 62
+  kind: op
+  fields:
+    names:
+    - required
+    domain:
+    - Specialization
+    - FormatSeq
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      op required : Specialization FormatSeq -> Bool .
+- line: 63
+  kind: ops
+  fields:
+    names:
+    - requiredNumeric
+    - requiredPlain
+    domain:
+    - String
+    - FormatSeq
+    - FormatSeq
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      ops requiredNumeric requiredPlain : String FormatSeq FormatSeq -> Bool .
+- line: 64
+  kind: ops
+  fields:
+    names:
+    - minmaxName
+    - compareName
+    - predicateName
+    - formatNameOp
+    domain:
+    - String
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      ops minmaxName compareName predicateName formatNameOp : String -> Bool .
+- line: 65
+  kind: op
+  fields:
+    names:
+    - specializationName
+    domain:
+    - Specialization
+    arrow: ->
+    range: String
+    attributes: ''
+  text: |2
+      op specializationName : Specialization -> String .
+- line: 66
+  kind: op
+  fields:
+    names:
+    - numericPlainName
+    domain:
+    - String
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      op numericPlainName : String -> Bool .
+- line: 67
+  kind: op
+  fields:
+    names:
+    - blockElementArity
+    domain:
+    - String
+    - Nat
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      op blockElementArity : String Nat -> Bool .
+- line: 68
+  kind: op
+  fields:
+    names:
+    - numericResult
+    domain:
+    - Specialization
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      op numericResult : Specialization -> Bool .
+- line: 69
+  kind: op
+  fields:
+    names:
+    - declaredIdentity
+    domain:
+    - Declaration
+    arrow: ->
+    range: Specialization
+    attributes: ''
+  text: |2
+      op declaredIdentity : Declaration -> Specialization .
+- line: 70
+  kind: op
+  fields:
+    names:
+    - hasDeclaration
+    domain:
+    - Specialization
+    - DeclarationSeq
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      op hasDeclaration : Specialization DeclarationSeq -> Bool .
+- line: 71
+  kind: op
+  fields:
+    names:
+    - declarationsCover
+    domain:
+    - SpecializationSeq
+    - DeclarationSeq
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      op declarationsCover : SpecializationSeq DeclarationSeq -> Bool .
+- line: 72
+  kind: op
+  fields:
+    names:
+    - partition
+    domain:
+    - CodeSeq
+    - PartitionSeq
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      op partition : CodeSeq PartitionSeq -> Bool .
+- line: 73
+  kind: op
+  fields:
+    names:
+    - partitionUnion
+    domain:
+    - PartitionSeq
+    arrow: ->
+    range: CodeSeq
+    attributes: ''
+  text: |2
+      op partitionUnion : PartitionSeq -> CodeSeq .
+- line: 74
+  kind: op
+  fields:
+    names:
+    - partitionDisjoint
+    domain:
+    - PartitionSeq
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      op partitionDisjoint : PartitionSeq -> Bool .
+- line: 75
+  kind: op
+  fields:
+    names:
+    - validSpecialization
+    domain:
+    - Specialization
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      op validSpecialization : Specialization -> Bool .
+- line: 76
+  kind: op
+  fields:
+    names:
+    - numericArity
+    domain:
+    - String
+    - Nat
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      op numericArity : String Nat -> Bool .
+- line: 77
+  kind: op
+  fields:
+    names:
+    - plainArity
+    domain:
+    - String
+    - Nat
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      op plainArity : String Nat -> Bool .
+- line: 78
+  kind: op
+  fields:
+    names:
+    - wellFormedDeclaration
+    domain:
+    - Declaration
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      op wellFormedDeclaration : Declaration -> Bool .
+- line: 79
+  kind: op
+  fields:
+    names:
+    - evidenceComplete
+    domain:
+    - Evidence
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      op evidenceComplete : Evidence -> Bool .
+- line: 80
+  kind: op
+  fields:
+    names:
+    - finiteRank
+    domain:
+    - Format
+    - Int
+    arrow: ~>
+    range: Nat
+    attributes: ''
+  text: |2
+      op finiteRank : Format Int ~> Nat .
+- line: 81
+  kind: op
+  fields:
+    names:
+    - observationKappa
+    domain:
+    - Observation
+    arrow: ~>
+    range: Kappa
+    attributes: ''
+  text: |2
+      op observationKappa : Observation ~> Kappa .
+- line: 82
+  kind: op
+  fields:
+    names:
+    - batchKappa
+    domain:
+    - ObservationSeq
+    arrow: ~>
+    range: Kappa
+    attributes: ''
+  text: |2
+      op batchKappa : ObservationSeq ~> Kappa .
+- line: 83
+  kind: op
+  fields:
+    names:
+    - mergeKappa
+    domain:
+    - Kappa
+    - Kappa
+    arrow: ->
+    range: Kappa
+    attributes: ''
+  text: |2
+      op mergeKappa : Kappa Kappa -> Kappa .
+- line: 84
+  kind: op
+  fields:
+    names:
+    - memberCode
+    domain:
+    - Int
+    - CodeSeq
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      op memberCode : Int CodeSeq -> Bool .
+- line: 85
+  kind: op
+  fields:
+    names:
+    - disjointCodes
+    domain:
+    - CodeSeq
+    - CodeSeq
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      op disjointCodes : CodeSeq CodeSeq -> Bool .
+- line: 86
+  kind: op
+  fields:
+    names:
+    - uniqueCodes
+    domain:
+    - CodeSeq
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      op uniqueCodes : CodeSeq -> Bool .
+- line: 87
+  kind: op
+  fields:
+    names:
+    - appendCodes
+    domain:
+    - CodeSeq
+    - CodeSeq
+    arrow: ->
+    range: CodeSeq
+    attributes: ''
+  text: |2
+      op appendCodes : CodeSeq CodeSeq -> CodeSeq .
+- line: 88
+  kind: op
+  fields:
+    names:
+    - subsetCodes
+    domain:
+    - CodeSeq
+    - CodeSeq
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      op subsetCodes : CodeSeq CodeSeq -> Bool .
+- line: 89
+  kind: op
+  fields:
+    names:
+    - partition2
+    domain:
+    - CodeSeq
+    - CodeSeq
+    - CodeSeq
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      op partition2 : CodeSeq CodeSeq CodeSeq -> Bool .
+- line: 90
+  kind: including
+  fields:
+    expression: P3109-SEQUENCE{ArityEntryElt} * (sort Seq{ArityEntryElt} to ArityTable, op nil to anil,
+      op cons to acons)
+  text: |2
+      including P3109-SEQUENCE{ArityEntryElt} * (sort Seq{ArityEntryElt} to ArityTable, op nil to anil, op cons to acons) .
+- line: 91
+  kind: ops
+  fields:
+    names:
+    - numericArityTable
+    - plainArityTable
+    - blockElementArityTable
+    domain: []
+    arrow: ->
+    range: ArityTable
+    attributes: ''
+  text: |2
+      ops numericArityTable plainArityTable blockElementArityTable : -> ArityTable .
+- line: 92
+  kind: op
+  fields:
+    names:
+    - inArityTable
+    domain:
+    - String
+    - Nat
+    - ArityTable
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      op inArityTable : String Nat ArityTable -> Bool .
+- line: 93
+  kind: vars
+  fields:
+    names:
+    - F
+    - G
+    - H
+    - J
+    - L
+    sort: Format
+  text: |2
+      vars F G H J L : Format .
+- line: 94
+  kind: vars
+  fields:
+    names:
+    - FS
+    - FX
+    sort: FormatSeq
+  text: |2
+      vars FS FX : FormatSeq .
+- line: 95
+  kind: vars
+  fields:
+    names:
+    - N
+    - NAME
+    sort: String
+  text: |2
+      vars N NAME : String .
+- line: 96
+  kind: vars
+  fields:
+    names:
+    - S
+    - T
+    sort: Specialization
+  text: |2
+      vars S T : Specialization .
+- line: 97
+  kind: var
+  fields:
+    names:
+    - PS
+    sort: ProjSpec
+  text: |2
+      var PS : ProjSpec .
+- line: 98
+  kind: vars
+  fields:
+    names:
+    - C
+    - D
+    sort: Int
+  text: |2
+      vars C D : Int .
+- line: 99
+  kind: vars
+  fields:
+    names:
+    - A
+    - B
+    sort: Nat
+  text: |2
+      vars A B : Nat .
+- line: 100
+  kind: var
+  fields:
+    names:
+    - AT
+    sort: ArityTable
+  text: |2
+      var AT : ArityTable .
+- line: 101
+  kind: vars
+  fields:
+    names:
+    - CS
+    - DS
+    - ES
+    sort: CodeSeq
+  text: |2
+      vars CS DS ES : CodeSeq .
+- line: 102
+  kind: vars
+  fields:
+    names:
+    - K
+    - Q
+    sort: Kappa
+  text: |2
+      vars K Q : Kappa .
+- line: 103
+  kind: var
+  fields:
+    names:
+    - O
+    sort: Observation
+  text: |2
+      var O : Observation .
+- line: 104
+  kind: var
+  fields:
+    names:
+    - OS
+    sort: ObservationSeq
+  text: |2
+      var OS : ObservationSeq .
+- line: 105
+  kind: var
+  fields:
+    names:
+    - E
+    sort: Evidence
+  text: |2
+      var E : Evidence .
+- line: 106
+  kind: var
+  fields:
+    names:
+    - BP
+    sort: BlockProjSpec
+  text: |2
+      var BP : BlockProjSpec .
+- line: 107
+  kind: var
+  fields:
+    names:
+    - PARTS
+    sort: PartitionSeq
+  text: |2
+      var PARTS : PartitionSeq .
+- line: 108
+  kind: var
+  fields:
+    names:
+    - KP
+    sort: KappaPartSeq
+  text: |2
+      var KP : KappaPartSeq .
+- line: 109
+  kind: var
+  fields:
+    names:
+    - DEC
+    sort: Declaration
+  text: |2
+      var DEC : Declaration .
+- line: 110
+  kind: var
+  fields:
+    names:
+    - DECS
+    sort: DeclarationSeq
+  text: |2
+      var DECS : DeclarationSeq .
+- line: 111
+  kind: var
+  fields:
+    names:
+    - SPECS
+    sort: SpecializationSeq
+  text: |2
+      var SPECS : SpecializationSeq .
+- line: 112
+  kind: eq
+  fields:
+    label: p3109-arity-table-nil
+    lhs: inArityTable(N, A, anil)
+    rhs: 'false'
+    condition: null
+    attributes: metadata "clause=4.3; page=19-20"
+  text: |2
+      eq [p3109-arity-table-nil] :
+        inArityTable(N, A, anil)
+        = false
+        [metadata "clause=4.3; page=19-20"] .
+- line: 116
+  kind: eq
+  fields:
+    label: p3109-arity-table-cons
+    lhs: inArityTable(N, A, acons(entry(NAME, B), AT))
+    rhs: (N == NAME and A == B) or inArityTable(N, A, AT)
+    condition: null
+    attributes: metadata "clause=4.3; page=19-20"
+  text: |2
+      eq [p3109-arity-table-cons] :
+        inArityTable(N, A, acons(entry(NAME, B), AT))
+        = (N == NAME and A == B) or inArityTable(N, A, AT)
+        [metadata "clause=4.3; page=19-20"] .
+- line: 120
+  kind: eq
+  fields:
+    label: p3109-conformance-001
+    lhs: inF4(F)
+    rhs: (F == Binary(4, 2, Signed, Finite))
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-001] :
+        inF4(F)
+        = (F == Binary(4, 2, Signed, Finite))
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 124
+  kind: eq
+  fields:
+    label: p3109-conformance-002
+    lhs: inF8(F)
+    rhs: (F == Binary(8, 4, Signed, Extended) or F == Binary(8, 3, Signed, Extended))
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-002] :
+        inF8(F)
+        = (F == Binary(8, 4, Signed, Extended) or F == Binary(8, 3, Signed, Extended))
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 128
+  kind: eq
+  fields:
+    label: p3109-conformance-003
+    lhs: inFs(F)
+    rhs: (F == Binary(8, 1, Unsigned, Finite))
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-003] :
+        inFs(F)
+        = (F == Binary(8, 1, Unsigned, Finite))
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 132
+  kind: eq
+  fields:
+    label: p3109-conformance-004
+    lhs: allowedExternal(F)
+    rhs: (F == binary32 or F == binary16 or F == BFloat16)
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-004] :
+        allowedExternal(F)
+        = (F == binary32 or F == binary16 or F == BFloat16)
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 136
+  kind: eq
+  fields:
+    label: p3109-conformance-005
+    lhs: containsFormat(F, fnil)
+    rhs: 'false'
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-005] :
+        containsFormat(F, fnil)
+        = false
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 140
+  kind: eq
+  fields:
+    label: p3109-conformance-006
+    lhs: containsFormat(F, fcons(G, FS))
+    rhs: (F == G or containsFormat(F, FS))
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-006] :
+        containsFormat(F, fcons(G, FS))
+        = (F == G or containsFormat(F, FS))
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 144
+  kind: eq
+  fields:
+    label: p3109-conformance-007
+    lhs: validFX(fnil)
+    rhs: 'false'
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-007] :
+        validFX(fnil)
+        = false
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 148
+  kind: eq
+  fields:
+    label: p3109-conformance-008
+    lhs: validFX(fcons(F, FS))
+    rhs: allowedExternal(F) and not containsFormat(F, FS) and validFXTail(FS)
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-008] :
+        validFX(fcons(F, FS))
+        = allowedExternal(F) and not containsFormat(F, FS) and validFXTail(FS)
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 152
+  kind: eq
+  fields:
+    label: p3109-conformance-009
+    lhs: validFXTail(fnil)
+    rhs: 'true'
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-009] :
+        validFXTail(fnil)
+        = true
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 156
+  kind: eq
+  fields:
+    label: p3109-conformance-010
+    lhs: validFXTail(fcons(F, FS))
+    rhs: allowedExternal(F) and not containsFormat(F, FS) and validFXTail(FS)
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-010] :
+        validFXTail(fcons(F, FS))
+        = allowedExternal(F) and not containsFormat(F, FS) and validFXTail(FS)
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 160
+  kind: eq
+  fields:
+    label: p3109-conformance-011
+    lhs: allFormats(fnil)
+    rhs: 'true'
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-011] :
+        allFormats(fnil)
+        = true
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 164
+  kind: eq
+  fields:
+    label: p3109-conformance-012
+    lhs: allFormats(fcons(F, FS))
+    rhs: validFormat(F) and allFormats(FS)
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-012] :
+        allFormats(fcons(F, FS))
+        = validFormat(F) and allFormats(FS)
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 168
+  kind: eq
+  fields:
+    label: p3109-conformance-013
+    lhs: required(numeric(N, FS, PS), FX)
+    rhs: validFX(FX) and (PS == proj(NearestTiesToEven, SatNone)) and requiredNumeric(N, FS, FX)
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-013] :
+        required(numeric(N, FS, PS), FX)
+        = validFX(FX) and (PS == proj(NearestTiesToEven, SatNone)) and requiredNumeric(N, FS, FX)
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 172
+  kind: eq
+  fields:
+    label: p3109-conformance-014
+    lhs: required(plain(N, FS), FX)
+    rhs: validFX(FX) and requiredPlain(N, FS, FX)
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-014] :
+        required(plain(N, FS), FX)
+        = validFX(FX) and requiredPlain(N, FS, FX)
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 176
+  kind: eq
+  fields:
+    label: p3109-conformance-015
+    lhs: requiredNumeric(N, fcons(F, fcons(G, fnil)), FX)
+    rhs: (((N == "Convert" or N == "Recip") and (inF4(F) or inF8(F) or containsFormat(F, FX)) and (inF4(G)
+      or inF8(G) or containsFormat(G, FX))) or ((N == "Abs" or N == "Negate") and F == G and (inF4(F)
+      or inF8(F))))
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-015] :
+        requiredNumeric(N, fcons(F, fcons(G, fnil)), FX)
+        = (((N == "Convert" or N == "Recip") and (inF4(F) or inF8(F) or containsFormat(F, FX)) and
+        (inF4(G) or inF8(G) or containsFormat(G, FX))) or ((N == "Abs" or N == "Negate") and F == G and
+        (inF4(F) or inF8(F))))
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 182
+  kind: eq
+  fields:
+    label: p3109-conformance-016
+    lhs: requiredNumeric(N, fcons(F, fcons(G, fcons(H, fnil))), FX)
+    rhs: (((N == "Add" or N == "Subtract" or N == "Multiply") and (inF4(F) or inF8(F)) and (inF4(G) or
+      inF8(G)) and (inF8(H) or containsFormat(H, FX))) or (minmaxName(N) and F == G and G == H and (inF4(F)
+      or inF8(F))))
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-016] :
+        requiredNumeric(N, fcons(F, fcons(G, fcons(H, fnil))), FX)
+        = (((N == "Add" or N == "Subtract" or N == "Multiply") and (inF4(F) or inF8(F)) and (inF4(G) or
+        inF8(G)) and (inF8(H) or containsFormat(H, FX))) or (minmaxName(N) and F == G and G == H and
+        (inF4(F) or inF8(F))))
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 188
+  kind: eq
+  fields:
+    label: p3109-conformance-017
+    lhs: requiredNumeric(N, fcons(F, fcons(G, fcons(H, fcons(J, fnil)))), FX)
+    rhs: ((N == "FMA" or N == "FAA") and (inF4(F) or inF8(F)) and (inF4(G) or inF8(G)) and H == J and
+      containsFormat(H, FX))
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-017] :
+        requiredNumeric(N, fcons(F, fcons(G, fcons(H, fcons(J, fnil)))), FX)
+        = ((N == "FMA" or N == "FAA") and (inF4(F) or inF8(F)) and (inF4(G) or inF8(G)) and H == J and
+        containsFormat(H, FX))
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 193
+  kind: eq
+  fields:
+    label: p3109-conformance-018
+    lhs: requiredNumeric(N, fcons(F, fcons(G, fcons(H, fcons(J, fcons(L, fnil))))), FX)
+    rhs: ((N == "ScaledAdd" or N == "ScaledSubtract" or N == "ScaledMultiply") and inFs(F) and F == H
+      and (inF4(G) or inF8(G)) and (inF4(J) or inF8(J)) and (inF8(L) or containsFormat(L, FX)))
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-018] :
+        requiredNumeric(N, fcons(F, fcons(G, fcons(H, fcons(J, fcons(L, fnil))))), FX)
+        = ((N == "ScaledAdd" or N == "ScaledSubtract" or N == "ScaledMultiply") and inFs(F) and F == H
+        and (inF4(G) or inF8(G)) and (inF4(J) or inF8(J)) and (inF8(L) or containsFormat(L, FX)))
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 198
+  kind: ceq
+  fields:
+    label: p3109-conformance-019
+    lhs: requiredNumeric(N, FS, FX)
+    rhs: 'false'
+    condition: length(FS) < 2 or length(FS) > 5
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      ceq [p3109-conformance-019] :
+        requiredNumeric(N, FS, FX)
+        = false
+        if length(FS) < 2 or length(FS) > 5
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 203
+  kind: eq
+  fields:
+    label: p3109-conformance-020
+    lhs: requiredPlain(N, fcons(F, fnil), FX)
+    rhs: ((predicateName(N) and (inF4(F) or inF8(F))) or (formatNameOp(N) and (inF4(F) or inF8(F) or containsFormat(F,
+      FX))))
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-020] :
+        requiredPlain(N, fcons(F, fnil), FX)
+        = ((predicateName(N) and (inF4(F) or inF8(F))) or (formatNameOp(N) and (inF4(F) or inF8(F) or
+        containsFormat(F, FX))))
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 208
+  kind: eq
+  fields:
+    label: p3109-conformance-021
+    lhs: requiredPlain(N, fcons(F, fcons(G, fnil)), FX)
+    rhs: (compareName(N) and F == G and (inF4(F) or inF8(F)))
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-021] :
+        requiredPlain(N, fcons(F, fcons(G, fnil)), FX)
+        = (compareName(N) and F == G and (inF4(F) or inF8(F)))
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 212
+  kind: ceq
+  fields:
+    label: p3109-conformance-022
+    lhs: requiredPlain(N, FS, FX)
+    rhs: 'false'
+    condition: length(FS) < 1 or length(FS) > 2
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      ceq [p3109-conformance-022] :
+        requiredPlain(N, FS, FX)
+        = false
+        if length(FS) < 1 or length(FS) > 2
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 217
+  kind: eq
+  fields:
+    label: p3109-conformance-023
+    lhs: minmaxName(N)
+    rhs: (N == "Minimum" or N == "Maximum" or N == "MinimumNumber" or N == "MaximumNumber" or N == "MinimumMagnitude"
+      or N == "MaximumMagnitude" or N == "MinimumMagnitudeNumber" or N == "MaximumMagnitudeNumber" or
+      N == "MinimumFinite" or N == "MaximumFinite")
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-023] :
+        minmaxName(N)
+        = (N == "Minimum" or N == "Maximum" or N == "MinimumNumber" or N == "MaximumNumber" or N ==
+        "MinimumMagnitude" or N == "MaximumMagnitude" or N == "MinimumMagnitudeNumber" or N ==
+        "MaximumMagnitudeNumber" or N == "MinimumFinite" or N == "MaximumFinite")
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 223
+  kind: eq
+  fields:
+    label: p3109-conformance-024
+    lhs: compareName(N)
+    rhs: (N == "CompareLess" or N == "CompareLessEqual" or N == "CompareEqual" or N == "CompareGreater"
+      or N == "CompareGreaterEqual")
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-024] :
+        compareName(N)
+        = (N == "CompareLess" or N == "CompareLessEqual" or N == "CompareEqual" or N == "CompareGreater"
+        or N == "CompareGreaterEqual")
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 228
+  kind: eq
+  fields:
+    label: p3109-conformance-025
+    lhs: predicateName(N)
+    rhs: (N == "IsZero" or N == "IsOne" or N == "IsNaN" or N == "IsInfinite" or N == "IsFinite" or N ==
+      "IsSignMinus" or N == "IsNormal" or N == "IsSubnormal" or N == "NextGreaterThan" or N == "NextLessThan")
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-025] :
+        predicateName(N)
+        = (N == "IsZero" or N == "IsOne" or N == "IsNaN" or N == "IsInfinite" or N == "IsFinite" or N ==
+        "IsSignMinus" or N == "IsNormal" or N == "IsSubnormal" or N == "NextGreaterThan" or N ==
+        "NextLessThan")
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 234
+  kind: eq
+  fields:
+    label: p3109-conformance-026
+    lhs: formatNameOp(N)
+    rhs: (N == "BitwidthOf" or N == "PrecisionOf" or N == "SignednessOf" or N == "DomainOf" or N == "ExponentBitwidthOf"
+      or N == "TrailingSignificandBitwidthOf" or N == "ExponentBiasOf" or N == "MaxFiniteOf" or N == "MinFiniteOf"
+      or N == "MinPositiveOf" or N == "MaxSubnormalOf" or N == "MinNormalOf")
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-026] :
+        formatNameOp(N)
+        = (N == "BitwidthOf" or N == "PrecisionOf" or N == "SignednessOf" or N == "DomainOf" or N ==
+        "ExponentBitwidthOf" or N == "TrailingSignificandBitwidthOf" or N == "ExponentBiasOf" or N ==
+        "MaxFiniteOf" or N == "MinFiniteOf" or N == "MinPositiveOf" or N == "MaxSubnormalOf" or N ==
+        "MinNormalOf")
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 241
+  kind: eq
+  fields:
+    label: p3109-conformance-027
+    lhs: specializationName(numeric(N, FS, PS))
+    rhs: N
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-027] :
+        specializationName(numeric(N, FS, PS))
+        = N
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 245
+  kind: eq
+  fields:
+    label: p3109-conformance-028
+    lhs: specializationName(plain(N, FS))
+    rhs: N
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-028] :
+        specializationName(plain(N, FS))
+        = N
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 249
+  kind: eq
+  fields:
+    label: p3109-conformance-033
+    lhs: evidenceComplete(pendingEvidence)
+    rhs: 'false'
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-033] :
+        evidenceComplete(pendingEvidence)
+        = false
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 253
+  kind: eq
+  fields:
+    label: p3109-conformance-034
+    lhs: evidenceComplete(sampleEvidence)
+    rhs: 'false'
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-034] :
+        evidenceComplete(sampleEvidence)
+        = false
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 257
+  kind: eq
+  fields:
+    label: p3109-conformance-035
+    lhs: evidenceComplete(exhaustiveEvidence)
+    rhs: 'true'
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-035] :
+        evidenceComplete(exhaustiveEvidence)
+        = true
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 261
+  kind: eq
+  fields:
+    label: p3109-conformance-036
+    lhs: evidenceComplete(proofEvidence)
+    rhs: 'true'
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-036] :
+        evidenceComplete(proofEvidence)
+        = true
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 265
+  kind: ceq
+  fields:
+    label: p3109-conformance-037
+    lhs: finiteRank(F, C)
+    rhs: C
+    condition: validCode(F, C) /\ internalFormat(F) /\ IsFinite(F, C) /\ SignednessOf(F) == Unsigned
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      ceq [p3109-conformance-037] :
+        finiteRank(F, C)
+        = C
+        if validCode(F, C) /\ internalFormat(F) /\ IsFinite(F, C) /\ SignednessOf(F) == Unsigned
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 270
+  kind: ceq
+  fields:
+    label: p3109-conformance-038
+    lhs: finiteRank(F, C)
+    rhs: MaxFiniteOf(F) + C
+    condition: validCode(F, C) /\ internalFormat(F) /\ IsFinite(F, C) /\ SignednessOf(F) == Signed /\
+      not IsSignMinus(F, C)
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      ceq [p3109-conformance-038] :
+        finiteRank(F, C)
+        = MaxFiniteOf(F) + C
+        if validCode(F, C) /\ internalFormat(F) /\ IsFinite(F, C) /\ SignednessOf(F) == Signed /\ not
+        IsSignMinus(F, C)
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 276
+  kind: ceq
+  fields:
+    label: p3109-conformance-039
+    lhs: finiteRank(F, C)
+    rhs: MinFiniteOf(F) - C
+    condition: validCode(F, C) /\ internalFormat(F) /\ IsFinite(F, C) /\ IsSignMinus(F, C)
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      ceq [p3109-conformance-039] :
+        finiteRank(F, C)
+        = MinFiniteOf(F) - C
+        if validCode(F, C) /\ internalFormat(F) /\ IsFinite(F, C) /\ IsSignMinus(F, C)
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 281
+  kind: ceq
+  fields:
+    label: p3109-conformance-040
+    lhs: observationKappa(observation(N, CS, F, C, D))
+    rhs: kNaN
+    condition: validCode(F, C) /\ validCode(F, D) /\ IsNaN(F, C) =/= IsNaN(F, D)
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      ceq [p3109-conformance-040] :
+        observationKappa(observation(N, CS, F, C, D))
+        = kNaN
+        if validCode(F, C) /\ validCode(F, D) /\ IsNaN(F, C) =/= IsNaN(F, D)
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 286
+  kind: ceq
+  fields:
+    label: p3109-conformance-041
+    lhs: observationKappa(observation(N, CS, F, C, D))
+    rhs: steps(0)
+    condition: validCode(F, C) /\ validCode(F, D) /\ IsNaN(F, C) /\ IsNaN(F, D)
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      ceq [p3109-conformance-041] :
+        observationKappa(observation(N, CS, F, C, D))
+        = steps(0)
+        if validCode(F, C) /\ validCode(F, D) /\ IsNaN(F, C) /\ IsNaN(F, D)
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 291
+  kind: ceq
+  fields:
+    label: p3109-conformance-042
+    lhs: observationKappa(observation(N, CS, F, C, D))
+    rhs: steps(0)
+    condition: validCode(F, C) /\ validCode(F, D) /\ IsInfinite(F, C) /\ IsInfinite(F, D) /\ IsSignMinus(F,
+      C) == IsSignMinus(F, D)
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      ceq [p3109-conformance-042] :
+        observationKappa(observation(N, CS, F, C, D))
+        = steps(0)
+        if validCode(F, C) /\ validCode(F, D) /\ IsInfinite(F, C) /\ IsInfinite(F, D) /\ IsSignMinus(F,
+        C) == IsSignMinus(F, D)
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 297
+  kind: ceq
+  fields:
+    label: p3109-conformance-043
+    lhs: observationKappa(observation(N, CS, F, C, D))
+    rhs: kInfinity
+    condition: validCode(F, C) /\ validCode(F, D) /\ not IsNaN(F, C) /\ not IsNaN(F, D) /\ (IsInfinite(F,
+      C) or IsInfinite(F, D)) /\ not (IsInfinite(F, C) and IsInfinite(F, D) and IsSignMinus(F, C) == IsSignMinus(F,
+      D))
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      ceq [p3109-conformance-043] :
+        observationKappa(observation(N, CS, F, C, D))
+        = kInfinity
+        if validCode(F, C) /\ validCode(F, D) /\ not IsNaN(F, C) /\ not IsNaN(F, D) /\ (IsInfinite(F, C)
+        or IsInfinite(F, D)) /\ not (IsInfinite(F, C) and IsInfinite(F, D) and IsSignMinus(F, C) ==
+        IsSignMinus(F, D))
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 304
+  kind: ceq
+  fields:
+    label: p3109-conformance-044
+    lhs: observationKappa(observation(N, CS, F, C, D))
+    rhs: steps(abs(finiteRank(F, C) - finiteRank(F, D)))
+    condition: validCode(F, C) /\ validCode(F, D) /\ IsFinite(F, C) /\ IsFinite(F, D)
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      ceq [p3109-conformance-044] :
+        observationKappa(observation(N, CS, F, C, D))
+        = steps(abs(finiteRank(F, C) - finiteRank(F, D)))
+        if validCode(F, C) /\ validCode(F, D) /\ IsFinite(F, C) /\ IsFinite(F, D)
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 309
+  kind: eq
+  fields:
+    label: p3109-conformance-045
+    lhs: batchKappa(onil)
+    rhs: steps(0)
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-045] :
+        batchKappa(onil)
+        = steps(0)
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 313
+  kind: eq
+  fields:
+    label: p3109-conformance-046
+    lhs: batchKappa(ocons(O, OS))
+    rhs: mergeKappa(observationKappa(O), batchKappa(OS))
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-046] :
+        batchKappa(ocons(O, OS))
+        = mergeKappa(observationKappa(O), batchKappa(OS))
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 317
+  kind: eq
+  fields:
+    label: p3109-conformance-047
+    lhs: mergeKappa(kNaN, K)
+    rhs: kNaN
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-047] :
+        mergeKappa(kNaN, K)
+        = kNaN
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 321
+  kind: eq
+  fields:
+    label: p3109-conformance-048
+    lhs: mergeKappa(kInfinity, kNaN)
+    rhs: kNaN
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-048] :
+        mergeKappa(kInfinity, kNaN)
+        = kNaN
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 325
+  kind: eq
+  fields:
+    label: p3109-conformance-049
+    lhs: mergeKappa(steps(A), kNaN)
+    rhs: kNaN
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-049] :
+        mergeKappa(steps(A), kNaN)
+        = kNaN
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 329
+  kind: eq
+  fields:
+    label: p3109-conformance-050
+    lhs: mergeKappa(kInfinity, kInfinity)
+    rhs: kInfinity
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-050] :
+        mergeKappa(kInfinity, kInfinity)
+        = kInfinity
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 333
+  kind: eq
+  fields:
+    label: p3109-conformance-051
+    lhs: mergeKappa(kInfinity, steps(A))
+    rhs: kInfinity
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-051] :
+        mergeKappa(kInfinity, steps(A))
+        = kInfinity
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 337
+  kind: eq
+  fields:
+    label: p3109-conformance-052
+    lhs: mergeKappa(steps(A), kInfinity)
+    rhs: kInfinity
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-052] :
+        mergeKappa(steps(A), kInfinity)
+        = kInfinity
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 341
+  kind: eq
+  fields:
+    label: p3109-conformance-053
+    lhs: mergeKappa(steps(A), steps(B))
+    rhs: steps(max(A, B))
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-053] :
+        mergeKappa(steps(A), steps(B))
+        = steps(max(A, B))
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 345
+  kind: eq
+  fields:
+    label: p3109-conformance-054
+    lhs: memberCode(C, cnil)
+    rhs: 'false'
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-054] :
+        memberCode(C, cnil)
+        = false
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 349
+  kind: eq
+  fields:
+    label: p3109-conformance-055
+    lhs: memberCode(C, ccons(D, CS))
+    rhs: (C == D or memberCode(C, CS))
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-055] :
+        memberCode(C, ccons(D, CS))
+        = (C == D or memberCode(C, CS))
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 353
+  kind: eq
+  fields:
+    label: p3109-conformance-056
+    lhs: disjointCodes(cnil, CS)
+    rhs: 'true'
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-056] :
+        disjointCodes(cnil, CS)
+        = true
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 357
+  kind: eq
+  fields:
+    label: p3109-conformance-057
+    lhs: disjointCodes(ccons(C, CS), DS)
+    rhs: (not memberCode(C, DS) and disjointCodes(CS, DS))
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-057] :
+        disjointCodes(ccons(C, CS), DS)
+        = (not memberCode(C, DS) and disjointCodes(CS, DS))
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 361
+  kind: eq
+  fields:
+    label: p3109-conformance-058
+    lhs: uniqueCodes(cnil)
+    rhs: 'true'
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-058] :
+        uniqueCodes(cnil)
+        = true
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 365
+  kind: eq
+  fields:
+    label: p3109-conformance-059
+    lhs: uniqueCodes(ccons(C, CS))
+    rhs: (not memberCode(C, CS) and uniqueCodes(CS))
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-059] :
+        uniqueCodes(ccons(C, CS))
+        = (not memberCode(C, CS) and uniqueCodes(CS))
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 369
+  kind: eq
+  fields:
+    label: p3109-conformance-060
+    lhs: appendCodes(cnil, CS)
+    rhs: CS
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-060] :
+        appendCodes(cnil, CS)
+        = CS
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 373
+  kind: eq
+  fields:
+    label: p3109-conformance-061
+    lhs: appendCodes(ccons(C, CS), DS)
+    rhs: ccons(C, appendCodes(CS, DS))
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-061] :
+        appendCodes(ccons(C, CS), DS)
+        = ccons(C, appendCodes(CS, DS))
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 377
+  kind: eq
+  fields:
+    label: p3109-conformance-062
+    lhs: subsetCodes(cnil, CS)
+    rhs: 'true'
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-062] :
+        subsetCodes(cnil, CS)
+        = true
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 381
+  kind: eq
+  fields:
+    label: p3109-conformance-063
+    lhs: subsetCodes(ccons(C, CS), DS)
+    rhs: (memberCode(C, DS) and subsetCodes(CS, DS))
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-063] :
+        subsetCodes(ccons(C, CS), DS)
+        = (memberCode(C, DS) and subsetCodes(CS, DS))
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 385
+  kind: eq
+  fields:
+    label: p3109-conformance-064
+    lhs: partition2(CS, DS, ES)
+    rhs: partition(CS, pcons(DS, pcons(ES, pnil)))
+    condition: null
+    attributes: metadata "clause=4.4-4.6; page=21-24"
+  text: |2
+      eq [p3109-conformance-064] :
+        partition2(CS, DS, ES)
+        = partition(CS, pcons(DS, pcons(ES, pnil)))
+        [metadata "clause=4.4-4.6; page=21-24"] .
+- line: 389
+  kind: comment
+  fields: {}
+  text: |2
+      --- Name/arity admissibility as MEMBERSHIP in an explicit finite table, by
+- line: 390
+  kind: comment
+  fields: {}
+  text: |2
+      --- structural recursion over the table. Replaces an owise fallback: owise is
+- line: 391
+  kind: comment
+  fields: {}
+  text: |2
+      --- an execution strategy, not an equational axiom, and a translator or proof
+- line: 392
+  kind: comment
+  fields: {}
+  text: |2
+      --- tool that reads it as a plain equation derives true = false. The arity is
+- line: 393
+  kind: comment
+  fields: {}
+  text: |2
+      --- the count of format parameters in the specialization (4.3.1 Parameters).
+- line: 394
+  kind: comment
+  fields: {}
+  text: |2
+      --- BEGIN GENERATED numericArityTable
+- line: 395
+  kind: eq
+  fields:
+    label: p3109-decl-numeric-table
+    lhs: numericArityTable
+    rhs: acons(entry("Convert", 2), acons(entry("Abs", 2), acons(entry("Negate", 2), acons(entry("Sqrt",
+      2), acons(entry("Recip", 2), acons(entry("RSqrt", 2), acons(entry("Exp", 2), acons(entry("Exp2",
+      2), acons(entry("Log", 2), acons(entry("Log2", 2), acons(entry("LogOnePlus", 2), acons(entry("ExpMinusOne",
+      2), acons(entry("Sin", 2), acons(entry("Cos", 2), acons(entry("Tan", 2), acons(entry("ArcSin", 2),
+      acons(entry("ArcCos", 2), acons(entry("ArcTan", 2), acons(entry("Sinh", 2), acons(entry("Cosh",
+      2), acons(entry("Tanh", 2), acons(entry("ArcSinh", 2), acons(entry("ArcCosh", 2), acons(entry("ArcTanh",
+      2), acons(entry("SinPi", 2), acons(entry("CosPi", 2), acons(entry("TanPi", 2), acons(entry("ArcSinPi",
+      2), acons(entry("ArcCosPi", 2), acons(entry("ArcTanPi", 2), acons(entry("Softplus", 2), acons(entry("CopySign",
+      3), acons(entry("Add", 3), acons(entry("Subtract", 3), acons(entry("Multiply", 3), acons(entry("Divide",
+      3), acons(entry("Hypot", 3), acons(entry("ArcTan2", 3), acons(entry("ArcTan2Pi", 3), acons(entry("Minimum",
+      3), acons(entry("Maximum", 3), acons(entry("MinimumNumber", 3), acons(entry("MaximumNumber", 3),
+      acons(entry("MinimumMagnitude", 3), acons(entry("MaximumMagnitude", 3), acons(entry("MinimumMagnitudeNumber",
+      3), acons(entry("MaximumMagnitudeNumber", 3), acons(entry("MinimumFinite", 3), acons(entry("MaximumFinite",
+      3), acons(entry("ScaledConvert", 3), acons(entry("ScaledAbs", 3), acons(entry("ScaledNegate", 3),
+      acons(entry("ScaledSqrt", 3), acons(entry("ScaledRecip", 3), acons(entry("ScaledRSqrt", 3), acons(entry("ScaledExp",
+      3), acons(entry("ScaledExp2", 3), acons(entry("ScaledLog", 3), acons(entry("ScaledLog2", 3), acons(entry("ScaledLogOnePlus",
+      3), acons(entry("ScaledExpMinusOne", 3), acons(entry("ScaledSin", 3), acons(entry("ScaledCos", 3),
+      acons(entry("ScaledTan", 3), acons(entry("ScaledArcSin", 3), acons(entry("ScaledArcCos", 3), acons(entry("ScaledArcTan",
+      3), acons(entry("ScaledSinh", 3), acons(entry("ScaledCosh", 3), acons(entry("ScaledTanh", 3), acons(entry("ScaledArcSinh",
+      3), acons(entry("ScaledArcCosh", 3), acons(entry("ScaledArcTanh", 3), acons(entry("ScaledSinPi",
+      3), acons(entry("ScaledCosPi", 3), acons(entry("ScaledTanPi", 3), acons(entry("ScaledArcSinPi",
+      3), acons(entry("ScaledArcCosPi", 3), acons(entry("ScaledArcTanPi", 3), acons(entry("ScaledSoftplus",
+      3), acons(entry("FMA", 4), acons(entry("FAA", 4), acons(entry("Clamp", 4), acons(entry("ScaledCopySign",
+      5), acons(entry("ScaledAdd", 5), acons(entry("ScaledSubtract", 5), acons(entry("ScaledMultiply",
+      5), acons(entry("ScaledDivide", 5), acons(entry("ScaledHypot", 5), acons(entry("ScaledArcTan2",
+      5), acons(entry("ScaledArcTan2Pi", 5), acons(entry("ScaledMinimum", 5), acons(entry("ScaledMaximum",
+      5), acons(entry("ScaledMinimumNumber", 5), acons(entry("ScaledMaximumNumber", 5), acons(entry("ScaledMinimumMagnitude",
+      5), acons(entry("ScaledMaximumMagnitude", 5), acons(entry("ScaledMinimumMagnitudeNumber", 5), acons(entry("ScaledMaximumMagnitudeNumber",
+      5), acons(entry("ScaledMinimumFinite", 5), acons(entry("ScaledMaximumFinite", 5), acons(entry("ScaledFMA",
+      7), acons(entry("ScaledFAA", 7), acons(entry("ScaledClamp", 7), anil))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+    condition: null
+    attributes: metadata "clause=4.3; page=19-20; clause=5.8; page=70"
+  text: |2
+      eq [p3109-decl-numeric-table] :
+        numericArityTable
+        = acons(entry("Convert", 2), acons(entry("Abs", 2), acons(entry("Negate", 2),
+        acons(entry("Sqrt", 2), acons(entry("Recip", 2), acons(entry("RSqrt", 2), acons(entry("Exp", 2),
+        acons(entry("Exp2", 2), acons(entry("Log", 2), acons(entry("Log2", 2), acons(entry("LogOnePlus",
+        2), acons(entry("ExpMinusOne", 2), acons(entry("Sin", 2), acons(entry("Cos", 2),
+        acons(entry("Tan", 2), acons(entry("ArcSin", 2), acons(entry("ArcCos", 2), acons(entry("ArcTan",
+        2), acons(entry("Sinh", 2), acons(entry("Cosh", 2), acons(entry("Tanh", 2),
+        acons(entry("ArcSinh", 2), acons(entry("ArcCosh", 2), acons(entry("ArcTanh", 2),
+        acons(entry("SinPi", 2), acons(entry("CosPi", 2), acons(entry("TanPi", 2),
+        acons(entry("ArcSinPi", 2), acons(entry("ArcCosPi", 2), acons(entry("ArcTanPi", 2),
+        acons(entry("Softplus", 2), acons(entry("CopySign", 3), acons(entry("Add", 3),
+        acons(entry("Subtract", 3), acons(entry("Multiply", 3), acons(entry("Divide", 3),
+        acons(entry("Hypot", 3), acons(entry("ArcTan2", 3), acons(entry("ArcTan2Pi", 3),
+        acons(entry("Minimum", 3), acons(entry("Maximum", 3), acons(entry("MinimumNumber", 3),
+        acons(entry("MaximumNumber", 3), acons(entry("MinimumMagnitude", 3),
+        acons(entry("MaximumMagnitude", 3), acons(entry("MinimumMagnitudeNumber", 3),
+        acons(entry("MaximumMagnitudeNumber", 3), acons(entry("MinimumFinite", 3),
+        acons(entry("MaximumFinite", 3), acons(entry("ScaledConvert", 3), acons(entry("ScaledAbs", 3),
+        acons(entry("ScaledNegate", 3), acons(entry("ScaledSqrt", 3), acons(entry("ScaledRecip", 3),
+        acons(entry("ScaledRSqrt", 3), acons(entry("ScaledExp", 3), acons(entry("ScaledExp2", 3),
+        acons(entry("ScaledLog", 3), acons(entry("ScaledLog2", 3), acons(entry("ScaledLogOnePlus", 3),
+        acons(entry("ScaledExpMinusOne", 3), acons(entry("ScaledSin", 3), acons(entry("ScaledCos", 3),
+        acons(entry("ScaledTan", 3), acons(entry("ScaledArcSin", 3), acons(entry("ScaledArcCos", 3),
+        acons(entry("ScaledArcTan", 3), acons(entry("ScaledSinh", 3), acons(entry("ScaledCosh", 3),
+        acons(entry("ScaledTanh", 3), acons(entry("ScaledArcSinh", 3), acons(entry("ScaledArcCosh", 3),
+        acons(entry("ScaledArcTanh", 3), acons(entry("ScaledSinPi", 3), acons(entry("ScaledCosPi", 3),
+        acons(entry("ScaledTanPi", 3), acons(entry("ScaledArcSinPi", 3), acons(entry("ScaledArcCosPi",
+        3), acons(entry("ScaledArcTanPi", 3), acons(entry("ScaledSoftplus", 3), acons(entry("FMA", 4),
+        acons(entry("FAA", 4), acons(entry("Clamp", 4), acons(entry("ScaledCopySign", 5),
+        acons(entry("ScaledAdd", 5), acons(entry("ScaledSubtract", 5), acons(entry("ScaledMultiply", 5),
+        acons(entry("ScaledDivide", 5), acons(entry("ScaledHypot", 5), acons(entry("ScaledArcTan2", 5),
+        acons(entry("ScaledArcTan2Pi", 5), acons(entry("ScaledMinimum", 5), acons(entry("ScaledMaximum",
+        5), acons(entry("ScaledMinimumNumber", 5), acons(entry("ScaledMaximumNumber", 5),
+        acons(entry("ScaledMinimumMagnitude", 5), acons(entry("ScaledMaximumMagnitude", 5),
+        acons(entry("ScaledMinimumMagnitudeNumber", 5), acons(entry("ScaledMaximumMagnitudeNumber", 5),
+        acons(entry("ScaledMinimumFinite", 5), acons(entry("ScaledMaximumFinite", 5),
+        acons(entry("ScaledFMA", 7), acons(entry("ScaledFAA", 7), acons(entry("ScaledClamp", 7),
+        anil))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+        [metadata "clause=4.3; page=19-20; clause=5.8; page=70"] .
+- line: 435
+  kind: comment
+  fields: {}
+  text: |2
+      --- END GENERATED numericArityTable
+- line: 436
+  kind: comment
+  fields: {}
+  text: |2
+      --- BEGIN GENERATED plainArityTable
+- line: 437
+  kind: eq
+  fields:
+    label: p3109-decl-plain-table
+    lhs: plainArityTable
+    rhs: acons(entry("RoundOf", 0), acons(entry("SatOf", 0), acons(entry("IsZero", 1), acons(entry("IsOne",
+      1), acons(entry("IsNaN", 1), acons(entry("IsInfinite", 1), acons(entry("IsFinite", 1), acons(entry("IsSignMinus",
+      1), acons(entry("IsNormal", 1), acons(entry("IsSubnormal", 1), acons(entry("Class", 1), acons(entry("BitwidthOf",
+      1), acons(entry("PrecisionOf", 1), acons(entry("ExponentBitwidthOf", 1), acons(entry("TrailingSignificandBitwidthOf",
+      1), acons(entry("ExponentBiasOf", 1), acons(entry("SignednessOf", 1), acons(entry("DomainOf", 1),
+      acons(entry("MaxFiniteOf", 1), acons(entry("MinFiniteOf", 1), acons(entry("MinPositiveOf", 1), acons(entry("MaxSubnormalOf",
+      1), acons(entry("MinNormalOf", 1), acons(entry("NextGreaterThan", 1), acons(entry("NextLessThan",
+      1), acons(entry("CompareLess", 2), acons(entry("CompareLessEqual", 2), acons(entry("CompareEqual",
+      2), acons(entry("CompareGreater", 2), acons(entry("CompareGreaterEqual", 2), acons(entry("TotalOrder",
+      2), anil)))))))))))))))))))))))))))))))
+    condition: null
+    attributes: metadata "clause=4.3; page=19-20"
+  text: |2
+      eq [p3109-decl-plain-table] :
+        plainArityTable
+        = acons(entry("RoundOf", 0), acons(entry("SatOf", 0), acons(entry("IsZero", 1),
+        acons(entry("IsOne", 1), acons(entry("IsNaN", 1), acons(entry("IsInfinite", 1),
+        acons(entry("IsFinite", 1), acons(entry("IsSignMinus", 1), acons(entry("IsNormal", 1),
+        acons(entry("IsSubnormal", 1), acons(entry("Class", 1), acons(entry("BitwidthOf", 1),
+        acons(entry("PrecisionOf", 1), acons(entry("ExponentBitwidthOf", 1),
+        acons(entry("TrailingSignificandBitwidthOf", 1), acons(entry("ExponentBiasOf", 1),
+        acons(entry("SignednessOf", 1), acons(entry("DomainOf", 1), acons(entry("MaxFiniteOf", 1),
+        acons(entry("MinFiniteOf", 1), acons(entry("MinPositiveOf", 1), acons(entry("MaxSubnormalOf",
+        1), acons(entry("MinNormalOf", 1), acons(entry("NextGreaterThan", 1),
+        acons(entry("NextLessThan", 1), acons(entry("CompareLess", 2), acons(entry("CompareLessEqual",
+        2), acons(entry("CompareEqual", 2), acons(entry("CompareGreater", 2),
+        acons(entry("CompareGreaterEqual", 2), acons(entry("TotalOrder", 2),
+        anil)))))))))))))))))))))))))))))))
+        [metadata "clause=4.3; page=19-20"] .
+- line: 453
+  kind: comment
+  fields: {}
+  text: |2
+      --- END GENERATED plainArityTable
+- line: 454
+  kind: eq
+  fields:
+    label: p3109-decl-numeric
+    lhs: numericArity(N, A)
+    rhs: inArityTable(N, A, numericArityTable)
+    condition: null
+    attributes: metadata "clause=4.3; 5.8; page=19-20; 70"
+  text: |2
+      eq [p3109-decl-numeric] :
+        numericArity(N, A)
+        = inArityTable(N, A, numericArityTable)
+        [metadata "clause=4.3; 5.8; page=19-20; 70"] .
+- line: 458
+  kind: eq
+  fields:
+    label: p3109-decl-plain
+    lhs: plainArity(N, A)
+    rhs: inArityTable(N, A, plainArityTable)
+    condition: null
+    attributes: metadata "clause=4.3; page=19-20"
+  text: |2
+      eq [p3109-decl-plain] :
+        plainArity(N, A)
+        = inArityTable(N, A, plainArityTable)
+        [metadata "clause=4.3; page=19-20"] .
+- line: 462
+  kind: eq
+  fields:
+    label: p3109-decl-specialization-numeric
+    lhs: validSpecialization(numeric(N, FS, PS))
+    rhs: numericArity(N, length(FS)) and allFormats(FS) and validProjection(PS)
+    condition: null
+    attributes: metadata "clause=4.3; page=19-20"
+  text: |2
+      eq [p3109-decl-specialization-numeric] :
+        validSpecialization(numeric(N, FS, PS))
+        = numericArity(N, length(FS)) and allFormats(FS) and validProjection(PS)
+        [metadata "clause=4.3; page=19-20"] .
+- line: 466
+  kind: eq
+  fields:
+    label: p3109-decl-specialization-plain
+    lhs: validSpecialization(plain(N, FS))
+    rhs: plainArity(N, length(FS)) and allFormats(FS)
+    condition: null
+    attributes: metadata "clause=4.3; page=19-20"
+  text: |2
+      eq [p3109-decl-specialization-plain] :
+        validSpecialization(plain(N, FS))
+        = plainArity(N, length(FS)) and allFormats(FS)
+        [metadata "clause=4.3; page=19-20"] .
+- line: 470
+  kind: eq
+  fields:
+    label: p3109-decl-numeric-plain
+    lhs: numericPlainName(N)
+    rhs: (N == "NextGreaterThan" or N == "NextLessThan" or N == "MaxFiniteOf" or N == "MinFiniteOf" or
+      N == "MinPositiveOf" or N == "MaxSubnormalOf" or N == "MinNormalOf")
+    condition: null
+    attributes: metadata "clause=4.4; page=21"
+  text: |2
+      eq [p3109-decl-numeric-plain] :
+        numericPlainName(N)
+        = (N == "NextGreaterThan" or N == "NextLessThan" or N == "MaxFiniteOf" or N == "MinFiniteOf" or
+        N == "MinPositiveOf" or N == "MaxSubnormalOf" or N == "MinNormalOf")
+        [metadata "clause=4.4; page=21"] .
+- line: 475
+  kind: eq
+  fields:
+    label: p3109-decl-exact
+    lhs: wellFormedDeclaration(exact(S, NAME, E))
+    rhs: (NAME =/= "" and validSpecialization(S))
+    condition: null
+    attributes: metadata "clause=4.6; page=24"
+  text: |2
+      eq [p3109-decl-exact] :
+        wellFormedDeclaration(exact(S, NAME, E))
+        = (NAME =/= "" and validSpecialization(S))
+        [metadata "clause=4.6; page=24"] .
+- line: 479
+  kind: eq
+  fields:
+    label: p3109-decl-approximate
+    lhs: wellFormedDeclaration(approximate(S, NAME, K, E))
+    rhs: (NAME =/= "" and NAME =/= specializationName(S) and numericResult(S) and validSpecialization(S))
+    condition: null
+    attributes: metadata "clause=4.4; page=21"
+  text: |2
+      eq [p3109-decl-approximate] :
+        wellFormedDeclaration(approximate(S, NAME, K, E))
+        = (NAME =/= "" and NAME =/= specializationName(S) and numericResult(S) and
+        validSpecialization(S))
+        [metadata "clause=4.4; page=21"] .
+- line: 484
+  kind: eq
+  fields:
+    label: p3109-block-elements-name
+    lhs: specializationName(blockElements(N, A, FS, BP))
+    rhs: N
+    condition: null
+    attributes: metadata "clause=5.5;5.7; page=64-66;69"
+  text: |2
+      eq [p3109-block-elements-name] :
+        specializationName(blockElements(N, A, FS, BP))
+        = N
+        [metadata "clause=5.5;5.7; page=64-66;69"] .
+- line: 488
+  kind: eq
+  fields:
+    label: p3109-block-reduction-name
+    lhs: specializationName(blockReduction(N, A, FS, PS))
+    rhs: N
+    condition: null
+    attributes: metadata "clause=5.6; page=67-68"
+  text: |2
+      eq [p3109-block-reduction-name] :
+        specializationName(blockReduction(N, A, FS, PS))
+        = N
+        [metadata "clause=5.6; page=67-68"] .
+- line: 492
+  kind: eq
+  fields:
+    label: p3109-block-scale-name
+    lhs: specializationName(blockScale(N, A, FS, PS, BP))
+    rhs: N
+    condition: null
+    attributes: metadata "clause=5.5.3; page=66"
+  text: |2
+      eq [p3109-block-scale-name] :
+        specializationName(blockScale(N, A, FS, PS, BP))
+        = N
+        [metadata "clause=5.5.3; page=66"] .
+- line: 496
+  kind: eq
+  fields:
+    label: p3109-block-elements-valid
+    lhs: validSpecialization(blockElements(N, A, FS, BP))
+    rhs: (A >= 1 and allFormats(FS) and validBlockProjection(BP, A) and blockElementArity(N, length(FS)))
+    condition: null
+    attributes: metadata "clause=5.5;5.7; page=64-66;69"
+  text: |2
+      eq [p3109-block-elements-valid] :
+        validSpecialization(blockElements(N, A, FS, BP))
+        = (A >= 1 and allFormats(FS) and validBlockProjection(BP, A) and blockElementArity(N,
+        length(FS)))
+        [metadata "clause=5.5;5.7; page=64-66;69"] .
+- line: 501
+  kind: eq
+  fields:
+    label: p3109-block-reduction-valid
+    lhs: validSpecialization(blockReduction(N, A, FS, PS))
+    rhs: (A >= 1 and allFormats(FS) and validProjection(PS) and (((N == "BlockReduceAdd" or N == "BlockReduceMultiply")
+      and length(FS) == 3) or (N == "BlockDotProduct" and length(FS) == 5)))
+    condition: null
+    attributes: metadata "clause=5.6; page=67-68"
+  text: |2
+      eq [p3109-block-reduction-valid] :
+        validSpecialization(blockReduction(N, A, FS, PS))
+        = (A >= 1 and allFormats(FS) and validProjection(PS) and (((N == "BlockReduceAdd" or N ==
+        "BlockReduceMultiply") and length(FS) == 3) or (N == "BlockDotProduct" and length(FS) == 5)))
+        [metadata "clause=5.6; page=67-68"] .
+- line: 506
+  kind: eq
+  fields:
+    label: p3109-block-scale-valid
+    lhs: validSpecialization(blockScale(N, A, FS, PS, BP))
+    rhs: (N == "ConvertToBlockMaxAbsFinite" and A >= 1 and length(FS) == 3 and allFormats(FS) and validProjection(PS)
+      and validBlockProjection(BP, A))
+    condition: null
+    attributes: metadata "clause=5.5.3; page=66"
+  text: |2
+      eq [p3109-block-scale-valid] :
+        validSpecialization(blockScale(N, A, FS, PS, BP))
+        = (N == "ConvertToBlockMaxAbsFinite" and A >= 1 and length(FS) == 3 and allFormats(FS) and
+        validProjection(PS) and validBlockProjection(BP, A))
+        [metadata "clause=5.5.3; page=66"] .
+- line: 511
+  kind: eq
+  fields:
+    label: p3109-block-elements-not-required
+    lhs: required(blockElements(N, A, FS, BP), FX)
+    rhs: 'false'
+    condition: null
+    attributes: metadata "clause=4.5; page=22-23"
+  text: |2
+      eq [p3109-block-elements-not-required] :
+        required(blockElements(N, A, FS, BP), FX)
+        = false
+        [metadata "clause=4.5; page=22-23"] .
+- line: 515
+  kind: eq
+  fields:
+    label: p3109-block-reduction-not-required
+    lhs: required(blockReduction(N, A, FS, PS), FX)
+    rhs: 'false'
+    condition: null
+    attributes: metadata "clause=4.5; page=22-23"
+  text: |2
+      eq [p3109-block-reduction-not-required] :
+        required(blockReduction(N, A, FS, PS), FX)
+        = false
+        [metadata "clause=4.5; page=22-23"] .
+- line: 519
+  kind: eq
+  fields:
+    label: p3109-block-scale-not-required
+    lhs: required(blockScale(N, A, FS, PS, BP), FX)
+    rhs: 'false'
+    condition: null
+    attributes: metadata "clause=4.5; page=22-23"
+  text: |2
+      eq [p3109-block-scale-not-required] :
+        required(blockScale(N, A, FS, PS, BP), FX)
+        = false
+        [metadata "clause=4.5; page=22-23"] .
+- line: 523
+  kind: eq
+  fields:
+    label: p3109-result-projected-numeric
+    lhs: numericResult(numeric(N, FS, PS))
+    rhs: 'true'
+    condition: null
+    attributes: metadata "clause=4.4; page=21"
+  text: |2
+      eq [p3109-result-projected-numeric] :
+        numericResult(numeric(N, FS, PS))
+        = true
+        [metadata "clause=4.4; page=21"] .
+- line: 527
+  kind: eq
+  fields:
+    label: p3109-result-plain-numeric
+    lhs: numericResult(plain(N, FS))
+    rhs: numericPlainName(N)
+    condition: null
+    attributes: metadata "clause=4.4; page=21"
+  text: |2
+      eq [p3109-result-plain-numeric] :
+        numericResult(plain(N, FS))
+        = numericPlainName(N)
+        [metadata "clause=4.4; page=21"] .
+- line: 531
+  kind: eq
+  fields:
+    label: p3109-result-block-elements-numeric
+    lhs: numericResult(blockElements(N, A, FS, BP))
+    rhs: 'true'
+    condition: null
+    attributes: metadata "clause=4.4; page=21"
+  text: |2
+      eq [p3109-result-block-elements-numeric] :
+        numericResult(blockElements(N, A, FS, BP))
+        = true
+        [metadata "clause=4.4; page=21"] .
+- line: 535
+  kind: eq
+  fields:
+    label: p3109-result-block-reduction-numeric
+    lhs: numericResult(blockReduction(N, A, FS, PS))
+    rhs: 'true'
+    condition: null
+    attributes: metadata "clause=4.4; page=21"
+  text: |2
+      eq [p3109-result-block-reduction-numeric] :
+        numericResult(blockReduction(N, A, FS, PS))
+        = true
+        [metadata "clause=4.4; page=21"] .
+- line: 539
+  kind: eq
+  fields:
+    label: p3109-result-block-scale-numeric
+    lhs: numericResult(blockScale(N, A, FS, PS, BP))
+    rhs: 'true'
+    condition: null
+    attributes: metadata "clause=4.4; page=21"
+  text: |2
+      eq [p3109-result-block-scale-numeric] :
+        numericResult(blockScale(N, A, FS, PS, BP))
+        = true
+        [metadata "clause=4.4; page=21"] .
+- line: 543
+  kind: eq
+  fields:
+    label: p3109-declared-exact
+    lhs: declaredIdentity(exact(S, NAME, E))
+    rhs: S
+    condition: null
+    attributes: metadata "clause=4.6; page=24"
+  text: |2
+      eq [p3109-declared-exact] :
+        declaredIdentity(exact(S, NAME, E))
+        = S
+        [metadata "clause=4.6; page=24"] .
+- line: 547
+  kind: eq
+  fields:
+    label: p3109-declared-approximate
+    lhs: declaredIdentity(approximate(S, NAME, K, E))
+    rhs: S
+    condition: null
+    attributes: metadata "clause=4.6; page=24"
+  text: |2
+      eq [p3109-declared-approximate] :
+        declaredIdentity(approximate(S, NAME, K, E))
+        = S
+        [metadata "clause=4.6; page=24"] .
+- line: 551
+  kind: eq
+  fields:
+    label: p3109-declared-empty
+    lhs: hasDeclaration(S, dnil)
+    rhs: 'false'
+    condition: null
+    attributes: metadata "clause=4.6; page=24"
+  text: |2
+      eq [p3109-declared-empty] :
+        hasDeclaration(S, dnil)
+        = false
+        [metadata "clause=4.6; page=24"] .
+- line: 555
+  kind: eq
+  fields:
+    label: p3109-declared-member
+    lhs: hasDeclaration(S, dcons(DEC, DECS))
+    rhs: ((wellFormedDeclaration(DEC) and declaredIdentity(DEC) == S) or hasDeclaration(S, DECS))
+    condition: null
+    attributes: metadata "clause=4.6; page=24"
+  text: |2
+      eq [p3109-declared-member] :
+        hasDeclaration(S, dcons(DEC, DECS))
+        = ((wellFormedDeclaration(DEC) and declaredIdentity(DEC) == S) or hasDeclaration(S, DECS))
+        [metadata "clause=4.6; page=24"] .
+- line: 559
+  kind: eq
+  fields:
+    label: p3109-declarations-cover-empty
+    lhs: declarationsCover(snil, DECS)
+    rhs: 'true'
+    condition: null
+    attributes: metadata "clause=4.5-4.6; page=22-24"
+  text: |2
+      eq [p3109-declarations-cover-empty] :
+        declarationsCover(snil, DECS)
+        = true
+        [metadata "clause=4.5-4.6; page=22-24"] .
+- line: 563
+  kind: eq
+  fields:
+    label: p3109-declarations-cover-cons
+    lhs: declarationsCover(scons(S, SPECS), DECS)
+    rhs: (hasDeclaration(S, DECS) and declarationsCover(SPECS, DECS))
+    condition: null
+    attributes: metadata "clause=4.5-4.6; page=22-24"
+  text: |2
+      eq [p3109-declarations-cover-cons] :
+        declarationsCover(scons(S, SPECS), DECS)
+        = (hasDeclaration(S, DECS) and declarationsCover(SPECS, DECS))
+        [metadata "clause=4.5-4.6; page=22-24"] .
+- line: 567
+  kind: eq
+  fields:
+    label: p3109-partition-union-empty
+    lhs: partitionUnion(pnil)
+    rhs: cnil
+    condition: null
+    attributes: metadata "clause=4.4; page=21"
+  text: |2
+      eq [p3109-partition-union-empty] :
+        partitionUnion(pnil)
+        = cnil
+        [metadata "clause=4.4; page=21"] .
+- line: 571
+  kind: eq
+  fields:
+    label: p3109-partition-union-cons
+    lhs: partitionUnion(pcons(CS, PARTS))
+    rhs: appendCodes(CS, partitionUnion(PARTS))
+    condition: null
+    attributes: metadata "clause=4.4; page=21"
+  text: |2
+      eq [p3109-partition-union-cons] :
+        partitionUnion(pcons(CS, PARTS))
+        = appendCodes(CS, partitionUnion(PARTS))
+        [metadata "clause=4.4; page=21"] .
+- line: 575
+  kind: eq
+  fields:
+    label: p3109-partition-disjoint-empty
+    lhs: partitionDisjoint(pnil)
+    rhs: 'true'
+    condition: null
+    attributes: metadata "clause=4.4; page=21"
+  text: |2
+      eq [p3109-partition-disjoint-empty] :
+        partitionDisjoint(pnil)
+        = true
+        [metadata "clause=4.4; page=21"] .
+- line: 579
+  kind: eq
+  fields:
+    label: p3109-partition-disjoint-cons
+    lhs: partitionDisjoint(pcons(CS, PARTS))
+    rhs: (uniqueCodes(CS) and disjointCodes(CS, partitionUnion(PARTS)) and partitionDisjoint(PARTS))
+    condition: null
+    attributes: metadata "clause=4.4; page=21"
+  text: |2
+      eq [p3109-partition-disjoint-cons] :
+        partitionDisjoint(pcons(CS, PARTS))
+        = (uniqueCodes(CS) and disjointCodes(CS, partitionUnion(PARTS)) and partitionDisjoint(PARTS))
+        [metadata "clause=4.4; page=21"] .
+- line: 583
+  kind: eq
+  fields:
+    label: p3109-partition-general
+    lhs: partition(CS, PARTS)
+    rhs: (uniqueCodes(CS) and partitionDisjoint(PARTS) and subsetCodes(CS, partitionUnion(PARTS)) and
+      subsetCodes(partitionUnion(PARTS), CS))
+    condition: null
+    attributes: metadata "clause=4.4; page=21"
+  text: |2
+      eq [p3109-partition-general] :
+        partition(CS, PARTS)
+        = (uniqueCodes(CS) and partitionDisjoint(PARTS) and subsetCodes(CS, partitionUnion(PARTS)) and
+        subsetCodes(partitionUnion(PARTS), CS))
+        [metadata "clause=4.4; page=21"] .
+- line: 588
+  kind: comment
+  fields: {}
+  text: |2
+      --- BEGIN GENERATED blockElementArityTable
+- line: 589
+  kind: eq
+  fields:
+    label: p3109-block-element-arity-table
+    lhs: blockElementArityTable
+    rhs: acons(entry("ConvertFromBlock", 3), acons(entry("ConvertToBlock", 3), acons(entry("BlockConvert",
+      4), acons(entry("BlockAbs", 4), acons(entry("BlockNegate", 4), acons(entry("BlockSqrt", 4), acons(entry("BlockRecip",
+      4), acons(entry("BlockRSqrt", 4), acons(entry("BlockExp", 4), acons(entry("BlockExp2", 4), acons(entry("BlockLog",
+      4), acons(entry("BlockLog2", 4), acons(entry("BlockLogOnePlus", 4), acons(entry("BlockExpMinusOne",
+      4), acons(entry("BlockSin", 4), acons(entry("BlockCos", 4), acons(entry("BlockTan", 4), acons(entry("BlockArcSin",
+      4), acons(entry("BlockArcCos", 4), acons(entry("BlockArcTan", 4), acons(entry("BlockSinh", 4), acons(entry("BlockCosh",
+      4), acons(entry("BlockTanh", 4), acons(entry("BlockArcSinh", 4), acons(entry("BlockArcCosh", 4),
+      acons(entry("BlockArcTanh", 4), acons(entry("BlockSinPi", 4), acons(entry("BlockCosPi", 4), acons(entry("BlockTanPi",
+      4), acons(entry("BlockArcSinPi", 4), acons(entry("BlockArcCosPi", 4), acons(entry("BlockArcTanPi",
+      4), acons(entry("BlockSoftplus", 4), acons(entry("BlockCopySign", 6), acons(entry("BlockAdd", 6),
+      acons(entry("BlockSubtract", 6), acons(entry("BlockMultiply", 6), acons(entry("BlockDivide", 6),
+      acons(entry("BlockHypot", 6), acons(entry("BlockArcTan2", 6), acons(entry("BlockArcTan2Pi", 6),
+      acons(entry("BlockMinimum", 6), acons(entry("BlockMaximum", 6), acons(entry("BlockMinimumNumber",
+      6), acons(entry("BlockMaximumNumber", 6), acons(entry("BlockMinimumMagnitude", 6), acons(entry("BlockMaximumMagnitude",
+      6), acons(entry("BlockMinimumMagnitudeNumber", 6), acons(entry("BlockMaximumMagnitudeNumber", 6),
+      acons(entry("BlockMinimumFinite", 6), acons(entry("BlockMaximumFinite", 6), acons(entry("BlockFMA",
+      8), acons(entry("BlockFAA", 8), acons(entry("BlockClamp", 8), anil))))))))))))))))))))))))))))))))))))))))))))))))))))))
+    condition: null
+    attributes: metadata "clause=5.5.1-5.5.2; page=64-65; clause=5.7; page=69"
+  text: |2
+      eq [p3109-block-element-arity-table] :
+        blockElementArityTable
+        = acons(entry("ConvertFromBlock", 3), acons(entry("ConvertToBlock", 3),
+        acons(entry("BlockConvert", 4), acons(entry("BlockAbs", 4), acons(entry("BlockNegate", 4),
+        acons(entry("BlockSqrt", 4), acons(entry("BlockRecip", 4), acons(entry("BlockRSqrt", 4),
+        acons(entry("BlockExp", 4), acons(entry("BlockExp2", 4), acons(entry("BlockLog", 4),
+        acons(entry("BlockLog2", 4), acons(entry("BlockLogOnePlus", 4), acons(entry("BlockExpMinusOne",
+        4), acons(entry("BlockSin", 4), acons(entry("BlockCos", 4), acons(entry("BlockTan", 4),
+        acons(entry("BlockArcSin", 4), acons(entry("BlockArcCos", 4), acons(entry("BlockArcTan", 4),
+        acons(entry("BlockSinh", 4), acons(entry("BlockCosh", 4), acons(entry("BlockTanh", 4),
+        acons(entry("BlockArcSinh", 4), acons(entry("BlockArcCosh", 4), acons(entry("BlockArcTanh", 4),
+        acons(entry("BlockSinPi", 4), acons(entry("BlockCosPi", 4), acons(entry("BlockTanPi", 4),
+        acons(entry("BlockArcSinPi", 4), acons(entry("BlockArcCosPi", 4), acons(entry("BlockArcTanPi",
+        4), acons(entry("BlockSoftplus", 4), acons(entry("BlockCopySign", 6), acons(entry("BlockAdd",
+        6), acons(entry("BlockSubtract", 6), acons(entry("BlockMultiply", 6), acons(entry("BlockDivide",
+        6), acons(entry("BlockHypot", 6), acons(entry("BlockArcTan2", 6), acons(entry("BlockArcTan2Pi",
+        6), acons(entry("BlockMinimum", 6), acons(entry("BlockMaximum", 6),
+        acons(entry("BlockMinimumNumber", 6), acons(entry("BlockMaximumNumber", 6),
+        acons(entry("BlockMinimumMagnitude", 6), acons(entry("BlockMaximumMagnitude", 6),
+        acons(entry("BlockMinimumMagnitudeNumber", 6), acons(entry("BlockMaximumMagnitudeNumber", 6),
+        acons(entry("BlockMinimumFinite", 6), acons(entry("BlockMaximumFinite", 6),
+        acons(entry("BlockFMA", 8), acons(entry("BlockFAA", 8), acons(entry("BlockClamp", 8),
+        anil))))))))))))))))))))))))))))))))))))))))))))))))))))))
+        [metadata "clause=5.5.1-5.5.2; page=64-65; clause=5.7; page=69"] .
+- line: 613
+  kind: comment
+  fields: {}
+  text: |2
+      --- END GENERATED blockElementArityTable
+- line: 614
+  kind: eq
+  fields:
+    label: p3109-block-element-arity
+    lhs: blockElementArity(N, A)
+    rhs: inArityTable(N, A, blockElementArityTable)
+    condition: null
+    attributes: metadata "clause=5.5.1-5.5.2; 5.7; page=64-65; 69"
+  text: |2
+      eq [p3109-block-element-arity] :
+        blockElementArity(N, A)
+        = inArityTable(N, A, blockElementArityTable)
+        [metadata "clause=5.5.1-5.5.2; 5.7; page=64-65; 69"] .
+- line: 618
+  kind: eq
+  fields:
+    label: p3109-decl-partitioned-valid
+    lhs: wellFormedDeclaration(partitioned(S, NAME, CS, KP, E))
+    rhs: (NAME =/= "" and NAME =/= specializationName(S) and numericResult(S) and validSpecialization(S)
+      and partition(CS, partRegions(KP)))
+    condition: null
+    attributes: metadata "clause=4.4; page=21"
+  text: |2
+      eq [p3109-decl-partitioned-valid] :
+        wellFormedDeclaration(partitioned(S, NAME, CS, KP, E))
+        = (NAME =/= "" and NAME =/= specializationName(S) and numericResult(S) and
+        validSpecialization(S) and partition(CS, partRegions(KP)))
+        [metadata "clause=4.4; page=21"] .
+- line: 623
+  kind: eq
+  fields:
+    label: p3109-decl-partitioned-identity
+    lhs: declaredIdentity(partitioned(S, NAME, CS, KP, E))
+    rhs: S
+    condition: null
+    attributes: metadata "clause=4.4; page=21"
+  text: |2
+      eq [p3109-decl-partitioned-identity] :
+        declaredIdentity(partitioned(S, NAME, CS, KP, E))
+        = S
+        [metadata "clause=4.4; page=21"] .
+- line: 627
+  kind: eq
+  fields:
+    label: p3109-part-regions-empty
+    lhs: partRegions(knil)
+    rhs: pnil
+    condition: null
+    attributes: metadata "clause=4.4; page=21"
+  text: |2
+      eq [p3109-part-regions-empty] :
+        partRegions(knil)
+        = pnil
+        [metadata "clause=4.4; page=21"] .
+- line: 631
+  kind: eq
+  fields:
+    label: p3109-part-regions-cons
+    lhs: partRegions(kcons(kappaPart(CS, K), KP))
+    rhs: pcons(CS, partRegions(KP))
+    condition: null
+    attributes: metadata "clause=4.4; page=21"
+  text: |2
+      eq [p3109-part-regions-cons] :
+        partRegions(kcons(kappaPart(CS, K), KP))
+        = pcons(CS, partRegions(KP))
+        [metadata "clause=4.4; page=21"] .
+- line: 635
+  kind: eq
+  fields:
+    label: p3109-part-bound-empty
+    lhs: partBound(knil)
+    rhs: steps(0)
+    condition: null
+    attributes: metadata "clause=4.4; page=21"
+  text: |2
+      eq [p3109-part-bound-empty] :
+        partBound(knil)
+        = steps(0)
+        [metadata "clause=4.4; page=21"] .
+- line: 639
+  kind: eq
+  fields:
+    label: p3109-part-bound-cons
+    lhs: partBound(kcons(kappaPart(CS, K), KP))
+    rhs: mergeKappa(K, partBound(KP))
+    condition: null
+    attributes: metadata "clause=4.4; page=21"
+  text: |2
+      eq [p3109-part-bound-cons] :
+        partBound(kcons(kappaPart(CS, K), KP))
+        = mergeKappa(K, partBound(KP))
+        [metadata "clause=4.4; page=21"] .
+- line: 643
+  kind: ceq
+  fields:
+    label: p3109-decl-exact-kappa
+    lhs: declarationKappa(exact(S, NAME, E))
+    rhs: steps(0)
+    condition: wellFormedDeclaration(exact(S, NAME, E)) /\ numericResult(S)
+    attributes: metadata "clause=4.4; page=21"
+  text: |2
+      ceq [p3109-decl-exact-kappa] :
+        declarationKappa(exact(S, NAME, E))
+        = steps(0)
+        if wellFormedDeclaration(exact(S, NAME, E)) /\ numericResult(S)
+        [metadata "clause=4.4; page=21"] .
+- line: 648
+  kind: ceq
+  fields:
+    label: p3109-decl-approx-kappa
+    lhs: declarationKappa(approximate(S, NAME, K, E))
+    rhs: K
+    condition: wellFormedDeclaration(approximate(S, NAME, K, E))
+    attributes: metadata "clause=4.4; page=21"
+  text: |2
+      ceq [p3109-decl-approx-kappa] :
+        declarationKappa(approximate(S, NAME, K, E))
+        = K
+        if wellFormedDeclaration(approximate(S, NAME, K, E))
+        [metadata "clause=4.4; page=21"] .
+- line: 653
+  kind: ceq
+  fields:
+    label: p3109-decl-partition-kappa
+    lhs: declarationKappa(partitioned(S, NAME, CS, KP, E))
+    rhs: partBound(KP)
+    condition: wellFormedDeclaration(partitioned(S, NAME, CS, KP, E))
+    attributes: metadata "clause=4.4; page=21"
+  text: |2
+      ceq [p3109-decl-partition-kappa] :
+        declarationKappa(partitioned(S, NAME, CS, KP, E))
+        = partBound(KP)
+        if wellFormedDeclaration(partitioned(S, NAME, CS, KP, E))
+        [metadata "clause=4.4; page=21"] .
+- line: 658
+  kind: endfm
+  fields: {}
+  text: |
+    endfm

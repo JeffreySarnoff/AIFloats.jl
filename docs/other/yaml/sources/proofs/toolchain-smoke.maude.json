@@ -1,0 +1,106 @@
+{
+  "version": 1,
+  "path": "proofs/toolchain-smoke.maude",
+  "sha256": "fa2b6229c1665162ed64e6aa870061fd86c85347ffaad473d0fdd44a686d0bf2",
+  "type": "maude",
+  "records": [
+    {
+      "line": 1,
+      "kind": "set",
+      "fields": {
+        "option": "include BOOL",
+        "value": "off"
+      },
+      "text": "set include BOOL off .\n"
+    },
+    {
+      "line": 2,
+      "kind": "fmod",
+      "fields": {
+        "name": "P3109-PROOF-SMOKE",
+        "parameters": []
+      },
+      "text": "fmod P3109-PROOF-SMOKE is\n"
+    },
+    {
+      "line": 3,
+      "kind": "sort",
+      "fields": {
+        "names": [
+          "Bit"
+        ]
+      },
+      "text": "  sort Bit .\n"
+    },
+    {
+      "line": 4,
+      "kind": "ops",
+      "fields": {
+        "names": [
+          "off",
+          "on"
+        ],
+        "domain": [],
+        "arrow": "->",
+        "range": "Bit",
+        "attributes": "ctor"
+      },
+      "text": "  ops off on : -> Bit [ctor] .\n"
+    },
+    {
+      "line": 5,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "flip"
+        ],
+        "domain": [
+          "Bit"
+        ],
+        "arrow": "->",
+        "range": "Bit",
+        "attributes": ""
+      },
+      "text": "  op flip : Bit -> Bit .\n"
+    },
+    {
+      "line": 6,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-proof-flip-off",
+        "lhs": "flip(off)",
+        "rhs": "on",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-proof-flip-off] : flip(off) = on .\n"
+    },
+    {
+      "line": 7,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-proof-flip-on",
+        "lhs": "flip(on)",
+        "rhs": "off",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-proof-flip-on] : flip(on) = off .\n"
+    },
+    {
+      "line": 8,
+      "kind": "endfm",
+      "fields": {},
+      "text": "endfm\n"
+    },
+    {
+      "line": 9,
+      "kind": "set",
+      "fields": {
+        "option": "include BOOL",
+        "value": "on"
+      },
+      "text": "set include BOOL on .\n"
+    }
+  ]
+}

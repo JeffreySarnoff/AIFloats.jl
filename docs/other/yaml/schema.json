@@ -1,0 +1,1031 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Lossless P3109 Maude source document",
+  "description": "Structural schema; realize.py also checks text/field agreement.",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "path",
+        "sha256",
+        "type",
+        "records"
+      ],
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "type": {
+          "const": "maude"
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "line",
+              "kind",
+              "fields",
+              "text"
+            ],
+            "properties": {
+              "line": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "kind": {
+                "enum": [
+                  "layout",
+                  "comment",
+                  "fmod",
+                  "fth",
+                  "view",
+                  "endfm",
+                  "endfth",
+                  "endv",
+                  "quit",
+                  "load",
+                  "sload",
+                  "including",
+                  "protecting",
+                  "extending",
+                  "sort",
+                  "sorts",
+                  "subsort",
+                  "subsorts",
+                  "var",
+                  "vars",
+                  "op",
+                  "ops",
+                  "op-mapping",
+                  "eq",
+                  "ceq",
+                  "mb",
+                  "cmb",
+                  "red",
+                  "set"
+                ]
+              },
+              "fields": {
+                "type": "object"
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "layout"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [],
+                      "properties": {}
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "comment"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [],
+                      "properties": {}
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "endfm"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [],
+                      "properties": {}
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "endfth"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [],
+                      "properties": {}
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "endv"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [],
+                      "properties": {}
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "quit"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [],
+                      "properties": {}
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "fmod"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "name",
+                        "parameters"
+                      ],
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "parameters": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "required": [
+                              "name",
+                              "theory"
+                            ],
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "theory": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "fth"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "name",
+                        "parameters"
+                      ],
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "parameters": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "required": [
+                              "name",
+                              "theory"
+                            ],
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "theory": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "view"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "name",
+                        "from",
+                        "to"
+                      ],
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "from": {
+                          "type": "string"
+                        },
+                        "to": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "load"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "path"
+                      ],
+                      "properties": {
+                        "path": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "sload"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "path"
+                      ],
+                      "properties": {
+                        "path": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "including"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "expression"
+                      ],
+                      "properties": {
+                        "expression": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "protecting"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "expression"
+                      ],
+                      "properties": {
+                        "expression": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "extending"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "expression"
+                      ],
+                      "properties": {
+                        "expression": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "sort"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "names"
+                      ],
+                      "properties": {
+                        "names": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "sorts"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "names"
+                      ],
+                      "properties": {
+                        "names": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "subsort"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "chain"
+                      ],
+                      "properties": {
+                        "chain": {
+                          "type": "array",
+                          "items": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "subsorts"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "chain"
+                      ],
+                      "properties": {
+                        "chain": {
+                          "type": "array",
+                          "items": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "var"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "names",
+                        "sort"
+                      ],
+                      "properties": {
+                        "names": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "sort": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "vars"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "names",
+                        "sort"
+                      ],
+                      "properties": {
+                        "names": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "sort": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "op"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "names",
+                        "domain",
+                        "arrow",
+                        "range",
+                        "attributes"
+                      ],
+                      "properties": {
+                        "names": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "domain": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "arrow": {
+                          "enum": [
+                            "->",
+                            "~>"
+                          ]
+                        },
+                        "range": {
+                          "type": "string"
+                        },
+                        "attributes": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "ops"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "names",
+                        "domain",
+                        "arrow",
+                        "range",
+                        "attributes"
+                      ],
+                      "properties": {
+                        "names": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "domain": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "arrow": {
+                          "enum": [
+                            "->",
+                            "~>"
+                          ]
+                        },
+                        "range": {
+                          "type": "string"
+                        },
+                        "attributes": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "op-mapping"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "from",
+                        "to"
+                      ],
+                      "properties": {
+                        "from": {
+                          "type": "string"
+                        },
+                        "to": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "eq"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "label",
+                        "lhs",
+                        "rhs",
+                        "condition",
+                        "attributes"
+                      ],
+                      "properties": {
+                        "label": {
+                          "type": "string"
+                        },
+                        "lhs": {
+                          "type": "string"
+                        },
+                        "rhs": {
+                          "type": "string"
+                        },
+                        "condition": {
+                          "type": "null"
+                        },
+                        "attributes": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "ceq"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "label",
+                        "lhs",
+                        "rhs",
+                        "condition",
+                        "attributes"
+                      ],
+                      "properties": {
+                        "label": {
+                          "type": "string"
+                        },
+                        "lhs": {
+                          "type": "string"
+                        },
+                        "rhs": {
+                          "type": "string"
+                        },
+                        "condition": {
+                          "type": "string"
+                        },
+                        "attributes": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "mb"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "label",
+                        "lhs",
+                        "sort",
+                        "condition",
+                        "attributes"
+                      ],
+                      "properties": {
+                        "label": {
+                          "type": "string"
+                        },
+                        "lhs": {
+                          "type": "string"
+                        },
+                        "sort": {
+                          "type": "string"
+                        },
+                        "condition": {
+                          "type": "null"
+                        },
+                        "attributes": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "cmb"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "label",
+                        "lhs",
+                        "sort",
+                        "condition",
+                        "attributes"
+                      ],
+                      "properties": {
+                        "label": {
+                          "type": "string"
+                        },
+                        "lhs": {
+                          "type": "string"
+                        },
+                        "sort": {
+                          "type": "string"
+                        },
+                        "condition": {
+                          "type": "string"
+                        },
+                        "attributes": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "red"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "module",
+                        "term"
+                      ],
+                      "properties": {
+                        "module": {
+                          "type": "string"
+                        },
+                        "term": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "set"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "fields": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "option",
+                        "value"
+                      ],
+                      "properties": {
+                        "option": {
+                          "const": "include BOOL"
+                        },
+                        "value": {
+                          "enum": [
+                            "on",
+                            "off"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "path",
+        "sha256",
+        "type",
+        "format",
+        "text",
+        "data"
+      ],
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "type": {
+          "const": "support"
+        },
+        "format": {
+          "enum": [
+            "json",
+            "tsv"
+          ]
+        },
+        "text": {
+          "type": "string"
+        },
+        "data": {}
+      }
+    }
+  ]
+}

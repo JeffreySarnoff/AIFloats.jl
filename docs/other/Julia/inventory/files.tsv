@@ -1,0 +1,164 @@
+source	category	disposition	target	reason	action	status
+Lean/.gitignore	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/.lake/build/ir/P3109/Foundations.c	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/ir/P3109/Foundations.c.hash	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/ir/P3109/Foundations.setup.json	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/ir/P3109/Native/Operators.c	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/ir/P3109/Native/Operators.c.hash	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/ir/P3109/Native/Operators.setup.json	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/ir/P3109/Predicates.c	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/ir/P3109/Predicates.c.hash	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/ir/P3109/Predicates.setup.json	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/ir/P3109/Relations/AxiomaticEquality.c	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/ir/P3109/Relations/AxiomaticEquality.c.hash	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/ir/P3109/Relations/AxiomaticEquality.setup.json	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/ir/P3109/Relations/EquationalEquality.setup.json	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/ir/P3109/Syntax.c	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/ir/P3109/Syntax.c.hash	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/ir/P3109/Syntax.setup.json	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/lib/lean/P3109/Foundations.ilean	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/lib/lean/P3109/Foundations.ilean.hash	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/lib/lean/P3109/Foundations.olean	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/lib/lean/P3109/Foundations.olean.hash	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/lib/lean/P3109/Foundations.trace	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/lib/lean/P3109/Native/Operators.ilean	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/lib/lean/P3109/Native/Operators.ilean.hash	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/lib/lean/P3109/Native/Operators.olean	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/lib/lean/P3109/Native/Operators.olean.hash	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/lib/lean/P3109/Native/Operators.trace	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/lib/lean/P3109/Predicates.ilean	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/lib/lean/P3109/Predicates.ilean.hash	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/lib/lean/P3109/Predicates.olean	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/lib/lean/P3109/Predicates.olean.hash	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/lib/lean/P3109/Predicates.trace	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/lib/lean/P3109/Relations/AxiomaticEquality.ilean	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/lib/lean/P3109/Relations/AxiomaticEquality.ilean.hash	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/lib/lean/P3109/Relations/AxiomaticEquality.olean	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/lib/lean/P3109/Relations/AxiomaticEquality.olean.hash	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/lib/lean/P3109/Relations/AxiomaticEquality.trace	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/lib/lean/P3109/Syntax.ilean	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/lib/lean/P3109/Syntax.ilean.hash	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/lib/lean/P3109/Syntax.olean	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/lib/lean/P3109/Syntax.olean.hash	Lean	excluded_generated		build artifact	A01	accounted
+Lean/.lake/build/lib/lean/P3109/Syntax.trace	Lean	excluded_generated		build artifact	A01	accounted
+Lean/Check.lean	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/CheckFoundations.lean	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/P3109/Foundations.lean	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/P3109/Lemmas/Congruence.lean	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/P3109/Lemmas/Equations/Bool.lean	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/P3109/Lemmas/Equations/Conformance.lean	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/P3109/Lemmas/Equations/Formats.lean	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/P3109/Lemmas/Equations/Native.lean	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/P3109/Lemmas/Equations/SequencesAndBlocks.lean	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/P3109/Lemmas/Equations/XReal.lean	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/P3109/Lemmas/Rewriting/Blocks.lean	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/P3109/Lemmas/Rewriting/Bool.lean	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/P3109/Lemmas/Rewriting/Conformance.lean	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/P3109/Lemmas/Rewriting/Formats.lean	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/P3109/Lemmas/Rewriting/Rationals.lean	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/P3109/Lemmas/Rewriting/Sequences.lean	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/P3109/Lemmas/Rewriting/Strings.lean	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/P3109/Lemmas/Rewriting/XReal.lean	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/P3109/Native/Equations.lean	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/P3109/Native/Operators.lean	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/P3109/Predicates.lean	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/P3109/Relations/AxiomaticEquality.lean	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/P3109/Relations/EquationalEquality.lean	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/P3109/Relations/Rewriting.lean	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/P3109/Representation.lean	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/P3109/Syntax.lean	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/P3109.lean	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/PLAN.md	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/README.md	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/VALIDATION.md	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/lake-manifest.json	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/lakefile.toml	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/lean-toolchain	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/manifest.json	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+Lean/reorganize.py	Lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+README.md	README.md	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+contracts/external-bridge.maude	contracts	ported	src/contracts.jl	source semantics and evidence retain their original scope	A01	accounted
+contracts/external-format.maude	contracts	ported	src/contracts.jl	source semantics and evidence retain their original scope	A01	accounted
+contracts/real.maude	contracts	ported	src/contracts.jl	source semantics and evidence retain their original scope	A01	accounted
+examples/core.maude	examples	adapted	examples/core.jl	source semantics and evidence retain their original scope	A01	accounted
+examples/symbolic.maude	examples	adapted	examples/symbolic.jl	source semantics and evidence retain their original scope	A01	accounted
+installation.md	installation.md	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+inventory/operations.json	inventory	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+inventory/source.json	inventory	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+inventory/traceability.tsv	inventory	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+lib/block-core.maude	lib	ported	src/operations.jl	source semantics and evidence retain their original scope	A01	accounted
+lib/block-ops.maude	lib	ported	src/operations.jl	source semantics and evidence retain their original scope	A01	accounted
+lib/block-templates.maude	lib	ported	src/operations.jl	source semantics and evidence retain their original scope	A01	accounted
+lib/block-wrappers.maude	lib	ported	src/generated_operations.jl	source semantics and evidence retain their original scope	A01	accounted
+lib/codec.maude	lib	ported	src/codec.jl	source semantics and evidence retain their original scope	A01	accounted
+lib/conformance.maude	lib	ported	src/conformance.jl	source semantics and evidence retain their original scope	A01	accounted
+lib/external-signature.maude	lib	ported	src/contracts.jl	source semantics and evidence retain their original scope	A01	accounted
+lib/format-core.maude	lib	ported	src/formats.jl	source semantics and evidence retain their original scope	A01	accounted
+lib/format-names.maude	lib	ported	src/formats.jl	source semantics and evidence retain their original scope	A01	accounted
+lib/format-queries.maude	lib	ported	src/formats.jl	source semantics and evidence retain their original scope	A01	accounted
+lib/omega-arithmetic.maude	lib	ported	src/arithmetic.jl	source semantics and evidence retain their original scope	A01	accounted
+lib/omega-extrema.maude	lib	ported	src/arithmetic.jl	source semantics and evidence retain their original scope	A01	accounted
+lib/order-next.maude	lib	ported	src/operations.jl	source semantics and evidence retain their original scope	A01	accounted
+lib/predicates.maude	lib	ported	src/operations.jl	source semantics and evidence retain their original scope	A01	accounted
+lib/project.maude	lib	ported	src/projection.jl	source semantics and evidence retain their original scope	A01	accounted
+lib/projection-spec.maude	lib	ported	src/policies.jl	source semantics and evidence retain their original scope	A01	accounted
+lib/rational-math.maude	lib	ported	src/values.jl	source semantics and evidence retain their original scope	A01	accounted
+lib/rounding.maude	lib	ported	src/projection.jl	source semantics and evidence retain their original scope	A01	accounted
+lib/saturation.maude	lib	ported	src/projection.jl	source semantics and evidence retain their original scope	A01	accounted
+lib/scalar-ops.maude	lib	ported	src/generated_operations.jl	source semantics and evidence retain their original scope	A01	accounted
+lib/scalar-templates.maude	lib	ported	src/operations.jl	source semantics and evidence retain their original scope	A01	accounted
+lib/sequences.maude	lib	ported	src/operations.jl	source semantics and evidence retain their original scope	A01	accounted
+lib/xreal.maude	lib	ported	src/values.jl	source semantics and evidence retain their original scope	A01	accounted
+load-contracts.maude	load-contracts.maude	ported	src/P3109Reference.jl	source semantics and evidence retain their original scope	A01	accounted
+load-core.maude	load-core.maude	ported	src/P3109Reference.jl	source semantics and evidence retain their original scope	A01	accounted
+load-spec.maude	load-spec.maude	ported	src/P3109Reference.jl	source semantics and evidence retain their original scope	A01	accounted
+load-symbolic.maude	load-symbolic.maude	ported	src/P3109Reference.jl	source semantics and evidence retain their original scope	A01	accounted
+maude2lean.md	maude2lean.md	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+planmaude.md	planmaude.md	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+possible_enhancements.md	possible_enhancements.md	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+proofs/coverage.md	proofs	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+proofs/deviations.md	proofs	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+proofs/obligations.tsv	proofs	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+proofs/sessions/saturation-commands.txt	proofs	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+proofs/sessions/saturation-crc.txt	proofs	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+proofs/sessions/saturation-scc.txt	proofs	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+proofs/sessions/smoke-commands.txt	proofs	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+proofs/sessions/smoke-crc.txt	proofs	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+proofs/sessions/smoke-scc.txt	proofs	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+proofs/sessions/summary.json	proofs	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+proofs/sessions/validation.json	proofs	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+proofs/slices/saturation-cases.maude	proofs	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+proofs/toolchain-smoke.maude	proofs	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+shortening.md	shortening.md	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+spec2.lean	spec2.lean	retained_evidence	evidence/obligations.md	source semantics and evidence retain their original scope	A01	accounted
+symbolic/block-ops.maude	symbolic	ported	src/operations.jl	source semantics and evidence retain their original scope	A01	accounted
+symbolic/block-wrappers.maude	symbolic	ported	src/generated_operations.jl	source semantics and evidence retain their original scope	A01	accounted
+symbolic/omega-elementary.maude	symbolic	ported	src/symbolic.jl	source semantics and evidence retain their original scope	A01	accounted
+symbolic/real-expressions.maude	symbolic	ported	src/symbolic.jl	source semantics and evidence retain their original scope	A01	accounted
+symbolic/scalar-ops.maude	symbolic	ported	src/generated_operations.jl	source semantics and evidence retain their original scope	A01	accounted
+tests/blocks.maude	tests	adapted	src/P3109Reference.jl	user removed stale assertion; remaining load-only module maps to package import	A01	verified_load_only
+tests/codec.maude	tests	adapted	src/P3109Reference.jl	user removed stale assertion; remaining load-only module maps to package import	A01	verified_load_only
+tests/conformance.maude	tests	adapted	test/runtests.jl	source semantics and evidence retain their original scope	A01	accounted
+tests/domains.maude	tests	adapted	test/runtests.jl	source semantics and evidence retain their original scope	A01	accounted
+tests/order-next.maude	tests	adapted	test/runtests.jl	source semantics and evidence retain their original scope	A01	accounted
+tests/projection.maude	tests	adapted	src/P3109Reference.jl	user removed stale assertion; remaining load-only module maps to package import	A01	verified_load_only
+tests/scalar.maude	tests	adapted	test/runtests.jl	source semantics and evidence retain their original scope	A01	accounted
+tests/smoke.maude	tests	adapted	test/runtests.jl	source semantics and evidence retain their original scope	A01	accounted
+tests/support.maude	tests	adapted	test/runtests.jl	source semantics and evidence retain their original scope	A01	accounted
+tests/symbolic.maude	tests	adapted	src/P3109Reference.jl	user removed stale assertion; remaining load-only module maps to package import	A01	verified_load_only
+tests/test_loads.py	tests	adapted	test/runtests.jl	source semantics and evidence retain their original scope	A01	accounted
+tests/test_source.py	tests	adapted	test/runtests.jl	source semantics and evidence retain their original scope	A01	accounted
+tests/vectors/arity-tables.json	tests	adapted	test/runtests.jl	source semantics and evidence retain their original scope	A01	accounted
+tests/vectors/blocks.json	tests	adapted	test/runtests.jl	source semantics and evidence retain their original scope	A01	accounted
+tests/vectors/regressions.json	tests	adapted	test/runtests.jl	source semantics and evidence retain their original scope	A01	accounted
+tests/vectors/symbolic.json	tests	adapted	test/runtests.jl	source semantics and evidence retain their original scope	A01	accounted
+tests/vectors/tables-3-7.json	tests	adapted	test/runtests.jl	source semantics and evidence retain their original scope	A01	accounted
+tools/check-inventory.py	tools	adapted	tools/README.md	source semantics and evidence retain their original scope	A01	accounted
+tools/check-loads.py	tools	adapted	tools/README.md	source semantics and evidence retain their original scope	A01	accounted
+tools/generate-wrappers.py	tools	adapted	tools/README.md	source semantics and evidence retain their original scope	A01	accounted
+tools/maude_source.py	tools	adapted	tools/README.md	source semantics and evidence retain their original scope	A01	accounted
+tools/reference.py	tools	adapted	tools/README.md	source semantics and evidence retain their original scope	A01	accounted
+tools/regressions.py	tools	adapted	tools/README.md	source semantics and evidence retain their original scope	A01	accounted
+tools/run-proofs.py	tools	adapted	tools/README.md	source semantics and evidence retain their original scope	A01	accounted
+tools/run-tests.py	tools	adapted	tools/README.md	source semantics and evidence retain their original scope	A01	accounted
+tools/suites.py	tools	adapted	tools/README.md	source semantics and evidence retain their original scope	A01	accounted

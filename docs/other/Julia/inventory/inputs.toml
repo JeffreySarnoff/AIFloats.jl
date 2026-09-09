@@ -1,0 +1,497 @@
+schema_version = 1
+snapshot_commit = "9290f3b72296fb949e00bf56e874d4a3d964e8a7"
+source_root = "../Maude"
+snapshot_note = "Includes user-authorized removal of four stale standalone assertions on 2026-09-08"
+guide_title = "Idiomatic Julia for Julia v1.13+"
+tool_and_worktree_record = "../evidence/runtime.toml"
+guide_path = "/home/jas/Documents/Julia/Julia Praxis/IdiomaticJulia.md"
+guide_sha256 = "e0965e09354e365a0d90d508d95584236c2bbf7d457d6cbfbf001771fff9d92b"
+historical_discrepancy = "BASELINE-PLAN-HASH: source planmaude.md differs from historical inventory/source.json"
+
+[[files]]
+path = "Lean/.gitignore"
+sha256 = "fde850d24186b6e99c8c0debd641fb3ab85198b109eb66f71a1fea02bd6ea1b3"
+
+[[files]]
+path = "Lean/Check.lean"
+sha256 = "7dcf70bdb038ebb33fe1571360c4f9a54efd80a593aacbaa5f6e96c068a78bb1"
+
+[[files]]
+path = "Lean/CheckFoundations.lean"
+sha256 = "465719eb1cfeae0ffbaa636b88aa96e4b1ca79404521e828bd8b8945b9a20c00"
+
+[[files]]
+path = "Lean/P3109/Foundations.lean"
+sha256 = "492a82aa0eb670bf28e3d31680ff094202ede5f0305683bbeb1b4700c193f033"
+
+[[files]]
+path = "Lean/P3109/Lemmas/Congruence.lean"
+sha256 = "d77b1458e1cd91763a3242a0b7039d110c3a0f96d59aecedd0f20dd9fa97045f"
+
+[[files]]
+path = "Lean/P3109/Lemmas/Equations/Bool.lean"
+sha256 = "4745347fccd362f4d35cdf412723feb002d4ac7ea12fad5c741bde9c1ce7fd6c"
+
+[[files]]
+path = "Lean/P3109/Lemmas/Equations/Conformance.lean"
+sha256 = "a1c773b7a86c9d8114c49bfcecf69fedc283f50aeba07c44cfc25b2f1ae3765f"
+
+[[files]]
+path = "Lean/P3109/Lemmas/Equations/Formats.lean"
+sha256 = "9f260bea1dbe6c74a9198c545cddc9c8c4021f4bbb1a982d3e01e84d229aeae1"
+
+[[files]]
+path = "Lean/P3109/Lemmas/Equations/Native.lean"
+sha256 = "8d85ce76606c39eb22bee996614e991a9628b258b7e20950b33f37faf5fcc110"
+
+[[files]]
+path = "Lean/P3109/Lemmas/Equations/SequencesAndBlocks.lean"
+sha256 = "6af334a62db18f454d784abcf73d2d351bed04a41191f143a230032328066dca"
+
+[[files]]
+path = "Lean/P3109/Lemmas/Equations/XReal.lean"
+sha256 = "55199a8fb4d35a64bf371f6bf78da557955f100f37280b4d3a85eeed20072946"
+
+[[files]]
+path = "Lean/P3109/Lemmas/Rewriting/Blocks.lean"
+sha256 = "259aa04791839fd704d381357cca88cc5fea96a5f2f5d154cfdc4a882ced5958"
+
+[[files]]
+path = "Lean/P3109/Lemmas/Rewriting/Bool.lean"
+sha256 = "3e4cc796e501aec2980d39667bbcc2016f47f3d898c5d44bc1fe6f104017346a"
+
+[[files]]
+path = "Lean/P3109/Lemmas/Rewriting/Conformance.lean"
+sha256 = "b3d0df45a247452970579a40c86592a21751e3486282a9ee0abe29c61d420cc9"
+
+[[files]]
+path = "Lean/P3109/Lemmas/Rewriting/Formats.lean"
+sha256 = "4858716624df443e80cc48d841298d5b5268f08f97b3a07328ad33a51c29d714"
+
+[[files]]
+path = "Lean/P3109/Lemmas/Rewriting/Rationals.lean"
+sha256 = "974228193685ad68f1cdf27236dbc4d302431f17eca3463c245fdb71d1671423"
+
+[[files]]
+path = "Lean/P3109/Lemmas/Rewriting/Sequences.lean"
+sha256 = "174183e3fe9507ff548009067a342ff52cf425bb6f77883c3b954653d8b8ecce"
+
+[[files]]
+path = "Lean/P3109/Lemmas/Rewriting/Strings.lean"
+sha256 = "01ca9eea9525d95039b4377abb8979fb28833c2bb72786fa99fabb8c13c32f59"
+
+[[files]]
+path = "Lean/P3109/Lemmas/Rewriting/XReal.lean"
+sha256 = "83516696f92b01a2fa09f4a476fd30bc9341dbda00289d8703faa118051a8bb2"
+
+[[files]]
+path = "Lean/P3109/Native/Equations.lean"
+sha256 = "06598b7da2a09ea39c8a39704e9d1ed28ab298ae564641dc0388a27e1d5bda5b"
+
+[[files]]
+path = "Lean/P3109/Native/Operators.lean"
+sha256 = "351ab0732a1345e1d17a7296845409dac516f3aa29bd6616f072906b315b8794"
+
+[[files]]
+path = "Lean/P3109/Predicates.lean"
+sha256 = "1a09a85a144e9ee0c6eb7aa48fd5e1d1b8ed3c4cc87a0702719ace24f8d40f26"
+
+[[files]]
+path = "Lean/P3109/Relations/AxiomaticEquality.lean"
+sha256 = "1cd8c70dbf304c8c4add92f48f92cf84de676ff6688a653ff41344b71e65f041"
+
+[[files]]
+path = "Lean/P3109/Relations/EquationalEquality.lean"
+sha256 = "c73c7b75f17b0e6134e3ec1c34595ac85864a66284e76bdb1b98e48b6f9f88a2"
+
+[[files]]
+path = "Lean/P3109/Relations/Rewriting.lean"
+sha256 = "f875bf71bca0fd3ac1f5aba11221f59c1290c291cdc790eddf2b8ba204461821"
+
+[[files]]
+path = "Lean/P3109/Representation.lean"
+sha256 = "23bbfd3457125c95b7c94f209f4df1c489aa71571bab4b375a85bfb1731febe1"
+
+[[files]]
+path = "Lean/P3109/Syntax.lean"
+sha256 = "7fad98b8cccff8475bde7ddb1c21d878b66cd9c50b7a39e6c6eb8df9dc15e7f4"
+
+[[files]]
+path = "Lean/P3109.lean"
+sha256 = "beff14387ef2e256840815d670af3e76cd313c62be931544da5e30d6eeca5f08"
+
+[[files]]
+path = "Lean/PLAN.md"
+sha256 = "26b9d149c6bcae5b4ccd55326ff42b44c3f54ddbbf8bc89da8f0bca3757101d9"
+
+[[files]]
+path = "Lean/README.md"
+sha256 = "46946a11941106ece755dae9931b9ad5e401c8f2d37f007e676ca66c09ce90dd"
+
+[[files]]
+path = "Lean/VALIDATION.md"
+sha256 = "faad54af647a115f0523477dfc40c4ecbbf7f13fcae4482030f19551b0ad3ba1"
+
+[[files]]
+path = "Lean/lake-manifest.json"
+sha256 = "af9b98d3bfe4e5f3206074eb84ddcba60be8b88b107ecec1350f6f063ba11ec2"
+
+[[files]]
+path = "Lean/lakefile.toml"
+sha256 = "f91b7c3e49bb5d070cc6afd1555cbc1cfa2c224ee2ea7c35eb3a89290b81f483"
+
+[[files]]
+path = "Lean/lean-toolchain"
+sha256 = "3aac669c7a910ec2389f4e4f921b605adf6ebf2d1e0c9b9cd0be4d33f3f5db71"
+
+[[files]]
+path = "Lean/manifest.json"
+sha256 = "3312e4c5a13c89d7a7d52a06fc886b27064e996229280a4633ec9a327bcddbf6"
+
+[[files]]
+path = "Lean/reorganize.py"
+sha256 = "04a1f46c48f3e7ab5089896ac5b4f0bb7bf235c0e705ad8a05fd36eddcb49683"
+
+[[files]]
+path = "README.md"
+sha256 = "7a1c7087823af704c5f6425a144b76a481f506eb43b63f1e2b6c919a2f7184c2"
+
+[[files]]
+path = "contracts/external-bridge.maude"
+sha256 = "0f21f1ef0a89874fb631aa6ee08c803077d19c8752a80374eae3711c9e777624"
+
+[[files]]
+path = "contracts/external-format.maude"
+sha256 = "fb352971d132102b05c52d78c7bb817838c8b7657bca32094e877d09da30a672"
+
+[[files]]
+path = "contracts/real.maude"
+sha256 = "e7d65b929c8041e4bc19cf506bef0829ab9beb95df8267a237b82871b1ef8f9c"
+
+[[files]]
+path = "examples/core.maude"
+sha256 = "fbb1786add9dd23b0d267304d571120776f60163ab21efd78f93d28ae057bb99"
+
+[[files]]
+path = "examples/symbolic.maude"
+sha256 = "8e6fa4aa59fe3064d7f192e4d0602ed9236238a29d27c48d2ade24995f41d267"
+
+[[files]]
+path = "installation.md"
+sha256 = "35c33310b633b53821fc72c2dbeb8c496bc7d9b92a4e41bd4c4a76f02e8e7cd7"
+
+[[files]]
+path = "inventory/operations.json"
+sha256 = "ebb8032d469a051dcee21389ea8461ad8f03b32900a9e94f426b4db64a5adc77"
+
+[[files]]
+path = "inventory/source.json"
+sha256 = "777faa8414684c57f92ff2739e4a80528abf50707f615abd11998b3cc1f6bcb4"
+
+[[files]]
+path = "inventory/traceability.tsv"
+sha256 = "bb7e4b2efa6bd43f5ccc521c3483429ff4edb7d8134f41a0fa879e921a082e2b"
+
+[[files]]
+path = "lib/block-core.maude"
+sha256 = "2710076054cd42dd7ea0f4dec3922c90c9580565fe21c334828567da3e7a484c"
+
+[[files]]
+path = "lib/block-ops.maude"
+sha256 = "28a6eef0f2367095f159f248cdeec0e17d37cae9372bdbd698dd792923d4685d"
+
+[[files]]
+path = "lib/block-templates.maude"
+sha256 = "6a5440ddb1d72484a89885106dbaa4c3252e78775fcffcec487be7a18203a181"
+
+[[files]]
+path = "lib/block-wrappers.maude"
+sha256 = "e7c52724281eab36b3d7c561afc40a2f039356e3addba2a8065a22606e719fae"
+
+[[files]]
+path = "lib/codec.maude"
+sha256 = "bfcbd14d3cf4d531c0f3232f474b2b580b359c8894e317ed8efbd4f90f227a29"
+
+[[files]]
+path = "lib/conformance.maude"
+sha256 = "ffdf11d8a760b45dd95933ff2c3f5a0ce469dacf6e442af3af0bd3f4d1e93112"
+
+[[files]]
+path = "lib/external-signature.maude"
+sha256 = "1ee5b52a5ee9adf6e29780c8dbf0cf80f9139bd20d1a158d83bccc36af04a4d4"
+
+[[files]]
+path = "lib/format-core.maude"
+sha256 = "72106f3fac2e66a6dae55060d741973dd3345799bdb1b8ebf0b6de8180a3df69"
+
+[[files]]
+path = "lib/format-names.maude"
+sha256 = "b86b06353e02650a87d02aee0bb3ceddbb723ed72f6c6a2b7d198e4c6edd56b4"
+
+[[files]]
+path = "lib/format-queries.maude"
+sha256 = "c965c31ade16851df06517cc5958cc6a0d32cca3d1eba42ebe9a20521a9712c1"
+
+[[files]]
+path = "lib/omega-arithmetic.maude"
+sha256 = "1e688340e41e45e1627b968a89143d7d22cbdc5ca7df350d037082346d8c80e7"
+
+[[files]]
+path = "lib/omega-extrema.maude"
+sha256 = "49962cc9f39768d30272bbcccc49bc3730282e3e8f1707900e675828c18b1962"
+
+[[files]]
+path = "lib/order-next.maude"
+sha256 = "e0af20c6f4f7026d6962051465549955fd470cc100e4627de3038fb1280aac43"
+
+[[files]]
+path = "lib/predicates.maude"
+sha256 = "91765d2f9e918eb514f5a3a802e68c220299016bd86b91c6cf0ee34441032723"
+
+[[files]]
+path = "lib/project.maude"
+sha256 = "bdd9d6113fad21973eacd1844b736eaf95e784582d58ac2a279f55766f1c7938"
+
+[[files]]
+path = "lib/projection-spec.maude"
+sha256 = "dbfe2195fa7dd310c039b9b2f8e405065727eb48bbcd41f2cf25a9353d6e6e58"
+
+[[files]]
+path = "lib/rational-math.maude"
+sha256 = "f48a99f04148326dd8a956a8f5c9b616a248d1a8ffc378bc5c5b2c11e50c0d56"
+
+[[files]]
+path = "lib/rounding.maude"
+sha256 = "08b812d854b6cdccabbf25eb8470e8a955f88aa5a0225398af189ecf997d1e22"
+
+[[files]]
+path = "lib/saturation.maude"
+sha256 = "3daae364034cfb919d8a05f2d09ab5824b4d5c7d70f149540362d5208c8f75ba"
+
+[[files]]
+path = "lib/scalar-ops.maude"
+sha256 = "6ede2c3c8456f4bdc6ad7c6bb8db19b7586ed1107765308a3cb39088eedd5b25"
+
+[[files]]
+path = "lib/scalar-templates.maude"
+sha256 = "472a456000183423762b989ede241007933966420332bd2442e9ce56f273de9a"
+
+[[files]]
+path = "lib/sequences.maude"
+sha256 = "e337e7ba31ae93388adcdae9d0c1edefd0178c2bb4cb83cf13838e7092547fa5"
+
+[[files]]
+path = "lib/xreal.maude"
+sha256 = "325e2cae38af95c21bffe8125866f83d57d7213698696b8b71ea1c8945fd9e6b"
+
+[[files]]
+path = "load-contracts.maude"
+sha256 = "1ca7c967cd92f943b4e8bc709eb5482eec1a76d409867135db1ff142870f47de"
+
+[[files]]
+path = "load-core.maude"
+sha256 = "0127b5be2914fa22b1751cc2f1b9de61ab22e5645c6bf9a9fb7b4ef50f341854"
+
+[[files]]
+path = "load-spec.maude"
+sha256 = "5633f13a724e0dab03b3e3b666806caa023263cedc4e83c3e886b12d5f77605b"
+
+[[files]]
+path = "load-symbolic.maude"
+sha256 = "35dc92e065302aefe24a1357e41254d75b9a4c83ad5277afcbb69e04ccf552b4"
+
+[[files]]
+path = "maude2lean.md"
+sha256 = "213ff868e56d9a5b36c1e0f4c5fc34046db7255bcc5e8b94b9c42ee96e0a735b"
+
+[[files]]
+path = "planmaude.md"
+sha256 = "539e07d64b85783d9c39f4a1487f9bcaa96445d8c7f6acbe246dd622fcecabc1"
+
+[[files]]
+path = "possible_enhancements.md"
+sha256 = "594e2981abf3d6c343e48bf227985d5f95c5369009a27e2559ea042f30fe7d4f"
+
+[[files]]
+path = "proofs/coverage.md"
+sha256 = "3934393515e854a954222d784d28f6ab76539ed9706cab4a8fdb6dad4fb1f11c"
+
+[[files]]
+path = "proofs/deviations.md"
+sha256 = "1425f56327e59960a1be608789175bff7452ba7b5c5a39242af551357bb7179a"
+
+[[files]]
+path = "proofs/obligations.tsv"
+sha256 = "d12e13040977f29d11ac66dfbfcb97aa809d982b2cadc027ad664161fa85e3a4"
+
+[[files]]
+path = "proofs/sessions/saturation-commands.txt"
+sha256 = "f37915d683cd55ee067d8c50bf1252ef0cfa04a388b540456ea0b46cf6d37b61"
+
+[[files]]
+path = "proofs/sessions/saturation-crc.txt"
+sha256 = "cd860d99eaf524c476c07b3f2d020b10b446843a1a45ff6946623f49b2b7c893"
+
+[[files]]
+path = "proofs/sessions/saturation-scc.txt"
+sha256 = "a8ce885aea89bae2723902d8c21d82ef5fcd84fc0f023f4838869a7a8ba5e13e"
+
+[[files]]
+path = "proofs/sessions/smoke-commands.txt"
+sha256 = "8462f8b18f8b863ae432c31edee30a996c88b3b6691eb19fe3529f73ac6a1ae5"
+
+[[files]]
+path = "proofs/sessions/smoke-crc.txt"
+sha256 = "8197ea0c54eecc699c82d078954125ef1fa179697cb71d3636c4d1f3969d40b5"
+
+[[files]]
+path = "proofs/sessions/smoke-scc.txt"
+sha256 = "f2a7afba3f56d828982234c53c8e54f9639e25dc4729f7d1ee84d0f5cecce75d"
+
+[[files]]
+path = "proofs/sessions/summary.json"
+sha256 = "0f0660bc6225d22fad29fe7b1e9050b0e9cb945ecc4d620c12b75489cdaf552a"
+
+[[files]]
+path = "proofs/sessions/validation.json"
+sha256 = "a0b62b78fa07a935ca6a516419523aaa848ac8bc334f87e0935e2936c8d709d8"
+
+[[files]]
+path = "proofs/slices/saturation-cases.maude"
+sha256 = "684771ed31948f2db504a4a79fa574deaf179bed9148a9f2c4e134d23c1be047"
+
+[[files]]
+path = "proofs/toolchain-smoke.maude"
+sha256 = "fa2b6229c1665162ed64e6aa870061fd86c85347ffaad473d0fdd44a686d0bf2"
+
+[[files]]
+path = "shortening.md"
+sha256 = "ec6170f69052f47b869ddb8e0067a762eff459ac1f842dad3319edd97f298ba0"
+
+[[files]]
+path = "spec2.lean"
+sha256 = "2a94d856a75b61df1bb3a59a48d9c4b602067a6d00af5b1e48cf2533071b24b6"
+
+[[files]]
+path = "symbolic/block-ops.maude"
+sha256 = "e07359178f6089283786baee023e158e9939f1b3a0dec6dbe173884fa21f63b4"
+
+[[files]]
+path = "symbolic/block-wrappers.maude"
+sha256 = "f252d3415929f81976063f2510b3f980e189f47163754ae2e27417e07116019a"
+
+[[files]]
+path = "symbolic/omega-elementary.maude"
+sha256 = "7d7ace9b51d3b9bb7b69bcf2a298946488944b309f47fe7dabac09f2cc3d1ee9"
+
+[[files]]
+path = "symbolic/real-expressions.maude"
+sha256 = "1ae6b428b1772d2b3bd29dc4164ef261f5f7088c286a085d09f920fcaf27b441"
+
+[[files]]
+path = "symbolic/scalar-ops.maude"
+sha256 = "61d938f73a31cb31c7833a92e57de1709ad4cdc69ba30b182c3a9189fb5d8bcc"
+
+[[files]]
+path = "tests/blocks.maude"
+sha256 = "b44e59718ee9f76331766f67476008cd225a6f2ba97f29ba7030bf4a8ed2e432"
+
+[[files]]
+path = "tests/codec.maude"
+sha256 = "72c6318babe60ab47178960b7183f3520280000ea14953546f8e97bdfba85543"
+
+[[files]]
+path = "tests/conformance.maude"
+sha256 = "296b2984527fc3925751e83604964f09b639582bb581a0bfe5c4e02bb5280cdf"
+
+[[files]]
+path = "tests/domains.maude"
+sha256 = "a025800aeedf29073d001719878edfd3f8734f127c80f3d03b86c53791bbd592"
+
+[[files]]
+path = "tests/order-next.maude"
+sha256 = "8cfc04bf7259dca2bd615e5e9662a6611f153a203cb6950eb04085d67ba20818"
+
+[[files]]
+path = "tests/projection.maude"
+sha256 = "afe4a678c6ef3d9f619b626d553ef39b9bcc44e2baa33b055caed71dc9d16e41"
+
+[[files]]
+path = "tests/scalar.maude"
+sha256 = "4cbcb33f0dc95663ffcdeb23a0b576326ab09b3d98e20d82082d8c2eec90cdaa"
+
+[[files]]
+path = "tests/smoke.maude"
+sha256 = "214dd90e34b26f46225c4cbd99a19aa98915d773f68b29663f534fa30cb1df68"
+
+[[files]]
+path = "tests/support.maude"
+sha256 = "0ae214bc8a84a00c8c7563252b62f0523220f3bf67c3f38edacab52289721490"
+
+[[files]]
+path = "tests/symbolic.maude"
+sha256 = "69257517c4fbaa992eef16037caf5ca0889d06f016052890b545b795d7503031"
+
+[[files]]
+path = "tests/test_loads.py"
+sha256 = "7d4c10c854e7e8c4fb2cbb76aada47836562a28cb5600a0a91bf40a8846fddc0"
+
+[[files]]
+path = "tests/test_source.py"
+sha256 = "8017855d014d47077d602307a172964d44b1bf30486391343c28ca7f7caba515"
+
+[[files]]
+path = "tests/vectors/arity-tables.json"
+sha256 = "f35630f254ce34c69ba18cb60029a8436695fb9b96a6ad04fec5ae3f50da30ac"
+
+[[files]]
+path = "tests/vectors/blocks.json"
+sha256 = "64895f93cdfd1abdfb84ae080c248fbffd3062dce2b7bd82a4ee0b2a3bacdbab"
+
+[[files]]
+path = "tests/vectors/regressions.json"
+sha256 = "7175bae48fc6f625b3eb416134fda64844406f51e68670805f3e850bbc4bbaaa"
+
+[[files]]
+path = "tests/vectors/symbolic.json"
+sha256 = "7f7184d3066785930ba11a2aac6dffe617f74c93c3853557ed064ece00e6b0b0"
+
+[[files]]
+path = "tests/vectors/tables-3-7.json"
+sha256 = "ceaf4c3b12669524a246fa64fbf1c6ddb66f424ec2492de9316c416e3aba2839"
+
+[[files]]
+path = "tools/check-inventory.py"
+sha256 = "f4168a1c77c5fce10e374b9bc4c1ac23ec3f8cd8f660d565ba2270a091867cd7"
+
+[[files]]
+path = "tools/check-loads.py"
+sha256 = "c1b3adfbd4e2c58eca321c1c2693021b743b1cfac1bb9260b63c46435403afb6"
+
+[[files]]
+path = "tools/generate-wrappers.py"
+sha256 = "f54aaa4713f3dcf346d2efa149658a8f93b0f8652224fd5292d2a4d397378028"
+
+[[files]]
+path = "tools/maude_source.py"
+sha256 = "87fcda7dec4ca135a40948439b8c10dc2f567e97cabd8060d4601906885a64cb"
+
+[[files]]
+path = "tools/reference.py"
+sha256 = "44f11a657c201403c362411414cfc83b98752a232d34be7f84f3a78c5f6e7c32"
+
+[[files]]
+path = "tools/regressions.py"
+sha256 = "42de381834ea6af12f216dfb0d8e1919a50b3759c3233819374787d750243dbc"
+
+[[files]]
+path = "tools/run-proofs.py"
+sha256 = "9fefdba3cf1377f349075ae119ff7013a5a1454e6c9a7bfcbb36bf0616209c73"
+
+[[files]]
+path = "tools/run-tests.py"
+sha256 = "6f7dc41306bab682eb109ab5e9fb39fc1049da8f07154fca6f7f785f834139f8"
+
+[[files]]
+path = "tools/suites.py"
+sha256 = "007c14e4cd7cbc34783f82d9deb569636945025a17b9c08059dcadc921df6a3e"

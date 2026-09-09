@@ -1,0 +1,17 @@
+# Resolved workspace dependencies; runtime package has no external dependencies.
+
+[JSON]
+version = "1.7.1"
+git_tree_sha1 = "c7345ab1a7ca4dc8a02c9f6510da0d9857bbe513"
+
+[CodecZlib]
+version = "0.7.9"
+git_tree_sha1 = "970758a3d591a2a5c2a907c53f2e2f8c1b1d3537"
+
+[JuliaFormatter]
+version = "2.14.0"
+git_tree_sha1 = "4a25454bfd37ad800d20017fe59243e41163fed9"
+
+[BenchmarkTools]
+version = "1.8.0"
+git_tree_sha1 = "9670d3febc2b6da60a0ae57846ba74670290653f"

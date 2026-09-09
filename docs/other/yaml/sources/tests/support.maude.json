@@ -1,0 +1,155 @@
+{
+  "version": 1,
+  "path": "tests/support.maude",
+  "sha256": "0ae214bc8a84a00c8c7563252b62f0523220f3bf67c3f38edacab52289721490",
+  "type": "maude",
+  "records": [
+    {
+      "line": 1,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- Source: P3109/D1 implementation test harness, printed page n/a.\n"
+    },
+    {
+      "line": 2,
+      "kind": "fmod",
+      "fields": {
+        "name": "P3109-TEST-SUPPORT",
+        "parameters": []
+      },
+      "text": "fmod P3109-TEST-SUPPORT is\n"
+    },
+    {
+      "line": 3,
+      "kind": "protecting",
+      "fields": {
+        "expression": "STRING"
+      },
+      "text": "  protecting STRING .\n"
+    },
+    {
+      "line": 4,
+      "kind": "protecting",
+      "fields": {
+        "expression": "NAT"
+      },
+      "text": "  protecting NAT .\n"
+    },
+    {
+      "line": 5,
+      "kind": "sort",
+      "fields": {
+        "names": [
+          "TestResult"
+        ]
+      },
+      "text": "  sort TestResult .\n"
+    },
+    {
+      "line": 6,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "suiteComplete"
+        ],
+        "domain": [
+          "Nat"
+        ],
+        "arrow": "->",
+        "range": "TestResult",
+        "attributes": "ctor"
+      },
+      "text": "  op suiteComplete : Nat -> TestResult [ctor] .\n"
+    },
+    {
+      "line": 7,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "passed"
+        ],
+        "domain": [
+          "String"
+        ],
+        "arrow": "->",
+        "range": "TestResult",
+        "attributes": "ctor"
+      },
+      "text": "  op passed : String -> TestResult [ctor] .\n"
+    },
+    {
+      "line": 8,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "failed"
+        ],
+        "domain": [
+          "String"
+        ],
+        "arrow": "->",
+        "range": "TestResult",
+        "attributes": "ctor"
+      },
+      "text": "  op failed : String -> TestResult [ctor] .\n"
+    },
+    {
+      "line": 9,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "check"
+        ],
+        "domain": [
+          "String",
+          "Bool"
+        ],
+        "arrow": "->",
+        "range": "TestResult",
+        "attributes": ""
+      },
+      "text": "  op check : String Bool -> TestResult .\n"
+    },
+    {
+      "line": 10,
+      "kind": "var",
+      "fields": {
+        "names": [
+          "ID"
+        ],
+        "sort": "String"
+      },
+      "text": "  var ID : String .\n"
+    },
+    {
+      "line": 11,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-support-001",
+        "lhs": "check(ID, true)",
+        "rhs": "passed(ID)",
+        "condition": null,
+        "attributes": "metadata \"clause=implementation test harness; page=n/a\""
+      },
+      "text": "  eq [p3109-support-001] : check(ID, true) = passed(ID) [metadata \"clause=implementation test harness; page=n/a\"] .\n"
+    },
+    {
+      "line": 12,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-support-002",
+        "lhs": "check(ID, false)",
+        "rhs": "failed(ID)",
+        "condition": null,
+        "attributes": "metadata \"clause=implementation test harness; page=n/a\""
+      },
+      "text": "  eq [p3109-support-002] : check(ID, false) = failed(ID) [metadata \"clause=implementation test harness; page=n/a\"] .\n"
+    },
+    {
+      "line": 13,
+      "kind": "endfm",
+      "fields": {},
+      "text": "endfm\n"
+    }
+  ]
+}

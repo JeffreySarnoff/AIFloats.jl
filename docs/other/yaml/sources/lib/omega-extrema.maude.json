@@ -1,0 +1,695 @@
+{
+  "version": 1,
+  "path": "lib/omega-extrema.maude",
+  "sha256": "49962cc9f39768d30272bbcccc49bc3730282e3e8f1707900e675828c18b1962",
+  "type": "maude",
+  "records": [
+    {
+      "line": 1,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- Source: P3109/D1 4.11, printed page 49-52.\n"
+    },
+    {
+      "line": 2,
+      "kind": "fmod",
+      "fields": {
+        "name": "P3109-OMEGA-EXTREMA",
+        "parameters": []
+      },
+      "text": "fmod P3109-OMEGA-EXTREMA is\n"
+    },
+    {
+      "line": 3,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-OMEGA-ARITHMETIC"
+      },
+      "text": "  including P3109-OMEGA-ARITHMETIC .\n"
+    },
+    {
+      "line": 4,
+      "kind": "ops",
+      "fields": {
+        "names": [
+          "omegaMinimum",
+          "omegaMaximum",
+          "omegaMinimumNumber",
+          "omegaMaximumNumber",
+          "omegaMinimumMagnitude",
+          "omegaMaximumMagnitude",
+          "omegaMinimumMagnitudeNumber",
+          "omegaMaximumMagnitudeNumber",
+          "omegaMinimumFinite",
+          "omegaMaximumFinite"
+        ],
+        "domain": [
+          "XReal",
+          "XReal"
+        ],
+        "arrow": "~>",
+        "range": "XReal",
+        "attributes": ""
+      },
+      "text": "  ops omegaMinimum omegaMaximum omegaMinimumNumber omegaMaximumNumber omegaMinimumMagnitude omegaMaximumMagnitude omegaMinimumMagnitudeNumber omegaMaximumMagnitudeNumber omegaMinimumFinite omegaMaximumFinite : XReal XReal ~> XReal .\n"
+    },
+    {
+      "line": 5,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "omegaClamp"
+        ],
+        "domain": [
+          "XReal",
+          "XReal",
+          "XReal"
+        ],
+        "arrow": "~>",
+        "range": "XReal",
+        "attributes": ""
+      },
+      "text": "  op omegaClamp : XReal XReal XReal ~> XReal .\n"
+    },
+    {
+      "line": 6,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "X",
+          "Y",
+          "Z"
+        ],
+        "sort": "XReal"
+      },
+      "text": "  vars X Y Z : XReal .\n"
+    },
+    {
+      "line": 7,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "A",
+          "B",
+          "C"
+        ],
+        "sort": "Number"
+      },
+      "text": "  vars A B C : Number .\n"
+    },
+    {
+      "line": 8,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "U",
+          "V"
+        ],
+        "sort": "Real"
+      },
+      "text": "  vars U V : Real .\n"
+    },
+    {
+      "line": 9,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "I",
+          "J"
+        ],
+        "sort": "Infinity"
+      },
+      "text": "  vars I J : Infinity .\n"
+    },
+    {
+      "line": 10,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-001",
+        "lhs": "omegaMinimum(nan, X)",
+        "rhs": "nan",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-001] : omegaMinimum(nan, X) = nan [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 11,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-002",
+        "lhs": "omegaMinimum(A, nan)",
+        "rhs": "nan",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-002] : omegaMinimum(A, nan) = nan [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 12,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-omega-extrema-003",
+        "lhs": "omegaMinimum(A, B)",
+        "rhs": "A",
+        "condition": "xLt(A, B)",
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  ceq [p3109-omega-extrema-003] : omegaMinimum(A, B) = A if xLt(A, B) [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 13,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-omega-extrema-004",
+        "lhs": "omegaMinimum(A, B)",
+        "rhs": "B",
+        "condition": "xLe(B, A)",
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  ceq [p3109-omega-extrema-004] : omegaMinimum(A, B) = B if xLe(B, A) [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 14,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-005",
+        "lhs": "omegaMinimumNumber(nan, X)",
+        "rhs": "X",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-005] : omegaMinimumNumber(nan, X) = X [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 15,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-006",
+        "lhs": "omegaMinimumNumber(A, nan)",
+        "rhs": "A",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-006] : omegaMinimumNumber(A, nan) = A [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 16,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-007",
+        "lhs": "omegaMinimumNumber(A, B)",
+        "rhs": "omegaMinimum(A, B)",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-007] : omegaMinimumNumber(A, B) = omegaMinimum(A, B) [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 17,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-008",
+        "lhs": "omegaMinimumMagnitude(nan, X)",
+        "rhs": "nan",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-008] : omegaMinimumMagnitude(nan, X) = nan [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 18,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-009",
+        "lhs": "omegaMinimumMagnitude(A, nan)",
+        "rhs": "nan",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-009] : omegaMinimumMagnitude(A, nan) = nan [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 19,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-omega-extrema-010",
+        "lhs": "omegaMinimumMagnitude(A, B)",
+        "rhs": "A",
+        "condition": "xLt(omegaAbs(A), omegaAbs(B))",
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  ceq [p3109-omega-extrema-010] : omegaMinimumMagnitude(A, B) = A if xLt(omegaAbs(A), omegaAbs(B)) [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 20,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-omega-extrema-011",
+        "lhs": "omegaMinimumMagnitude(A, B)",
+        "rhs": "B",
+        "condition": "xLt(omegaAbs(B), omegaAbs(A))",
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  ceq [p3109-omega-extrema-011] : omegaMinimumMagnitude(A, B) = B if xLt(omegaAbs(B), omegaAbs(A)) [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 21,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-omega-extrema-012",
+        "lhs": "omegaMinimumMagnitude(A, B)",
+        "rhs": "omegaMinimum(A, B)",
+        "condition": "xEq(omegaAbs(A), omegaAbs(B))",
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  ceq [p3109-omega-extrema-012] : omegaMinimumMagnitude(A, B) = omegaMinimum(A, B) if xEq(omegaAbs(A), omegaAbs(B)) [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 22,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-013",
+        "lhs": "omegaMinimumMagnitudeNumber(nan, X)",
+        "rhs": "X",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-013] : omegaMinimumMagnitudeNumber(nan, X) = X [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 23,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-014",
+        "lhs": "omegaMinimumMagnitudeNumber(A, nan)",
+        "rhs": "A",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-014] : omegaMinimumMagnitudeNumber(A, nan) = A [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 24,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-015",
+        "lhs": "omegaMinimumMagnitudeNumber(A, B)",
+        "rhs": "omegaMinimumMagnitude(A, B)",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-015] : omegaMinimumMagnitudeNumber(A, B) = omegaMinimumMagnitude(A, B) [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 25,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-016",
+        "lhs": "omegaMinimumFinite(nan, X)",
+        "rhs": "X",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-016] : omegaMinimumFinite(nan, X) = X [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 26,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-017",
+        "lhs": "omegaMinimumFinite(A, nan)",
+        "rhs": "A",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-017] : omegaMinimumFinite(A, nan) = A [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 27,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-018",
+        "lhs": "omegaMinimumFinite(I, J)",
+        "rhs": "omegaMinimum(I, J)",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-018] : omegaMinimumFinite(I, J) = omegaMinimum(I, J) [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 28,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-019",
+        "lhs": "omegaMinimumFinite(I, U)",
+        "rhs": "U",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-019] : omegaMinimumFinite(I, U) = U [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 29,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-020",
+        "lhs": "omegaMinimumFinite(U, I)",
+        "rhs": "U",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-020] : omegaMinimumFinite(U, I) = U [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 30,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-021",
+        "lhs": "omegaMinimumFinite(U, V)",
+        "rhs": "omegaMinimum(U, V)",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-021] : omegaMinimumFinite(U, V) = omegaMinimum(U, V) [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 31,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-022",
+        "lhs": "omegaMaximum(nan, X)",
+        "rhs": "nan",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-022] : omegaMaximum(nan, X) = nan [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 32,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-023",
+        "lhs": "omegaMaximum(A, nan)",
+        "rhs": "nan",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-023] : omegaMaximum(A, nan) = nan [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 33,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-omega-extrema-024",
+        "lhs": "omegaMaximum(A, B)",
+        "rhs": "B",
+        "condition": "xLt(A, B)",
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  ceq [p3109-omega-extrema-024] : omegaMaximum(A, B) = B if xLt(A, B) [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 34,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-omega-extrema-025",
+        "lhs": "omegaMaximum(A, B)",
+        "rhs": "A",
+        "condition": "xLe(B, A)",
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  ceq [p3109-omega-extrema-025] : omegaMaximum(A, B) = A if xLe(B, A) [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 35,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-026",
+        "lhs": "omegaMaximumNumber(nan, X)",
+        "rhs": "X",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-026] : omegaMaximumNumber(nan, X) = X [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 36,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-027",
+        "lhs": "omegaMaximumNumber(A, nan)",
+        "rhs": "A",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-027] : omegaMaximumNumber(A, nan) = A [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 37,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-028",
+        "lhs": "omegaMaximumNumber(A, B)",
+        "rhs": "omegaMaximum(A, B)",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-028] : omegaMaximumNumber(A, B) = omegaMaximum(A, B) [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 38,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-029",
+        "lhs": "omegaMaximumMagnitude(nan, X)",
+        "rhs": "nan",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-029] : omegaMaximumMagnitude(nan, X) = nan [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 39,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-030",
+        "lhs": "omegaMaximumMagnitude(A, nan)",
+        "rhs": "nan",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-030] : omegaMaximumMagnitude(A, nan) = nan [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 40,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-omega-extrema-031",
+        "lhs": "omegaMaximumMagnitude(A, B)",
+        "rhs": "B",
+        "condition": "xLt(omegaAbs(A), omegaAbs(B))",
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  ceq [p3109-omega-extrema-031] : omegaMaximumMagnitude(A, B) = B if xLt(omegaAbs(A), omegaAbs(B)) [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 41,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-omega-extrema-032",
+        "lhs": "omegaMaximumMagnitude(A, B)",
+        "rhs": "A",
+        "condition": "xLt(omegaAbs(B), omegaAbs(A))",
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  ceq [p3109-omega-extrema-032] : omegaMaximumMagnitude(A, B) = A if xLt(omegaAbs(B), omegaAbs(A)) [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 42,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-omega-extrema-033",
+        "lhs": "omegaMaximumMagnitude(A, B)",
+        "rhs": "omegaMaximum(A, B)",
+        "condition": "xEq(omegaAbs(A), omegaAbs(B))",
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  ceq [p3109-omega-extrema-033] : omegaMaximumMagnitude(A, B) = omegaMaximum(A, B) if xEq(omegaAbs(A), omegaAbs(B)) [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 43,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-034",
+        "lhs": "omegaMaximumMagnitudeNumber(nan, X)",
+        "rhs": "X",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-034] : omegaMaximumMagnitudeNumber(nan, X) = X [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 44,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-035",
+        "lhs": "omegaMaximumMagnitudeNumber(A, nan)",
+        "rhs": "A",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-035] : omegaMaximumMagnitudeNumber(A, nan) = A [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 45,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-036",
+        "lhs": "omegaMaximumMagnitudeNumber(A, B)",
+        "rhs": "omegaMaximumMagnitude(A, B)",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-036] : omegaMaximumMagnitudeNumber(A, B) = omegaMaximumMagnitude(A, B) [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 46,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-037",
+        "lhs": "omegaMaximumFinite(nan, X)",
+        "rhs": "X",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-037] : omegaMaximumFinite(nan, X) = X [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 47,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-038",
+        "lhs": "omegaMaximumFinite(A, nan)",
+        "rhs": "A",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-038] : omegaMaximumFinite(A, nan) = A [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 48,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-039",
+        "lhs": "omegaMaximumFinite(I, J)",
+        "rhs": "omegaMaximum(I, J)",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-039] : omegaMaximumFinite(I, J) = omegaMaximum(I, J) [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 49,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-040",
+        "lhs": "omegaMaximumFinite(I, U)",
+        "rhs": "U",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-040] : omegaMaximumFinite(I, U) = U [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 50,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-041",
+        "lhs": "omegaMaximumFinite(U, I)",
+        "rhs": "U",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-041] : omegaMaximumFinite(U, I) = U [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 51,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-042",
+        "lhs": "omegaMaximumFinite(U, V)",
+        "rhs": "omegaMaximum(U, V)",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-042] : omegaMaximumFinite(U, V) = omegaMaximum(U, V) [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 52,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-043",
+        "lhs": "omegaClamp(nan, X, Y)",
+        "rhs": "nan",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-043] : omegaClamp(nan, X, Y) = nan [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 53,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-044",
+        "lhs": "omegaClamp(A, nan, X)",
+        "rhs": "nan",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-044] : omegaClamp(A, nan, X) = nan [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 54,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-omega-extrema-045",
+        "lhs": "omegaClamp(A, B, nan)",
+        "rhs": "nan",
+        "condition": null,
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  eq [p3109-omega-extrema-045] : omegaClamp(A, B, nan) = nan [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 55,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-omega-extrema-046",
+        "lhs": "omegaClamp(A, B, C)",
+        "rhs": "nan",
+        "condition": "xLt(C, B)",
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  ceq [p3109-omega-extrema-046] : omegaClamp(A, B, C) = nan if xLt(C, B) [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 56,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-omega-extrema-047",
+        "lhs": "omegaClamp(A, B, C)",
+        "rhs": "omegaMinimum(omegaMaximum(A, B), C)",
+        "condition": "xLe(B, C)",
+        "attributes": "metadata \"clause=4.11; page=49-52\""
+      },
+      "text": "  ceq [p3109-omega-extrema-047] : omegaClamp(A, B, C) = omegaMinimum(omegaMaximum(A, B), C) if xLe(B, C) [metadata \"clause=4.11; page=49-52\"] .\n"
+    },
+    {
+      "line": 57,
+      "kind": "endfm",
+      "fields": {},
+      "text": "endfm\n"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+  order-full: 25000 checks
+  order-full: 50000 checks
+  order-full: 75000 checks
+  order-full: 100000 checks
+  order-full: 125000 checks
+  order-full: 150000 checks
+  order-full: 175000 checks
+  order-full: 200000 checks
+  order-full: 225000 checks
+  order-full: 250000 checks
+  order-full: 275000 checks
+PASS order-full: expected=279840 executed=279840 (47.51s)
+TOTAL expected=279840 executed=279840

@@ -1,0 +1,260 @@
+version: 1
+path: contracts/external-format.maude
+sha256: fb352971d132102b05c52d78c7bb817838c8b7657bca32094e877d09da30a672
+type: maude
+records:
+- line: 1
+  kind: comment
+  fields: {}
+  text: |
+    --- Source: P3109/D1 4.8; 4.14, printed page 31; 58.
+- line: 2
+  kind: fth
+  fields:
+    name: P3109-EXTERNAL-FORMAT
+    parameters: []
+  text: |
+    fth P3109-EXTERNAL-FORMAT is
+- line: 3
+  kind: including
+  fields:
+    expression: P3109-EXTERNAL-SIGNATURE
+  text: |2
+      including P3109-EXTERNAL-SIGNATURE .
+- line: 4
+  kind: op
+  fields:
+    names:
+    - backendFormat
+    domain: []
+    arrow: ->
+    range: Format
+    attributes: ''
+  text: |2
+      op backendFormat : -> Format .
+- line: 5
+  kind: op
+  fields:
+    names:
+    - backendDecode
+    domain:
+    - Int
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op backendDecode : Int ~> XReal .
+- line: 6
+  kind: op
+  fields:
+    names:
+    - backendEncode
+    domain:
+    - XReal
+    arrow: ~>
+    range: Nat
+    attributes: ''
+  text: |2
+      op backendEncode : XReal ~> Nat .
+- line: 7
+  kind: op
+  fields:
+    names:
+    - backendDatum
+    domain:
+    - XReal
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      op backendDatum : XReal -> Bool .
+- line: 8
+  kind: op
+  fields:
+    names:
+    - backendValidCode
+    domain:
+    - Int
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      op backendValidCode : Int -> Bool .
+- line: 9
+  kind: op
+  fields:
+    names:
+    - backendCanonical
+    domain:
+    - Int
+    arrow: ~>
+    range: Nat
+    attributes: ''
+  text: |2
+      op backendCanonical : Int ~> Nat .
+- line: 10
+  kind: op
+  fields:
+    names:
+    - backendQuietNaN
+    domain: []
+    arrow: ->
+    range: Nat
+    attributes: ''
+  text: |2
+      op backendQuietNaN : -> Nat .
+- line: 11
+  kind: op
+  fields:
+    names:
+    - backendPositiveZero
+    domain: []
+    arrow: ->
+    range: Nat
+    attributes: ''
+  text: |2
+      op backendPositiveZero : -> Nat .
+- line: 12
+  kind: op
+  fields:
+    names:
+    - backendBound
+    domain:
+    - BoundQuery
+    arrow: ~>
+    range: Nat
+    attributes: ''
+  text: |2
+      op backendBound : BoundQuery ~> Nat .
+- line: 13
+  kind: op
+  fields:
+    names:
+    - backendFiniteCount
+    domain: []
+    arrow: ->
+    range: Nat
+    attributes: ''
+  text: |2
+      op backendFiniteCount : -> Nat .
+- line: 14
+  kind: vars
+  fields:
+    names:
+    - C
+    sort: Int
+  text: |2
+      vars C : Int .
+- line: 15
+  kind: var
+  fields:
+    names:
+    - X
+    sort: XReal
+  text: |2
+      var X : XReal .
+- line: 16
+  kind: ceq
+  fields:
+    label: p3109-external-format-001
+    lhs: backendDecode(backendEncode(X))
+    rhs: X
+    condition: backendDatum(X)
+    attributes: metadata "clause=4.8; 4.14; page=31; 58"
+  text: |2
+      ceq [p3109-external-format-001] : backendDecode(backendEncode(X)) = X if backendDatum(X) [metadata "clause=4.8; 4.14; page=31; 58"] .
+- line: 17
+  kind: ceq
+  fields:
+    label: p3109-external-format-002
+    lhs: backendEncode(backendDecode(C))
+    rhs: backendCanonical(C)
+    condition: backendValidCode(C)
+    attributes: metadata "clause=4.8; 4.14; page=31; 58"
+  text: |2
+      ceq [p3109-external-format-002] : backendEncode(backendDecode(C)) = backendCanonical(C) if backendValidCode(C) [metadata "clause=4.8; 4.14; page=31; 58"] .
+- line: 18
+  kind: ceq
+  fields:
+    label: p3109-external-format-003
+    lhs: backendDatum(backendDecode(C))
+    rhs: 'true'
+    condition: backendValidCode(C)
+    attributes: metadata "clause=4.8; 4.14; page=31; 58"
+  text: |2
+      ceq [p3109-external-format-003] : backendDatum(backendDecode(C)) = true if backendValidCode(C) [metadata "clause=4.8; 4.14; page=31; 58"] .
+- line: 19
+  kind: ceq
+  fields:
+    label: p3109-external-format-004
+    lhs: backendValidCode(backendEncode(X))
+    rhs: 'true'
+    condition: backendDatum(X)
+    attributes: metadata "clause=4.8; 4.14; page=31; 58"
+  text: |2
+      ceq [p3109-external-format-004] : backendValidCode(backendEncode(X)) = true if backendDatum(X) [metadata "clause=4.8; 4.14; page=31; 58"] .
+- line: 20
+  kind: eq
+  fields:
+    label: p3109-external-format-005
+    lhs: backendEncode(nan)
+    rhs: backendQuietNaN
+    condition: null
+    attributes: metadata "clause=4.8; 4.14; page=31; 58"
+  text: |2
+      eq [p3109-external-format-005] : backendEncode(nan) = backendQuietNaN [metadata "clause=4.8; 4.14; page=31; 58"] .
+- line: 21
+  kind: eq
+  fields:
+    label: p3109-external-format-006
+    lhs: backendDecode(backendQuietNaN)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.8; 4.14; page=31; 58"
+  text: |2
+      eq [p3109-external-format-006] : backendDecode(backendQuietNaN) = nan [metadata "clause=4.8; 4.14; page=31; 58"] .
+- line: 22
+  kind: eq
+  fields:
+    label: p3109-external-format-007
+    lhs: backendEncode(fin(0))
+    rhs: backendPositiveZero
+    condition: null
+    attributes: metadata "clause=4.8; 4.14; page=31; 58"
+  text: |2
+      eq [p3109-external-format-007] : backendEncode(fin(0)) = backendPositiveZero [metadata "clause=4.8; 4.14; page=31; 58"] .
+- line: 23
+  kind: eq
+  fields:
+    label: p3109-external-format-008
+    lhs: backendDecode(backendPositiveZero)
+    rhs: fin(0)
+    condition: null
+    attributes: metadata "clause=4.8; 4.14; page=31; 58"
+  text: |2
+      eq [p3109-external-format-008] : backendDecode(backendPositiveZero) = fin(0) [metadata "clause=4.8; 4.14; page=31; 58"] .
+- line: 24
+  kind: endfth
+  fields: {}
+  text: |
+    endfth
+- line: 25
+  kind: comment
+  fields: {}
+  text: |
+    --- A backend must additionally identify all NaN encodings and both zeros,
+- line: 26
+  kind: comment
+  fields: {}
+  text: |
+    --- decode both infinities, justify all five bound queries and finite-value
+- line: 27
+  kind: comment
+  fields: {}
+  text: |
+    --- counting (single zero), and prove that backendFormat is an allowed external
+- line: 28
+  kind: comment
+  fields: {}
+  text: |
+    --- format. These obligations cannot be discharged from this draft alone.

@@ -1,0 +1,123 @@
+{
+  "version": 1,
+  "path": "contracts/external-bridge.maude",
+  "sha256": "0f21f1ef0a89874fb631aa6ee08c803077d19c8752a80374eae3711c9e777624",
+  "type": "maude",
+  "records": [
+    {
+      "line": 1,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- Source: P3109/D1 4.8; parameterized interface, printed page 31.\n"
+    },
+    {
+      "line": 2,
+      "kind": "fmod",
+      "fields": {
+        "name": "P3109-EXTERNAL-BRIDGE",
+        "parameters": [
+          {
+            "name": "B",
+            "theory": "P3109-EXTERNAL-FORMAT"
+          }
+        ]
+      },
+      "text": "fmod P3109-EXTERNAL-BRIDGE{B :: P3109-EXTERNAL-FORMAT} is\n"
+    },
+    {
+      "line": 3,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-CODEC"
+      },
+      "text": "  including P3109-CODEC .\n"
+    },
+    {
+      "line": 4,
+      "kind": "var",
+      "fields": {
+        "names": [
+          "C"
+        ],
+        "sort": "Int"
+      },
+      "text": "  var C : Int .\n"
+    },
+    {
+      "line": 5,
+      "kind": "var",
+      "fields": {
+        "names": [
+          "X"
+        ],
+        "sort": "XReal"
+      },
+      "text": "  var X : XReal .\n"
+    },
+    {
+      "line": 6,
+      "kind": "var",
+      "fields": {
+        "names": [
+          "N"
+        ],
+        "sort": "BoundQuery"
+      },
+      "text": "  var N : BoundQuery .\n"
+    },
+    {
+      "line": 7,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-external-bridge-001",
+        "lhs": "externalDecode(backendFormat, C)",
+        "rhs": "backendDecode(C)",
+        "condition": "backendValidCode(C)",
+        "attributes": "metadata \"clause=4.8; parameterized interface; page=31\""
+      },
+      "text": "  ceq [p3109-external-bridge-001] : externalDecode(backendFormat, C) = backendDecode(C) if backendValidCode(C) [metadata \"clause=4.8; parameterized interface; page=31\"] .\n"
+    },
+    {
+      "line": 8,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-external-bridge-002",
+        "lhs": "externalEncode(backendFormat, X)",
+        "rhs": "backendEncode(X)",
+        "condition": "backendDatum(X)",
+        "attributes": "metadata \"clause=4.8; parameterized interface; page=31\""
+      },
+      "text": "  ceq [p3109-external-bridge-002] : externalEncode(backendFormat, X) = backendEncode(X) if backendDatum(X) [metadata \"clause=4.8; parameterized interface; page=31\"] .\n"
+    },
+    {
+      "line": 9,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-external-bridge-003",
+        "lhs": "externalDatum(backendFormat, X)",
+        "rhs": "backendDatum(X)",
+        "condition": null,
+        "attributes": "metadata \"clause=4.8; parameterized interface; page=31\""
+      },
+      "text": "  eq [p3109-external-bridge-003] : externalDatum(backendFormat, X) = backendDatum(X) [metadata \"clause=4.8; parameterized interface; page=31\"] .\n"
+    },
+    {
+      "line": 10,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-external-bridge-004",
+        "lhs": "externalBound(backendFormat, N)",
+        "rhs": "backendBound(N)",
+        "condition": null,
+        "attributes": "metadata \"clause=4.8; parameterized interface; page=31\""
+      },
+      "text": "  eq [p3109-external-bridge-004] : externalBound(backendFormat, N) = backendBound(N) [metadata \"clause=4.8; parameterized interface; page=31\"] .\n"
+    },
+    {
+      "line": 11,
+      "kind": "endfm",
+      "fields": {},
+      "text": "endfm\n"
+    }
+  ]
+}

@@ -1,0 +1,707 @@
+{
+  "version": 1,
+  "path": "lib/xreal.maude",
+  "sha256": "325e2cae38af95c21bffe8125866f83d57d7213698696b8b71ea1c8945fd9e6b",
+  "type": "maude",
+  "records": [
+    {
+      "line": 1,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- Source: P3109/D1 3.1; 4.12; 4.13, printed page 16; 53-56.\n"
+    },
+    {
+      "line": 2,
+      "kind": "fmod",
+      "fields": {
+        "name": "P3109-XREAL",
+        "parameters": []
+      },
+      "text": "fmod P3109-XREAL is\n"
+    },
+    {
+      "line": 3,
+      "kind": "protecting",
+      "fields": {
+        "expression": "RAT"
+      },
+      "text": "  protecting RAT .\n"
+    },
+    {
+      "line": 4,
+      "kind": "sorts",
+      "fields": {
+        "names": [
+          "Real",
+          "Number",
+          "Infinity",
+          "XReal"
+        ]
+      },
+      "text": "  sorts Real Number Infinity XReal .\n"
+    },
+    {
+      "line": 5,
+      "kind": "subsorts",
+      "fields": {
+        "chain": [
+          [
+            "Real"
+          ],
+          [
+            "Number"
+          ],
+          [
+            "XReal"
+          ]
+        ]
+      },
+      "text": "  subsorts Real < Number < XReal .\n"
+    },
+    {
+      "line": 6,
+      "kind": "subsort",
+      "fields": {
+        "chain": [
+          [
+            "Infinity"
+          ],
+          [
+            "Number"
+          ]
+        ]
+      },
+      "text": "  subsort Infinity < Number .\n"
+    },
+    {
+      "line": 7,
+      "kind": "comment",
+      "fields": {},
+      "text": "  --- The exact rationals are EMBEDDED, not a subsort: fin(R) is the finite\n"
+    },
+    {
+      "line": 8,
+      "kind": "comment",
+      "fields": {},
+      "text": "  --- datum with value R. Declaring Rat < Real would merge the whole built-in\n"
+    },
+    {
+      "line": 9,
+      "kind": "comment",
+      "fields": {},
+      "text": "  --- NAT/INT/RAT tower into the kind of XReal, so every literal, every built-in\n"
+    },
+    {
+      "line": 10,
+      "kind": "comment",
+      "fields": {},
+      "text": "  --- operator and every omega operation would share one kind. With the\n"
+    },
+    {
+      "line": 11,
+      "kind": "comment",
+      "fields": {},
+      "text": "  --- embedding, [XReal] is a constructor-only kind and [Rat] stays built-in.\n"
+    },
+    {
+      "line": 12,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "fin"
+        ],
+        "domain": [
+          "Rat"
+        ],
+        "arrow": "->",
+        "range": "Real",
+        "attributes": "ctor"
+      },
+      "text": "  op fin : Rat -> Real [ctor] .\n"
+    },
+    {
+      "line": 13,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "ratOf"
+        ],
+        "domain": [
+          "XReal"
+        ],
+        "arrow": "~>",
+        "range": "Rat",
+        "attributes": ""
+      },
+      "text": "  op ratOf : XReal ~> Rat .\n"
+    },
+    {
+      "line": 14,
+      "kind": "ops",
+      "fields": {
+        "names": [
+          "posInf",
+          "negInf"
+        ],
+        "domain": [],
+        "arrow": "->",
+        "range": "Infinity",
+        "attributes": "ctor"
+      },
+      "text": "  ops posInf negInf : -> Infinity [ctor] .\n"
+    },
+    {
+      "line": 15,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "nan"
+        ],
+        "domain": [],
+        "arrow": "->",
+        "range": "XReal",
+        "attributes": "ctor"
+      },
+      "text": "  op nan : -> XReal [ctor] .\n"
+    },
+    {
+      "line": 16,
+      "kind": "ops",
+      "fields": {
+        "names": [
+          "xNaN",
+          "xInfinite",
+          "xFinite",
+          "xMinus"
+        ],
+        "domain": [
+          "XReal"
+        ],
+        "arrow": "~>",
+        "range": "Bool",
+        "attributes": ""
+      },
+      "text": "  ops xNaN xInfinite xFinite xMinus : XReal ~> Bool .\n"
+    },
+    {
+      "line": 17,
+      "kind": "ops",
+      "fields": {
+        "names": [
+          "xLt",
+          "xLe",
+          "xEq"
+        ],
+        "domain": [
+          "XReal",
+          "XReal"
+        ],
+        "arrow": "~>",
+        "range": "Bool",
+        "attributes": ""
+      },
+      "text": "  ops xLt xLe xEq : XReal XReal ~> Bool .\n"
+    },
+    {
+      "line": 18,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "xSign"
+        ],
+        "domain": [
+          "XReal"
+        ],
+        "arrow": "~>",
+        "range": "Int",
+        "attributes": ""
+      },
+      "text": "  op xSign : XReal ~> Int .\n"
+    },
+    {
+      "line": 19,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "X",
+          "Y"
+        ],
+        "sort": "XReal"
+      },
+      "text": "  vars X Y : XReal .\n"
+    },
+    {
+      "line": 20,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "A",
+          "B"
+        ],
+        "sort": "Number"
+      },
+      "text": "  vars A B : Number .\n"
+    },
+    {
+      "line": 21,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "U",
+          "V"
+        ],
+        "sort": "Real"
+      },
+      "text": "  vars U V : Real .\n"
+    },
+    {
+      "line": 22,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "R",
+          "S"
+        ],
+        "sort": "Rat"
+      },
+      "text": "  vars R S : Rat .\n"
+    },
+    {
+      "line": 23,
+      "kind": "var",
+      "fields": {
+        "names": [
+          "I"
+        ],
+        "sort": "Infinity"
+      },
+      "text": "  var I : Infinity .\n"
+    },
+    {
+      "line": 24,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-000",
+        "lhs": "ratOf(fin(R))",
+        "rhs": "R",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; page=16\""
+      },
+      "text": "  eq [p3109-xreal-000] : ratOf(fin(R)) = R [metadata \"clause=3.1; page=16\"] .\n"
+    },
+    {
+      "line": 25,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-001",
+        "lhs": "xNaN(nan)",
+        "rhs": "true",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-001] : xNaN(nan) = true [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 26,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-002",
+        "lhs": "xNaN(A)",
+        "rhs": "false",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-002] : xNaN(A) = false [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 27,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-003",
+        "lhs": "xInfinite(nan)",
+        "rhs": "false",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-003] : xInfinite(nan) = false [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 28,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-004",
+        "lhs": "xInfinite(I)",
+        "rhs": "true",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-004] : xInfinite(I) = true [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 29,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-005",
+        "lhs": "xInfinite(U)",
+        "rhs": "false",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-005] : xInfinite(U) = false [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 30,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-006",
+        "lhs": "xFinite(nan)",
+        "rhs": "false",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-006] : xFinite(nan) = false [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 31,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-007",
+        "lhs": "xFinite(I)",
+        "rhs": "false",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-007] : xFinite(I) = false [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 32,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-008",
+        "lhs": "xFinite(U)",
+        "rhs": "true",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-008] : xFinite(U) = true [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 33,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-009",
+        "lhs": "xMinus(nan)",
+        "rhs": "false",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-009] : xMinus(nan) = false [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 34,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-010",
+        "lhs": "xMinus(posInf)",
+        "rhs": "false",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-010] : xMinus(posInf) = false [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 35,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-011",
+        "lhs": "xMinus(negInf)",
+        "rhs": "true",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-011] : xMinus(negInf) = true [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 36,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-012",
+        "lhs": "xMinus(fin(R))",
+        "rhs": "(R < 0)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-012] : xMinus(fin(R)) = (R < 0) [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 37,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-013",
+        "lhs": "xLt(nan, X)",
+        "rhs": "false",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-013] : xLt(nan, X) = false [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 38,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-014",
+        "lhs": "xLt(A, nan)",
+        "rhs": "false",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-014] : xLt(A, nan) = false [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 39,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-015",
+        "lhs": "xLt(negInf, posInf)",
+        "rhs": "true",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-015] : xLt(negInf, posInf) = true [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 40,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-016",
+        "lhs": "xLt(posInf, negInf)",
+        "rhs": "false",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-016] : xLt(posInf, negInf) = false [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 41,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-017",
+        "lhs": "xLt(I, I)",
+        "rhs": "false",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-017] : xLt(I, I) = false [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 42,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-018",
+        "lhs": "xLt(negInf, U)",
+        "rhs": "true",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-018] : xLt(negInf, U) = true [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 43,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-019",
+        "lhs": "xLt(U, posInf)",
+        "rhs": "true",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-019] : xLt(U, posInf) = true [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 44,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-020",
+        "lhs": "xLt(posInf, U)",
+        "rhs": "false",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-020] : xLt(posInf, U) = false [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 45,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-021",
+        "lhs": "xLt(U, negInf)",
+        "rhs": "false",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-021] : xLt(U, negInf) = false [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 46,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-022",
+        "lhs": "xLt(fin(R), fin(S))",
+        "rhs": "(R < S)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-022] : xLt(fin(R), fin(S)) = (R < S) [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 47,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-023",
+        "lhs": "xEq(nan, X)",
+        "rhs": "false",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-023] : xEq(nan, X) = false [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 48,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-024",
+        "lhs": "xEq(A, nan)",
+        "rhs": "false",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-024] : xEq(A, nan) = false [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 49,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-025",
+        "lhs": "xEq(I, I)",
+        "rhs": "true",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-025] : xEq(I, I) = true [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 50,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-026",
+        "lhs": "xEq(posInf, negInf)",
+        "rhs": "false",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-026] : xEq(posInf, negInf) = false [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 51,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-027",
+        "lhs": "xEq(negInf, posInf)",
+        "rhs": "false",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-027] : xEq(negInf, posInf) = false [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 52,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-028",
+        "lhs": "xEq(I, U)",
+        "rhs": "false",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-028] : xEq(I, U) = false [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 53,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-029",
+        "lhs": "xEq(U, I)",
+        "rhs": "false",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-029] : xEq(U, I) = false [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 54,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-030",
+        "lhs": "xEq(fin(R), fin(S))",
+        "rhs": "(R == S)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-030] : xEq(fin(R), fin(S)) = (R == S) [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 55,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-031",
+        "lhs": "xLe(X, Y)",
+        "rhs": "xLt(X, Y) or xEq(X, Y)",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-031] : xLe(X, Y) = xLt(X, Y) or xEq(X, Y) [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 56,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-032",
+        "lhs": "xSign(posInf)",
+        "rhs": "1",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-032] : xSign(posInf) = 1 [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 57,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-033",
+        "lhs": "xSign(negInf)",
+        "rhs": "-1",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-033] : xSign(negInf) = -1 [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 58,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-xreal-034",
+        "lhs": "xSign(fin(R))",
+        "rhs": "if R == 0 then 0 else if R < 0 then -1 else 1 fi fi",
+        "condition": null,
+        "attributes": "metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\""
+      },
+      "text": "  eq [p3109-xreal-034] : xSign(fin(R)) = if R == 0 then 0 else if R < 0 then -1 else 1 fi fi [metadata \"clause=3.1; 4.12; 4.13; page=16; 53-56\"] .\n"
+    },
+    {
+      "line": 59,
+      "kind": "endfm",
+      "fields": {},
+      "text": "endfm\n"
+    }
+  ]
+}

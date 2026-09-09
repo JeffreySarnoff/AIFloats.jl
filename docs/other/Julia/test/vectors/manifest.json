@@ -1,0 +1,57 @@
+{
+  "smoke": {
+    "cases": 65,
+    "sha256": "4c794b6841e787e43f6c576b9aa2d0bf42548688df51871d2a802eb0f5c6bdca",
+    "duplicate_ids": 0
+  },
+  "domains": {
+    "cases": 40,
+    "sha256": "b913eb078e3022432b6136c5e72ee18d00999858226a7f6a69a7596760e0ee90",
+    "duplicate_ids": 0
+  },
+  "codec": {
+    "cases": 2660,
+    "sha256": "d9c801b8b40caf4d8c16bf4100917a50a66db6fe37cef2c8d9ca64a5150c33a0",
+    "duplicate_ids": 0
+  },
+  "projection": {
+    "cases": 11016,
+    "sha256": "0892c648b6e88ac5dc793fa3a327664cd61df65ee22f5e15a925922034623010",
+    "duplicate_ids": 0
+  },
+  "scalar": {
+    "cases": 33760,
+    "sha256": "27e44c4909d5ecb623b2b9694f231f635a73142a1cea2d7d3e4d9b8ae26f48ac",
+    "duplicate_ids": 0
+  },
+  "order-next": {
+    "cases": 6112,
+    "sha256": "2e2046231a54b6bdeab6c1da12b4bbafe6ec715d31d25a882677dff267dda565",
+    "duplicate_ids": 0
+  },
+  "blocks": {
+    "cases": 140,
+    "sha256": "6536c5ec9dfee545f740e54c79b02c0e102238d499d4ada082d5c05dd50c4ba7",
+    "duplicate_ids": 0
+  },
+  "conformance": {
+    "cases": 13748,
+    "sha256": "654f863baff5a82dbd1c60cba5210b06201ad8fc6b76b5f5310e9b84c5335194",
+    "duplicate_ids": 0
+  },
+  "symbolic": {
+    "cases": 194,
+    "sha256": "2f4f124d88ae108941cb787bb5071f1f61e585c8bef919acb71d8e1cb64b03a1",
+    "duplicate_ids": 0
+  },
+  "order-full": {
+    "cases": 279840,
+    "sha256": "9dc9e9b3e24958ae617e8cd6a4013cf52ff3e637519a6e1a3c5c5e56ad40c473",
+    "duplicate_ids": 0
+  },
+  "standalone": {
+    "cases": 5,
+    "sha256": "b35f530b79422a5c3948b2cdb50d013d2b2e44a82ecb5ec854740854766b04b4",
+    "duplicate_ids": 0
+  }
+}

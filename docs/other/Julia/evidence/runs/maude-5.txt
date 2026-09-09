@@ -1,0 +1,9 @@
+PASS smoke: expected=65 executed=65 (0.08s)
+PASS domains: expected=40 executed=40 (0.08s)
+PASS codec: expected=2660 executed=2660 (0.50s)
+PASS projection: expected=11016 executed=11016 (1.70s)
+PASS scalar: expected=33760 executed=33760 (5.43s)
+PASS order-next: expected=6112 executed=6112 (1.18s)
+PASS blocks: expected=140 executed=140 (0.12s)
+PASS conformance: expected=13748 executed=13748 (1.44s)
+TOTAL expected=67541 executed=67541

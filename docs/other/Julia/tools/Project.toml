@@ -1,0 +1,17 @@
+[deps]
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+CodecZlib = "944b1d66-785c-5afd-91f1-9de20f533193"
+JuliaFormatter = "98e50ef6-434e-11e9-1051-2b60c6c9e899"
+P3109Reference = "e6627552-e0c7-4bfa-a6c2-c52782045d73"
+SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
+
+[sources]
+P3109Reference = {path = ".."}
+
+[compat]
+JSON = "1.7"
+CodecZlib = "0.7"
+JuliaFormatter = "2.14"
+SHA = "0.7, 1"
+TOML = "1"

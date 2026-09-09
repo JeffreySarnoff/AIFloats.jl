@@ -1,0 +1,58 @@
+[
+  {
+    "file": "docs/other/Maude/tests/codec.maude",
+    "result": "clean load; suiteComplete(0)",
+    "exit_code": 0,
+    "before_sha256": "88596fb5e86e63a5a11cb58c9ed90b9a0733d0c2da9b4e8bdb115026017f86f7",
+    "after_sha256": "72c6318babe60ab47178960b7183f3520280000ea14953546f8e97bdfba85543"
+  },
+  {
+    "file": "docs/other/Maude/tests/projection.maude",
+    "result": "clean load; suiteComplete(0)",
+    "exit_code": 0,
+    "before_sha256": "0e68c75ce86da200c47d63a2a53919cccd39697d6aca48310b2b029cf49f99c0",
+    "after_sha256": "afe4a678c6ef3d9f619b626d553ef39b9bcc44e2baa33b055caed71dc9d16e41"
+  },
+  {
+    "file": "docs/other/Maude/tests/blocks.maude",
+    "result": "clean load; suiteComplete(0)",
+    "exit_code": 0,
+    "before_sha256": "22a269a04bca6598fb71e32b875d14b1a40ff51361ea28a248f81834a18bca99",
+    "after_sha256": "b44e59718ee9f76331766f67476008cd225a6f2ba97f29ba7030bf4a8ed2e432"
+  },
+  {
+    "file": "docs/other/Maude/tests/symbolic.maude",
+    "result": "clean load; suiteComplete(0)",
+    "exit_code": 0,
+    "before_sha256": "0cdb42d627a33af2345c4307b693a1b5e5f1b47435423d61ca9cf8fe6183877f",
+    "after_sha256": "69257517c4fbaa992eef16037caf5ca0889d06f016052890b545b795d7503031"
+  },
+  {
+    "file": "docs/Maude/tests/codec.maude",
+    "result": "clean load; suiteComplete(0)",
+    "exit_code": 0,
+    "before_sha256": "88596fb5e86e63a5a11cb58c9ed90b9a0733d0c2da9b4e8bdb115026017f86f7",
+    "after_sha256": "72c6318babe60ab47178960b7183f3520280000ea14953546f8e97bdfba85543"
+  },
+  {
+    "file": "docs/Maude/tests/projection.maude",
+    "result": "clean load; suiteComplete(0)",
+    "exit_code": 0,
+    "before_sha256": "0e68c75ce86da200c47d63a2a53919cccd39697d6aca48310b2b029cf49f99c0",
+    "after_sha256": "afe4a678c6ef3d9f619b626d553ef39b9bcc44e2baa33b055caed71dc9d16e41"
+  },
+  {
+    "file": "docs/Maude/tests/blocks.maude",
+    "result": "clean load; suiteComplete(0)",
+    "exit_code": 0,
+    "before_sha256": "22a269a04bca6598fb71e32b875d14b1a40ff51361ea28a248f81834a18bca99",
+    "after_sha256": "b44e59718ee9f76331766f67476008cd225a6f2ba97f29ba7030bf4a8ed2e432"
+  },
+  {
+    "file": "docs/Maude/tests/symbolic.maude",
+    "result": "clean load; suiteComplete(0)",
+    "exit_code": 0,
+    "before_sha256": "0cdb42d627a33af2345c4307b693a1b5e5f1b47435423d61ca9cf8fe6183877f",
+    "after_sha256": "69257517c4fbaa992eef16037caf5ca0889d06f016052890b545b795d7503031"
+  }
+]

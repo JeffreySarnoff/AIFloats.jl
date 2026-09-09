@@ -1,0 +1,1620 @@
+{
+  "version": 1,
+  "source": "../Maude",
+  "files": [
+    {
+      "path": "contracts/external-bridge.maude",
+      "type": "maude",
+      "sha256": "0f21f1ef0a89874fb631aa6ee08c803077d19c8752a80374eae3711c9e777624"
+    },
+    {
+      "path": "contracts/external-format.maude",
+      "type": "maude",
+      "sha256": "fb352971d132102b05c52d78c7bb817838c8b7657bca32094e877d09da30a672"
+    },
+    {
+      "path": "contracts/real.maude",
+      "type": "maude",
+      "sha256": "e7d65b929c8041e4bc19cf506bef0829ab9beb95df8267a237b82871b1ef8f9c"
+    },
+    {
+      "path": "examples/core.maude",
+      "type": "maude",
+      "sha256": "fbb1786add9dd23b0d267304d571120776f60163ab21efd78f93d28ae057bb99"
+    },
+    {
+      "path": "examples/symbolic.maude",
+      "type": "maude",
+      "sha256": "8e6fa4aa59fe3064d7f192e4d0602ed9236238a29d27c48d2ade24995f41d267"
+    },
+    {
+      "path": "inventory/operations.json",
+      "type": "support",
+      "sha256": "ebb8032d469a051dcee21389ea8461ad8f03b32900a9e94f426b4db64a5adc77"
+    },
+    {
+      "path": "inventory/source.json",
+      "type": "support",
+      "sha256": "777faa8414684c57f92ff2739e4a80528abf50707f615abd11998b3cc1f6bcb4"
+    },
+    {
+      "path": "inventory/traceability.tsv",
+      "type": "support",
+      "sha256": "bb7e4b2efa6bd43f5ccc521c3483429ff4edb7d8134f41a0fa879e921a082e2b"
+    },
+    {
+      "path": "lib/block-core.maude",
+      "type": "maude",
+      "sha256": "2710076054cd42dd7ea0f4dec3922c90c9580565fe21c334828567da3e7a484c"
+    },
+    {
+      "path": "lib/block-ops.maude",
+      "type": "maude",
+      "sha256": "28a6eef0f2367095f159f248cdeec0e17d37cae9372bdbd698dd792923d4685d"
+    },
+    {
+      "path": "lib/block-templates.maude",
+      "type": "maude",
+      "sha256": "6a5440ddb1d72484a89885106dbaa4c3252e78775fcffcec487be7a18203a181"
+    },
+    {
+      "path": "lib/block-wrappers.maude",
+      "type": "maude",
+      "sha256": "e7c52724281eab36b3d7c561afc40a2f039356e3addba2a8065a22606e719fae"
+    },
+    {
+      "path": "lib/codec.maude",
+      "type": "maude",
+      "sha256": "bfcbd14d3cf4d531c0f3232f474b2b580b359c8894e317ed8efbd4f90f227a29"
+    },
+    {
+      "path": "lib/conformance.maude",
+      "type": "maude",
+      "sha256": "ffdf11d8a760b45dd95933ff2c3f5a0ce469dacf6e442af3af0bd3f4d1e93112"
+    },
+    {
+      "path": "lib/external-signature.maude",
+      "type": "maude",
+      "sha256": "1ee5b52a5ee9adf6e29780c8dbf0cf80f9139bd20d1a158d83bccc36af04a4d4"
+    },
+    {
+      "path": "lib/format-core.maude",
+      "type": "maude",
+      "sha256": "72106f3fac2e66a6dae55060d741973dd3345799bdb1b8ebf0b6de8180a3df69"
+    },
+    {
+      "path": "lib/format-names.maude",
+      "type": "maude",
+      "sha256": "b86b06353e02650a87d02aee0bb3ceddbb723ed72f6c6a2b7d198e4c6edd56b4"
+    },
+    {
+      "path": "lib/format-queries.maude",
+      "type": "maude",
+      "sha256": "c965c31ade16851df06517cc5958cc6a0d32cca3d1eba42ebe9a20521a9712c1"
+    },
+    {
+      "path": "lib/omega-arithmetic.maude",
+      "type": "maude",
+      "sha256": "1e688340e41e45e1627b968a89143d7d22cbdc5ca7df350d037082346d8c80e7"
+    },
+    {
+      "path": "lib/omega-extrema.maude",
+      "type": "maude",
+      "sha256": "49962cc9f39768d30272bbcccc49bc3730282e3e8f1707900e675828c18b1962"
+    },
+    {
+      "path": "lib/order-next.maude",
+      "type": "maude",
+      "sha256": "e0af20c6f4f7026d6962051465549955fd470cc100e4627de3038fb1280aac43"
+    },
+    {
+      "path": "lib/predicates.maude",
+      "type": "maude",
+      "sha256": "91765d2f9e918eb514f5a3a802e68c220299016bd86b91c6cf0ee34441032723"
+    },
+    {
+      "path": "lib/project.maude",
+      "type": "maude",
+      "sha256": "bdd9d6113fad21973eacd1844b736eaf95e784582d58ac2a279f55766f1c7938"
+    },
+    {
+      "path": "lib/projection-spec.maude",
+      "type": "maude",
+      "sha256": "dbfe2195fa7dd310c039b9b2f8e405065727eb48bbcd41f2cf25a9353d6e6e58"
+    },
+    {
+      "path": "lib/rational-math.maude",
+      "type": "maude",
+      "sha256": "f48a99f04148326dd8a956a8f5c9b616a248d1a8ffc378bc5c5b2c11e50c0d56"
+    },
+    {
+      "path": "lib/rounding.maude",
+      "type": "maude",
+      "sha256": "08b812d854b6cdccabbf25eb8470e8a955f88aa5a0225398af189ecf997d1e22"
+    },
+    {
+      "path": "lib/saturation.maude",
+      "type": "maude",
+      "sha256": "3daae364034cfb919d8a05f2d09ab5824b4d5c7d70f149540362d5208c8f75ba"
+    },
+    {
+      "path": "lib/scalar-ops.maude",
+      "type": "maude",
+      "sha256": "6ede2c3c8456f4bdc6ad7c6bb8db19b7586ed1107765308a3cb39088eedd5b25"
+    },
+    {
+      "path": "lib/scalar-templates.maude",
+      "type": "maude",
+      "sha256": "472a456000183423762b989ede241007933966420332bd2442e9ce56f273de9a"
+    },
+    {
+      "path": "lib/sequences.maude",
+      "type": "maude",
+      "sha256": "e337e7ba31ae93388adcdae9d0c1edefd0178c2bb4cb83cf13838e7092547fa5"
+    },
+    {
+      "path": "lib/xreal.maude",
+      "type": "maude",
+      "sha256": "325e2cae38af95c21bffe8125866f83d57d7213698696b8b71ea1c8945fd9e6b"
+    },
+    {
+      "path": "load-contracts.maude",
+      "type": "maude",
+      "sha256": "1ca7c967cd92f943b4e8bc709eb5482eec1a76d409867135db1ff142870f47de"
+    },
+    {
+      "path": "load-core.maude",
+      "type": "maude",
+      "sha256": "0127b5be2914fa22b1751cc2f1b9de61ab22e5645c6bf9a9fb7b4ef50f341854"
+    },
+    {
+      "path": "load-spec.maude",
+      "type": "maude",
+      "sha256": "5633f13a724e0dab03b3e3b666806caa023263cedc4e83c3e886b12d5f77605b"
+    },
+    {
+      "path": "load-symbolic.maude",
+      "type": "maude",
+      "sha256": "35dc92e065302aefe24a1357e41254d75b9a4c83ad5277afcbb69e04ccf552b4"
+    },
+    {
+      "path": "proofs/obligations.tsv",
+      "type": "support",
+      "sha256": "d12e13040977f29d11ac66dfbfcb97aa809d982b2cadc027ad664161fa85e3a4"
+    },
+    {
+      "path": "proofs/sessions/summary.json",
+      "type": "support",
+      "sha256": "0f0660bc6225d22fad29fe7b1e9050b0e9cb945ecc4d620c12b75489cdaf552a"
+    },
+    {
+      "path": "proofs/sessions/validation.json",
+      "type": "support",
+      "sha256": "a0b62b78fa07a935ca6a516419523aaa848ac8bc334f87e0935e2936c8d709d8"
+    },
+    {
+      "path": "proofs/slices/saturation-cases.maude",
+      "type": "maude",
+      "sha256": "684771ed31948f2db504a4a79fa574deaf179bed9148a9f2c4e134d23c1be047"
+    },
+    {
+      "path": "proofs/toolchain-smoke.maude",
+      "type": "maude",
+      "sha256": "fa2b6229c1665162ed64e6aa870061fd86c85347ffaad473d0fdd44a686d0bf2"
+    },
+    {
+      "path": "symbolic/block-ops.maude",
+      "type": "maude",
+      "sha256": "e07359178f6089283786baee023e158e9939f1b3a0dec6dbe173884fa21f63b4"
+    },
+    {
+      "path": "symbolic/block-wrappers.maude",
+      "type": "maude",
+      "sha256": "f252d3415929f81976063f2510b3f980e189f47163754ae2e27417e07116019a"
+    },
+    {
+      "path": "symbolic/omega-elementary.maude",
+      "type": "maude",
+      "sha256": "7d7ace9b51d3b9bb7b69bcf2a298946488944b309f47fe7dabac09f2cc3d1ee9"
+    },
+    {
+      "path": "symbolic/real-expressions.maude",
+      "type": "maude",
+      "sha256": "1ae6b428b1772d2b3bd29dc4164ef261f5f7088c286a085d09f920fcaf27b441"
+    },
+    {
+      "path": "symbolic/scalar-ops.maude",
+      "type": "maude",
+      "sha256": "61d938f73a31cb31c7833a92e57de1709ad4cdc69ba30b182c3a9189fb5d8bcc"
+    },
+    {
+      "path": "tests/blocks.maude",
+      "type": "maude",
+      "sha256": "b44e59718ee9f76331766f67476008cd225a6f2ba97f29ba7030bf4a8ed2e432"
+    },
+    {
+      "path": "tests/codec.maude",
+      "type": "maude",
+      "sha256": "72c6318babe60ab47178960b7183f3520280000ea14953546f8e97bdfba85543"
+    },
+    {
+      "path": "tests/conformance.maude",
+      "type": "maude",
+      "sha256": "296b2984527fc3925751e83604964f09b639582bb581a0bfe5c4e02bb5280cdf"
+    },
+    {
+      "path": "tests/domains.maude",
+      "type": "maude",
+      "sha256": "a025800aeedf29073d001719878edfd3f8734f127c80f3d03b86c53791bbd592"
+    },
+    {
+      "path": "tests/order-next.maude",
+      "type": "maude",
+      "sha256": "8cfc04bf7259dca2bd615e5e9662a6611f153a203cb6950eb04085d67ba20818"
+    },
+    {
+      "path": "tests/projection.maude",
+      "type": "maude",
+      "sha256": "afe4a678c6ef3d9f619b626d553ef39b9bcc44e2baa33b055caed71dc9d16e41"
+    },
+    {
+      "path": "tests/scalar.maude",
+      "type": "maude",
+      "sha256": "4cbcb33f0dc95663ffcdeb23a0b576326ab09b3d98e20d82082d8c2eec90cdaa"
+    },
+    {
+      "path": "tests/smoke.maude",
+      "type": "maude",
+      "sha256": "214dd90e34b26f46225c4cbd99a19aa98915d773f68b29663f534fa30cb1df68"
+    },
+    {
+      "path": "tests/support.maude",
+      "type": "maude",
+      "sha256": "0ae214bc8a84a00c8c7563252b62f0523220f3bf67c3f38edacab52289721490"
+    },
+    {
+      "path": "tests/symbolic.maude",
+      "type": "maude",
+      "sha256": "69257517c4fbaa992eef16037caf5ca0889d06f016052890b545b795d7503031"
+    },
+    {
+      "path": "tests/vectors/arity-tables.json",
+      "type": "support",
+      "sha256": "f35630f254ce34c69ba18cb60029a8436695fb9b96a6ad04fec5ae3f50da30ac"
+    },
+    {
+      "path": "tests/vectors/blocks.json",
+      "type": "support",
+      "sha256": "64895f93cdfd1abdfb84ae080c248fbffd3062dce2b7bd82a4ee0b2a3bacdbab"
+    },
+    {
+      "path": "tests/vectors/regressions.json",
+      "type": "support",
+      "sha256": "7175bae48fc6f625b3eb416134fda64844406f51e68670805f3e850bbc4bbaaa"
+    },
+    {
+      "path": "tests/vectors/symbolic.json",
+      "type": "support",
+      "sha256": "7f7184d3066785930ba11a2aac6dffe617f74c93c3853557ed064ece00e6b0b0"
+    },
+    {
+      "path": "tests/vectors/tables-3-7.json",
+      "type": "support",
+      "sha256": "ceaf4c3b12669524a246fa64fbf1c6ddb66f424ec2492de9316c416e3aba2839"
+    }
+  ],
+  "definitions": {
+    "P3109-EXTERNAL-BRIDGE": {
+      "path": "contracts/external-bridge.maude",
+      "line": 2,
+      "kind": "fmod"
+    },
+    "P3109-EXTERNAL-FORMAT": {
+      "path": "contracts/external-format.maude",
+      "line": 2,
+      "kind": "fth"
+    },
+    "P3109-REAL-CONTRACT": {
+      "path": "contracts/real.maude",
+      "line": 2,
+      "kind": "fth"
+    },
+    "P3109-BLOCK-CORE": {
+      "path": "lib/block-core.maude",
+      "line": 2,
+      "kind": "fmod"
+    },
+    "P3109-BLOCK": {
+      "path": "lib/block-ops.maude",
+      "line": 2,
+      "kind": "fmod"
+    },
+    "P3109-BLOCK-TEMPLATE1": {
+      "path": "lib/block-templates.maude",
+      "line": 4,
+      "kind": "fmod"
+    },
+    "P3109-BLOCK-TEMPLATE2": {
+      "path": "lib/block-templates.maude",
+      "line": 38,
+      "kind": "fmod"
+    },
+    "P3109-BLOCK-TEMPLATE3": {
+      "path": "lib/block-templates.maude",
+      "line": 74,
+      "kind": "fmod"
+    },
+    "P3109-BLOCK-WRAPPERS": {
+      "path": "lib/block-wrappers.maude",
+      "line": 2,
+      "kind": "fmod"
+    },
+    "P3109-CODEC": {
+      "path": "lib/codec.maude",
+      "line": 2,
+      "kind": "fmod"
+    },
+    "FormatElt": {
+      "path": "lib/conformance.maude",
+      "line": 2,
+      "kind": "view"
+    },
+    "P3109-CONFORMANCE-DATA": {
+      "path": "lib/conformance.maude",
+      "line": 5,
+      "kind": "fmod"
+    },
+    "ArityEntryElt": {
+      "path": "lib/conformance.maude",
+      "line": 27,
+      "kind": "view"
+    },
+    "ObservationElt": {
+      "path": "lib/conformance.maude",
+      "line": 30,
+      "kind": "view"
+    },
+    "KappaPartElt": {
+      "path": "lib/conformance.maude",
+      "line": 33,
+      "kind": "view"
+    },
+    "CodeSeqElt": {
+      "path": "lib/conformance.maude",
+      "line": 36,
+      "kind": "view"
+    },
+    "DeclarationElt": {
+      "path": "lib/conformance.maude",
+      "line": 39,
+      "kind": "view"
+    },
+    "SpecializationElt": {
+      "path": "lib/conformance.maude",
+      "line": 42,
+      "kind": "view"
+    },
+    "P3109-CONFORMANCE": {
+      "path": "lib/conformance.maude",
+      "line": 45,
+      "kind": "fmod"
+    },
+    "P3109-EXTERNAL-SIGNATURE": {
+      "path": "lib/external-signature.maude",
+      "line": 2,
+      "kind": "fmod"
+    },
+    "P3109-FORMAT-CORE": {
+      "path": "lib/format-core.maude",
+      "line": 2,
+      "kind": "fmod"
+    },
+    "P3109-FORMAT-NAMES": {
+      "path": "lib/format-names.maude",
+      "line": 7,
+      "kind": "fmod"
+    },
+    "P3109-FORMAT-QUERIES": {
+      "path": "lib/format-queries.maude",
+      "line": 2,
+      "kind": "fmod"
+    },
+    "P3109-OMEGA-ARITHMETIC": {
+      "path": "lib/omega-arithmetic.maude",
+      "line": 2,
+      "kind": "fmod"
+    },
+    "P3109-OMEGA-EXTREMA": {
+      "path": "lib/omega-extrema.maude",
+      "line": 2,
+      "kind": "fmod"
+    },
+    "P3109-ORDER-NEXT": {
+      "path": "lib/order-next.maude",
+      "line": 2,
+      "kind": "fmod"
+    },
+    "P3109-PREDICATES": {
+      "path": "lib/predicates.maude",
+      "line": 2,
+      "kind": "fmod"
+    },
+    "P3109-PROJECT": {
+      "path": "lib/project.maude",
+      "line": 2,
+      "kind": "fmod"
+    },
+    "P3109-PROJSPEC": {
+      "path": "lib/projection-spec.maude",
+      "line": 2,
+      "kind": "fmod"
+    },
+    "P3109-RATIONAL-MATH": {
+      "path": "lib/rational-math.maude",
+      "line": 2,
+      "kind": "fmod"
+    },
+    "P3109-ROUND": {
+      "path": "lib/rounding.maude",
+      "line": 2,
+      "kind": "fmod"
+    },
+    "P3109-SATURATE": {
+      "path": "lib/saturation.maude",
+      "line": 2,
+      "kind": "fmod"
+    },
+    "ConvertKernel": {
+      "path": "lib/scalar-ops.maude",
+      "line": 2,
+      "kind": "view"
+    },
+    "AbsKernel": {
+      "path": "lib/scalar-ops.maude",
+      "line": 5,
+      "kind": "view"
+    },
+    "NegateKernel": {
+      "path": "lib/scalar-ops.maude",
+      "line": 8,
+      "kind": "view"
+    },
+    "CopySignKernel": {
+      "path": "lib/scalar-ops.maude",
+      "line": 11,
+      "kind": "view"
+    },
+    "AddKernel": {
+      "path": "lib/scalar-ops.maude",
+      "line": 14,
+      "kind": "view"
+    },
+    "SubtractKernel": {
+      "path": "lib/scalar-ops.maude",
+      "line": 17,
+      "kind": "view"
+    },
+    "MultiplyKernel": {
+      "path": "lib/scalar-ops.maude",
+      "line": 20,
+      "kind": "view"
+    },
+    "DivideKernel": {
+      "path": "lib/scalar-ops.maude",
+      "line": 23,
+      "kind": "view"
+    },
+    "FMAKernel": {
+      "path": "lib/scalar-ops.maude",
+      "line": 26,
+      "kind": "view"
+    },
+    "FAAKernel": {
+      "path": "lib/scalar-ops.maude",
+      "line": 29,
+      "kind": "view"
+    },
+    "RecipKernel": {
+      "path": "lib/scalar-ops.maude",
+      "line": 32,
+      "kind": "view"
+    },
+    "MinimumKernel": {
+      "path": "lib/scalar-ops.maude",
+      "line": 35,
+      "kind": "view"
+    },
+    "MaximumKernel": {
+      "path": "lib/scalar-ops.maude",
+      "line": 38,
+      "kind": "view"
+    },
+    "MinimumNumberKernel": {
+      "path": "lib/scalar-ops.maude",
+      "line": 41,
+      "kind": "view"
+    },
+    "MaximumNumberKernel": {
+      "path": "lib/scalar-ops.maude",
+      "line": 44,
+      "kind": "view"
+    },
+    "MinimumMagnitudeKernel": {
+      "path": "lib/scalar-ops.maude",
+      "line": 47,
+      "kind": "view"
+    },
+    "MaximumMagnitudeKernel": {
+      "path": "lib/scalar-ops.maude",
+      "line": 50,
+      "kind": "view"
+    },
+    "MinimumMagnitudeNumberKernel": {
+      "path": "lib/scalar-ops.maude",
+      "line": 53,
+      "kind": "view"
+    },
+    "MaximumMagnitudeNumberKernel": {
+      "path": "lib/scalar-ops.maude",
+      "line": 56,
+      "kind": "view"
+    },
+    "MinimumFiniteKernel": {
+      "path": "lib/scalar-ops.maude",
+      "line": 59,
+      "kind": "view"
+    },
+    "MaximumFiniteKernel": {
+      "path": "lib/scalar-ops.maude",
+      "line": 62,
+      "kind": "view"
+    },
+    "ClampKernel": {
+      "path": "lib/scalar-ops.maude",
+      "line": 65,
+      "kind": "view"
+    },
+    "P3109-SCALAR": {
+      "path": "lib/scalar-ops.maude",
+      "line": 68,
+      "kind": "fmod"
+    },
+    "P3109-KERNEL1": {
+      "path": "lib/scalar-templates.maude",
+      "line": 4,
+      "kind": "fth"
+    },
+    "P3109-SCALAR-TEMPLATE1": {
+      "path": "lib/scalar-templates.maude",
+      "line": 8,
+      "kind": "fmod"
+    },
+    "P3109-KERNEL2": {
+      "path": "lib/scalar-templates.maude",
+      "line": 20,
+      "kind": "fth"
+    },
+    "P3109-SCALAR-TEMPLATE2": {
+      "path": "lib/scalar-templates.maude",
+      "line": 24,
+      "kind": "fmod"
+    },
+    "P3109-KERNEL3": {
+      "path": "lib/scalar-templates.maude",
+      "line": 36,
+      "kind": "fth"
+    },
+    "P3109-SCALAR-TEMPLATE3": {
+      "path": "lib/scalar-templates.maude",
+      "line": 40,
+      "kind": "fmod"
+    },
+    "P3109-SEQUENCE": {
+      "path": "lib/sequences.maude",
+      "line": 2,
+      "kind": "fmod"
+    },
+    "XRealElt": {
+      "path": "lib/sequences.maude",
+      "line": 17,
+      "kind": "view"
+    },
+    "CodeElt": {
+      "path": "lib/sequences.maude",
+      "line": 20,
+      "kind": "view"
+    },
+    "RandomElt": {
+      "path": "lib/sequences.maude",
+      "line": 23,
+      "kind": "view"
+    },
+    "P3109-XREAL": {
+      "path": "lib/xreal.maude",
+      "line": 2,
+      "kind": "fmod"
+    },
+    "P3109-CORE": {
+      "path": "load-core.maude",
+      "line": 23,
+      "kind": "fmod"
+    },
+    "P3109-SPEC": {
+      "path": "load-spec.maude",
+      "line": 24,
+      "kind": "fmod"
+    },
+    "P3109-SYMBOLIC": {
+      "path": "load-symbolic.maude",
+      "line": 7,
+      "kind": "fmod"
+    },
+    "P3109-PROOF-SATURATION": {
+      "path": "proofs/slices/saturation-cases.maude",
+      "line": 3,
+      "kind": "fmod"
+    },
+    "P3109-PROOF-SMOKE": {
+      "path": "proofs/toolchain-smoke.maude",
+      "line": 2,
+      "kind": "fmod"
+    },
+    "P3109-SYMBOLIC-BLOCK": {
+      "path": "symbolic/block-ops.maude",
+      "line": 2,
+      "kind": "fmod"
+    },
+    "P3109-SYMBOLIC-BLOCK-WRAPPERS": {
+      "path": "symbolic/block-wrappers.maude",
+      "line": 2,
+      "kind": "fmod"
+    },
+    "P3109-OMEGA-ELEMENTARY": {
+      "path": "symbolic/omega-elementary.maude",
+      "line": 2,
+      "kind": "fmod"
+    },
+    "P3109-REAL-EXPRESSIONS": {
+      "path": "symbolic/real-expressions.maude",
+      "line": 2,
+      "kind": "fmod"
+    },
+    "SqrtKernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 2,
+      "kind": "view"
+    },
+    "RSqrtKernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 5,
+      "kind": "view"
+    },
+    "ExpKernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 8,
+      "kind": "view"
+    },
+    "Exp2Kernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 11,
+      "kind": "view"
+    },
+    "LogKernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 14,
+      "kind": "view"
+    },
+    "Log2Kernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 17,
+      "kind": "view"
+    },
+    "LogOnePlusKernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 20,
+      "kind": "view"
+    },
+    "ExpMinusOneKernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 23,
+      "kind": "view"
+    },
+    "SinKernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 26,
+      "kind": "view"
+    },
+    "CosKernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 29,
+      "kind": "view"
+    },
+    "TanKernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 32,
+      "kind": "view"
+    },
+    "ArcSinKernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 35,
+      "kind": "view"
+    },
+    "ArcCosKernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 38,
+      "kind": "view"
+    },
+    "ArcTanKernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 41,
+      "kind": "view"
+    },
+    "SinhKernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 44,
+      "kind": "view"
+    },
+    "CoshKernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 47,
+      "kind": "view"
+    },
+    "TanhKernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 50,
+      "kind": "view"
+    },
+    "ArcSinhKernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 53,
+      "kind": "view"
+    },
+    "ArcCoshKernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 56,
+      "kind": "view"
+    },
+    "ArcTanhKernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 59,
+      "kind": "view"
+    },
+    "SinPiKernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 62,
+      "kind": "view"
+    },
+    "CosPiKernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 65,
+      "kind": "view"
+    },
+    "TanPiKernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 68,
+      "kind": "view"
+    },
+    "ArcSinPiKernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 71,
+      "kind": "view"
+    },
+    "ArcCosPiKernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 74,
+      "kind": "view"
+    },
+    "ArcTanPiKernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 77,
+      "kind": "view"
+    },
+    "SoftplusKernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 80,
+      "kind": "view"
+    },
+    "HypotKernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 83,
+      "kind": "view"
+    },
+    "ArcTan2Kernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 86,
+      "kind": "view"
+    },
+    "ArcTan2PiKernel": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 89,
+      "kind": "view"
+    },
+    "P3109-SYMBOLIC-SCALAR": {
+      "path": "symbolic/scalar-ops.maude",
+      "line": 92,
+      "kind": "fmod"
+    },
+    "P3109-TEST-BLOCKS": {
+      "path": "tests/blocks.maude",
+      "line": 4,
+      "kind": "fmod"
+    },
+    "P3109-TEST-CODEC": {
+      "path": "tests/codec.maude",
+      "line": 4,
+      "kind": "fmod"
+    },
+    "P3109-TEST-CONFORMANCE": {
+      "path": "tests/conformance.maude",
+      "line": 4,
+      "kind": "fmod"
+    },
+    "P3109-TEST-DOMAINS": {
+      "path": "tests/domains.maude",
+      "line": 4,
+      "kind": "fmod"
+    },
+    "P3109-TEST-ORDER-NEXT": {
+      "path": "tests/order-next.maude",
+      "line": 4,
+      "kind": "fmod"
+    },
+    "P3109-TEST-PROJECTION": {
+      "path": "tests/projection.maude",
+      "line": 4,
+      "kind": "fmod"
+    },
+    "P3109-TEST-SCALAR": {
+      "path": "tests/scalar.maude",
+      "line": 4,
+      "kind": "fmod"
+    },
+    "P3109-TEST-SMOKE": {
+      "path": "tests/smoke.maude",
+      "line": 4,
+      "kind": "fmod"
+    },
+    "P3109-TEST-SUPPORT": {
+      "path": "tests/support.maude",
+      "line": 2,
+      "kind": "fmod"
+    },
+    "P3109-TEST-SYMBOLIC": {
+      "path": "tests/symbolic.maude",
+      "line": 4,
+      "kind": "fmod"
+    }
+  },
+  "loads": {
+    "examples/core.maude": [
+      {
+        "kind": "load",
+        "path": "load-core.maude"
+      }
+    ],
+    "examples/symbolic.maude": [
+      {
+        "kind": "load",
+        "path": "load-symbolic.maude"
+      }
+    ],
+    "load-contracts.maude": [
+      {
+        "kind": "sload",
+        "path": "load-core.maude"
+      },
+      {
+        "kind": "load",
+        "path": "contracts/real.maude"
+      },
+      {
+        "kind": "load",
+        "path": "contracts/external-format.maude"
+      },
+      {
+        "kind": "load",
+        "path": "contracts/external-bridge.maude"
+      }
+    ],
+    "load-core.maude": [
+      {
+        "kind": "load",
+        "path": "lib/xreal.maude"
+      },
+      {
+        "kind": "load",
+        "path": "lib/rational-math.maude"
+      },
+      {
+        "kind": "load",
+        "path": "lib/format-core.maude"
+      },
+      {
+        "kind": "load",
+        "path": "lib/sequences.maude"
+      },
+      {
+        "kind": "load",
+        "path": "lib/projection-spec.maude"
+      },
+      {
+        "kind": "load",
+        "path": "lib/external-signature.maude"
+      },
+      {
+        "kind": "load",
+        "path": "lib/codec.maude"
+      },
+      {
+        "kind": "load",
+        "path": "lib/format-queries.maude"
+      },
+      {
+        "kind": "load",
+        "path": "lib/rounding.maude"
+      },
+      {
+        "kind": "load",
+        "path": "lib/saturation.maude"
+      },
+      {
+        "kind": "load",
+        "path": "lib/project.maude"
+      },
+      {
+        "kind": "load",
+        "path": "lib/omega-arithmetic.maude"
+      },
+      {
+        "kind": "load",
+        "path": "lib/omega-extrema.maude"
+      },
+      {
+        "kind": "load",
+        "path": "lib/predicates.maude"
+      },
+      {
+        "kind": "load",
+        "path": "lib/order-next.maude"
+      },
+      {
+        "kind": "load",
+        "path": "lib/scalar-templates.maude"
+      },
+      {
+        "kind": "load",
+        "path": "lib/scalar-ops.maude"
+      },
+      {
+        "kind": "load",
+        "path": "lib/block-core.maude"
+      },
+      {
+        "kind": "load",
+        "path": "lib/block-ops.maude"
+      },
+      {
+        "kind": "load",
+        "path": "lib/block-templates.maude"
+      },
+      {
+        "kind": "load",
+        "path": "lib/block-wrappers.maude"
+      },
+      {
+        "kind": "load",
+        "path": "lib/conformance.maude"
+      }
+    ],
+    "load-spec.maude": [
+      {
+        "kind": "sload",
+        "path": "load-core.maude"
+      },
+      {
+        "kind": "sload",
+        "path": "load-symbolic.maude"
+      },
+      {
+        "kind": "sload",
+        "path": "load-contracts.maude"
+      },
+      {
+        "kind": "sload",
+        "path": "lib/format-names.maude"
+      }
+    ],
+    "load-symbolic.maude": [
+      {
+        "kind": "sload",
+        "path": "load-core.maude"
+      },
+      {
+        "kind": "load",
+        "path": "symbolic/real-expressions.maude"
+      },
+      {
+        "kind": "load",
+        "path": "symbolic/omega-elementary.maude"
+      },
+      {
+        "kind": "load",
+        "path": "symbolic/scalar-ops.maude"
+      },
+      {
+        "kind": "load",
+        "path": "symbolic/block-wrappers.maude"
+      },
+      {
+        "kind": "load",
+        "path": "symbolic/block-ops.maude"
+      }
+    ],
+    "tests/blocks.maude": [
+      {
+        "kind": "load",
+        "path": "load-core.maude"
+      },
+      {
+        "kind": "load",
+        "path": "tests/support.maude"
+      }
+    ],
+    "tests/codec.maude": [
+      {
+        "kind": "load",
+        "path": "load-core.maude"
+      },
+      {
+        "kind": "load",
+        "path": "tests/support.maude"
+      }
+    ],
+    "tests/conformance.maude": [
+      {
+        "kind": "load",
+        "path": "load-core.maude"
+      },
+      {
+        "kind": "load",
+        "path": "tests/support.maude"
+      }
+    ],
+    "tests/domains.maude": [
+      {
+        "kind": "load",
+        "path": "load-core.maude"
+      },
+      {
+        "kind": "load",
+        "path": "tests/support.maude"
+      }
+    ],
+    "tests/order-next.maude": [
+      {
+        "kind": "load",
+        "path": "load-core.maude"
+      },
+      {
+        "kind": "load",
+        "path": "tests/support.maude"
+      }
+    ],
+    "tests/projection.maude": [
+      {
+        "kind": "load",
+        "path": "load-core.maude"
+      },
+      {
+        "kind": "load",
+        "path": "tests/support.maude"
+      }
+    ],
+    "tests/scalar.maude": [
+      {
+        "kind": "load",
+        "path": "load-core.maude"
+      },
+      {
+        "kind": "load",
+        "path": "tests/support.maude"
+      }
+    ],
+    "tests/smoke.maude": [
+      {
+        "kind": "load",
+        "path": "load-core.maude"
+      },
+      {
+        "kind": "load",
+        "path": "tests/support.maude"
+      }
+    ],
+    "tests/symbolic.maude": [
+      {
+        "kind": "load",
+        "path": "load-symbolic.maude"
+      },
+      {
+        "kind": "load",
+        "path": "tests/support.maude"
+      }
+    ]
+  },
+  "references": {
+    "contracts/external-bridge.maude": [
+      "P3109-EXTERNAL-FORMAT",
+      "P3109-CODEC"
+    ],
+    "contracts/external-format.maude": [
+      "P3109-EXTERNAL-SIGNATURE"
+    ],
+    "contracts/real.maude": [
+      "P3109-XREAL"
+    ],
+    "examples/core.maude": [
+      "P3109-CORE",
+      "P3109-CORE",
+      "P3109-CORE"
+    ],
+    "examples/symbolic.maude": [
+      "P3109-SYMBOLIC",
+      "P3109-SYMBOLIC",
+      "P3109-SYMBOLIC",
+      "P3109-SYMBOLIC",
+      "P3109-SYMBOLIC"
+    ],
+    "lib/block-core.maude": [
+      "P3109-PROJECT",
+      "P3109-OMEGA-ARITHMETIC",
+      "P3109-SEQUENCE{XRealElt} * (sort Seq{XRealElt} to XSeq, op nil to xnil, op cons to xcons)",
+      "P3109-SEQUENCE{CodeElt} * (sort Seq{CodeElt} to CodeSeq, op nil to cnil, op cons to ccons)"
+    ],
+    "lib/block-ops.maude": [
+      "P3109-BLOCK-CORE",
+      "P3109-OMEGA-EXTREMA"
+    ],
+    "lib/block-templates.maude": [
+      "P3109-KERNEL1",
+      "P3109-BLOCK",
+      "P3109-KERNEL2",
+      "P3109-BLOCK",
+      "P3109-KERNEL3",
+      "P3109-BLOCK"
+    ],
+    "lib/block-wrappers.maude": [
+      "P3109-BLOCK",
+      "P3109-BLOCK-TEMPLATE1{ConvertKernel} * ( op elementwise to BlockConvert, op scaled to ScaledConvert, op mapped to mapConvert, label p3109-template-block-1 to p3109-block-Convert, label p3109-template-map-1-nil to p3109-map-Convert-nil, label p3109-template-map-1-cons to p3109-map-Convert-cons, label p3109-template-scaled-1 to p3109-scaled-Convert)",
+      "P3109-BLOCK-TEMPLATE1{AbsKernel} * ( op elementwise to BlockAbs, op scaled to ScaledAbs, op mapped to mapAbs, label p3109-template-block-1 to p3109-block-Abs, label p3109-template-map-1-nil to p3109-map-Abs-nil, label p3109-template-map-1-cons to p3109-map-Abs-cons, label p3109-template-scaled-1 to p3109-scaled-Abs)",
+      "P3109-BLOCK-TEMPLATE1{NegateKernel} * ( op elementwise to BlockNegate, op scaled to ScaledNegate, op mapped to mapNegate, label p3109-template-block-1 to p3109-block-Negate, label p3109-template-map-1-nil to p3109-map-Negate-nil, label p3109-template-map-1-cons to p3109-map-Negate-cons, label p3109-template-scaled-1 to p3109-scaled-Negate)",
+      "P3109-BLOCK-TEMPLATE2{CopySignKernel} * ( op elementwise to BlockCopySign, op scaled to ScaledCopySign, op mapped to mapCopySign, label p3109-template-block-2 to p3109-block-CopySign, label p3109-template-map-2-nil to p3109-map-CopySign-nil, label p3109-template-map-2-cons to p3109-map-CopySign-cons, label p3109-template-scaled-2 to p3109-scaled-CopySign)",
+      "P3109-BLOCK-TEMPLATE2{AddKernel} * ( op elementwise to BlockAdd, op scaled to ScaledAdd, op mapped to mapAdd, label p3109-template-block-2 to p3109-block-Add, label p3109-template-map-2-nil to p3109-map-Add-nil, label p3109-template-map-2-cons to p3109-map-Add-cons, label p3109-template-scaled-2 to p3109-scaled-Add)",
+      "P3109-BLOCK-TEMPLATE2{SubtractKernel} * ( op elementwise to BlockSubtract, op scaled to ScaledSubtract, op mapped to mapSubtract, label p3109-template-block-2 to p3109-block-Subtract, label p3109-template-map-2-nil to p3109-map-Subtract-nil, label p3109-template-map-2-cons to p3109-map-Subtract-cons, label p3109-template-scaled-2 to p3109-scaled-Subtract)",
+      "P3109-BLOCK-TEMPLATE2{MultiplyKernel} * ( op elementwise to BlockMultiply, op scaled to ScaledMultiply, op mapped to mapMultiply, label p3109-template-block-2 to p3109-block-Multiply, label p3109-template-map-2-nil to p3109-map-Multiply-nil, label p3109-template-map-2-cons to p3109-map-Multiply-cons, label p3109-template-scaled-2 to p3109-scaled-Multiply)",
+      "P3109-BLOCK-TEMPLATE2{DivideKernel} * ( op elementwise to BlockDivide, op scaled to ScaledDivide, op mapped to mapDivide, label p3109-template-block-2 to p3109-block-Divide, label p3109-template-map-2-nil to p3109-map-Divide-nil, label p3109-template-map-2-cons to p3109-map-Divide-cons, label p3109-template-scaled-2 to p3109-scaled-Divide)",
+      "P3109-BLOCK-TEMPLATE3{FMAKernel} * ( op elementwise to BlockFMA, op scaled to ScaledFMA, op mapped to mapFMA, label p3109-template-block-3 to p3109-block-FMA, label p3109-template-map-3-nil to p3109-map-FMA-nil, label p3109-template-map-3-cons to p3109-map-FMA-cons, label p3109-template-scaled-3 to p3109-scaled-FMA)",
+      "P3109-BLOCK-TEMPLATE3{FAAKernel} * ( op elementwise to BlockFAA, op scaled to ScaledFAA, op mapped to mapFAA, label p3109-template-block-3 to p3109-block-FAA, label p3109-template-map-3-nil to p3109-map-FAA-nil, label p3109-template-map-3-cons to p3109-map-FAA-cons, label p3109-template-scaled-3 to p3109-scaled-FAA)",
+      "P3109-BLOCK-TEMPLATE1{RecipKernel} * ( op elementwise to BlockRecip, op scaled to ScaledRecip, op mapped to mapRecip, label p3109-template-block-1 to p3109-block-Recip, label p3109-template-map-1-nil to p3109-map-Recip-nil, label p3109-template-map-1-cons to p3109-map-Recip-cons, label p3109-template-scaled-1 to p3109-scaled-Recip)",
+      "P3109-BLOCK-TEMPLATE2{MinimumKernel} * ( op elementwise to BlockMinimum, op scaled to ScaledMinimum, op mapped to mapMinimum, label p3109-template-block-2 to p3109-block-Minimum, label p3109-template-map-2-nil to p3109-map-Minimum-nil, label p3109-template-map-2-cons to p3109-map-Minimum-cons, label p3109-template-scaled-2 to p3109-scaled-Minimum)",
+      "P3109-BLOCK-TEMPLATE2{MaximumKernel} * ( op elementwise to BlockMaximum, op scaled to ScaledMaximum, op mapped to mapMaximum, label p3109-template-block-2 to p3109-block-Maximum, label p3109-template-map-2-nil to p3109-map-Maximum-nil, label p3109-template-map-2-cons to p3109-map-Maximum-cons, label p3109-template-scaled-2 to p3109-scaled-Maximum)",
+      "P3109-BLOCK-TEMPLATE2{MinimumNumberKernel} * ( op elementwise to BlockMinimumNumber, op scaled to ScaledMinimumNumber, op mapped to mapMinimumNumber, label p3109-template-block-2 to p3109-block-MinimumNumber, label p3109-template-map-2-nil to p3109-map-MinimumNumber-nil, label p3109-template-map-2-cons to p3109-map-MinimumNumber-cons, label p3109-template-scaled-2 to p3109-scaled-MinimumNumber)",
+      "P3109-BLOCK-TEMPLATE2{MaximumNumberKernel} * ( op elementwise to BlockMaximumNumber, op scaled to ScaledMaximumNumber, op mapped to mapMaximumNumber, label p3109-template-block-2 to p3109-block-MaximumNumber, label p3109-template-map-2-nil to p3109-map-MaximumNumber-nil, label p3109-template-map-2-cons to p3109-map-MaximumNumber-cons, label p3109-template-scaled-2 to p3109-scaled-MaximumNumber)",
+      "P3109-BLOCK-TEMPLATE2{MinimumMagnitudeKernel} * ( op elementwise to BlockMinimumMagnitude, op scaled to ScaledMinimumMagnitude, op mapped to mapMinimumMagnitude, label p3109-template-block-2 to p3109-block-MinimumMagnitude, label p3109-template-map-2-nil to p3109-map-MinimumMagnitude-nil, label p3109-template-map-2-cons to p3109-map-MinimumMagnitude-cons, label p3109-template-scaled-2 to p3109-scaled-MinimumMagnitude)",
+      "P3109-BLOCK-TEMPLATE2{MaximumMagnitudeKernel} * ( op elementwise to BlockMaximumMagnitude, op scaled to ScaledMaximumMagnitude, op mapped to mapMaximumMagnitude, label p3109-template-block-2 to p3109-block-MaximumMagnitude, label p3109-template-map-2-nil to p3109-map-MaximumMagnitude-nil, label p3109-template-map-2-cons to p3109-map-MaximumMagnitude-cons, label p3109-template-scaled-2 to p3109-scaled-MaximumMagnitude)",
+      "P3109-BLOCK-TEMPLATE2{MinimumMagnitudeNumberKernel} * ( op elementwise to BlockMinimumMagnitudeNumber, op scaled to ScaledMinimumMagnitudeNumber, op mapped to mapMinimumMagnitudeNumber, label p3109-template-block-2 to p3109-block-MinimumMagnitudeNumber, label p3109-template-map-2-nil to p3109-map-MinimumMagnitudeNumber-nil, label p3109-template-map-2-cons to p3109-map-MinimumMagnitudeNumber-cons, label p3109-template-scaled-2 to p3109-scaled-MinimumMagnitudeNumber)",
+      "P3109-BLOCK-TEMPLATE2{MaximumMagnitudeNumberKernel} * ( op elementwise to BlockMaximumMagnitudeNumber, op scaled to ScaledMaximumMagnitudeNumber, op mapped to mapMaximumMagnitudeNumber, label p3109-template-block-2 to p3109-block-MaximumMagnitudeNumber, label p3109-template-map-2-nil to p3109-map-MaximumMagnitudeNumber-nil, label p3109-template-map-2-cons to p3109-map-MaximumMagnitudeNumber-cons, label p3109-template-scaled-2 to p3109-scaled-MaximumMagnitudeNumber)",
+      "P3109-BLOCK-TEMPLATE2{MinimumFiniteKernel} * ( op elementwise to BlockMinimumFinite, op scaled to ScaledMinimumFinite, op mapped to mapMinimumFinite, label p3109-template-block-2 to p3109-block-MinimumFinite, label p3109-template-map-2-nil to p3109-map-MinimumFinite-nil, label p3109-template-map-2-cons to p3109-map-MinimumFinite-cons, label p3109-template-scaled-2 to p3109-scaled-MinimumFinite)",
+      "P3109-BLOCK-TEMPLATE2{MaximumFiniteKernel} * ( op elementwise to BlockMaximumFinite, op scaled to ScaledMaximumFinite, op mapped to mapMaximumFinite, label p3109-template-block-2 to p3109-block-MaximumFinite, label p3109-template-map-2-nil to p3109-map-MaximumFinite-nil, label p3109-template-map-2-cons to p3109-map-MaximumFinite-cons, label p3109-template-scaled-2 to p3109-scaled-MaximumFinite)",
+      "P3109-BLOCK-TEMPLATE3{ClampKernel} * ( op elementwise to BlockClamp, op scaled to ScaledClamp, op mapped to mapClamp, label p3109-template-block-3 to p3109-block-Clamp, label p3109-template-map-3-nil to p3109-map-Clamp-nil, label p3109-template-map-3-cons to p3109-map-Clamp-cons, label p3109-template-scaled-3 to p3109-scaled-Clamp)"
+    ],
+    "lib/codec.maude": [
+      "P3109-RATIONAL-MATH",
+      "P3109-EXTERNAL-SIGNATURE"
+    ],
+    "lib/conformance.maude": [
+      "TRIV",
+      "P3109-FORMAT-CORE",
+      "P3109-BLOCK-CORE",
+      "STRING",
+      "P3109-SEQUENCE{FormatElt} * (sort Seq{FormatElt} to FormatSeq, op nil to fnil, op cons to fcons)",
+      "TRIV",
+      "P3109-CONFORMANCE-DATA",
+      "TRIV",
+      "P3109-CONFORMANCE-DATA",
+      "TRIV",
+      "P3109-CONFORMANCE-DATA",
+      "TRIV",
+      "P3109-BLOCK-CORE",
+      "TRIV",
+      "P3109-CONFORMANCE-DATA",
+      "TRIV",
+      "P3109-CONFORMANCE-DATA",
+      "P3109-SEQUENCE{KappaPartElt} * (sort Seq{KappaPartElt} to KappaPartSeq, op nil to knil, op cons to kcons)",
+      "P3109-SEQUENCE{CodeSeqElt} * (sort Seq{CodeSeqElt} to PartitionSeq, op nil to pnil, op cons to pcons)",
+      "P3109-SEQUENCE{DeclarationElt} * (sort Seq{DeclarationElt} to DeclarationSeq, op nil to dnil, op cons to dcons)",
+      "P3109-SEQUENCE{SpecializationElt} * (sort Seq{SpecializationElt} to SpecializationSeq, op nil to snil, op cons to scons)",
+      "P3109-CONFORMANCE-DATA",
+      "P3109-PREDICATES",
+      "P3109-SEQUENCE{ObservationElt} * (sort Seq{ObservationElt} to ObservationSeq, op nil to onil, op cons to ocons)",
+      "P3109-SEQUENCE{ArityEntryElt} * (sort Seq{ArityEntryElt} to ArityTable, op nil to anil, op cons to acons)"
+    ],
+    "lib/external-signature.maude": [
+      "P3109-XREAL",
+      "P3109-FORMAT-CORE"
+    ],
+    "lib/format-core.maude": [
+      "INT"
+    ],
+    "lib/format-names.maude": [
+      "P3109-FORMAT-CORE",
+      "CONVERSION"
+    ],
+    "lib/format-queries.maude": [
+      "P3109-CODEC"
+    ],
+    "lib/omega-arithmetic.maude": [
+      "P3109-RATIONAL-MATH"
+    ],
+    "lib/omega-extrema.maude": [
+      "P3109-OMEGA-ARITHMETIC"
+    ],
+    "lib/order-next.maude": [
+      "P3109-PREDICATES"
+    ],
+    "lib/predicates.maude": [
+      "P3109-FORMAT-QUERIES",
+      "P3109-OMEGA-ARITHMETIC"
+    ],
+    "lib/project.maude": [
+      "P3109-FORMAT-QUERIES",
+      "P3109-ROUND",
+      "P3109-SATURATE"
+    ],
+    "lib/projection-spec.maude": [
+      "INT",
+      "P3109-SEQUENCE{RandomElt} * (sort Seq{RandomElt} to RandomSeq, op nil to rnil, op cons to rcons)"
+    ],
+    "lib/rational-math.maude": [
+      "P3109-XREAL"
+    ],
+    "lib/rounding.maude": [
+      "P3109-RATIONAL-MATH",
+      "P3109-PROJSPEC"
+    ],
+    "lib/saturation.maude": [
+      "P3109-XREAL",
+      "P3109-FORMAT-CORE",
+      "P3109-PROJSPEC"
+    ],
+    "lib/scalar-ops.maude": [
+      "P3109-KERNEL1",
+      "P3109-OMEGA-EXTREMA",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-EXTREMA",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-EXTREMA",
+      "P3109-KERNEL2",
+      "P3109-OMEGA-EXTREMA",
+      "P3109-KERNEL2",
+      "P3109-OMEGA-EXTREMA",
+      "P3109-KERNEL2",
+      "P3109-OMEGA-EXTREMA",
+      "P3109-KERNEL2",
+      "P3109-OMEGA-EXTREMA",
+      "P3109-KERNEL2",
+      "P3109-OMEGA-EXTREMA",
+      "P3109-KERNEL3",
+      "P3109-OMEGA-EXTREMA",
+      "P3109-KERNEL3",
+      "P3109-OMEGA-EXTREMA",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-EXTREMA",
+      "P3109-KERNEL2",
+      "P3109-OMEGA-EXTREMA",
+      "P3109-KERNEL2",
+      "P3109-OMEGA-EXTREMA",
+      "P3109-KERNEL2",
+      "P3109-OMEGA-EXTREMA",
+      "P3109-KERNEL2",
+      "P3109-OMEGA-EXTREMA",
+      "P3109-KERNEL2",
+      "P3109-OMEGA-EXTREMA",
+      "P3109-KERNEL2",
+      "P3109-OMEGA-EXTREMA",
+      "P3109-KERNEL2",
+      "P3109-OMEGA-EXTREMA",
+      "P3109-KERNEL2",
+      "P3109-OMEGA-EXTREMA",
+      "P3109-KERNEL2",
+      "P3109-OMEGA-EXTREMA",
+      "P3109-KERNEL2",
+      "P3109-OMEGA-EXTREMA",
+      "P3109-KERNEL3",
+      "P3109-OMEGA-EXTREMA",
+      "P3109-PROJECT",
+      "P3109-OMEGA-EXTREMA",
+      "P3109-SCALAR-TEMPLATE1{ConvertKernel} * ( op scalar to Convert, label p3109-template-scalar-1 to p3109-scalar-Convert)",
+      "P3109-SCALAR-TEMPLATE1{AbsKernel} * ( op scalar to Abs, label p3109-template-scalar-1 to p3109-scalar-Abs)",
+      "P3109-SCALAR-TEMPLATE1{NegateKernel} * ( op scalar to Negate, label p3109-template-scalar-1 to p3109-scalar-Negate)",
+      "P3109-SCALAR-TEMPLATE2{CopySignKernel} * ( op scalar to CopySign, label p3109-template-scalar-2 to p3109-scalar-CopySign)",
+      "P3109-SCALAR-TEMPLATE2{AddKernel} * ( op scalar to Add, label p3109-template-scalar-2 to p3109-scalar-Add)",
+      "P3109-SCALAR-TEMPLATE2{SubtractKernel} * ( op scalar to Subtract, label p3109-template-scalar-2 to p3109-scalar-Subtract)",
+      "P3109-SCALAR-TEMPLATE2{MultiplyKernel} * ( op scalar to Multiply, label p3109-template-scalar-2 to p3109-scalar-Multiply)",
+      "P3109-SCALAR-TEMPLATE2{DivideKernel} * ( op scalar to Divide, label p3109-template-scalar-2 to p3109-scalar-Divide)",
+      "P3109-SCALAR-TEMPLATE3{FMAKernel} * ( op scalar to FMA, label p3109-template-scalar-3 to p3109-scalar-FMA)",
+      "P3109-SCALAR-TEMPLATE3{FAAKernel} * ( op scalar to FAA, label p3109-template-scalar-3 to p3109-scalar-FAA)",
+      "P3109-SCALAR-TEMPLATE1{RecipKernel} * ( op scalar to Recip, label p3109-template-scalar-1 to p3109-scalar-Recip)",
+      "P3109-SCALAR-TEMPLATE2{MinimumKernel} * ( op scalar to Minimum, label p3109-template-scalar-2 to p3109-scalar-Minimum)",
+      "P3109-SCALAR-TEMPLATE2{MaximumKernel} * ( op scalar to Maximum, label p3109-template-scalar-2 to p3109-scalar-Maximum)",
+      "P3109-SCALAR-TEMPLATE2{MinimumNumberKernel} * ( op scalar to MinimumNumber, label p3109-template-scalar-2 to p3109-scalar-MinimumNumber)",
+      "P3109-SCALAR-TEMPLATE2{MaximumNumberKernel} * ( op scalar to MaximumNumber, label p3109-template-scalar-2 to p3109-scalar-MaximumNumber)",
+      "P3109-SCALAR-TEMPLATE2{MinimumMagnitudeKernel} * ( op scalar to MinimumMagnitude, label p3109-template-scalar-2 to p3109-scalar-MinimumMagnitude)",
+      "P3109-SCALAR-TEMPLATE2{MaximumMagnitudeKernel} * ( op scalar to MaximumMagnitude, label p3109-template-scalar-2 to p3109-scalar-MaximumMagnitude)",
+      "P3109-SCALAR-TEMPLATE2{MinimumMagnitudeNumberKernel} * ( op scalar to MinimumMagnitudeNumber, label p3109-template-scalar-2 to p3109-scalar-MinimumMagnitudeNumber)",
+      "P3109-SCALAR-TEMPLATE2{MaximumMagnitudeNumberKernel} * ( op scalar to MaximumMagnitudeNumber, label p3109-template-scalar-2 to p3109-scalar-MaximumMagnitudeNumber)",
+      "P3109-SCALAR-TEMPLATE2{MinimumFiniteKernel} * ( op scalar to MinimumFinite, label p3109-template-scalar-2 to p3109-scalar-MinimumFinite)",
+      "P3109-SCALAR-TEMPLATE2{MaximumFiniteKernel} * ( op scalar to MaximumFinite, label p3109-template-scalar-2 to p3109-scalar-MaximumFinite)",
+      "P3109-SCALAR-TEMPLATE3{ClampKernel} * ( op scalar to Clamp, label p3109-template-scalar-3 to p3109-scalar-Clamp)"
+    ],
+    "lib/scalar-templates.maude": [
+      "P3109-XREAL",
+      "P3109-KERNEL1",
+      "P3109-PROJECT",
+      "P3109-XREAL",
+      "P3109-KERNEL2",
+      "P3109-PROJECT",
+      "P3109-XREAL",
+      "P3109-KERNEL3",
+      "P3109-PROJECT"
+    ],
+    "lib/sequences.maude": [
+      "TRIV",
+      "NAT",
+      "TRIV",
+      "P3109-XREAL",
+      "TRIV",
+      "INT",
+      "TRIV",
+      "INT"
+    ],
+    "lib/xreal.maude": [
+      "RAT"
+    ],
+    "load-core.maude": [
+      "P3109-CONFORMANCE",
+      "P3109-SCALAR",
+      "P3109-ORDER-NEXT",
+      "P3109-BLOCK-WRAPPERS"
+    ],
+    "load-spec.maude": [
+      "P3109-SYMBOLIC"
+    ],
+    "load-symbolic.maude": [
+      "P3109-CORE",
+      "P3109-SYMBOLIC-SCALAR",
+      "P3109-SYMBOLIC-BLOCK"
+    ],
+    "symbolic/block-ops.maude": [
+      "P3109-BLOCK-WRAPPERS",
+      "P3109-SYMBOLIC-BLOCK-WRAPPERS"
+    ],
+    "symbolic/block-wrappers.maude": [
+      "P3109-BLOCK",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-BLOCK-TEMPLATE1{SqrtKernel} * ( op elementwise to BlockSqrt, op scaled to ScaledSqrt, op mapped to mapSqrt, label p3109-template-block-1 to p3109-block-Sqrt, label p3109-template-map-1-nil to p3109-map-Sqrt-nil, label p3109-template-map-1-cons to p3109-map-Sqrt-cons, label p3109-template-scaled-1 to p3109-scaled-Sqrt)",
+      "P3109-BLOCK-TEMPLATE1{RSqrtKernel} * ( op elementwise to BlockRSqrt, op scaled to ScaledRSqrt, op mapped to mapRSqrt, label p3109-template-block-1 to p3109-block-RSqrt, label p3109-template-map-1-nil to p3109-map-RSqrt-nil, label p3109-template-map-1-cons to p3109-map-RSqrt-cons, label p3109-template-scaled-1 to p3109-scaled-RSqrt)",
+      "P3109-BLOCK-TEMPLATE1{ExpKernel} * ( op elementwise to BlockExp, op scaled to ScaledExp, op mapped to mapExp, label p3109-template-block-1 to p3109-block-Exp, label p3109-template-map-1-nil to p3109-map-Exp-nil, label p3109-template-map-1-cons to p3109-map-Exp-cons, label p3109-template-scaled-1 to p3109-scaled-Exp)",
+      "P3109-BLOCK-TEMPLATE1{Exp2Kernel} * ( op elementwise to BlockExp2, op scaled to ScaledExp2, op mapped to mapExp2, label p3109-template-block-1 to p3109-block-Exp2, label p3109-template-map-1-nil to p3109-map-Exp2-nil, label p3109-template-map-1-cons to p3109-map-Exp2-cons, label p3109-template-scaled-1 to p3109-scaled-Exp2)",
+      "P3109-BLOCK-TEMPLATE1{LogKernel} * ( op elementwise to BlockLog, op scaled to ScaledLog, op mapped to mapLog, label p3109-template-block-1 to p3109-block-Log, label p3109-template-map-1-nil to p3109-map-Log-nil, label p3109-template-map-1-cons to p3109-map-Log-cons, label p3109-template-scaled-1 to p3109-scaled-Log)",
+      "P3109-BLOCK-TEMPLATE1{Log2Kernel} * ( op elementwise to BlockLog2, op scaled to ScaledLog2, op mapped to mapLog2, label p3109-template-block-1 to p3109-block-Log2, label p3109-template-map-1-nil to p3109-map-Log2-nil, label p3109-template-map-1-cons to p3109-map-Log2-cons, label p3109-template-scaled-1 to p3109-scaled-Log2)",
+      "P3109-BLOCK-TEMPLATE1{LogOnePlusKernel} * ( op elementwise to BlockLogOnePlus, op scaled to ScaledLogOnePlus, op mapped to mapLogOnePlus, label p3109-template-block-1 to p3109-block-LogOnePlus, label p3109-template-map-1-nil to p3109-map-LogOnePlus-nil, label p3109-template-map-1-cons to p3109-map-LogOnePlus-cons, label p3109-template-scaled-1 to p3109-scaled-LogOnePlus)",
+      "P3109-BLOCK-TEMPLATE1{ExpMinusOneKernel} * ( op elementwise to BlockExpMinusOne, op scaled to ScaledExpMinusOne, op mapped to mapExpMinusOne, label p3109-template-block-1 to p3109-block-ExpMinusOne, label p3109-template-map-1-nil to p3109-map-ExpMinusOne-nil, label p3109-template-map-1-cons to p3109-map-ExpMinusOne-cons, label p3109-template-scaled-1 to p3109-scaled-ExpMinusOne)",
+      "P3109-BLOCK-TEMPLATE1{SinKernel} * ( op elementwise to BlockSin, op scaled to ScaledSin, op mapped to mapSin, label p3109-template-block-1 to p3109-block-Sin, label p3109-template-map-1-nil to p3109-map-Sin-nil, label p3109-template-map-1-cons to p3109-map-Sin-cons, label p3109-template-scaled-1 to p3109-scaled-Sin)",
+      "P3109-BLOCK-TEMPLATE1{CosKernel} * ( op elementwise to BlockCos, op scaled to ScaledCos, op mapped to mapCos, label p3109-template-block-1 to p3109-block-Cos, label p3109-template-map-1-nil to p3109-map-Cos-nil, label p3109-template-map-1-cons to p3109-map-Cos-cons, label p3109-template-scaled-1 to p3109-scaled-Cos)",
+      "P3109-BLOCK-TEMPLATE1{TanKernel} * ( op elementwise to BlockTan, op scaled to ScaledTan, op mapped to mapTan, label p3109-template-block-1 to p3109-block-Tan, label p3109-template-map-1-nil to p3109-map-Tan-nil, label p3109-template-map-1-cons to p3109-map-Tan-cons, label p3109-template-scaled-1 to p3109-scaled-Tan)",
+      "P3109-BLOCK-TEMPLATE1{ArcSinKernel} * ( op elementwise to BlockArcSin, op scaled to ScaledArcSin, op mapped to mapArcSin, label p3109-template-block-1 to p3109-block-ArcSin, label p3109-template-map-1-nil to p3109-map-ArcSin-nil, label p3109-template-map-1-cons to p3109-map-ArcSin-cons, label p3109-template-scaled-1 to p3109-scaled-ArcSin)",
+      "P3109-BLOCK-TEMPLATE1{ArcCosKernel} * ( op elementwise to BlockArcCos, op scaled to ScaledArcCos, op mapped to mapArcCos, label p3109-template-block-1 to p3109-block-ArcCos, label p3109-template-map-1-nil to p3109-map-ArcCos-nil, label p3109-template-map-1-cons to p3109-map-ArcCos-cons, label p3109-template-scaled-1 to p3109-scaled-ArcCos)",
+      "P3109-BLOCK-TEMPLATE1{ArcTanKernel} * ( op elementwise to BlockArcTan, op scaled to ScaledArcTan, op mapped to mapArcTan, label p3109-template-block-1 to p3109-block-ArcTan, label p3109-template-map-1-nil to p3109-map-ArcTan-nil, label p3109-template-map-1-cons to p3109-map-ArcTan-cons, label p3109-template-scaled-1 to p3109-scaled-ArcTan)",
+      "P3109-BLOCK-TEMPLATE1{SinhKernel} * ( op elementwise to BlockSinh, op scaled to ScaledSinh, op mapped to mapSinh, label p3109-template-block-1 to p3109-block-Sinh, label p3109-template-map-1-nil to p3109-map-Sinh-nil, label p3109-template-map-1-cons to p3109-map-Sinh-cons, label p3109-template-scaled-1 to p3109-scaled-Sinh)",
+      "P3109-BLOCK-TEMPLATE1{CoshKernel} * ( op elementwise to BlockCosh, op scaled to ScaledCosh, op mapped to mapCosh, label p3109-template-block-1 to p3109-block-Cosh, label p3109-template-map-1-nil to p3109-map-Cosh-nil, label p3109-template-map-1-cons to p3109-map-Cosh-cons, label p3109-template-scaled-1 to p3109-scaled-Cosh)",
+      "P3109-BLOCK-TEMPLATE1{TanhKernel} * ( op elementwise to BlockTanh, op scaled to ScaledTanh, op mapped to mapTanh, label p3109-template-block-1 to p3109-block-Tanh, label p3109-template-map-1-nil to p3109-map-Tanh-nil, label p3109-template-map-1-cons to p3109-map-Tanh-cons, label p3109-template-scaled-1 to p3109-scaled-Tanh)",
+      "P3109-BLOCK-TEMPLATE1{ArcSinhKernel} * ( op elementwise to BlockArcSinh, op scaled to ScaledArcSinh, op mapped to mapArcSinh, label p3109-template-block-1 to p3109-block-ArcSinh, label p3109-template-map-1-nil to p3109-map-ArcSinh-nil, label p3109-template-map-1-cons to p3109-map-ArcSinh-cons, label p3109-template-scaled-1 to p3109-scaled-ArcSinh)",
+      "P3109-BLOCK-TEMPLATE1{ArcCoshKernel} * ( op elementwise to BlockArcCosh, op scaled to ScaledArcCosh, op mapped to mapArcCosh, label p3109-template-block-1 to p3109-block-ArcCosh, label p3109-template-map-1-nil to p3109-map-ArcCosh-nil, label p3109-template-map-1-cons to p3109-map-ArcCosh-cons, label p3109-template-scaled-1 to p3109-scaled-ArcCosh)",
+      "P3109-BLOCK-TEMPLATE1{ArcTanhKernel} * ( op elementwise to BlockArcTanh, op scaled to ScaledArcTanh, op mapped to mapArcTanh, label p3109-template-block-1 to p3109-block-ArcTanh, label p3109-template-map-1-nil to p3109-map-ArcTanh-nil, label p3109-template-map-1-cons to p3109-map-ArcTanh-cons, label p3109-template-scaled-1 to p3109-scaled-ArcTanh)",
+      "P3109-BLOCK-TEMPLATE1{SinPiKernel} * ( op elementwise to BlockSinPi, op scaled to ScaledSinPi, op mapped to mapSinPi, label p3109-template-block-1 to p3109-block-SinPi, label p3109-template-map-1-nil to p3109-map-SinPi-nil, label p3109-template-map-1-cons to p3109-map-SinPi-cons, label p3109-template-scaled-1 to p3109-scaled-SinPi)",
+      "P3109-BLOCK-TEMPLATE1{CosPiKernel} * ( op elementwise to BlockCosPi, op scaled to ScaledCosPi, op mapped to mapCosPi, label p3109-template-block-1 to p3109-block-CosPi, label p3109-template-map-1-nil to p3109-map-CosPi-nil, label p3109-template-map-1-cons to p3109-map-CosPi-cons, label p3109-template-scaled-1 to p3109-scaled-CosPi)",
+      "P3109-BLOCK-TEMPLATE1{TanPiKernel} * ( op elementwise to BlockTanPi, op scaled to ScaledTanPi, op mapped to mapTanPi, label p3109-template-block-1 to p3109-block-TanPi, label p3109-template-map-1-nil to p3109-map-TanPi-nil, label p3109-template-map-1-cons to p3109-map-TanPi-cons, label p3109-template-scaled-1 to p3109-scaled-TanPi)",
+      "P3109-BLOCK-TEMPLATE1{ArcSinPiKernel} * ( op elementwise to BlockArcSinPi, op scaled to ScaledArcSinPi, op mapped to mapArcSinPi, label p3109-template-block-1 to p3109-block-ArcSinPi, label p3109-template-map-1-nil to p3109-map-ArcSinPi-nil, label p3109-template-map-1-cons to p3109-map-ArcSinPi-cons, label p3109-template-scaled-1 to p3109-scaled-ArcSinPi)",
+      "P3109-BLOCK-TEMPLATE1{ArcCosPiKernel} * ( op elementwise to BlockArcCosPi, op scaled to ScaledArcCosPi, op mapped to mapArcCosPi, label p3109-template-block-1 to p3109-block-ArcCosPi, label p3109-template-map-1-nil to p3109-map-ArcCosPi-nil, label p3109-template-map-1-cons to p3109-map-ArcCosPi-cons, label p3109-template-scaled-1 to p3109-scaled-ArcCosPi)",
+      "P3109-BLOCK-TEMPLATE1{ArcTanPiKernel} * ( op elementwise to BlockArcTanPi, op scaled to ScaledArcTanPi, op mapped to mapArcTanPi, label p3109-template-block-1 to p3109-block-ArcTanPi, label p3109-template-map-1-nil to p3109-map-ArcTanPi-nil, label p3109-template-map-1-cons to p3109-map-ArcTanPi-cons, label p3109-template-scaled-1 to p3109-scaled-ArcTanPi)",
+      "P3109-BLOCK-TEMPLATE1{SoftplusKernel} * ( op elementwise to BlockSoftplus, op scaled to ScaledSoftplus, op mapped to mapSoftplus, label p3109-template-block-1 to p3109-block-Softplus, label p3109-template-map-1-nil to p3109-map-Softplus-nil, label p3109-template-map-1-cons to p3109-map-Softplus-cons, label p3109-template-scaled-1 to p3109-scaled-Softplus)",
+      "P3109-BLOCK-TEMPLATE2{HypotKernel} * ( op elementwise to BlockHypot, op scaled to ScaledHypot, op mapped to mapHypot, label p3109-template-block-2 to p3109-block-Hypot, label p3109-template-map-2-nil to p3109-map-Hypot-nil, label p3109-template-map-2-cons to p3109-map-Hypot-cons, label p3109-template-scaled-2 to p3109-scaled-Hypot)",
+      "P3109-BLOCK-TEMPLATE2{ArcTan2Kernel} * ( op elementwise to BlockArcTan2, op scaled to ScaledArcTan2, op mapped to mapArcTan2, label p3109-template-block-2 to p3109-block-ArcTan2, label p3109-template-map-2-nil to p3109-map-ArcTan2-nil, label p3109-template-map-2-cons to p3109-map-ArcTan2-cons, label p3109-template-scaled-2 to p3109-scaled-ArcTan2)",
+      "P3109-BLOCK-TEMPLATE2{ArcTan2PiKernel} * ( op elementwise to BlockArcTan2Pi, op scaled to ScaledArcTan2Pi, op mapped to mapArcTan2Pi, label p3109-template-block-2 to p3109-block-ArcTan2Pi, label p3109-template-map-2-nil to p3109-map-ArcTan2Pi-nil, label p3109-template-map-2-cons to p3109-map-ArcTan2Pi-cons, label p3109-template-scaled-2 to p3109-scaled-ArcTan2Pi)"
+    ],
+    "symbolic/omega-elementary.maude": [
+      "P3109-REAL-EXPRESSIONS"
+    ],
+    "symbolic/real-expressions.maude": [
+      "P3109-OMEGA-EXTREMA"
+    ],
+    "symbolic/scalar-ops.maude": [
+      "P3109-KERNEL1",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL1",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL2",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL2",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-KERNEL2",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-PROJECT",
+      "P3109-OMEGA-EXTREMA",
+      "P3109-OMEGA-ELEMENTARY",
+      "P3109-SCALAR-TEMPLATE1{SqrtKernel} * ( op scalar to Sqrt, label p3109-template-scalar-1 to p3109-scalar-Sqrt)",
+      "P3109-SCALAR-TEMPLATE1{RSqrtKernel} * ( op scalar to RSqrt, label p3109-template-scalar-1 to p3109-scalar-RSqrt)",
+      "P3109-SCALAR-TEMPLATE1{ExpKernel} * ( op scalar to Exp, label p3109-template-scalar-1 to p3109-scalar-Exp)",
+      "P3109-SCALAR-TEMPLATE1{Exp2Kernel} * ( op scalar to Exp2, label p3109-template-scalar-1 to p3109-scalar-Exp2)",
+      "P3109-SCALAR-TEMPLATE1{LogKernel} * ( op scalar to Log, label p3109-template-scalar-1 to p3109-scalar-Log)",
+      "P3109-SCALAR-TEMPLATE1{Log2Kernel} * ( op scalar to Log2, label p3109-template-scalar-1 to p3109-scalar-Log2)",
+      "P3109-SCALAR-TEMPLATE1{LogOnePlusKernel} * ( op scalar to LogOnePlus, label p3109-template-scalar-1 to p3109-scalar-LogOnePlus)",
+      "P3109-SCALAR-TEMPLATE1{ExpMinusOneKernel} * ( op scalar to ExpMinusOne, label p3109-template-scalar-1 to p3109-scalar-ExpMinusOne)",
+      "P3109-SCALAR-TEMPLATE1{SinKernel} * ( op scalar to Sin, label p3109-template-scalar-1 to p3109-scalar-Sin)",
+      "P3109-SCALAR-TEMPLATE1{CosKernel} * ( op scalar to Cos, label p3109-template-scalar-1 to p3109-scalar-Cos)",
+      "P3109-SCALAR-TEMPLATE1{TanKernel} * ( op scalar to Tan, label p3109-template-scalar-1 to p3109-scalar-Tan)",
+      "P3109-SCALAR-TEMPLATE1{ArcSinKernel} * ( op scalar to ArcSin, label p3109-template-scalar-1 to p3109-scalar-ArcSin)",
+      "P3109-SCALAR-TEMPLATE1{ArcCosKernel} * ( op scalar to ArcCos, label p3109-template-scalar-1 to p3109-scalar-ArcCos)",
+      "P3109-SCALAR-TEMPLATE1{ArcTanKernel} * ( op scalar to ArcTan, label p3109-template-scalar-1 to p3109-scalar-ArcTan)",
+      "P3109-SCALAR-TEMPLATE1{SinhKernel} * ( op scalar to Sinh, label p3109-template-scalar-1 to p3109-scalar-Sinh)",
+      "P3109-SCALAR-TEMPLATE1{CoshKernel} * ( op scalar to Cosh, label p3109-template-scalar-1 to p3109-scalar-Cosh)",
+      "P3109-SCALAR-TEMPLATE1{TanhKernel} * ( op scalar to Tanh, label p3109-template-scalar-1 to p3109-scalar-Tanh)",
+      "P3109-SCALAR-TEMPLATE1{ArcSinhKernel} * ( op scalar to ArcSinh, label p3109-template-scalar-1 to p3109-scalar-ArcSinh)",
+      "P3109-SCALAR-TEMPLATE1{ArcCoshKernel} * ( op scalar to ArcCosh, label p3109-template-scalar-1 to p3109-scalar-ArcCosh)",
+      "P3109-SCALAR-TEMPLATE1{ArcTanhKernel} * ( op scalar to ArcTanh, label p3109-template-scalar-1 to p3109-scalar-ArcTanh)",
+      "P3109-SCALAR-TEMPLATE1{SinPiKernel} * ( op scalar to SinPi, label p3109-template-scalar-1 to p3109-scalar-SinPi)",
+      "P3109-SCALAR-TEMPLATE1{CosPiKernel} * ( op scalar to CosPi, label p3109-template-scalar-1 to p3109-scalar-CosPi)",
+      "P3109-SCALAR-TEMPLATE1{TanPiKernel} * ( op scalar to TanPi, label p3109-template-scalar-1 to p3109-scalar-TanPi)",
+      "P3109-SCALAR-TEMPLATE1{ArcSinPiKernel} * ( op scalar to ArcSinPi, label p3109-template-scalar-1 to p3109-scalar-ArcSinPi)",
+      "P3109-SCALAR-TEMPLATE1{ArcCosPiKernel} * ( op scalar to ArcCosPi, label p3109-template-scalar-1 to p3109-scalar-ArcCosPi)",
+      "P3109-SCALAR-TEMPLATE1{ArcTanPiKernel} * ( op scalar to ArcTanPi, label p3109-template-scalar-1 to p3109-scalar-ArcTanPi)",
+      "P3109-SCALAR-TEMPLATE1{SoftplusKernel} * ( op scalar to Softplus, label p3109-template-scalar-1 to p3109-scalar-Softplus)",
+      "P3109-SCALAR-TEMPLATE2{HypotKernel} * ( op scalar to Hypot, label p3109-template-scalar-2 to p3109-scalar-Hypot)",
+      "P3109-SCALAR-TEMPLATE2{ArcTan2Kernel} * ( op scalar to ArcTan2, label p3109-template-scalar-2 to p3109-scalar-ArcTan2)",
+      "P3109-SCALAR-TEMPLATE2{ArcTan2PiKernel} * ( op scalar to ArcTan2Pi, label p3109-template-scalar-2 to p3109-scalar-ArcTan2Pi)"
+    ],
+    "tests/blocks.maude": [
+      "P3109-CORE",
+      "P3109-TEST-SUPPORT",
+      "P3109-TEST-BLOCKS"
+    ],
+    "tests/codec.maude": [
+      "P3109-CORE",
+      "P3109-TEST-SUPPORT",
+      "P3109-TEST-CODEC"
+    ],
+    "tests/conformance.maude": [
+      "P3109-CORE",
+      "P3109-TEST-SUPPORT",
+      "P3109-TEST-CONFORMANCE",
+      "P3109-TEST-CONFORMANCE"
+    ],
+    "tests/domains.maude": [
+      "P3109-CORE",
+      "P3109-TEST-SUPPORT",
+      "P3109-TEST-DOMAINS",
+      "P3109-TEST-DOMAINS"
+    ],
+    "tests/order-next.maude": [
+      "P3109-CORE",
+      "P3109-TEST-SUPPORT",
+      "P3109-TEST-ORDER-NEXT",
+      "P3109-TEST-ORDER-NEXT"
+    ],
+    "tests/projection.maude": [
+      "P3109-CORE",
+      "P3109-TEST-SUPPORT",
+      "P3109-TEST-PROJECTION"
+    ],
+    "tests/scalar.maude": [
+      "P3109-CORE",
+      "P3109-TEST-SUPPORT",
+      "P3109-TEST-SCALAR",
+      "P3109-TEST-SCALAR"
+    ],
+    "tests/smoke.maude": [
+      "P3109-CORE",
+      "P3109-TEST-SUPPORT",
+      "P3109-TEST-SMOKE",
+      "P3109-TEST-SMOKE"
+    ],
+    "tests/support.maude": [
+      "STRING",
+      "NAT"
+    ],
+    "tests/symbolic.maude": [
+      "P3109-SYMBOLIC",
+      "P3109-TEST-SUPPORT",
+      "P3109-TEST-SYMBOLIC"
+    ]
+  },
+  "record_counts": {
+    "ceq": 225,
+    "cmb": 9,
+    "comment": 104,
+    "endfm": 49,
+    "endfth": 5,
+    "endv": 62,
+    "eq": 516,
+    "fmod": 49,
+    "fth": 5,
+    "including": 191,
+    "layout": 2,
+    "load": 50,
+    "op": 210,
+    "op-mapping": 52,
+    "ops": 41,
+    "protecting": 8,
+    "quit": 11,
+    "red": 22,
+    "set": 4,
+    "sload": 6,
+    "sort": 15,
+    "sorts": 6,
+    "subsort": 2,
+    "subsorts": 1,
+    "var": 70,
+    "vars": 82,
+    "view": 62
+  }
+}

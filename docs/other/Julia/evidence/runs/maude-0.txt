@@ -1,0 +1,6 @@
+PASS load-core.maude: 21 concrete modules compile/reduce; theories and parameters are not executable targets.
+PASS load-symbolic.maude: 27 concrete modules compile/reduce; theories and parameters are not executable targets.
+PASS load-contracts.maude: 21 concrete modules compile/reduce; theories and parameters are not executable targets.
+PASS load-spec.maude: 29 concrete modules compile/reduce; theories and parameters are not executable targets.
+PASS example core.maude
+PASS example symbolic.maude

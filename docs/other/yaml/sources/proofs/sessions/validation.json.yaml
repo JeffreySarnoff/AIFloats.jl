@@ -1,0 +1,284 @@
+version: 1
+path: proofs/sessions/validation.json
+sha256: a0b62b78fa07a935ca6a516419523aaa848ac8bc334f87e0935e2936c8d709d8
+type: support
+format: json
+text: |
+  {
+    "date": "2026-09-08",
+    "source_manifest": "../../inventory/source.json",
+    "semantic_sha256": {
+      "contracts/external-bridge.maude": "2b94e1cdf7e80906f92b78229819beb504b76e91ef86745e94c47278b432de0b",
+      "contracts/external-format.maude": "aab71ea0c4e8edcad2f79a2dc5c00f24f505a7c655bd3d62dc0cf59840eb2c51",
+      "contracts/real.maude": "124dc44a7754c0cab00bbd585767144ef058c0e68d2675bbd4a034af4fa8b176",
+      "lib/block-core.maude": "a0786fd8f9c5bec5680256c40bcdd0fa39f79fc82602e36c14f89b0c46710f1e",
+      "lib/block-ops.maude": "8f070d258456b28ce5918b4422a881b2f8e44b19f8cfea2c8544ccb3c02b3c63",
+      "lib/block-wrappers.maude": "6873410aec80c35cae10806889d32ad531c0d27a6b18274cc9784d6569b7ff63",
+      "lib/codec.maude": "0a25b04d561726cfc0660c0075a4d5501e8c6f772c16eac3b0a25d89c23b13ef",
+      "lib/conformance.maude": "c903bd6c7d695e5c254cacc640603e66529f6ec0e1cf2a68f8165157eac0d3e5",
+      "lib/external-signature.maude": "fcb87bcb1f122016ff92cad5f81ac86fdcb57afc16333edb89d7718370e9d35e",
+      "lib/format-core.maude": "d9cf3652bc3c3ae73b6e76215d42d6da9ed0f31cca75c4db8682b401300f8426",
+      "lib/format-queries.maude": "3a185a41409383db9db379195a6d0427c75445fd45e55646024e9f281d56e1d4",
+      "lib/omega-arithmetic.maude": "5551605900703ab74f99271cb626ea4eb816fc8c5eb8efba2bfaa57f607d7453",
+      "lib/omega-extrema.maude": "49962cc9f39768d30272bbcccc49bc3730282e3e8f1707900e675828c18b1962",
+      "lib/order-next.maude": "c4dc263d7be7db19224fa721a452658ac18fcd0e1c83b37b6d54bf4282d0abf0",
+      "lib/predicates.maude": "f7b742226445db32a60daa3a3aee32cdb1abad8cd7477d6005ed0ee4c865dc3a",
+      "lib/project.maude": "899998eaa18318bc9962aeb42532691ec37cbc35293f4b32d94c3b7d9fa63697",
+      "lib/projection-spec.maude": "dbfe2195fa7dd310c039b9b2f8e405065727eb48bbcd41f2cf25a9353d6e6e58",
+      "lib/rational-math.maude": "f48a99f04148326dd8a956a8f5c9b616a248d1a8ffc378bc5c5b2c11e50c0d56",
+      "lib/rounding.maude": "e4fdedb0a03b043952075844d902effe11c7f7d0978feca1d337efa2c196f818",
+      "lib/saturation.maude": "286a0de98c782ca4200fd9b65a899bec78e0f1225bb417cf88fef0c84b223368",
+      "lib/scalar-ops.maude": "6a8406c250f545487a1773cd5dcaf1c874b5c0265c49d771200c477fbff7bde8",
+      "lib/sequences.maude": "e337e7ba31ae93388adcdae9d0c1edefd0178c2bb4cb83cf13838e7092547fa5",
+      "lib/xreal.maude": "3d7f771a4d456d4dc114dc7c7410980b9aa3b11aa0defaa64add595775ccaa2d",
+      "load-contracts.maude": "fa39e8f615a209b658063cdcc10d758141e001aa92fc2e07c77a448c9da8f6f2",
+      "load-core.maude": "b5b63ecfb44cc14809b33111e6dd7398b8e4e8bad7f26f32d34c36411385e6a1",
+      "load-symbolic.maude": "41c07c2b598a69f61c7031bc9700fc589346afd733e93e9c96fcc548c85dc773",
+      "symbolic/block-ops.maude": "e07359178f6089283786baee023e158e9939f1b3a0dec6dbe173884fa21f63b4",
+      "symbolic/block-wrappers.maude": "422365d979e6c526351f48614353dbaa77d4bfd96de01e0663117570e581e630",
+      "symbolic/omega-elementary.maude": "a4313d9e57dbad78630452aea6736591e5404c972a38ae6476cf35278739cd6d",
+      "symbolic/real-expressions.maude": "bfb66682356450e284bda5582935a8da3adb085c2ec895a7c6f918ba213f9614",
+      "symbolic/scalar-ops.maude": "e1a3cbbc6daf3438fa7a2d82938bd347efc91c185f8e41f14613db8a78d7fde7"
+    },
+    "runs": [
+      {
+        "name": "core",
+        "command": [
+          "python3",
+          "tools/run-tests.py",
+          "--suite",
+          "core"
+        ],
+        "elapsed_seconds": 6.28,
+        "output": "PASS smoke: expected=65 executed=65 (0.04s)\nPASS domains: expected=24 executed=24 (0.04s)\nPASS codec: expected=2660 executed=2660 (0.36s)\nPASS projection: expected=11016 executed=11016 (1.16s)\nPASS scalar: expected=33760 executed=33760 (3.79s)\nPASS order-next: expected=2080 executed=2080 (0.43s)\nPASS blocks: expected=140 executed=140 (0.07s)\nPASS conformance: expected=5731 executed=5731 (0.38s)\nTOTAL expected=55476 executed=55476",
+        "status": "passed"
+      },
+      {
+        "name": "symbolic",
+        "command": [
+          "python3",
+          "tools/run-tests.py",
+          "--suite",
+          "symbolic"
+        ],
+        "elapsed_seconds": 0.11,
+        "output": "PASS symbolic: expected=194 executed=194 (0.08s)\nTOTAL expected=194 executed=194",
+        "status": "passed"
+      },
+      {
+        "name": "core-under-symbolic",
+        "command": [
+          "python3",
+          "tools/run-tests.py",
+          "--suite",
+          "core",
+          "--profile",
+          "symbolic"
+        ],
+        "elapsed_seconds": 6.71,
+        "output": "PASS smoke: expected=65 executed=65 (0.05s)\nPASS domains: expected=24 executed=24 (0.04s)\nPASS codec: expected=2660 executed=2660 (0.37s)\nPASS projection: expected=11016 executed=11016 (1.24s)\nPASS scalar: expected=33760 executed=33760 (4.03s)\nPASS order-next: expected=2080 executed=2080 (0.45s)\nPASS blocks: expected=140 executed=140 (0.08s)\nPASS conformance: expected=5731 executed=5731 (0.42s)\nTOTAL expected=55476 executed=55476",
+        "status": "passed"
+      },
+      {
+        "name": "core-maude++",
+        "command": [
+          "python3",
+          "tools/run-tests.py",
+          "--suite",
+          "core",
+          "--engine",
+          "maude++"
+        ],
+        "elapsed_seconds": 29.75,
+        "output": "PASS smoke: expected=65 executed=65 (0.14s)\nPASS domains: expected=24 executed=24 (0.11s)\nPASS codec: expected=2660 executed=2660 (1.83s)\nPASS projection: expected=11016 executed=11016 (5.04s)\nPASS scalar: expected=33760 executed=33760 (18.42s)\nPASS order-next: expected=2080 executed=2080 (2.42s)\nPASS blocks: expected=140 executed=140 (0.33s)\nPASS conformance: expected=5731 executed=5731 (1.42s)\nTOTAL expected=55476 executed=55476",
+        "status": "passed"
+      },
+      {
+        "name": "symbolic-maude++",
+        "command": [
+          "python3",
+          "tools/run-tests.py",
+          "--suite",
+          "symbolic",
+          "--engine",
+          "maude++"
+        ],
+        "elapsed_seconds": 0.38,
+        "output": "PASS symbolic: expected=194 executed=194 (0.35s)\nTOTAL expected=194 executed=194",
+        "status": "passed"
+      },
+      {
+        "name": "order-full",
+        "command": [
+          "python3",
+          "tools/run-tests.py",
+          "--suite",
+          "order-full"
+        ],
+        "elapsed_seconds": 57.45,
+        "output": "order-full: 25000 checks\n  order-full: 50000 checks\n  order-full: 75000 checks\n  order-full: 100000 checks\n  order-full: 125000 checks\n  order-full: 150000 checks\n  order-full: 175000 checks\n  order-full: 200000 checks\n  order-full: 225000 checks\n  order-full: 250000 checks\n  order-full: 275000 checks\nPASS order-full: expected=279840 executed=279840 (57.42s)\nTOTAL expected=279840 executed=279840",
+        "status": "passed"
+      }
+    ],
+    "independent_loads": {
+      "core_engine": "3.5.1",
+      "proof_engine": "Maude++ 3.5.1",
+      "load-core.maude": 21,
+      "load-symbolic.maude": 27,
+      "load-contracts.maude": 21,
+      "result": "Every reachable concrete module compiled/reduced in a fresh process; both examples passed on both engines."
+    },
+    "proof_results": "summary.json",
+    "qualification": "These are bounded execution results and eligible constructor proof sessions. Remaining universal, real, and external obligations are recorded separately."
+  }
+data:
+  date: '2026-09-08'
+  source_manifest: ../../inventory/source.json
+  semantic_sha256:
+    contracts/external-bridge.maude: 2b94e1cdf7e80906f92b78229819beb504b76e91ef86745e94c47278b432de0b
+    contracts/external-format.maude: aab71ea0c4e8edcad2f79a2dc5c00f24f505a7c655bd3d62dc0cf59840eb2c51
+    contracts/real.maude: 124dc44a7754c0cab00bbd585767144ef058c0e68d2675bbd4a034af4fa8b176
+    lib/block-core.maude: a0786fd8f9c5bec5680256c40bcdd0fa39f79fc82602e36c14f89b0c46710f1e
+    lib/block-ops.maude: 8f070d258456b28ce5918b4422a881b2f8e44b19f8cfea2c8544ccb3c02b3c63
+    lib/block-wrappers.maude: 6873410aec80c35cae10806889d32ad531c0d27a6b18274cc9784d6569b7ff63
+    lib/codec.maude: 0a25b04d561726cfc0660c0075a4d5501e8c6f772c16eac3b0a25d89c23b13ef
+    lib/conformance.maude: c903bd6c7d695e5c254cacc640603e66529f6ec0e1cf2a68f8165157eac0d3e5
+    lib/external-signature.maude: fcb87bcb1f122016ff92cad5f81ac86fdcb57afc16333edb89d7718370e9d35e
+    lib/format-core.maude: d9cf3652bc3c3ae73b6e76215d42d6da9ed0f31cca75c4db8682b401300f8426
+    lib/format-queries.maude: 3a185a41409383db9db379195a6d0427c75445fd45e55646024e9f281d56e1d4
+    lib/omega-arithmetic.maude: 5551605900703ab74f99271cb626ea4eb816fc8c5eb8efba2bfaa57f607d7453
+    lib/omega-extrema.maude: 49962cc9f39768d30272bbcccc49bc3730282e3e8f1707900e675828c18b1962
+    lib/order-next.maude: c4dc263d7be7db19224fa721a452658ac18fcd0e1c83b37b6d54bf4282d0abf0
+    lib/predicates.maude: f7b742226445db32a60daa3a3aee32cdb1abad8cd7477d6005ed0ee4c865dc3a
+    lib/project.maude: 899998eaa18318bc9962aeb42532691ec37cbc35293f4b32d94c3b7d9fa63697
+    lib/projection-spec.maude: dbfe2195fa7dd310c039b9b2f8e405065727eb48bbcd41f2cf25a9353d6e6e58
+    lib/rational-math.maude: f48a99f04148326dd8a956a8f5c9b616a248d1a8ffc378bc5c5b2c11e50c0d56
+    lib/rounding.maude: e4fdedb0a03b043952075844d902effe11c7f7d0978feca1d337efa2c196f818
+    lib/saturation.maude: 286a0de98c782ca4200fd9b65a899bec78e0f1225bb417cf88fef0c84b223368
+    lib/scalar-ops.maude: 6a8406c250f545487a1773cd5dcaf1c874b5c0265c49d771200c477fbff7bde8
+    lib/sequences.maude: e337e7ba31ae93388adcdae9d0c1edefd0178c2bb4cb83cf13838e7092547fa5
+    lib/xreal.maude: 3d7f771a4d456d4dc114dc7c7410980b9aa3b11aa0defaa64add595775ccaa2d
+    load-contracts.maude: fa39e8f615a209b658063cdcc10d758141e001aa92fc2e07c77a448c9da8f6f2
+    load-core.maude: b5b63ecfb44cc14809b33111e6dd7398b8e4e8bad7f26f32d34c36411385e6a1
+    load-symbolic.maude: 41c07c2b598a69f61c7031bc9700fc589346afd733e93e9c96fcc548c85dc773
+    symbolic/block-ops.maude: e07359178f6089283786baee023e158e9939f1b3a0dec6dbe173884fa21f63b4
+    symbolic/block-wrappers.maude: 422365d979e6c526351f48614353dbaa77d4bfd96de01e0663117570e581e630
+    symbolic/omega-elementary.maude: a4313d9e57dbad78630452aea6736591e5404c972a38ae6476cf35278739cd6d
+    symbolic/real-expressions.maude: bfb66682356450e284bda5582935a8da3adb085c2ec895a7c6f918ba213f9614
+    symbolic/scalar-ops.maude: e1a3cbbc6daf3438fa7a2d82938bd347efc91c185f8e41f14613db8a78d7fde7
+  runs:
+  - name: core
+    command:
+    - python3
+    - tools/run-tests.py
+    - --suite
+    - core
+    elapsed_seconds: 6.28
+    output: |-
+      PASS smoke: expected=65 executed=65 (0.04s)
+      PASS domains: expected=24 executed=24 (0.04s)
+      PASS codec: expected=2660 executed=2660 (0.36s)
+      PASS projection: expected=11016 executed=11016 (1.16s)
+      PASS scalar: expected=33760 executed=33760 (3.79s)
+      PASS order-next: expected=2080 executed=2080 (0.43s)
+      PASS blocks: expected=140 executed=140 (0.07s)
+      PASS conformance: expected=5731 executed=5731 (0.38s)
+      TOTAL expected=55476 executed=55476
+    status: passed
+  - name: symbolic
+    command:
+    - python3
+    - tools/run-tests.py
+    - --suite
+    - symbolic
+    elapsed_seconds: 0.11
+    output: |-
+      PASS symbolic: expected=194 executed=194 (0.08s)
+      TOTAL expected=194 executed=194
+    status: passed
+  - name: core-under-symbolic
+    command:
+    - python3
+    - tools/run-tests.py
+    - --suite
+    - core
+    - --profile
+    - symbolic
+    elapsed_seconds: 6.71
+    output: |-
+      PASS smoke: expected=65 executed=65 (0.05s)
+      PASS domains: expected=24 executed=24 (0.04s)
+      PASS codec: expected=2660 executed=2660 (0.37s)
+      PASS projection: expected=11016 executed=11016 (1.24s)
+      PASS scalar: expected=33760 executed=33760 (4.03s)
+      PASS order-next: expected=2080 executed=2080 (0.45s)
+      PASS blocks: expected=140 executed=140 (0.08s)
+      PASS conformance: expected=5731 executed=5731 (0.42s)
+      TOTAL expected=55476 executed=55476
+    status: passed
+  - name: core-maude++
+    command:
+    - python3
+    - tools/run-tests.py
+    - --suite
+    - core
+    - --engine
+    - maude++
+    elapsed_seconds: 29.75
+    output: |-
+      PASS smoke: expected=65 executed=65 (0.14s)
+      PASS domains: expected=24 executed=24 (0.11s)
+      PASS codec: expected=2660 executed=2660 (1.83s)
+      PASS projection: expected=11016 executed=11016 (5.04s)
+      PASS scalar: expected=33760 executed=33760 (18.42s)
+      PASS order-next: expected=2080 executed=2080 (2.42s)
+      PASS blocks: expected=140 executed=140 (0.33s)
+      PASS conformance: expected=5731 executed=5731 (1.42s)
+      TOTAL expected=55476 executed=55476
+    status: passed
+  - name: symbolic-maude++
+    command:
+    - python3
+    - tools/run-tests.py
+    - --suite
+    - symbolic
+    - --engine
+    - maude++
+    elapsed_seconds: 0.38
+    output: |-
+      PASS symbolic: expected=194 executed=194 (0.35s)
+      TOTAL expected=194 executed=194
+    status: passed
+  - name: order-full
+    command:
+    - python3
+    - tools/run-tests.py
+    - --suite
+    - order-full
+    elapsed_seconds: 57.45
+    output: |-
+      order-full: 25000 checks
+        order-full: 50000 checks
+        order-full: 75000 checks
+        order-full: 100000 checks
+        order-full: 125000 checks
+        order-full: 150000 checks
+        order-full: 175000 checks
+        order-full: 200000 checks
+        order-full: 225000 checks
+        order-full: 250000 checks
+        order-full: 275000 checks
+      PASS order-full: expected=279840 executed=279840 (57.42s)
+      TOTAL expected=279840 executed=279840
+    status: passed
+  independent_loads:
+    core_engine: 3.5.1
+    proof_engine: Maude++ 3.5.1
+    load-core.maude: 21
+    load-symbolic.maude: 27
+    load-contracts.maude: 21
+    result: Every reachable concrete module compiled/reduced in a fresh process; both examples passed
+      on both engines.
+  proof_results: summary.json
+  qualification: These are bounded execution results and eligible constructor proof sessions. Remaining
+    universal, real, and external obligations are recorded separately.

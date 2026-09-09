@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "path": "load-symbolic.maude",
+  "sha256": "35dc92e065302aefe24a1357e41254d75b9a4c83ad5277afcbb69e04ccf552b4",
+  "type": "maude",
+  "records": [
+    {
+      "line": 1,
+      "kind": "sload",
+      "fields": {
+        "path": "load-core.maude"
+      },
+      "text": "sload load-core.maude\n"
+    },
+    {
+      "line": 2,
+      "kind": "load",
+      "fields": {
+        "path": "symbolic/real-expressions.maude"
+      },
+      "text": "load symbolic/real-expressions.maude\n"
+    },
+    {
+      "line": 3,
+      "kind": "load",
+      "fields": {
+        "path": "symbolic/omega-elementary.maude"
+      },
+      "text": "load symbolic/omega-elementary.maude\n"
+    },
+    {
+      "line": 4,
+      "kind": "load",
+      "fields": {
+        "path": "symbolic/scalar-ops.maude"
+      },
+      "text": "load symbolic/scalar-ops.maude\n"
+    },
+    {
+      "line": 5,
+      "kind": "load",
+      "fields": {
+        "path": "symbolic/block-wrappers.maude"
+      },
+      "text": "load symbolic/block-wrappers.maude\n"
+    },
+    {
+      "line": 6,
+      "kind": "load",
+      "fields": {
+        "path": "symbolic/block-ops.maude"
+      },
+      "text": "load symbolic/block-ops.maude\n"
+    },
+    {
+      "line": 7,
+      "kind": "fmod",
+      "fields": {
+        "name": "P3109-SYMBOLIC",
+        "parameters": []
+      },
+      "text": "fmod P3109-SYMBOLIC is\n"
+    },
+    {
+      "line": 8,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-CORE"
+      },
+      "text": "  including P3109-CORE .\n"
+    },
+    {
+      "line": 9,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-SYMBOLIC-SCALAR"
+      },
+      "text": "  including P3109-SYMBOLIC-SCALAR .\n"
+    },
+    {
+      "line": 10,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-SYMBOLIC-BLOCK"
+      },
+      "text": "  including P3109-SYMBOLIC-BLOCK .\n"
+    },
+    {
+      "line": 11,
+      "kind": "endfm",
+      "fields": {},
+      "text": "endfm\n"
+    }
+  ]
+}

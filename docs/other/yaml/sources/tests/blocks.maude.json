@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "path": "tests/blocks.maude",
+  "sha256": "b44e59718ee9f76331766f67476008cd225a6f2ba97f29ba7030bf4a8ed2e432",
+  "type": "maude",
+  "records": [
+    {
+      "line": 1,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- Load-only check; tools/run-tests.py runs the complete blocks suite.\n"
+    },
+    {
+      "line": 2,
+      "kind": "load",
+      "fields": {
+        "path": "../load-core.maude"
+      },
+      "text": "load ../load-core.maude\n"
+    },
+    {
+      "line": 3,
+      "kind": "load",
+      "fields": {
+        "path": "support.maude"
+      },
+      "text": "load support.maude\n"
+    },
+    {
+      "line": 4,
+      "kind": "fmod",
+      "fields": {
+        "name": "P3109-TEST-BLOCKS",
+        "parameters": []
+      },
+      "text": "fmod P3109-TEST-BLOCKS is\n"
+    },
+    {
+      "line": 5,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-CORE"
+      },
+      "text": "  including P3109-CORE .\n"
+    },
+    {
+      "line": 6,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-TEST-SUPPORT"
+      },
+      "text": "  including P3109-TEST-SUPPORT .\n"
+    },
+    {
+      "line": 7,
+      "kind": "endfm",
+      "fields": {},
+      "text": "endfm\n"
+    },
+    {
+      "line": 8,
+      "kind": "red",
+      "fields": {
+        "module": "P3109-TEST-BLOCKS",
+        "term": "suiteComplete(0)"
+      },
+      "text": "red in P3109-TEST-BLOCKS : suiteComplete(0) .\n"
+    },
+    {
+      "line": 9,
+      "kind": "quit",
+      "fields": {},
+      "text": "quit\n"
+    }
+  ]
+}

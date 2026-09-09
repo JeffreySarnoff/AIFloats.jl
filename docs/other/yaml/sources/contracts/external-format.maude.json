@@ -1,0 +1,331 @@
+{
+  "version": 1,
+  "path": "contracts/external-format.maude",
+  "sha256": "fb352971d132102b05c52d78c7bb817838c8b7657bca32094e877d09da30a672",
+  "type": "maude",
+  "records": [
+    {
+      "line": 1,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- Source: P3109/D1 4.8; 4.14, printed page 31; 58.\n"
+    },
+    {
+      "line": 2,
+      "kind": "fth",
+      "fields": {
+        "name": "P3109-EXTERNAL-FORMAT",
+        "parameters": []
+      },
+      "text": "fth P3109-EXTERNAL-FORMAT is\n"
+    },
+    {
+      "line": 3,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-EXTERNAL-SIGNATURE"
+      },
+      "text": "  including P3109-EXTERNAL-SIGNATURE .\n"
+    },
+    {
+      "line": 4,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "backendFormat"
+        ],
+        "domain": [],
+        "arrow": "->",
+        "range": "Format",
+        "attributes": ""
+      },
+      "text": "  op backendFormat : -> Format .\n"
+    },
+    {
+      "line": 5,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "backendDecode"
+        ],
+        "domain": [
+          "Int"
+        ],
+        "arrow": "~>",
+        "range": "XReal",
+        "attributes": ""
+      },
+      "text": "  op backendDecode : Int ~> XReal .\n"
+    },
+    {
+      "line": 6,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "backendEncode"
+        ],
+        "domain": [
+          "XReal"
+        ],
+        "arrow": "~>",
+        "range": "Nat",
+        "attributes": ""
+      },
+      "text": "  op backendEncode : XReal ~> Nat .\n"
+    },
+    {
+      "line": 7,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "backendDatum"
+        ],
+        "domain": [
+          "XReal"
+        ],
+        "arrow": "->",
+        "range": "Bool",
+        "attributes": ""
+      },
+      "text": "  op backendDatum : XReal -> Bool .\n"
+    },
+    {
+      "line": 8,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "backendValidCode"
+        ],
+        "domain": [
+          "Int"
+        ],
+        "arrow": "->",
+        "range": "Bool",
+        "attributes": ""
+      },
+      "text": "  op backendValidCode : Int -> Bool .\n"
+    },
+    {
+      "line": 9,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "backendCanonical"
+        ],
+        "domain": [
+          "Int"
+        ],
+        "arrow": "~>",
+        "range": "Nat",
+        "attributes": ""
+      },
+      "text": "  op backendCanonical : Int ~> Nat .\n"
+    },
+    {
+      "line": 10,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "backendQuietNaN"
+        ],
+        "domain": [],
+        "arrow": "->",
+        "range": "Nat",
+        "attributes": ""
+      },
+      "text": "  op backendQuietNaN : -> Nat .\n"
+    },
+    {
+      "line": 11,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "backendPositiveZero"
+        ],
+        "domain": [],
+        "arrow": "->",
+        "range": "Nat",
+        "attributes": ""
+      },
+      "text": "  op backendPositiveZero : -> Nat .\n"
+    },
+    {
+      "line": 12,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "backendBound"
+        ],
+        "domain": [
+          "BoundQuery"
+        ],
+        "arrow": "~>",
+        "range": "Nat",
+        "attributes": ""
+      },
+      "text": "  op backendBound : BoundQuery ~> Nat .\n"
+    },
+    {
+      "line": 13,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "backendFiniteCount"
+        ],
+        "domain": [],
+        "arrow": "->",
+        "range": "Nat",
+        "attributes": ""
+      },
+      "text": "  op backendFiniteCount : -> Nat .\n"
+    },
+    {
+      "line": 14,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "C"
+        ],
+        "sort": "Int"
+      },
+      "text": "  vars C : Int .\n"
+    },
+    {
+      "line": 15,
+      "kind": "var",
+      "fields": {
+        "names": [
+          "X"
+        ],
+        "sort": "XReal"
+      },
+      "text": "  var X : XReal .\n"
+    },
+    {
+      "line": 16,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-external-format-001",
+        "lhs": "backendDecode(backendEncode(X))",
+        "rhs": "X",
+        "condition": "backendDatum(X)",
+        "attributes": "metadata \"clause=4.8; 4.14; page=31; 58\""
+      },
+      "text": "  ceq [p3109-external-format-001] : backendDecode(backendEncode(X)) = X if backendDatum(X) [metadata \"clause=4.8; 4.14; page=31; 58\"] .\n"
+    },
+    {
+      "line": 17,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-external-format-002",
+        "lhs": "backendEncode(backendDecode(C))",
+        "rhs": "backendCanonical(C)",
+        "condition": "backendValidCode(C)",
+        "attributes": "metadata \"clause=4.8; 4.14; page=31; 58\""
+      },
+      "text": "  ceq [p3109-external-format-002] : backendEncode(backendDecode(C)) = backendCanonical(C) if backendValidCode(C) [metadata \"clause=4.8; 4.14; page=31; 58\"] .\n"
+    },
+    {
+      "line": 18,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-external-format-003",
+        "lhs": "backendDatum(backendDecode(C))",
+        "rhs": "true",
+        "condition": "backendValidCode(C)",
+        "attributes": "metadata \"clause=4.8; 4.14; page=31; 58\""
+      },
+      "text": "  ceq [p3109-external-format-003] : backendDatum(backendDecode(C)) = true if backendValidCode(C) [metadata \"clause=4.8; 4.14; page=31; 58\"] .\n"
+    },
+    {
+      "line": 19,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-external-format-004",
+        "lhs": "backendValidCode(backendEncode(X))",
+        "rhs": "true",
+        "condition": "backendDatum(X)",
+        "attributes": "metadata \"clause=4.8; 4.14; page=31; 58\""
+      },
+      "text": "  ceq [p3109-external-format-004] : backendValidCode(backendEncode(X)) = true if backendDatum(X) [metadata \"clause=4.8; 4.14; page=31; 58\"] .\n"
+    },
+    {
+      "line": 20,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-external-format-005",
+        "lhs": "backendEncode(nan)",
+        "rhs": "backendQuietNaN",
+        "condition": null,
+        "attributes": "metadata \"clause=4.8; 4.14; page=31; 58\""
+      },
+      "text": "  eq [p3109-external-format-005] : backendEncode(nan) = backendQuietNaN [metadata \"clause=4.8; 4.14; page=31; 58\"] .\n"
+    },
+    {
+      "line": 21,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-external-format-006",
+        "lhs": "backendDecode(backendQuietNaN)",
+        "rhs": "nan",
+        "condition": null,
+        "attributes": "metadata \"clause=4.8; 4.14; page=31; 58\""
+      },
+      "text": "  eq [p3109-external-format-006] : backendDecode(backendQuietNaN) = nan [metadata \"clause=4.8; 4.14; page=31; 58\"] .\n"
+    },
+    {
+      "line": 22,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-external-format-007",
+        "lhs": "backendEncode(fin(0))",
+        "rhs": "backendPositiveZero",
+        "condition": null,
+        "attributes": "metadata \"clause=4.8; 4.14; page=31; 58\""
+      },
+      "text": "  eq [p3109-external-format-007] : backendEncode(fin(0)) = backendPositiveZero [metadata \"clause=4.8; 4.14; page=31; 58\"] .\n"
+    },
+    {
+      "line": 23,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-external-format-008",
+        "lhs": "backendDecode(backendPositiveZero)",
+        "rhs": "fin(0)",
+        "condition": null,
+        "attributes": "metadata \"clause=4.8; 4.14; page=31; 58\""
+      },
+      "text": "  eq [p3109-external-format-008] : backendDecode(backendPositiveZero) = fin(0) [metadata \"clause=4.8; 4.14; page=31; 58\"] .\n"
+    },
+    {
+      "line": 24,
+      "kind": "endfth",
+      "fields": {},
+      "text": "endfth\n"
+    },
+    {
+      "line": 25,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- A backend must additionally identify all NaN encodings and both zeros,\n"
+    },
+    {
+      "line": 26,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- decode both infinities, justify all five bound queries and finite-value\n"
+    },
+    {
+      "line": 27,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- counting (single zero), and prove that backendFormat is an allowed external\n"
+    },
+    {
+      "line": 28,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- format. These obligations cannot be discharged from this draft alone.\n"
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "path": "examples/core.maude",
+  "sha256": "fbb1786add9dd23b0d267304d571120776f60163ab21efd78f93d28ae057bb99",
+  "type": "maude",
+  "records": [
+    {
+      "line": 1,
+      "kind": "load",
+      "fields": {
+        "path": "../load-core.maude"
+      },
+      "text": "load ../load-core.maude\n"
+    },
+    {
+      "line": 2,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- Convert Binary8p4se 2.0 (code 72) to Binary4p2sf (code 6).\n"
+    },
+    {
+      "line": 3,
+      "kind": "red",
+      "fields": {
+        "module": "P3109-CORE",
+        "term": "Convert(Binary(8, 4, Signed, Extended), Binary(4, 2, Signed, Finite), proj(NearestTiesToEven, SatNone), 72)"
+      },
+      "text": "red in P3109-CORE : Convert(Binary(8, 4, Signed, Extended), Binary(4, 2, Signed, Finite), proj(NearestTiesToEven, SatNone), 72) .\n"
+    },
+    {
+      "line": 4,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- Exact fused arithmetic, before a single projection.\n"
+    },
+    {
+      "line": 5,
+      "kind": "red",
+      "fields": {
+        "module": "P3109-CORE",
+        "term": "omegaFMA(fin(3/2), fin(3/2), fin(-1/4))"
+      },
+      "text": "red in P3109-CORE : omegaFMA(fin(3/2), fin(3/2), fin(-1/4)) .\n"
+    },
+    {
+      "line": 6,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- Infinite result scale normalizes nonzero elements to signed units.\n"
+    },
+    {
+      "line": 7,
+      "kind": "red",
+      "fields": {
+        "module": "P3109-CORE",
+        "term": "blockProject(2, Binary(4, 2, Signed, Extended), Binary(4, 2, Signed, Finite), bproj(NearestTiesToEven, SatNone), 7, xcons(posInf, xcons(fin(-2), xnil)))"
+      },
+      "text": "red in P3109-CORE : blockProject(2, Binary(4, 2, Signed, Extended), Binary(4, 2, Signed, Finite), bproj(NearestTiesToEven, SatNone), 7, xcons(posInf, xcons(fin(-2), xnil))) .\n"
+    },
+    {
+      "line": 8,
+      "kind": "quit",
+      "fields": {},
+      "text": "quit\n"
+    }
+  ]
+}

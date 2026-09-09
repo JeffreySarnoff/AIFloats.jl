@@ -1,0 +1,71 @@
+version: 1
+path: load-symbolic.maude
+sha256: 35dc92e065302aefe24a1357e41254d75b9a4c83ad5277afcbb69e04ccf552b4
+type: maude
+records:
+- line: 1
+  kind: sload
+  fields:
+    path: load-core.maude
+  text: |
+    sload load-core.maude
+- line: 2
+  kind: load
+  fields:
+    path: symbolic/real-expressions.maude
+  text: |
+    load symbolic/real-expressions.maude
+- line: 3
+  kind: load
+  fields:
+    path: symbolic/omega-elementary.maude
+  text: |
+    load symbolic/omega-elementary.maude
+- line: 4
+  kind: load
+  fields:
+    path: symbolic/scalar-ops.maude
+  text: |
+    load symbolic/scalar-ops.maude
+- line: 5
+  kind: load
+  fields:
+    path: symbolic/block-wrappers.maude
+  text: |
+    load symbolic/block-wrappers.maude
+- line: 6
+  kind: load
+  fields:
+    path: symbolic/block-ops.maude
+  text: |
+    load symbolic/block-ops.maude
+- line: 7
+  kind: fmod
+  fields:
+    name: P3109-SYMBOLIC
+    parameters: []
+  text: |
+    fmod P3109-SYMBOLIC is
+- line: 8
+  kind: including
+  fields:
+    expression: P3109-CORE
+  text: |2
+      including P3109-CORE .
+- line: 9
+  kind: including
+  fields:
+    expression: P3109-SYMBOLIC-SCALAR
+  text: |2
+      including P3109-SYMBOLIC-SCALAR .
+- line: 10
+  kind: including
+  fields:
+    expression: P3109-SYMBOLIC-BLOCK
+  text: |2
+      including P3109-SYMBOLIC-BLOCK .
+- line: 11
+  kind: endfm
+  fields: {}
+  text: |
+    endfm

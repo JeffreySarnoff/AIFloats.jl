@@ -1,0 +1,437 @@
+{
+  "version": 1,
+  "path": "lib/scalar-templates.maude",
+  "sha256": "472a456000183423762b989ede241007933966420332bd2442e9ce56f273de9a",
+  "type": "maude",
+  "records": [
+    {
+      "line": 1,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- Shared arity schemas; operation names and kernel views are generated separately.\n"
+    },
+    {
+      "line": 2,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- Source: P3109/D1 4.3.1, printed page 19-20.\n"
+    },
+    {
+      "line": 3,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- Per-operation clauses are recorded in inventory/operations.json and traceability.tsv.\n"
+    },
+    {
+      "line": 4,
+      "kind": "fth",
+      "fields": {
+        "name": "P3109-KERNEL1",
+        "parameters": []
+      },
+      "text": "fth P3109-KERNEL1 is\n"
+    },
+    {
+      "line": 5,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-XREAL"
+      },
+      "text": "  including P3109-XREAL .\n"
+    },
+    {
+      "line": 6,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "kernel"
+        ],
+        "domain": [
+          "XReal"
+        ],
+        "arrow": "~>",
+        "range": "XReal",
+        "attributes": ""
+      },
+      "text": "  op kernel : XReal ~> XReal .\n"
+    },
+    {
+      "line": 7,
+      "kind": "endfth",
+      "fields": {},
+      "text": "endfth\n"
+    },
+    {
+      "line": 8,
+      "kind": "fmod",
+      "fields": {
+        "name": "P3109-SCALAR-TEMPLATE1",
+        "parameters": [
+          {
+            "name": "O",
+            "theory": "P3109-KERNEL1"
+          }
+        ]
+      },
+      "text": "fmod P3109-SCALAR-TEMPLATE1{O :: P3109-KERNEL1} is\n"
+    },
+    {
+      "line": 9,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-PROJECT"
+      },
+      "text": "  including P3109-PROJECT .\n"
+    },
+    {
+      "line": 10,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "F1",
+          "FR"
+        ],
+        "sort": "Format"
+      },
+      "text": "  vars F1 FR : Format .\n"
+    },
+    {
+      "line": 11,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "C1"
+        ],
+        "sort": "Int"
+      },
+      "text": "  vars C1 : Int .\n"
+    },
+    {
+      "line": 12,
+      "kind": "var",
+      "fields": {
+        "names": [
+          "PS"
+        ],
+        "sort": "ProjSpec"
+      },
+      "text": "  var PS : ProjSpec .\n"
+    },
+    {
+      "line": 13,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "scalar"
+        ],
+        "domain": [
+          "Format",
+          "Format",
+          "ProjSpec",
+          "Int"
+        ],
+        "arrow": "~>",
+        "range": "Nat",
+        "attributes": ""
+      },
+      "text": "  op scalar : Format Format ProjSpec Int ~> Nat .\n"
+    },
+    {
+      "line": 14,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-template-scalar-1",
+        "lhs": "scalar(F1, FR, PS, C1)",
+        "rhs": "project(FR, PS, kernel(decode(F1, C1)))",
+        "condition": "validCode(F1, C1) /\\ validFormat(FR) /\\ validProjection(PS)",
+        "attributes": "metadata \"clause=4.3.1; page=19-20\""
+      },
+      "text": "  ceq [p3109-template-scalar-1] :\n    scalar(F1, FR, PS, C1)\n    = project(FR, PS, kernel(decode(F1, C1)))\n    if validCode(F1, C1) /\\ validFormat(FR) /\\ validProjection(PS)\n    [metadata \"clause=4.3.1; page=19-20\"] .\n"
+    },
+    {
+      "line": 19,
+      "kind": "endfm",
+      "fields": {},
+      "text": "endfm\n"
+    },
+    {
+      "line": 20,
+      "kind": "fth",
+      "fields": {
+        "name": "P3109-KERNEL2",
+        "parameters": []
+      },
+      "text": "fth P3109-KERNEL2 is\n"
+    },
+    {
+      "line": 21,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-XREAL"
+      },
+      "text": "  including P3109-XREAL .\n"
+    },
+    {
+      "line": 22,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "kernel"
+        ],
+        "domain": [
+          "XReal",
+          "XReal"
+        ],
+        "arrow": "~>",
+        "range": "XReal",
+        "attributes": ""
+      },
+      "text": "  op kernel : XReal XReal ~> XReal .\n"
+    },
+    {
+      "line": 23,
+      "kind": "endfth",
+      "fields": {},
+      "text": "endfth\n"
+    },
+    {
+      "line": 24,
+      "kind": "fmod",
+      "fields": {
+        "name": "P3109-SCALAR-TEMPLATE2",
+        "parameters": [
+          {
+            "name": "O",
+            "theory": "P3109-KERNEL2"
+          }
+        ]
+      },
+      "text": "fmod P3109-SCALAR-TEMPLATE2{O :: P3109-KERNEL2} is\n"
+    },
+    {
+      "line": 25,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-PROJECT"
+      },
+      "text": "  including P3109-PROJECT .\n"
+    },
+    {
+      "line": 26,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "F1",
+          "F2",
+          "FR"
+        ],
+        "sort": "Format"
+      },
+      "text": "  vars F1 F2 FR : Format .\n"
+    },
+    {
+      "line": 27,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "C1",
+          "C2"
+        ],
+        "sort": "Int"
+      },
+      "text": "  vars C1 C2 : Int .\n"
+    },
+    {
+      "line": 28,
+      "kind": "var",
+      "fields": {
+        "names": [
+          "PS"
+        ],
+        "sort": "ProjSpec"
+      },
+      "text": "  var PS : ProjSpec .\n"
+    },
+    {
+      "line": 29,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "scalar"
+        ],
+        "domain": [
+          "Format",
+          "Format",
+          "Format",
+          "ProjSpec",
+          "Int",
+          "Int"
+        ],
+        "arrow": "~>",
+        "range": "Nat",
+        "attributes": ""
+      },
+      "text": "  op scalar : Format Format Format ProjSpec Int Int ~> Nat .\n"
+    },
+    {
+      "line": 30,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-template-scalar-2",
+        "lhs": "scalar(F1, F2, FR, PS, C1, C2)",
+        "rhs": "project(FR, PS, kernel(decode(F1, C1), decode(F2, C2)))",
+        "condition": "validCode(F1, C1) /\\ validCode(F2, C2) /\\ validFormat(FR) /\\ validProjection(PS)",
+        "attributes": "metadata \"clause=4.3.1; page=19-20\""
+      },
+      "text": "  ceq [p3109-template-scalar-2] :\n    scalar(F1, F2, FR, PS, C1, C2)\n    = project(FR, PS, kernel(decode(F1, C1), decode(F2, C2)))\n    if validCode(F1, C1) /\\ validCode(F2, C2) /\\ validFormat(FR) /\\ validProjection(PS)\n    [metadata \"clause=4.3.1; page=19-20\"] .\n"
+    },
+    {
+      "line": 35,
+      "kind": "endfm",
+      "fields": {},
+      "text": "endfm\n"
+    },
+    {
+      "line": 36,
+      "kind": "fth",
+      "fields": {
+        "name": "P3109-KERNEL3",
+        "parameters": []
+      },
+      "text": "fth P3109-KERNEL3 is\n"
+    },
+    {
+      "line": 37,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-XREAL"
+      },
+      "text": "  including P3109-XREAL .\n"
+    },
+    {
+      "line": 38,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "kernel"
+        ],
+        "domain": [
+          "XReal",
+          "XReal",
+          "XReal"
+        ],
+        "arrow": "~>",
+        "range": "XReal",
+        "attributes": ""
+      },
+      "text": "  op kernel : XReal XReal XReal ~> XReal .\n"
+    },
+    {
+      "line": 39,
+      "kind": "endfth",
+      "fields": {},
+      "text": "endfth\n"
+    },
+    {
+      "line": 40,
+      "kind": "fmod",
+      "fields": {
+        "name": "P3109-SCALAR-TEMPLATE3",
+        "parameters": [
+          {
+            "name": "O",
+            "theory": "P3109-KERNEL3"
+          }
+        ]
+      },
+      "text": "fmod P3109-SCALAR-TEMPLATE3{O :: P3109-KERNEL3} is\n"
+    },
+    {
+      "line": 41,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-PROJECT"
+      },
+      "text": "  including P3109-PROJECT .\n"
+    },
+    {
+      "line": 42,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "F1",
+          "F2",
+          "F3",
+          "FR"
+        ],
+        "sort": "Format"
+      },
+      "text": "  vars F1 F2 F3 FR : Format .\n"
+    },
+    {
+      "line": 43,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "C1",
+          "C2",
+          "C3"
+        ],
+        "sort": "Int"
+      },
+      "text": "  vars C1 C2 C3 : Int .\n"
+    },
+    {
+      "line": 44,
+      "kind": "var",
+      "fields": {
+        "names": [
+          "PS"
+        ],
+        "sort": "ProjSpec"
+      },
+      "text": "  var PS : ProjSpec .\n"
+    },
+    {
+      "line": 45,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "scalar"
+        ],
+        "domain": [
+          "Format",
+          "Format",
+          "Format",
+          "Format",
+          "ProjSpec",
+          "Int",
+          "Int",
+          "Int"
+        ],
+        "arrow": "~>",
+        "range": "Nat",
+        "attributes": ""
+      },
+      "text": "  op scalar : Format Format Format Format ProjSpec Int Int Int ~> Nat .\n"
+    },
+    {
+      "line": 46,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-template-scalar-3",
+        "lhs": "scalar(F1, F2, F3, FR, PS, C1, C2, C3)",
+        "rhs": "project(FR, PS, kernel(decode(F1, C1), decode(F2, C2), decode(F3, C3)))",
+        "condition": "validCode(F1, C1) /\\ validCode(F2, C2) /\\ validCode(F3, C3) /\\ validFormat(FR) /\\ validProjection(PS)",
+        "attributes": "metadata \"clause=4.3.1; page=19-20\""
+      },
+      "text": "  ceq [p3109-template-scalar-3] :\n    scalar(F1, F2, F3, FR, PS, C1, C2, C3)\n    = project(FR, PS, kernel(decode(F1, C1), decode(F2, C2), decode(F3, C3)))\n    if validCode(F1, C1) /\\ validCode(F2, C2) /\\ validCode(F3, C3) /\\ validFormat(FR) /\\\n    validProjection(PS)\n    [metadata \"clause=4.3.1; page=19-20\"] .\n"
+    },
+    {
+      "line": 52,
+      "kind": "endfm",
+      "fields": {},
+      "text": "endfm\n"
+    }
+  ]
+}

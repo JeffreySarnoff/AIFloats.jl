@@ -1,0 +1,1158 @@
+version: 1
+path: tests/vectors/arity-tables.json
+sha256: f35630f254ce34c69ba18cb60029a8436695fb9b96a6ad04fec5ae3f50da30ac
+type: support
+format: json
+text: |
+  {
+    "description": "Name/format-arity pairs preserved from the handwritten tables before simplification; independent of the inventory generator.",
+    "tables": {
+      "numericArityTable": [
+        [
+          "Convert",
+          2
+        ],
+        [
+          "Abs",
+          2
+        ],
+        [
+          "Negate",
+          2
+        ],
+        [
+          "Sqrt",
+          2
+        ],
+        [
+          "Recip",
+          2
+        ],
+        [
+          "RSqrt",
+          2
+        ],
+        [
+          "Exp",
+          2
+        ],
+        [
+          "Exp2",
+          2
+        ],
+        [
+          "Log",
+          2
+        ],
+        [
+          "Log2",
+          2
+        ],
+        [
+          "LogOnePlus",
+          2
+        ],
+        [
+          "ExpMinusOne",
+          2
+        ],
+        [
+          "Sin",
+          2
+        ],
+        [
+          "Cos",
+          2
+        ],
+        [
+          "Tan",
+          2
+        ],
+        [
+          "ArcSin",
+          2
+        ],
+        [
+          "ArcCos",
+          2
+        ],
+        [
+          "ArcTan",
+          2
+        ],
+        [
+          "Sinh",
+          2
+        ],
+        [
+          "Cosh",
+          2
+        ],
+        [
+          "Tanh",
+          2
+        ],
+        [
+          "ArcSinh",
+          2
+        ],
+        [
+          "ArcCosh",
+          2
+        ],
+        [
+          "ArcTanh",
+          2
+        ],
+        [
+          "SinPi",
+          2
+        ],
+        [
+          "CosPi",
+          2
+        ],
+        [
+          "TanPi",
+          2
+        ],
+        [
+          "ArcSinPi",
+          2
+        ],
+        [
+          "ArcCosPi",
+          2
+        ],
+        [
+          "ArcTanPi",
+          2
+        ],
+        [
+          "Softplus",
+          2
+        ],
+        [
+          "CopySign",
+          3
+        ],
+        [
+          "Add",
+          3
+        ],
+        [
+          "Subtract",
+          3
+        ],
+        [
+          "Multiply",
+          3
+        ],
+        [
+          "Divide",
+          3
+        ],
+        [
+          "Hypot",
+          3
+        ],
+        [
+          "ArcTan2",
+          3
+        ],
+        [
+          "ArcTan2Pi",
+          3
+        ],
+        [
+          "Minimum",
+          3
+        ],
+        [
+          "Maximum",
+          3
+        ],
+        [
+          "MinimumNumber",
+          3
+        ],
+        [
+          "MaximumNumber",
+          3
+        ],
+        [
+          "MinimumMagnitude",
+          3
+        ],
+        [
+          "MaximumMagnitude",
+          3
+        ],
+        [
+          "MinimumMagnitudeNumber",
+          3
+        ],
+        [
+          "MaximumMagnitudeNumber",
+          3
+        ],
+        [
+          "MinimumFinite",
+          3
+        ],
+        [
+          "MaximumFinite",
+          3
+        ],
+        [
+          "ScaledConvert",
+          3
+        ],
+        [
+          "ScaledAbs",
+          3
+        ],
+        [
+          "ScaledNegate",
+          3
+        ],
+        [
+          "ScaledSqrt",
+          3
+        ],
+        [
+          "ScaledRecip",
+          3
+        ],
+        [
+          "ScaledRSqrt",
+          3
+        ],
+        [
+          "ScaledExp",
+          3
+        ],
+        [
+          "ScaledExp2",
+          3
+        ],
+        [
+          "ScaledLog",
+          3
+        ],
+        [
+          "ScaledLog2",
+          3
+        ],
+        [
+          "ScaledLogOnePlus",
+          3
+        ],
+        [
+          "ScaledExpMinusOne",
+          3
+        ],
+        [
+          "ScaledSin",
+          3
+        ],
+        [
+          "ScaledCos",
+          3
+        ],
+        [
+          "ScaledTan",
+          3
+        ],
+        [
+          "ScaledArcSin",
+          3
+        ],
+        [
+          "ScaledArcCos",
+          3
+        ],
+        [
+          "ScaledArcTan",
+          3
+        ],
+        [
+          "ScaledSinh",
+          3
+        ],
+        [
+          "ScaledCosh",
+          3
+        ],
+        [
+          "ScaledTanh",
+          3
+        ],
+        [
+          "ScaledArcSinh",
+          3
+        ],
+        [
+          "ScaledArcCosh",
+          3
+        ],
+        [
+          "ScaledArcTanh",
+          3
+        ],
+        [
+          "ScaledSinPi",
+          3
+        ],
+        [
+          "ScaledCosPi",
+          3
+        ],
+        [
+          "ScaledTanPi",
+          3
+        ],
+        [
+          "ScaledArcSinPi",
+          3
+        ],
+        [
+          "ScaledArcCosPi",
+          3
+        ],
+        [
+          "ScaledArcTanPi",
+          3
+        ],
+        [
+          "ScaledSoftplus",
+          3
+        ],
+        [
+          "FMA",
+          4
+        ],
+        [
+          "FAA",
+          4
+        ],
+        [
+          "Clamp",
+          4
+        ],
+        [
+          "ScaledCopySign",
+          5
+        ],
+        [
+          "ScaledAdd",
+          5
+        ],
+        [
+          "ScaledSubtract",
+          5
+        ],
+        [
+          "ScaledMultiply",
+          5
+        ],
+        [
+          "ScaledDivide",
+          5
+        ],
+        [
+          "ScaledHypot",
+          5
+        ],
+        [
+          "ScaledArcTan2",
+          5
+        ],
+        [
+          "ScaledArcTan2Pi",
+          5
+        ],
+        [
+          "ScaledMinimum",
+          5
+        ],
+        [
+          "ScaledMaximum",
+          5
+        ],
+        [
+          "ScaledMinimumNumber",
+          5
+        ],
+        [
+          "ScaledMaximumNumber",
+          5
+        ],
+        [
+          "ScaledMinimumMagnitude",
+          5
+        ],
+        [
+          "ScaledMaximumMagnitude",
+          5
+        ],
+        [
+          "ScaledMinimumMagnitudeNumber",
+          5
+        ],
+        [
+          "ScaledMaximumMagnitudeNumber",
+          5
+        ],
+        [
+          "ScaledMinimumFinite",
+          5
+        ],
+        [
+          "ScaledMaximumFinite",
+          5
+        ],
+        [
+          "ScaledFMA",
+          7
+        ],
+        [
+          "ScaledFAA",
+          7
+        ],
+        [
+          "ScaledClamp",
+          7
+        ]
+      ],
+      "plainArityTable": [
+        [
+          "RoundOf",
+          0
+        ],
+        [
+          "SatOf",
+          0
+        ],
+        [
+          "IsZero",
+          1
+        ],
+        [
+          "IsOne",
+          1
+        ],
+        [
+          "IsNaN",
+          1
+        ],
+        [
+          "IsInfinite",
+          1
+        ],
+        [
+          "IsFinite",
+          1
+        ],
+        [
+          "IsSignMinus",
+          1
+        ],
+        [
+          "IsNormal",
+          1
+        ],
+        [
+          "IsSubnormal",
+          1
+        ],
+        [
+          "Class",
+          1
+        ],
+        [
+          "BitwidthOf",
+          1
+        ],
+        [
+          "PrecisionOf",
+          1
+        ],
+        [
+          "ExponentBitwidthOf",
+          1
+        ],
+        [
+          "TrailingSignificandBitwidthOf",
+          1
+        ],
+        [
+          "ExponentBiasOf",
+          1
+        ],
+        [
+          "SignednessOf",
+          1
+        ],
+        [
+          "DomainOf",
+          1
+        ],
+        [
+          "MaxFiniteOf",
+          1
+        ],
+        [
+          "MinFiniteOf",
+          1
+        ],
+        [
+          "MinPositiveOf",
+          1
+        ],
+        [
+          "MaxSubnormalOf",
+          1
+        ],
+        [
+          "MinNormalOf",
+          1
+        ],
+        [
+          "NextGreaterThan",
+          1
+        ],
+        [
+          "NextLessThan",
+          1
+        ],
+        [
+          "CompareLess",
+          2
+        ],
+        [
+          "CompareLessEqual",
+          2
+        ],
+        [
+          "CompareEqual",
+          2
+        ],
+        [
+          "CompareGreater",
+          2
+        ],
+        [
+          "CompareGreaterEqual",
+          2
+        ],
+        [
+          "TotalOrder",
+          2
+        ]
+      ],
+      "blockElementArityTable": [
+        [
+          "ConvertFromBlock",
+          3
+        ],
+        [
+          "ConvertToBlock",
+          3
+        ],
+        [
+          "BlockConvert",
+          4
+        ],
+        [
+          "BlockAbs",
+          4
+        ],
+        [
+          "BlockNegate",
+          4
+        ],
+        [
+          "BlockSqrt",
+          4
+        ],
+        [
+          "BlockRecip",
+          4
+        ],
+        [
+          "BlockRSqrt",
+          4
+        ],
+        [
+          "BlockExp",
+          4
+        ],
+        [
+          "BlockExp2",
+          4
+        ],
+        [
+          "BlockLog",
+          4
+        ],
+        [
+          "BlockLog2",
+          4
+        ],
+        [
+          "BlockLogOnePlus",
+          4
+        ],
+        [
+          "BlockExpMinusOne",
+          4
+        ],
+        [
+          "BlockSin",
+          4
+        ],
+        [
+          "BlockCos",
+          4
+        ],
+        [
+          "BlockTan",
+          4
+        ],
+        [
+          "BlockArcSin",
+          4
+        ],
+        [
+          "BlockArcCos",
+          4
+        ],
+        [
+          "BlockArcTan",
+          4
+        ],
+        [
+          "BlockSinh",
+          4
+        ],
+        [
+          "BlockCosh",
+          4
+        ],
+        [
+          "BlockTanh",
+          4
+        ],
+        [
+          "BlockArcSinh",
+          4
+        ],
+        [
+          "BlockArcCosh",
+          4
+        ],
+        [
+          "BlockArcTanh",
+          4
+        ],
+        [
+          "BlockSinPi",
+          4
+        ],
+        [
+          "BlockCosPi",
+          4
+        ],
+        [
+          "BlockTanPi",
+          4
+        ],
+        [
+          "BlockArcSinPi",
+          4
+        ],
+        [
+          "BlockArcCosPi",
+          4
+        ],
+        [
+          "BlockArcTanPi",
+          4
+        ],
+        [
+          "BlockSoftplus",
+          4
+        ],
+        [
+          "BlockCopySign",
+          6
+        ],
+        [
+          "BlockAdd",
+          6
+        ],
+        [
+          "BlockSubtract",
+          6
+        ],
+        [
+          "BlockMultiply",
+          6
+        ],
+        [
+          "BlockDivide",
+          6
+        ],
+        [
+          "BlockHypot",
+          6
+        ],
+        [
+          "BlockArcTan2",
+          6
+        ],
+        [
+          "BlockArcTan2Pi",
+          6
+        ],
+        [
+          "BlockMinimum",
+          6
+        ],
+        [
+          "BlockMaximum",
+          6
+        ],
+        [
+          "BlockMinimumNumber",
+          6
+        ],
+        [
+          "BlockMaximumNumber",
+          6
+        ],
+        [
+          "BlockMinimumMagnitude",
+          6
+        ],
+        [
+          "BlockMaximumMagnitude",
+          6
+        ],
+        [
+          "BlockMinimumMagnitudeNumber",
+          6
+        ],
+        [
+          "BlockMaximumMagnitudeNumber",
+          6
+        ],
+        [
+          "BlockMinimumFinite",
+          6
+        ],
+        [
+          "BlockMaximumFinite",
+          6
+        ],
+        [
+          "BlockFMA",
+          8
+        ],
+        [
+          "BlockFAA",
+          8
+        ],
+        [
+          "BlockClamp",
+          8
+        ]
+      ]
+    }
+  }
+data:
+  description: Name/format-arity pairs preserved from the handwritten tables before simplification; independent
+    of the inventory generator.
+  tables:
+    numericArityTable:
+    - - Convert
+      - 2
+    - - Abs
+      - 2
+    - - Negate
+      - 2
+    - - Sqrt
+      - 2
+    - - Recip
+      - 2
+    - - RSqrt
+      - 2
+    - - Exp
+      - 2
+    - - Exp2
+      - 2
+    - - Log
+      - 2
+    - - Log2
+      - 2
+    - - LogOnePlus
+      - 2
+    - - ExpMinusOne
+      - 2
+    - - Sin
+      - 2
+    - - Cos
+      - 2
+    - - Tan
+      - 2
+    - - ArcSin
+      - 2
+    - - ArcCos
+      - 2
+    - - ArcTan
+      - 2
+    - - Sinh
+      - 2
+    - - Cosh
+      - 2
+    - - Tanh
+      - 2
+    - - ArcSinh
+      - 2
+    - - ArcCosh
+      - 2
+    - - ArcTanh
+      - 2
+    - - SinPi
+      - 2
+    - - CosPi
+      - 2
+    - - TanPi
+      - 2
+    - - ArcSinPi
+      - 2
+    - - ArcCosPi
+      - 2
+    - - ArcTanPi
+      - 2
+    - - Softplus
+      - 2
+    - - CopySign
+      - 3
+    - - Add
+      - 3
+    - - Subtract
+      - 3
+    - - Multiply
+      - 3
+    - - Divide
+      - 3
+    - - Hypot
+      - 3
+    - - ArcTan2
+      - 3
+    - - ArcTan2Pi
+      - 3
+    - - Minimum
+      - 3
+    - - Maximum
+      - 3
+    - - MinimumNumber
+      - 3
+    - - MaximumNumber
+      - 3
+    - - MinimumMagnitude
+      - 3
+    - - MaximumMagnitude
+      - 3
+    - - MinimumMagnitudeNumber
+      - 3
+    - - MaximumMagnitudeNumber
+      - 3
+    - - MinimumFinite
+      - 3
+    - - MaximumFinite
+      - 3
+    - - ScaledConvert
+      - 3
+    - - ScaledAbs
+      - 3
+    - - ScaledNegate
+      - 3
+    - - ScaledSqrt
+      - 3
+    - - ScaledRecip
+      - 3
+    - - ScaledRSqrt
+      - 3
+    - - ScaledExp
+      - 3
+    - - ScaledExp2
+      - 3
+    - - ScaledLog
+      - 3
+    - - ScaledLog2
+      - 3
+    - - ScaledLogOnePlus
+      - 3
+    - - ScaledExpMinusOne
+      - 3
+    - - ScaledSin
+      - 3
+    - - ScaledCos
+      - 3
+    - - ScaledTan
+      - 3
+    - - ScaledArcSin
+      - 3
+    - - ScaledArcCos
+      - 3
+    - - ScaledArcTan
+      - 3
+    - - ScaledSinh
+      - 3
+    - - ScaledCosh
+      - 3
+    - - ScaledTanh
+      - 3
+    - - ScaledArcSinh
+      - 3
+    - - ScaledArcCosh
+      - 3
+    - - ScaledArcTanh
+      - 3
+    - - ScaledSinPi
+      - 3
+    - - ScaledCosPi
+      - 3
+    - - ScaledTanPi
+      - 3
+    - - ScaledArcSinPi
+      - 3
+    - - ScaledArcCosPi
+      - 3
+    - - ScaledArcTanPi
+      - 3
+    - - ScaledSoftplus
+      - 3
+    - - FMA
+      - 4
+    - - FAA
+      - 4
+    - - Clamp
+      - 4
+    - - ScaledCopySign
+      - 5
+    - - ScaledAdd
+      - 5
+    - - ScaledSubtract
+      - 5
+    - - ScaledMultiply
+      - 5
+    - - ScaledDivide
+      - 5
+    - - ScaledHypot
+      - 5
+    - - ScaledArcTan2
+      - 5
+    - - ScaledArcTan2Pi
+      - 5
+    - - ScaledMinimum
+      - 5
+    - - ScaledMaximum
+      - 5
+    - - ScaledMinimumNumber
+      - 5
+    - - ScaledMaximumNumber
+      - 5
+    - - ScaledMinimumMagnitude
+      - 5
+    - - ScaledMaximumMagnitude
+      - 5
+    - - ScaledMinimumMagnitudeNumber
+      - 5
+    - - ScaledMaximumMagnitudeNumber
+      - 5
+    - - ScaledMinimumFinite
+      - 5
+    - - ScaledMaximumFinite
+      - 5
+    - - ScaledFMA
+      - 7
+    - - ScaledFAA
+      - 7
+    - - ScaledClamp
+      - 7
+    plainArityTable:
+    - - RoundOf
+      - 0
+    - - SatOf
+      - 0
+    - - IsZero
+      - 1
+    - - IsOne
+      - 1
+    - - IsNaN
+      - 1
+    - - IsInfinite
+      - 1
+    - - IsFinite
+      - 1
+    - - IsSignMinus
+      - 1
+    - - IsNormal
+      - 1
+    - - IsSubnormal
+      - 1
+    - - Class
+      - 1
+    - - BitwidthOf
+      - 1
+    - - PrecisionOf
+      - 1
+    - - ExponentBitwidthOf
+      - 1
+    - - TrailingSignificandBitwidthOf
+      - 1
+    - - ExponentBiasOf
+      - 1
+    - - SignednessOf
+      - 1
+    - - DomainOf
+      - 1
+    - - MaxFiniteOf
+      - 1
+    - - MinFiniteOf
+      - 1
+    - - MinPositiveOf
+      - 1
+    - - MaxSubnormalOf
+      - 1
+    - - MinNormalOf
+      - 1
+    - - NextGreaterThan
+      - 1
+    - - NextLessThan
+      - 1
+    - - CompareLess
+      - 2
+    - - CompareLessEqual
+      - 2
+    - - CompareEqual
+      - 2
+    - - CompareGreater
+      - 2
+    - - CompareGreaterEqual
+      - 2
+    - - TotalOrder
+      - 2
+    blockElementArityTable:
+    - - ConvertFromBlock
+      - 3
+    - - ConvertToBlock
+      - 3
+    - - BlockConvert
+      - 4
+    - - BlockAbs
+      - 4
+    - - BlockNegate
+      - 4
+    - - BlockSqrt
+      - 4
+    - - BlockRecip
+      - 4
+    - - BlockRSqrt
+      - 4
+    - - BlockExp
+      - 4
+    - - BlockExp2
+      - 4
+    - - BlockLog
+      - 4
+    - - BlockLog2
+      - 4
+    - - BlockLogOnePlus
+      - 4
+    - - BlockExpMinusOne
+      - 4
+    - - BlockSin
+      - 4
+    - - BlockCos
+      - 4
+    - - BlockTan
+      - 4
+    - - BlockArcSin
+      - 4
+    - - BlockArcCos
+      - 4
+    - - BlockArcTan
+      - 4
+    - - BlockSinh
+      - 4
+    - - BlockCosh
+      - 4
+    - - BlockTanh
+      - 4
+    - - BlockArcSinh
+      - 4
+    - - BlockArcCosh
+      - 4
+    - - BlockArcTanh
+      - 4
+    - - BlockSinPi
+      - 4
+    - - BlockCosPi
+      - 4
+    - - BlockTanPi
+      - 4
+    - - BlockArcSinPi
+      - 4
+    - - BlockArcCosPi
+      - 4
+    - - BlockArcTanPi
+      - 4
+    - - BlockSoftplus
+      - 4
+    - - BlockCopySign
+      - 6
+    - - BlockAdd
+      - 6
+    - - BlockSubtract
+      - 6
+    - - BlockMultiply
+      - 6
+    - - BlockDivide
+      - 6
+    - - BlockHypot
+      - 6
+    - - BlockArcTan2
+      - 6
+    - - BlockArcTan2Pi
+      - 6
+    - - BlockMinimum
+      - 6
+    - - BlockMaximum
+      - 6
+    - - BlockMinimumNumber
+      - 6
+    - - BlockMaximumNumber
+      - 6
+    - - BlockMinimumMagnitude
+      - 6
+    - - BlockMaximumMagnitude
+      - 6
+    - - BlockMinimumMagnitudeNumber
+      - 6
+    - - BlockMaximumMagnitudeNumber
+      - 6
+    - - BlockMinimumFinite
+      - 6
+    - - BlockMaximumFinite
+      - 6
+    - - BlockFMA
+      - 8
+    - - BlockFAA
+      - 8
+    - - BlockClamp
+      - 8

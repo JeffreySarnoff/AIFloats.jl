@@ -1,0 +1,65 @@
+version: 1
+path: tests/order-next.maude
+sha256: 8cfc04bf7259dca2bd615e5e9662a6611f153a203cb6950eb04085d67ba20818
+type: maude
+records:
+- line: 1
+  kind: comment
+  fields: {}
+  text: |
+    --- Small standalone check; tools/run-tests.py runs the complete order-next suite.
+- line: 2
+  kind: load
+  fields:
+    path: ../load-core.maude
+  text: |
+    load ../load-core.maude
+- line: 3
+  kind: load
+  fields:
+    path: support.maude
+  text: |
+    load support.maude
+- line: 4
+  kind: fmod
+  fields:
+    name: P3109-TEST-ORDER-NEXT
+    parameters: []
+  text: |
+    fmod P3109-TEST-ORDER-NEXT is
+- line: 5
+  kind: including
+  fields:
+    expression: P3109-CORE
+  text: |2
+      including P3109-CORE .
+- line: 6
+  kind: including
+  fields:
+    expression: P3109-TEST-SUPPORT
+  text: |2
+      including P3109-TEST-SUPPORT .
+- line: 7
+  kind: endfm
+  fields: {}
+  text: |
+    endfm
+- line: 8
+  kind: red
+  fields:
+    module: P3109-TEST-ORDER-NEXT
+    term: check("order-next-standalone", (NextGreaterThan(Binary(4, 2, Signed, Finite), 9) == 0))
+  text: |
+    red in P3109-TEST-ORDER-NEXT : check("order-next-standalone", (NextGreaterThan(Binary(4, 2, Signed, Finite), 9) == 0)) .
+- line: 9
+  kind: red
+  fields:
+    module: P3109-TEST-ORDER-NEXT
+    term: suiteComplete(1)
+  text: |
+    red in P3109-TEST-ORDER-NEXT : suiteComplete(1) .
+- line: 10
+  kind: quit
+  fields: {}
+  text: |
+    quit

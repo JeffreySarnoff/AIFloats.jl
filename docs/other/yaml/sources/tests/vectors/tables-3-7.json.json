@@ -1,0 +1,1817 @@
+{
+  "version": 1,
+  "path": "tests/vectors/tables-3-7.json",
+  "sha256": "ceaf4c3b12669524a246fa64fbf1c6ddb66f424ec2492de9316c416e3aba2839",
+  "type": "support",
+  "format": "json",
+  "text": "{\n  \"tables_4_to_7\": [\n    {\n      \"format\": \"Binary(4, 1, Signed, Finite)\",\n      \"code\": 0,\n      \"value\": \"0\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Finite)\",\n      \"code\": 1,\n      \"value\": \"1/8\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Finite)\",\n      \"code\": 2,\n      \"value\": \"1/4\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Finite)\",\n      \"code\": 3,\n      \"value\": \"1/2\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Finite)\",\n      \"code\": 4,\n      \"value\": \"1\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Finite)\",\n      \"code\": 5,\n      \"value\": \"2\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Finite)\",\n      \"code\": 6,\n      \"value\": \"4\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Finite)\",\n      \"code\": 7,\n      \"value\": \"8\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Finite)\",\n      \"code\": 8,\n      \"value\": \"nan\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Finite)\",\n      \"code\": 9,\n      \"value\": \"-1/8\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Finite)\",\n      \"code\": 10,\n      \"value\": \"-1/4\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Finite)\",\n      \"code\": 11,\n      \"value\": \"-1/2\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Finite)\",\n      \"code\": 12,\n      \"value\": \"-1\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Finite)\",\n      \"code\": 13,\n      \"value\": \"-2\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Finite)\",\n      \"code\": 14,\n      \"value\": \"-4\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Finite)\",\n      \"code\": 15,\n      \"value\": \"-8\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Extended)\",\n      \"code\": 0,\n      \"value\": \"0\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Extended)\",\n      \"code\": 1,\n      \"value\": \"1/8\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Extended)\",\n      \"code\": 2,\n      \"value\": \"1/4\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Extended)\",\n      \"code\": 3,\n      \"value\": \"1/2\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Extended)\",\n      \"code\": 4,\n      \"value\": \"1\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Extended)\",\n      \"code\": 5,\n      \"value\": \"2\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Extended)\",\n      \"code\": 6,\n      \"value\": \"4\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Extended)\",\n      \"code\": 7,\n      \"value\": \"posInf\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Extended)\",\n      \"code\": 8,\n      \"value\": \"nan\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Extended)\",\n      \"code\": 9,\n      \"value\": \"-1/8\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Extended)\",\n      \"code\": 10,\n      \"value\": \"-1/4\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Extended)\",\n      \"code\": 11,\n      \"value\": \"-1/2\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Extended)\",\n      \"code\": 12,\n      \"value\": \"-1\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Extended)\",\n      \"code\": 13,\n      \"value\": \"-2\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Extended)\",\n      \"code\": 14,\n      \"value\": \"-4\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Signed, Extended)\",\n      \"code\": 15,\n      \"value\": \"negInf\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Finite)\",\n      \"code\": 0,\n      \"value\": \"0\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Finite)\",\n      \"code\": 1,\n      \"value\": \"1/4\",\n      \"subnormal\": true,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Finite)\",\n      \"code\": 2,\n      \"value\": \"1/2\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Finite)\",\n      \"code\": 3,\n      \"value\": \"3/4\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Finite)\",\n      \"code\": 4,\n      \"value\": \"1\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Finite)\",\n      \"code\": 5,\n      \"value\": \"3/2\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Finite)\",\n      \"code\": 6,\n      \"value\": \"2\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Finite)\",\n      \"code\": 7,\n      \"value\": \"3\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Finite)\",\n      \"code\": 8,\n      \"value\": \"nan\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Finite)\",\n      \"code\": 9,\n      \"value\": \"-1/4\",\n      \"subnormal\": true,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Finite)\",\n      \"code\": 10,\n      \"value\": \"-1/2\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Finite)\",\n      \"code\": 11,\n      \"value\": \"-3/4\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Finite)\",\n      \"code\": 12,\n      \"value\": \"-1\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Finite)\",\n      \"code\": 13,\n      \"value\": \"-3/2\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Finite)\",\n      \"code\": 14,\n      \"value\": \"-2\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Finite)\",\n      \"code\": 15,\n      \"value\": \"-3\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Extended)\",\n      \"code\": 0,\n      \"value\": \"0\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Extended)\",\n      \"code\": 1,\n      \"value\": \"1/4\",\n      \"subnormal\": true,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Extended)\",\n      \"code\": 2,\n      \"value\": \"1/2\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Extended)\",\n      \"code\": 3,\n      \"value\": \"3/4\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Extended)\",\n      \"code\": 4,\n      \"value\": \"1\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Extended)\",\n      \"code\": 5,\n      \"value\": \"3/2\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Extended)\",\n      \"code\": 6,\n      \"value\": \"2\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Extended)\",\n      \"code\": 7,\n      \"value\": \"posInf\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Extended)\",\n      \"code\": 8,\n      \"value\": \"nan\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Extended)\",\n      \"code\": 9,\n      \"value\": \"-1/4\",\n      \"subnormal\": true,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Extended)\",\n      \"code\": 10,\n      \"value\": \"-1/2\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Extended)\",\n      \"code\": 11,\n      \"value\": \"-3/4\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Extended)\",\n      \"code\": 12,\n      \"value\": \"-1\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Extended)\",\n      \"code\": 13,\n      \"value\": \"-3/2\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Extended)\",\n      \"code\": 14,\n      \"value\": \"-2\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 2, Signed, Extended)\",\n      \"code\": 15,\n      \"value\": \"negInf\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Finite)\",\n      \"code\": 0,\n      \"value\": \"0\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Finite)\",\n      \"code\": 1,\n      \"value\": \"1/4\",\n      \"subnormal\": true,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Finite)\",\n      \"code\": 2,\n      \"value\": \"1/2\",\n      \"subnormal\": true,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Finite)\",\n      \"code\": 3,\n      \"value\": \"3/4\",\n      \"subnormal\": true,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Finite)\",\n      \"code\": 4,\n      \"value\": \"1\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Finite)\",\n      \"code\": 5,\n      \"value\": \"5/4\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Finite)\",\n      \"code\": 6,\n      \"value\": \"3/2\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Finite)\",\n      \"code\": 7,\n      \"value\": \"7/4\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Finite)\",\n      \"code\": 8,\n      \"value\": \"nan\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Finite)\",\n      \"code\": 9,\n      \"value\": \"-1/4\",\n      \"subnormal\": true,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Finite)\",\n      \"code\": 10,\n      \"value\": \"-1/2\",\n      \"subnormal\": true,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Finite)\",\n      \"code\": 11,\n      \"value\": \"-3/4\",\n      \"subnormal\": true,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Finite)\",\n      \"code\": 12,\n      \"value\": \"-1\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Finite)\",\n      \"code\": 13,\n      \"value\": \"-5/4\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Finite)\",\n      \"code\": 14,\n      \"value\": \"-3/2\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Finite)\",\n      \"code\": 15,\n      \"value\": \"-7/4\",\n      \"subnormal\": false,\n      \"table\": 5,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Extended)\",\n      \"code\": 0,\n      \"value\": \"0\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Extended)\",\n      \"code\": 1,\n      \"value\": \"1/4\",\n      \"subnormal\": true,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Extended)\",\n      \"code\": 2,\n      \"value\": \"1/2\",\n      \"subnormal\": true,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Extended)\",\n      \"code\": 3,\n      \"value\": \"3/4\",\n      \"subnormal\": true,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Extended)\",\n      \"code\": 4,\n      \"value\": \"1\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Extended)\",\n      \"code\": 5,\n      \"value\": \"5/4\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Extended)\",\n      \"code\": 6,\n      \"value\": \"3/2\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Extended)\",\n      \"code\": 7,\n      \"value\": \"posInf\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Extended)\",\n      \"code\": 8,\n      \"value\": \"nan\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Extended)\",\n      \"code\": 9,\n      \"value\": \"-1/4\",\n      \"subnormal\": true,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Extended)\",\n      \"code\": 10,\n      \"value\": \"-1/2\",\n      \"subnormal\": true,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Extended)\",\n      \"code\": 11,\n      \"value\": \"-3/4\",\n      \"subnormal\": true,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Extended)\",\n      \"code\": 12,\n      \"value\": \"-1\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Extended)\",\n      \"code\": 13,\n      \"value\": \"-5/4\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Extended)\",\n      \"code\": 14,\n      \"value\": \"-3/2\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 3, Signed, Extended)\",\n      \"code\": 15,\n      \"value\": \"negInf\",\n      \"subnormal\": false,\n      \"table\": 4,\n      \"page\": 76\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Finite)\",\n      \"code\": 0,\n      \"value\": \"0\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Finite)\",\n      \"code\": 1,\n      \"value\": \"1/128\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77,\n      \"display\": \"0.0078\",\n      \"display_tolerance\": \"0.00005\"\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Finite)\",\n      \"code\": 2,\n      \"value\": \"1/64\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77,\n      \"display\": \"0.0156\",\n      \"display_tolerance\": \"0.00005\"\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Finite)\",\n      \"code\": 3,\n      \"value\": \"1/32\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77,\n      \"display\": \"0.0312\",\n      \"display_tolerance\": \"0.00005\"\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Finite)\",\n      \"code\": 4,\n      \"value\": \"1/16\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Finite)\",\n      \"code\": 5,\n      \"value\": \"1/8\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Finite)\",\n      \"code\": 6,\n      \"value\": \"1/4\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Finite)\",\n      \"code\": 7,\n      \"value\": \"1/2\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Finite)\",\n      \"code\": 8,\n      \"value\": \"1\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Finite)\",\n      \"code\": 9,\n      \"value\": \"2\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Finite)\",\n      \"code\": 10,\n      \"value\": \"4\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Finite)\",\n      \"code\": 11,\n      \"value\": \"8\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Finite)\",\n      \"code\": 12,\n      \"value\": \"16\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Finite)\",\n      \"code\": 13,\n      \"value\": \"32\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Finite)\",\n      \"code\": 14,\n      \"value\": \"64\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Finite)\",\n      \"code\": 15,\n      \"value\": \"nan\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Extended)\",\n      \"code\": 0,\n      \"value\": \"0\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Extended)\",\n      \"code\": 1,\n      \"value\": \"1/128\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77,\n      \"display\": \"0.0078\",\n      \"display_tolerance\": \"0.00005\"\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Extended)\",\n      \"code\": 2,\n      \"value\": \"1/64\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77,\n      \"display\": \"0.0156\",\n      \"display_tolerance\": \"0.00005\"\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Extended)\",\n      \"code\": 3,\n      \"value\": \"1/32\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77,\n      \"display\": \"0.0312\",\n      \"display_tolerance\": \"0.00005\"\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Extended)\",\n      \"code\": 4,\n      \"value\": \"1/16\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Extended)\",\n      \"code\": 5,\n      \"value\": \"1/8\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Extended)\",\n      \"code\": 6,\n      \"value\": \"1/4\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Extended)\",\n      \"code\": 7,\n      \"value\": \"1/2\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Extended)\",\n      \"code\": 8,\n      \"value\": \"1\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Extended)\",\n      \"code\": 9,\n      \"value\": \"2\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Extended)\",\n      \"code\": 10,\n      \"value\": \"4\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Extended)\",\n      \"code\": 11,\n      \"value\": \"8\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Extended)\",\n      \"code\": 12,\n      \"value\": \"16\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Extended)\",\n      \"code\": 13,\n      \"value\": \"32\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Extended)\",\n      \"code\": 14,\n      \"value\": \"posInf\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 1, Unsigned, Extended)\",\n      \"code\": 15,\n      \"value\": \"nan\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Finite)\",\n      \"code\": 0,\n      \"value\": \"0\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Finite)\",\n      \"code\": 1,\n      \"value\": \"1/16\",\n      \"subnormal\": true,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Finite)\",\n      \"code\": 2,\n      \"value\": \"1/8\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Finite)\",\n      \"code\": 3,\n      \"value\": \"3/16\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Finite)\",\n      \"code\": 4,\n      \"value\": \"1/4\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Finite)\",\n      \"code\": 5,\n      \"value\": \"3/8\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Finite)\",\n      \"code\": 6,\n      \"value\": \"1/2\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Finite)\",\n      \"code\": 7,\n      \"value\": \"3/4\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Finite)\",\n      \"code\": 8,\n      \"value\": \"1\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Finite)\",\n      \"code\": 9,\n      \"value\": \"3/2\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Finite)\",\n      \"code\": 10,\n      \"value\": \"2\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Finite)\",\n      \"code\": 11,\n      \"value\": \"3\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Finite)\",\n      \"code\": 12,\n      \"value\": \"4\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Finite)\",\n      \"code\": 13,\n      \"value\": \"6\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Finite)\",\n      \"code\": 14,\n      \"value\": \"8\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Finite)\",\n      \"code\": 15,\n      \"value\": \"nan\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Extended)\",\n      \"code\": 0,\n      \"value\": \"0\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Extended)\",\n      \"code\": 1,\n      \"value\": \"1/16\",\n      \"subnormal\": true,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Extended)\",\n      \"code\": 2,\n      \"value\": \"1/8\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Extended)\",\n      \"code\": 3,\n      \"value\": \"3/16\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Extended)\",\n      \"code\": 4,\n      \"value\": \"1/4\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Extended)\",\n      \"code\": 5,\n      \"value\": \"3/8\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Extended)\",\n      \"code\": 6,\n      \"value\": \"1/2\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Extended)\",\n      \"code\": 7,\n      \"value\": \"3/4\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Extended)\",\n      \"code\": 8,\n      \"value\": \"1\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Extended)\",\n      \"code\": 9,\n      \"value\": \"3/2\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Extended)\",\n      \"code\": 10,\n      \"value\": \"2\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Extended)\",\n      \"code\": 11,\n      \"value\": \"3\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Extended)\",\n      \"code\": 12,\n      \"value\": \"4\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Extended)\",\n      \"code\": 13,\n      \"value\": \"6\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Extended)\",\n      \"code\": 14,\n      \"value\": \"posInf\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 2, Unsigned, Extended)\",\n      \"code\": 15,\n      \"value\": \"nan\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Finite)\",\n      \"code\": 0,\n      \"value\": \"0\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Finite)\",\n      \"code\": 1,\n      \"value\": \"1/8\",\n      \"subnormal\": true,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Finite)\",\n      \"code\": 2,\n      \"value\": \"1/4\",\n      \"subnormal\": true,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Finite)\",\n      \"code\": 3,\n      \"value\": \"3/8\",\n      \"subnormal\": true,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Finite)\",\n      \"code\": 4,\n      \"value\": \"1/2\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Finite)\",\n      \"code\": 5,\n      \"value\": \"5/8\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Finite)\",\n      \"code\": 6,\n      \"value\": \"3/4\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Finite)\",\n      \"code\": 7,\n      \"value\": \"7/8\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Finite)\",\n      \"code\": 8,\n      \"value\": \"1\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Finite)\",\n      \"code\": 9,\n      \"value\": \"5/4\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Finite)\",\n      \"code\": 10,\n      \"value\": \"3/2\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Finite)\",\n      \"code\": 11,\n      \"value\": \"7/4\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Finite)\",\n      \"code\": 12,\n      \"value\": \"2\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Finite)\",\n      \"code\": 13,\n      \"value\": \"5/2\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Finite)\",\n      \"code\": 14,\n      \"value\": \"3\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Finite)\",\n      \"code\": 15,\n      \"value\": \"nan\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Extended)\",\n      \"code\": 0,\n      \"value\": \"0\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Extended)\",\n      \"code\": 1,\n      \"value\": \"1/8\",\n      \"subnormal\": true,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Extended)\",\n      \"code\": 2,\n      \"value\": \"1/4\",\n      \"subnormal\": true,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Extended)\",\n      \"code\": 3,\n      \"value\": \"3/8\",\n      \"subnormal\": true,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Extended)\",\n      \"code\": 4,\n      \"value\": \"1/2\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Extended)\",\n      \"code\": 5,\n      \"value\": \"5/8\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Extended)\",\n      \"code\": 6,\n      \"value\": \"3/4\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Extended)\",\n      \"code\": 7,\n      \"value\": \"7/8\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Extended)\",\n      \"code\": 8,\n      \"value\": \"1\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Extended)\",\n      \"code\": 9,\n      \"value\": \"5/4\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Extended)\",\n      \"code\": 10,\n      \"value\": \"3/2\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Extended)\",\n      \"code\": 11,\n      \"value\": \"7/4\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Extended)\",\n      \"code\": 12,\n      \"value\": \"2\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Extended)\",\n      \"code\": 13,\n      \"value\": \"5/2\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Extended)\",\n      \"code\": 14,\n      \"value\": \"posInf\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 3, Unsigned, Extended)\",\n      \"code\": 15,\n      \"value\": \"nan\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Finite)\",\n      \"code\": 0,\n      \"value\": \"0\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Finite)\",\n      \"code\": 1,\n      \"value\": \"1/8\",\n      \"subnormal\": true,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Finite)\",\n      \"code\": 2,\n      \"value\": \"1/4\",\n      \"subnormal\": true,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Finite)\",\n      \"code\": 3,\n      \"value\": \"3/8\",\n      \"subnormal\": true,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Finite)\",\n      \"code\": 4,\n      \"value\": \"1/2\",\n      \"subnormal\": true,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Finite)\",\n      \"code\": 5,\n      \"value\": \"5/8\",\n      \"subnormal\": true,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Finite)\",\n      \"code\": 6,\n      \"value\": \"3/4\",\n      \"subnormal\": true,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Finite)\",\n      \"code\": 7,\n      \"value\": \"7/8\",\n      \"subnormal\": true,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Finite)\",\n      \"code\": 8,\n      \"value\": \"1\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Finite)\",\n      \"code\": 9,\n      \"value\": \"9/8\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Finite)\",\n      \"code\": 10,\n      \"value\": \"5/4\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Finite)\",\n      \"code\": 11,\n      \"value\": \"11/8\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Finite)\",\n      \"code\": 12,\n      \"value\": \"3/2\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Finite)\",\n      \"code\": 13,\n      \"value\": \"13/8\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Finite)\",\n      \"code\": 14,\n      \"value\": \"7/4\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Finite)\",\n      \"code\": 15,\n      \"value\": \"nan\",\n      \"subnormal\": false,\n      \"table\": 7,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Extended)\",\n      \"code\": 0,\n      \"value\": \"0\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Extended)\",\n      \"code\": 1,\n      \"value\": \"1/8\",\n      \"subnormal\": true,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Extended)\",\n      \"code\": 2,\n      \"value\": \"1/4\",\n      \"subnormal\": true,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Extended)\",\n      \"code\": 3,\n      \"value\": \"3/8\",\n      \"subnormal\": true,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Extended)\",\n      \"code\": 4,\n      \"value\": \"1/2\",\n      \"subnormal\": true,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Extended)\",\n      \"code\": 5,\n      \"value\": \"5/8\",\n      \"subnormal\": true,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Extended)\",\n      \"code\": 6,\n      \"value\": \"3/4\",\n      \"subnormal\": true,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Extended)\",\n      \"code\": 7,\n      \"value\": \"7/8\",\n      \"subnormal\": true,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Extended)\",\n      \"code\": 8,\n      \"value\": \"1\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Extended)\",\n      \"code\": 9,\n      \"value\": \"9/8\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Extended)\",\n      \"code\": 10,\n      \"value\": \"5/4\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Extended)\",\n      \"code\": 11,\n      \"value\": \"11/8\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Extended)\",\n      \"code\": 12,\n      \"value\": \"3/2\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Extended)\",\n      \"code\": 13,\n      \"value\": \"13/8\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Extended)\",\n      \"code\": 14,\n      \"value\": \"posInf\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    },\n    {\n      \"format\": \"Binary(4, 4, Unsigned, Extended)\",\n      \"code\": 15,\n      \"value\": \"nan\",\n      \"subnormal\": false,\n      \"table\": 6,\n      \"page\": 77\n    }\n  ],\n  \"table_3\": \"special code patterns tested independently by codec suite\"\n}\n",
+  "data": {
+    "tables_4_to_7": [
+      {
+        "format": "Binary(4, 1, Signed, Finite)",
+        "code": 0,
+        "value": "0",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Finite)",
+        "code": 1,
+        "value": "1/8",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Finite)",
+        "code": 2,
+        "value": "1/4",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Finite)",
+        "code": 3,
+        "value": "1/2",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Finite)",
+        "code": 4,
+        "value": "1",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Finite)",
+        "code": 5,
+        "value": "2",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Finite)",
+        "code": 6,
+        "value": "4",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Finite)",
+        "code": 7,
+        "value": "8",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Finite)",
+        "code": 8,
+        "value": "nan",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Finite)",
+        "code": 9,
+        "value": "-1/8",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Finite)",
+        "code": 10,
+        "value": "-1/4",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Finite)",
+        "code": 11,
+        "value": "-1/2",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Finite)",
+        "code": 12,
+        "value": "-1",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Finite)",
+        "code": 13,
+        "value": "-2",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Finite)",
+        "code": 14,
+        "value": "-4",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Finite)",
+        "code": 15,
+        "value": "-8",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Extended)",
+        "code": 0,
+        "value": "0",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Extended)",
+        "code": 1,
+        "value": "1/8",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Extended)",
+        "code": 2,
+        "value": "1/4",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Extended)",
+        "code": 3,
+        "value": "1/2",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Extended)",
+        "code": 4,
+        "value": "1",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Extended)",
+        "code": 5,
+        "value": "2",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Extended)",
+        "code": 6,
+        "value": "4",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Extended)",
+        "code": 7,
+        "value": "posInf",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Extended)",
+        "code": 8,
+        "value": "nan",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Extended)",
+        "code": 9,
+        "value": "-1/8",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Extended)",
+        "code": 10,
+        "value": "-1/4",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Extended)",
+        "code": 11,
+        "value": "-1/2",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Extended)",
+        "code": 12,
+        "value": "-1",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Extended)",
+        "code": 13,
+        "value": "-2",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Extended)",
+        "code": 14,
+        "value": "-4",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Signed, Extended)",
+        "code": 15,
+        "value": "negInf",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Finite)",
+        "code": 0,
+        "value": "0",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Finite)",
+        "code": 1,
+        "value": "1/4",
+        "subnormal": true,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Finite)",
+        "code": 2,
+        "value": "1/2",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Finite)",
+        "code": 3,
+        "value": "3/4",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Finite)",
+        "code": 4,
+        "value": "1",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Finite)",
+        "code": 5,
+        "value": "3/2",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Finite)",
+        "code": 6,
+        "value": "2",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Finite)",
+        "code": 7,
+        "value": "3",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Finite)",
+        "code": 8,
+        "value": "nan",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Finite)",
+        "code": 9,
+        "value": "-1/4",
+        "subnormal": true,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Finite)",
+        "code": 10,
+        "value": "-1/2",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Finite)",
+        "code": 11,
+        "value": "-3/4",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Finite)",
+        "code": 12,
+        "value": "-1",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Finite)",
+        "code": 13,
+        "value": "-3/2",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Finite)",
+        "code": 14,
+        "value": "-2",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Finite)",
+        "code": 15,
+        "value": "-3",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Extended)",
+        "code": 0,
+        "value": "0",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Extended)",
+        "code": 1,
+        "value": "1/4",
+        "subnormal": true,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Extended)",
+        "code": 2,
+        "value": "1/2",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Extended)",
+        "code": 3,
+        "value": "3/4",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Extended)",
+        "code": 4,
+        "value": "1",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Extended)",
+        "code": 5,
+        "value": "3/2",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Extended)",
+        "code": 6,
+        "value": "2",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Extended)",
+        "code": 7,
+        "value": "posInf",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Extended)",
+        "code": 8,
+        "value": "nan",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Extended)",
+        "code": 9,
+        "value": "-1/4",
+        "subnormal": true,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Extended)",
+        "code": 10,
+        "value": "-1/2",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Extended)",
+        "code": 11,
+        "value": "-3/4",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Extended)",
+        "code": 12,
+        "value": "-1",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Extended)",
+        "code": 13,
+        "value": "-3/2",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Extended)",
+        "code": 14,
+        "value": "-2",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 2, Signed, Extended)",
+        "code": 15,
+        "value": "negInf",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Finite)",
+        "code": 0,
+        "value": "0",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Finite)",
+        "code": 1,
+        "value": "1/4",
+        "subnormal": true,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Finite)",
+        "code": 2,
+        "value": "1/2",
+        "subnormal": true,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Finite)",
+        "code": 3,
+        "value": "3/4",
+        "subnormal": true,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Finite)",
+        "code": 4,
+        "value": "1",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Finite)",
+        "code": 5,
+        "value": "5/4",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Finite)",
+        "code": 6,
+        "value": "3/2",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Finite)",
+        "code": 7,
+        "value": "7/4",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Finite)",
+        "code": 8,
+        "value": "nan",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Finite)",
+        "code": 9,
+        "value": "-1/4",
+        "subnormal": true,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Finite)",
+        "code": 10,
+        "value": "-1/2",
+        "subnormal": true,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Finite)",
+        "code": 11,
+        "value": "-3/4",
+        "subnormal": true,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Finite)",
+        "code": 12,
+        "value": "-1",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Finite)",
+        "code": 13,
+        "value": "-5/4",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Finite)",
+        "code": 14,
+        "value": "-3/2",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Finite)",
+        "code": 15,
+        "value": "-7/4",
+        "subnormal": false,
+        "table": 5,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Extended)",
+        "code": 0,
+        "value": "0",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Extended)",
+        "code": 1,
+        "value": "1/4",
+        "subnormal": true,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Extended)",
+        "code": 2,
+        "value": "1/2",
+        "subnormal": true,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Extended)",
+        "code": 3,
+        "value": "3/4",
+        "subnormal": true,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Extended)",
+        "code": 4,
+        "value": "1",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Extended)",
+        "code": 5,
+        "value": "5/4",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Extended)",
+        "code": 6,
+        "value": "3/2",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Extended)",
+        "code": 7,
+        "value": "posInf",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Extended)",
+        "code": 8,
+        "value": "nan",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Extended)",
+        "code": 9,
+        "value": "-1/4",
+        "subnormal": true,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Extended)",
+        "code": 10,
+        "value": "-1/2",
+        "subnormal": true,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Extended)",
+        "code": 11,
+        "value": "-3/4",
+        "subnormal": true,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Extended)",
+        "code": 12,
+        "value": "-1",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Extended)",
+        "code": 13,
+        "value": "-5/4",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Extended)",
+        "code": 14,
+        "value": "-3/2",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 3, Signed, Extended)",
+        "code": 15,
+        "value": "negInf",
+        "subnormal": false,
+        "table": 4,
+        "page": 76
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Finite)",
+        "code": 0,
+        "value": "0",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Finite)",
+        "code": 1,
+        "value": "1/128",
+        "subnormal": false,
+        "table": 7,
+        "page": 77,
+        "display": "0.0078",
+        "display_tolerance": "0.00005"
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Finite)",
+        "code": 2,
+        "value": "1/64",
+        "subnormal": false,
+        "table": 7,
+        "page": 77,
+        "display": "0.0156",
+        "display_tolerance": "0.00005"
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Finite)",
+        "code": 3,
+        "value": "1/32",
+        "subnormal": false,
+        "table": 7,
+        "page": 77,
+        "display": "0.0312",
+        "display_tolerance": "0.00005"
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Finite)",
+        "code": 4,
+        "value": "1/16",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Finite)",
+        "code": 5,
+        "value": "1/8",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Finite)",
+        "code": 6,
+        "value": "1/4",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Finite)",
+        "code": 7,
+        "value": "1/2",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Finite)",
+        "code": 8,
+        "value": "1",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Finite)",
+        "code": 9,
+        "value": "2",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Finite)",
+        "code": 10,
+        "value": "4",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Finite)",
+        "code": 11,
+        "value": "8",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Finite)",
+        "code": 12,
+        "value": "16",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Finite)",
+        "code": 13,
+        "value": "32",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Finite)",
+        "code": 14,
+        "value": "64",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Finite)",
+        "code": 15,
+        "value": "nan",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Extended)",
+        "code": 0,
+        "value": "0",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Extended)",
+        "code": 1,
+        "value": "1/128",
+        "subnormal": false,
+        "table": 6,
+        "page": 77,
+        "display": "0.0078",
+        "display_tolerance": "0.00005"
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Extended)",
+        "code": 2,
+        "value": "1/64",
+        "subnormal": false,
+        "table": 6,
+        "page": 77,
+        "display": "0.0156",
+        "display_tolerance": "0.00005"
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Extended)",
+        "code": 3,
+        "value": "1/32",
+        "subnormal": false,
+        "table": 6,
+        "page": 77,
+        "display": "0.0312",
+        "display_tolerance": "0.00005"
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Extended)",
+        "code": 4,
+        "value": "1/16",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Extended)",
+        "code": 5,
+        "value": "1/8",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Extended)",
+        "code": 6,
+        "value": "1/4",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Extended)",
+        "code": 7,
+        "value": "1/2",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Extended)",
+        "code": 8,
+        "value": "1",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Extended)",
+        "code": 9,
+        "value": "2",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Extended)",
+        "code": 10,
+        "value": "4",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Extended)",
+        "code": 11,
+        "value": "8",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Extended)",
+        "code": 12,
+        "value": "16",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Extended)",
+        "code": 13,
+        "value": "32",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Extended)",
+        "code": 14,
+        "value": "posInf",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 1, Unsigned, Extended)",
+        "code": 15,
+        "value": "nan",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Finite)",
+        "code": 0,
+        "value": "0",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Finite)",
+        "code": 1,
+        "value": "1/16",
+        "subnormal": true,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Finite)",
+        "code": 2,
+        "value": "1/8",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Finite)",
+        "code": 3,
+        "value": "3/16",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Finite)",
+        "code": 4,
+        "value": "1/4",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Finite)",
+        "code": 5,
+        "value": "3/8",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Finite)",
+        "code": 6,
+        "value": "1/2",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Finite)",
+        "code": 7,
+        "value": "3/4",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Finite)",
+        "code": 8,
+        "value": "1",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Finite)",
+        "code": 9,
+        "value": "3/2",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Finite)",
+        "code": 10,
+        "value": "2",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Finite)",
+        "code": 11,
+        "value": "3",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Finite)",
+        "code": 12,
+        "value": "4",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Finite)",
+        "code": 13,
+        "value": "6",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Finite)",
+        "code": 14,
+        "value": "8",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Finite)",
+        "code": 15,
+        "value": "nan",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Extended)",
+        "code": 0,
+        "value": "0",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Extended)",
+        "code": 1,
+        "value": "1/16",
+        "subnormal": true,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Extended)",
+        "code": 2,
+        "value": "1/8",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Extended)",
+        "code": 3,
+        "value": "3/16",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Extended)",
+        "code": 4,
+        "value": "1/4",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Extended)",
+        "code": 5,
+        "value": "3/8",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Extended)",
+        "code": 6,
+        "value": "1/2",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Extended)",
+        "code": 7,
+        "value": "3/4",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Extended)",
+        "code": 8,
+        "value": "1",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Extended)",
+        "code": 9,
+        "value": "3/2",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Extended)",
+        "code": 10,
+        "value": "2",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Extended)",
+        "code": 11,
+        "value": "3",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Extended)",
+        "code": 12,
+        "value": "4",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Extended)",
+        "code": 13,
+        "value": "6",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Extended)",
+        "code": 14,
+        "value": "posInf",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 2, Unsigned, Extended)",
+        "code": 15,
+        "value": "nan",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Finite)",
+        "code": 0,
+        "value": "0",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Finite)",
+        "code": 1,
+        "value": "1/8",
+        "subnormal": true,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Finite)",
+        "code": 2,
+        "value": "1/4",
+        "subnormal": true,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Finite)",
+        "code": 3,
+        "value": "3/8",
+        "subnormal": true,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Finite)",
+        "code": 4,
+        "value": "1/2",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Finite)",
+        "code": 5,
+        "value": "5/8",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Finite)",
+        "code": 6,
+        "value": "3/4",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Finite)",
+        "code": 7,
+        "value": "7/8",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Finite)",
+        "code": 8,
+        "value": "1",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Finite)",
+        "code": 9,
+        "value": "5/4",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Finite)",
+        "code": 10,
+        "value": "3/2",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Finite)",
+        "code": 11,
+        "value": "7/4",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Finite)",
+        "code": 12,
+        "value": "2",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Finite)",
+        "code": 13,
+        "value": "5/2",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Finite)",
+        "code": 14,
+        "value": "3",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Finite)",
+        "code": 15,
+        "value": "nan",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Extended)",
+        "code": 0,
+        "value": "0",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Extended)",
+        "code": 1,
+        "value": "1/8",
+        "subnormal": true,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Extended)",
+        "code": 2,
+        "value": "1/4",
+        "subnormal": true,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Extended)",
+        "code": 3,
+        "value": "3/8",
+        "subnormal": true,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Extended)",
+        "code": 4,
+        "value": "1/2",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Extended)",
+        "code": 5,
+        "value": "5/8",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Extended)",
+        "code": 6,
+        "value": "3/4",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Extended)",
+        "code": 7,
+        "value": "7/8",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Extended)",
+        "code": 8,
+        "value": "1",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Extended)",
+        "code": 9,
+        "value": "5/4",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Extended)",
+        "code": 10,
+        "value": "3/2",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Extended)",
+        "code": 11,
+        "value": "7/4",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Extended)",
+        "code": 12,
+        "value": "2",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Extended)",
+        "code": 13,
+        "value": "5/2",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Extended)",
+        "code": 14,
+        "value": "posInf",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 3, Unsigned, Extended)",
+        "code": 15,
+        "value": "nan",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Finite)",
+        "code": 0,
+        "value": "0",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Finite)",
+        "code": 1,
+        "value": "1/8",
+        "subnormal": true,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Finite)",
+        "code": 2,
+        "value": "1/4",
+        "subnormal": true,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Finite)",
+        "code": 3,
+        "value": "3/8",
+        "subnormal": true,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Finite)",
+        "code": 4,
+        "value": "1/2",
+        "subnormal": true,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Finite)",
+        "code": 5,
+        "value": "5/8",
+        "subnormal": true,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Finite)",
+        "code": 6,
+        "value": "3/4",
+        "subnormal": true,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Finite)",
+        "code": 7,
+        "value": "7/8",
+        "subnormal": true,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Finite)",
+        "code": 8,
+        "value": "1",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Finite)",
+        "code": 9,
+        "value": "9/8",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Finite)",
+        "code": 10,
+        "value": "5/4",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Finite)",
+        "code": 11,
+        "value": "11/8",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Finite)",
+        "code": 12,
+        "value": "3/2",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Finite)",
+        "code": 13,
+        "value": "13/8",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Finite)",
+        "code": 14,
+        "value": "7/4",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Finite)",
+        "code": 15,
+        "value": "nan",
+        "subnormal": false,
+        "table": 7,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Extended)",
+        "code": 0,
+        "value": "0",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Extended)",
+        "code": 1,
+        "value": "1/8",
+        "subnormal": true,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Extended)",
+        "code": 2,
+        "value": "1/4",
+        "subnormal": true,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Extended)",
+        "code": 3,
+        "value": "3/8",
+        "subnormal": true,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Extended)",
+        "code": 4,
+        "value": "1/2",
+        "subnormal": true,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Extended)",
+        "code": 5,
+        "value": "5/8",
+        "subnormal": true,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Extended)",
+        "code": 6,
+        "value": "3/4",
+        "subnormal": true,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Extended)",
+        "code": 7,
+        "value": "7/8",
+        "subnormal": true,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Extended)",
+        "code": 8,
+        "value": "1",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Extended)",
+        "code": 9,
+        "value": "9/8",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Extended)",
+        "code": 10,
+        "value": "5/4",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Extended)",
+        "code": 11,
+        "value": "11/8",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Extended)",
+        "code": 12,
+        "value": "3/2",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Extended)",
+        "code": 13,
+        "value": "13/8",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Extended)",
+        "code": 14,
+        "value": "posInf",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      },
+      {
+        "format": "Binary(4, 4, Unsigned, Extended)",
+        "code": 15,
+        "value": "nan",
+        "subnormal": false,
+        "table": 6,
+        "page": 77
+      }
+    ],
+    "table_3": "special code patterns tested independently by codec suite"
+  }
+}

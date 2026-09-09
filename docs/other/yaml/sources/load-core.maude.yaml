@@ -1,0 +1,173 @@
+version: 1
+path: load-core.maude
+sha256: 0127b5be2914fa22b1751cc2f1b9de61ab22e5645c6bf9a9fb7b4ef50f341854
+type: maude
+records:
+- line: 1
+  kind: load
+  fields:
+    path: lib/xreal.maude
+  text: |
+    load lib/xreal.maude
+- line: 2
+  kind: load
+  fields:
+    path: lib/rational-math.maude
+  text: |
+    load lib/rational-math.maude
+- line: 3
+  kind: load
+  fields:
+    path: lib/format-core.maude
+  text: |
+    load lib/format-core.maude
+- line: 4
+  kind: load
+  fields:
+    path: lib/sequences.maude
+  text: |
+    load lib/sequences.maude
+- line: 5
+  kind: load
+  fields:
+    path: lib/projection-spec.maude
+  text: |
+    load lib/projection-spec.maude
+- line: 6
+  kind: load
+  fields:
+    path: lib/external-signature.maude
+  text: |
+    load lib/external-signature.maude
+- line: 7
+  kind: load
+  fields:
+    path: lib/codec.maude
+  text: |
+    load lib/codec.maude
+- line: 8
+  kind: load
+  fields:
+    path: lib/format-queries.maude
+  text: |
+    load lib/format-queries.maude
+- line: 9
+  kind: load
+  fields:
+    path: lib/rounding.maude
+  text: |
+    load lib/rounding.maude
+- line: 10
+  kind: load
+  fields:
+    path: lib/saturation.maude
+  text: |
+    load lib/saturation.maude
+- line: 11
+  kind: load
+  fields:
+    path: lib/project.maude
+  text: |
+    load lib/project.maude
+- line: 12
+  kind: load
+  fields:
+    path: lib/omega-arithmetic.maude
+  text: |
+    load lib/omega-arithmetic.maude
+- line: 13
+  kind: load
+  fields:
+    path: lib/omega-extrema.maude
+  text: |
+    load lib/omega-extrema.maude
+- line: 14
+  kind: load
+  fields:
+    path: lib/predicates.maude
+  text: |
+    load lib/predicates.maude
+- line: 15
+  kind: load
+  fields:
+    path: lib/order-next.maude
+  text: |
+    load lib/order-next.maude
+- line: 16
+  kind: load
+  fields:
+    path: lib/scalar-templates.maude
+  text: |
+    load lib/scalar-templates.maude
+- line: 17
+  kind: load
+  fields:
+    path: lib/scalar-ops.maude
+  text: |
+    load lib/scalar-ops.maude
+- line: 18
+  kind: load
+  fields:
+    path: lib/block-core.maude
+  text: |
+    load lib/block-core.maude
+- line: 19
+  kind: load
+  fields:
+    path: lib/block-ops.maude
+  text: |
+    load lib/block-ops.maude
+- line: 20
+  kind: load
+  fields:
+    path: lib/block-templates.maude
+  text: |
+    load lib/block-templates.maude
+- line: 21
+  kind: load
+  fields:
+    path: lib/block-wrappers.maude
+  text: |
+    load lib/block-wrappers.maude
+- line: 22
+  kind: load
+  fields:
+    path: lib/conformance.maude
+  text: |
+    load lib/conformance.maude
+- line: 23
+  kind: fmod
+  fields:
+    name: P3109-CORE
+    parameters: []
+  text: |
+    fmod P3109-CORE is
+- line: 24
+  kind: including
+  fields:
+    expression: P3109-CONFORMANCE
+  text: |2
+      including P3109-CONFORMANCE .
+- line: 25
+  kind: including
+  fields:
+    expression: P3109-SCALAR
+  text: |2
+      including P3109-SCALAR .
+- line: 26
+  kind: including
+  fields:
+    expression: P3109-ORDER-NEXT
+  text: |2
+      including P3109-ORDER-NEXT .
+- line: 27
+  kind: including
+  fields:
+    expression: P3109-BLOCK-WRAPPERS
+  text: |2
+      including P3109-BLOCK-WRAPPERS .
+- line: 28
+  kind: endfm
+  fields: {}
+  text: |
+    endfm

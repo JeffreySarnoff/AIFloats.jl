@@ -1,0 +1,177 @@
+{
+  "version": 1,
+  "path": "load-spec.maude",
+  "sha256": "5633f13a724e0dab03b3e3b666806caa023263cedc4e83c3e886b12d5f77605b",
+  "type": "maude",
+  "records": [
+    {
+      "line": 1,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- Single entry point for the whole P3109/D1 Maude specification.\n"
+    },
+    {
+      "line": 2,
+      "kind": "comment",
+      "fields": {},
+      "text": "---\n"
+    },
+    {
+      "line": 3,
+      "kind": "comment",
+      "fields": {},
+      "text": "---   maude load-spec.maude\n"
+    },
+    {
+      "line": 4,
+      "kind": "comment",
+      "fields": {},
+      "text": "---\n"
+    },
+    {
+      "line": 5,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- Loads in dependency order the exact rational core from load-core.maude,\n"
+    },
+    {
+      "line": 6,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- the symbolic real profile from load-symbolic.maude, and the external-format\n"
+    },
+    {
+      "line": 7,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- and real-number contracts from load-contracts.maude, then defines one top\n"
+    },
+    {
+      "line": 8,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- module P3109-SPEC that imports every executable module.\n"
+    },
+    {
+      "line": 9,
+      "kind": "comment",
+      "fields": {},
+      "text": "---\n"
+    },
+    {
+      "line": 10,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- The contract theories P3109-REAL-CONTRACT and P3109-EXTERNAL-FORMAT and the\n"
+    },
+    {
+      "line": 11,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- parameterized bridge P3109-EXTERNAL-BRIDGE are loaded into the module\n"
+    },
+    {
+      "line": 12,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- database but are theories or parameterized, so a functional module cannot\n"
+    },
+    {
+      "line": 13,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- import them. Instantiate the bridge with a view once an external-format\n"
+    },
+    {
+      "line": 14,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- implementation exists.\n"
+    },
+    {
+      "line": 15,
+      "kind": "comment",
+      "fields": {},
+      "text": "---\n"
+    },
+    {
+      "line": 16,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- sload rather than load: the three loaders each pull load-core.maude, and\n"
+    },
+    {
+      "line": 17,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- sload skips a file that has already been loaded, so nothing is redefined.\n"
+    },
+    {
+      "line": 18,
+      "kind": "layout",
+      "fields": {},
+      "text": "\n"
+    },
+    {
+      "line": 19,
+      "kind": "sload",
+      "fields": {
+        "path": "load-core.maude"
+      },
+      "text": "sload load-core.maude\n"
+    },
+    {
+      "line": 20,
+      "kind": "sload",
+      "fields": {
+        "path": "load-symbolic.maude"
+      },
+      "text": "sload load-symbolic.maude\n"
+    },
+    {
+      "line": 21,
+      "kind": "sload",
+      "fields": {
+        "path": "load-contracts.maude"
+      },
+      "text": "sload load-contracts.maude\n"
+    },
+    {
+      "line": 22,
+      "kind": "sload",
+      "fields": {
+        "path": "lib/format-names.maude"
+      },
+      "text": "sload lib/format-names.maude\n"
+    },
+    {
+      "line": 23,
+      "kind": "layout",
+      "fields": {},
+      "text": "\n"
+    },
+    {
+      "line": 24,
+      "kind": "fmod",
+      "fields": {
+        "name": "P3109-SPEC",
+        "parameters": []
+      },
+      "text": "fmod P3109-SPEC is\n"
+    },
+    {
+      "line": 25,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-SYMBOLIC"
+      },
+      "text": "  including P3109-SYMBOLIC .\n"
+    },
+    {
+      "line": 26,
+      "kind": "endfm",
+      "fields": {},
+      "text": "endfm\n"
+    }
+  ]
+}

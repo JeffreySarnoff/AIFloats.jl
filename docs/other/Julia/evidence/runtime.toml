@@ -1,0 +1,14 @@
+julia_version = "1.13.0-rc4"
+prerelease = true
+executable = "/tmp/p3109-runtime/julia-1.13.0-rc4/bin/julia"
+executable_sha256 = "470e66654a98badff18f4dcb9c305ac870b129387537826b6f65818fab441127"
+archive_sha256 = "a66e5b87876cc1316f170014315b22e3b717dd952c74a23634bda629ad2c2b68"
+archive_origin = "https://julialang-s3.julialang.org/bin/linux/x64/1.13/julia-1.13.0-rc4-linux-x86_64.tar.gz"
+checksum_origin = "https://julialang-s3.julialang.org/bin/checksums/julia-1.13.0-rc4.sha256"
+startup_file = false
+workspace_depot = "/tmp/p3109-depot:/home/jas/.julia"
+source_maude_version = "3.5.1"
+python_version = "Python 3.14.7"
+stable_release_validation = "pending availability and rerun"
+initial_worktree = ["modified docs/Maude/proofs/obligations.tsv", "modified docs/other/maude3claude.maude", "untracked docs/other/yaml/"]
+excluded_implementation = "Existing repository Julia implementation, tests and related documentation not used"

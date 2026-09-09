@@ -1,0 +1,11 @@
+[deps]
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+P3109Reference = "e6627552-e0c7-4bfa-a6c2-c52782045d73"
+TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
+
+[sources]
+P3109Reference = {path = ".."}
+
+[compat]
+BenchmarkTools = "1.8"
+TOML = "1"

@@ -1,0 +1,319 @@
+version: 1
+path: lib/predicates.maude
+sha256: 91765d2f9e918eb514f5a3a802e68c220299016bd86b91c6cf0ee34441032723
+type: maude
+records:
+- line: 1
+  kind: comment
+  fields: {}
+  text: |
+    --- Source: P3109/D1 4.12-4.13.1, printed page 53-57.
+- line: 2
+  kind: fmod
+  fields:
+    name: P3109-PREDICATES
+    parameters: []
+  text: |
+    fmod P3109-PREDICATES is
+- line: 3
+  kind: including
+  fields:
+    expression: P3109-FORMAT-QUERIES
+  text: |2
+      including P3109-FORMAT-QUERIES .
+- line: 4
+  kind: including
+  fields:
+    expression: P3109-OMEGA-ARITHMETIC
+  text: |2
+      including P3109-OMEGA-ARITHMETIC .
+- line: 5
+  kind: sorts
+  fields:
+    names:
+    - ClassEnum
+  text: |2
+      sorts ClassEnum .
+- line: 6
+  kind: ops
+  fields:
+    names:
+    - ClsNaN
+    - ClsNegativeInfinity
+    - ClsNegativeNormal
+    - ClsNegativeSubnormal
+    - ClsZero
+    - ClsPositiveSubnormal
+    - ClsPositiveNormal
+    - ClsPositiveInfinity
+    domain: []
+    arrow: ->
+    range: ClassEnum
+    attributes: ctor
+  text: |2
+      ops ClsNaN ClsNegativeInfinity ClsNegativeNormal ClsNegativeSubnormal ClsZero ClsPositiveSubnormal ClsPositiveNormal ClsPositiveInfinity : -> ClassEnum [ctor] .
+- line: 7
+  kind: ops
+  fields:
+    names:
+    - CompareLess
+    - CompareLessEqual
+    - CompareEqual
+    - CompareGreaterEqual
+    - CompareGreater
+    domain:
+    - Format
+    - Format
+    - Int
+    - Int
+    arrow: ~>
+    range: Bool
+    attributes: ''
+  text: |2
+      ops CompareLess CompareLessEqual CompareEqual CompareGreaterEqual CompareGreater : Format Format Int Int ~> Bool .
+- line: 8
+  kind: ops
+  fields:
+    names:
+    - IsZero
+    - IsOne
+    - IsNaN
+    - IsInfinite
+    - IsFinite
+    - IsSignMinus
+    - IsNormal
+    - IsSubnormal
+    domain:
+    - Format
+    - Int
+    arrow: ~>
+    range: Bool
+    attributes: ''
+  text: |2
+      ops IsZero IsOne IsNaN IsInfinite IsFinite IsSignMinus IsNormal IsSubnormal : Format Int ~> Bool .
+- line: 9
+  kind: op
+  fields:
+    names:
+    - Class
+    domain:
+    - Format
+    - Int
+    arrow: ~>
+    range: ClassEnum
+    attributes: ''
+  text: |2
+      op Class : Format Int ~> ClassEnum .
+- line: 10
+  kind: vars
+  fields:
+    names:
+    - F
+    - G
+    sort: Format
+  text: |2
+      vars F G : Format .
+- line: 11
+  kind: vars
+  fields:
+    names:
+    - C
+    - D
+    sort: Int
+  text: |2
+      vars C D : Int .
+- line: 12
+  kind: ceq
+  fields:
+    label: p3109-predicates-001
+    lhs: CompareLess(F, G, C, D)
+    rhs: xLt(decode(F, C), decode(G, D))
+    condition: validCode(F, C) /\ validCode(G, D)
+    attributes: metadata "clause=4.12-4.13.1; page=53-57"
+  text: |2
+      ceq [p3109-predicates-001] : CompareLess(F, G, C, D) = xLt(decode(F, C), decode(G, D)) if validCode(F, C) /\ validCode(G, D) [metadata "clause=4.12-4.13.1; page=53-57"] .
+- line: 13
+  kind: ceq
+  fields:
+    label: p3109-predicates-002
+    lhs: CompareLessEqual(F, G, C, D)
+    rhs: xLe(decode(F, C), decode(G, D))
+    condition: validCode(F, C) /\ validCode(G, D)
+    attributes: metadata "clause=4.12-4.13.1; page=53-57"
+  text: |2
+      ceq [p3109-predicates-002] : CompareLessEqual(F, G, C, D) = xLe(decode(F, C), decode(G, D)) if validCode(F, C) /\ validCode(G, D) [metadata "clause=4.12-4.13.1; page=53-57"] .
+- line: 14
+  kind: ceq
+  fields:
+    label: p3109-predicates-003
+    lhs: CompareEqual(F, G, C, D)
+    rhs: xEq(decode(F, C), decode(G, D))
+    condition: validCode(F, C) /\ validCode(G, D)
+    attributes: metadata "clause=4.12-4.13.1; page=53-57"
+  text: |2
+      ceq [p3109-predicates-003] : CompareEqual(F, G, C, D) = xEq(decode(F, C), decode(G, D)) if validCode(F, C) /\ validCode(G, D) [metadata "clause=4.12-4.13.1; page=53-57"] .
+- line: 15
+  kind: ceq
+  fields:
+    label: p3109-predicates-004
+    lhs: CompareGreaterEqual(F, G, C, D)
+    rhs: xLe(decode(G, D), decode(F, C))
+    condition: validCode(F, C) /\ validCode(G, D)
+    attributes: metadata "clause=4.12-4.13.1; page=53-57"
+  text: |2
+      ceq [p3109-predicates-004] : CompareGreaterEqual(F, G, C, D) = xLe(decode(G, D), decode(F, C)) if validCode(F, C) /\ validCode(G, D) [metadata "clause=4.12-4.13.1; page=53-57"] .
+- line: 16
+  kind: ceq
+  fields:
+    label: p3109-predicates-005
+    lhs: CompareGreater(F, G, C, D)
+    rhs: xLt(decode(G, D), decode(F, C))
+    condition: validCode(F, C) /\ validCode(G, D)
+    attributes: metadata "clause=4.12-4.13.1; page=53-57"
+  text: |2
+      ceq [p3109-predicates-005] : CompareGreater(F, G, C, D) = xLt(decode(G, D), decode(F, C)) if validCode(F, C) /\ validCode(G, D) [metadata "clause=4.12-4.13.1; page=53-57"] .
+- line: 17
+  kind: ceq
+  fields:
+    label: p3109-predicates-006
+    lhs: IsZero(F, C)
+    rhs: xEq(decode(F, C), fin(0))
+    condition: validCode(F, C)
+    attributes: metadata "clause=4.12-4.13.1; page=53-57"
+  text: |2
+      ceq [p3109-predicates-006] : IsZero(F, C) = xEq(decode(F, C), fin(0)) if validCode(F, C) [metadata "clause=4.12-4.13.1; page=53-57"] .
+- line: 18
+  kind: ceq
+  fields:
+    label: p3109-predicates-007
+    lhs: IsOne(F, C)
+    rhs: xEq(decode(F, C), fin(1))
+    condition: validCode(F, C)
+    attributes: metadata "clause=4.12-4.13.1; page=53-57"
+  text: |2
+      ceq [p3109-predicates-007] : IsOne(F, C) = xEq(decode(F, C), fin(1)) if validCode(F, C) [metadata "clause=4.12-4.13.1; page=53-57"] .
+- line: 19
+  kind: ceq
+  fields:
+    label: p3109-predicates-008
+    lhs: IsNaN(F, C)
+    rhs: xNaN(decode(F, C))
+    condition: validCode(F, C)
+    attributes: metadata "clause=4.12-4.13.1; page=53-57"
+  text: |2
+      ceq [p3109-predicates-008] : IsNaN(F, C) = xNaN(decode(F, C)) if validCode(F, C) [metadata "clause=4.12-4.13.1; page=53-57"] .
+- line: 20
+  kind: ceq
+  fields:
+    label: p3109-predicates-009
+    lhs: IsInfinite(F, C)
+    rhs: xInfinite(decode(F, C))
+    condition: validCode(F, C)
+    attributes: metadata "clause=4.12-4.13.1; page=53-57"
+  text: |2
+      ceq [p3109-predicates-009] : IsInfinite(F, C) = xInfinite(decode(F, C)) if validCode(F, C) [metadata "clause=4.12-4.13.1; page=53-57"] .
+- line: 21
+  kind: ceq
+  fields:
+    label: p3109-predicates-010
+    lhs: IsFinite(F, C)
+    rhs: xFinite(decode(F, C))
+    condition: validCode(F, C)
+    attributes: metadata "clause=4.12-4.13.1; page=53-57"
+  text: |2
+      ceq [p3109-predicates-010] : IsFinite(F, C) = xFinite(decode(F, C)) if validCode(F, C) [metadata "clause=4.12-4.13.1; page=53-57"] .
+- line: 22
+  kind: ceq
+  fields:
+    label: p3109-predicates-011
+    lhs: IsSignMinus(F, C)
+    rhs: xMinus(decode(F, C))
+    condition: validCode(F, C)
+    attributes: metadata "clause=4.12-4.13.1; page=53-57"
+  text: |2
+      ceq [p3109-predicates-011] : IsSignMinus(F, C) = xMinus(decode(F, C)) if validCode(F, C) [metadata "clause=4.12-4.13.1; page=53-57"] .
+- line: 23
+  kind: ceq
+  fields:
+    label: p3109-predicates-012
+    lhs: IsNormal(F, C)
+    rhs: 'false'
+    condition: validCode(F, C) /\ (IsZero(F, C) or IsInfinite(F, C) or IsNaN(F, C))
+    attributes: metadata "clause=4.12-4.13.1; page=53-57"
+  text: |2
+      ceq [p3109-predicates-012] : IsNormal(F, C) = false if validCode(F, C) /\ (IsZero(F, C) or IsInfinite(F, C) or IsNaN(F, C)) [metadata "clause=4.12-4.13.1; page=53-57"] .
+- line: 24
+  kind: ceq
+  fields:
+    label: p3109-predicates-013
+    lhs: IsNormal(F, C)
+    rhs: xLe(decode(F, MinNormalOf(F)), omegaAbs(decode(F, C)))
+    condition: validCode(F, C) /\ IsFinite(F, C) /\ not IsZero(F, C)
+    attributes: metadata "clause=4.12-4.13.1; page=53-57"
+  text: |2
+      ceq [p3109-predicates-013] : IsNormal(F, C) = xLe(decode(F, MinNormalOf(F)), omegaAbs(decode(F, C))) if validCode(F, C) /\ IsFinite(F, C) /\ not IsZero(F, C) [metadata "clause=4.12-4.13.1; page=53-57"] .
+- line: 25
+  kind: ceq
+  fields:
+    label: p3109-predicates-014
+    lhs: IsSubnormal(F, C)
+    rhs: (IsFinite(F, C) and not IsZero(F, C) and not IsNormal(F, C))
+    condition: validCode(F, C)
+    attributes: metadata "clause=4.12-4.13.1; page=53-57"
+  text: |2
+      ceq [p3109-predicates-014] : IsSubnormal(F, C) = (IsFinite(F, C) and not IsZero(F, C) and not IsNormal(F, C)) if validCode(F, C) [metadata "clause=4.12-4.13.1; page=53-57"] .
+- line: 26
+  kind: ceq
+  fields:
+    label: p3109-predicates-015
+    lhs: Class(F, C)
+    rhs: ClsNaN
+    condition: validCode(F, C) /\ IsNaN(F, C)
+    attributes: metadata "clause=4.12-4.13.1; page=53-57"
+  text: |2
+      ceq [p3109-predicates-015] : Class(F, C) = ClsNaN if validCode(F, C) /\ IsNaN(F, C) [metadata "clause=4.12-4.13.1; page=53-57"] .
+- line: 27
+  kind: ceq
+  fields:
+    label: p3109-predicates-016
+    lhs: Class(F, C)
+    rhs: ClsZero
+    condition: validCode(F, C) /\ IsZero(F, C)
+    attributes: metadata "clause=4.12-4.13.1; page=53-57"
+  text: |2
+      ceq [p3109-predicates-016] : Class(F, C) = ClsZero if validCode(F, C) /\ IsZero(F, C) [metadata "clause=4.12-4.13.1; page=53-57"] .
+- line: 28
+  kind: ceq
+  fields:
+    label: p3109-predicates-017
+    lhs: Class(F, C)
+    rhs: if IsSignMinus(F, C) then ClsNegativeInfinity else ClsPositiveInfinity fi
+    condition: validCode(F, C) /\ IsInfinite(F, C)
+    attributes: metadata "clause=4.12-4.13.1; page=53-57"
+  text: |2
+      ceq [p3109-predicates-017] : Class(F, C) = if IsSignMinus(F, C) then ClsNegativeInfinity else ClsPositiveInfinity fi if validCode(F, C) /\ IsInfinite(F, C) [metadata "clause=4.12-4.13.1; page=53-57"] .
+- line: 29
+  kind: ceq
+  fields:
+    label: p3109-predicates-018
+    lhs: Class(F, C)
+    rhs: if IsSignMinus(F, C) then ClsNegativeNormal else ClsPositiveNormal fi
+    condition: validCode(F, C) /\ IsNormal(F, C)
+    attributes: metadata "clause=4.12-4.13.1; page=53-57"
+  text: |2
+      ceq [p3109-predicates-018] : Class(F, C) = if IsSignMinus(F, C) then ClsNegativeNormal else ClsPositiveNormal fi if validCode(F, C) /\ IsNormal(F, C) [metadata "clause=4.12-4.13.1; page=53-57"] .
+- line: 30
+  kind: ceq
+  fields:
+    label: p3109-predicates-019
+    lhs: Class(F, C)
+    rhs: if IsSignMinus(F, C) then ClsNegativeSubnormal else ClsPositiveSubnormal fi
+    condition: validCode(F, C) /\ IsSubnormal(F, C)
+    attributes: metadata "clause=4.12-4.13.1; page=53-57"
+  text: |2
+      ceq [p3109-predicates-019] : Class(F, C) = if IsSignMinus(F, C) then ClsNegativeSubnormal else ClsPositiveSubnormal fi if validCode(F, C) /\ IsSubnormal(F, C) [metadata "clause=4.12-4.13.1; page=53-57"] .
+- line: 31
+  kind: endfm
+  fields: {}
+  text: |
+    endfm

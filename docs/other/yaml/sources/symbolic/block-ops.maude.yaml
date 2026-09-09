@@ -1,0 +1,34 @@
+version: 1
+path: symbolic/block-ops.maude
+sha256: e07359178f6089283786baee023e158e9939f1b3a0dec6dbe173884fa21f63b4
+type: maude
+records:
+- line: 1
+  kind: comment
+  fields: {}
+  text: |
+    --- Symbolic block facade; projection is shared with the core.
+- line: 2
+  kind: fmod
+  fields:
+    name: P3109-SYMBOLIC-BLOCK
+    parameters: []
+  text: |
+    fmod P3109-SYMBOLIC-BLOCK is
+- line: 3
+  kind: including
+  fields:
+    expression: P3109-BLOCK-WRAPPERS
+  text: |2
+      including P3109-BLOCK-WRAPPERS .
+- line: 4
+  kind: including
+  fields:
+    expression: P3109-SYMBOLIC-BLOCK-WRAPPERS
+  text: |2
+      including P3109-SYMBOLIC-BLOCK-WRAPPERS .
+- line: 5
+  kind: endfm
+  fields: {}
+  text: |
+    endfm

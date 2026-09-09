@@ -1,0 +1,2 @@
+PASS provenance: 122 inputs, 163 dispositions, 1010 rule/instance mappings, 193 public operations
+KNOWN HISTORICAL DISCREPANCY: BASELINE-PLAN-HASH: source planmaude.md differs from historical inventory/source.json

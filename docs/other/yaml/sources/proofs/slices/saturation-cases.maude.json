@@ -1,0 +1,656 @@
+{
+  "version": 1,
+  "path": "proofs/slices/saturation-cases.maude",
+  "sha256": "684771ed31948f2db504a4a79fa574deaf179bed9148a9f2c4e134d23c1be047",
+  "type": "maude",
+  "records": [
+    {
+      "line": 1,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- Constructor abstraction of D1 4.7.5, p.29. Refinement is an explicit obligation.\n"
+    },
+    {
+      "line": 2,
+      "kind": "set",
+      "fields": {
+        "option": "include BOOL",
+        "value": "off"
+      },
+      "text": "set include BOOL off .\n"
+    },
+    {
+      "line": 3,
+      "kind": "fmod",
+      "fields": {
+        "name": "P3109-PROOF-SATURATION",
+        "parameters": []
+      },
+      "text": "fmod P3109-PROOF-SATURATION is\n"
+    },
+    {
+      "line": 4,
+      "kind": "sorts",
+      "fields": {
+        "names": [
+          "Sat",
+          "Round",
+          "Sign",
+          "Domain",
+          "Location",
+          "Outcome"
+        ]
+      },
+      "text": "  sorts Sat Round Sign Domain Location Outcome .\n"
+    },
+    {
+      "line": 5,
+      "kind": "ops",
+      "fields": {
+        "names": [
+          "none",
+          "finite",
+          "propagate"
+        ],
+        "domain": [],
+        "arrow": "->",
+        "range": "Sat",
+        "attributes": "ctor"
+      },
+      "text": "  ops none finite propagate : -> Sat [ctor] .\n"
+    },
+    {
+      "line": 6,
+      "kind": "ops",
+      "fields": {
+        "names": [
+          "up",
+          "down",
+          "zero",
+          "other"
+        ],
+        "domain": [],
+        "arrow": "->",
+        "range": "Round",
+        "attributes": "ctor"
+      },
+      "text": "  ops up down zero other : -> Round [ctor] .\n"
+    },
+    {
+      "line": 7,
+      "kind": "ops",
+      "fields": {
+        "names": [
+          "signed",
+          "unsigned"
+        ],
+        "domain": [],
+        "arrow": "->",
+        "range": "Sign",
+        "attributes": "ctor"
+      },
+      "text": "  ops signed unsigned : -> Sign [ctor] .\n"
+    },
+    {
+      "line": 8,
+      "kind": "ops",
+      "fields": {
+        "names": [
+          "extended",
+          "finiteDomain"
+        ],
+        "domain": [],
+        "arrow": "->",
+        "range": "Domain",
+        "attributes": "ctor"
+      },
+      "text": "  ops extended finiteDomain : -> Domain [ctor] .\n"
+    },
+    {
+      "line": 9,
+      "kind": "ops",
+      "fields": {
+        "names": [
+          "qnan",
+          "inside",
+          "below",
+          "above",
+          "plusInfinity",
+          "minusInfinity"
+        ],
+        "domain": [],
+        "arrow": "->",
+        "range": "Location",
+        "attributes": "ctor"
+      },
+      "text": "  ops qnan inside below above plusInfinity minusInfinity : -> Location [ctor] .\n"
+    },
+    {
+      "line": 10,
+      "kind": "ops",
+      "fields": {
+        "names": [
+          "outNaN",
+          "unchanged",
+          "low",
+          "high",
+          "outPlusInfinity",
+          "outMinusInfinity"
+        ],
+        "domain": [],
+        "arrow": "->",
+        "range": "Outcome",
+        "attributes": "ctor"
+      },
+      "text": "  ops outNaN unchanged low high outPlusInfinity outMinusInfinity : -> Outcome [ctor] .\n"
+    },
+    {
+      "line": 11,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "decision"
+        ],
+        "domain": [
+          "Sat",
+          "Round",
+          "Location",
+          "Sign",
+          "Domain"
+        ],
+        "arrow": "->",
+        "range": "Outcome",
+        "attributes": ""
+      },
+      "text": "  op decision : Sat Round Location Sign Domain -> Outcome .\n"
+    },
+    {
+      "line": 12,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "highNone"
+        ],
+        "domain": [
+          "Round",
+          "Sign",
+          "Domain"
+        ],
+        "arrow": "->",
+        "range": "Outcome",
+        "attributes": ""
+      },
+      "text": "  op highNone : Round Sign Domain -> Outcome .\n"
+    },
+    {
+      "line": 13,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "lowNone"
+        ],
+        "domain": [
+          "Round",
+          "Sign",
+          "Domain"
+        ],
+        "arrow": "->",
+        "range": "Outcome",
+        "attributes": ""
+      },
+      "text": "  op lowNone : Round Sign Domain -> Outcome .\n"
+    },
+    {
+      "line": 14,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "highOverflow"
+        ],
+        "domain": [
+          "Domain"
+        ],
+        "arrow": "->",
+        "range": "Outcome",
+        "attributes": ""
+      },
+      "text": "  op highOverflow : Domain -> Outcome .\n"
+    },
+    {
+      "line": 15,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "lowOverflow"
+        ],
+        "domain": [
+          "Sign",
+          "Domain"
+        ],
+        "arrow": "->",
+        "range": "Outcome",
+        "attributes": ""
+      },
+      "text": "  op lowOverflow : Sign Domain -> Outcome .\n"
+    },
+    {
+      "line": 16,
+      "kind": "var",
+      "fields": {
+        "names": [
+          "S"
+        ],
+        "sort": "Sat"
+      },
+      "text": "  var S : Sat .\n"
+    },
+    {
+      "line": 17,
+      "kind": "var",
+      "fields": {
+        "names": [
+          "R"
+        ],
+        "sort": "Round"
+      },
+      "text": "  var R : Round .\n"
+    },
+    {
+      "line": 18,
+      "kind": "var",
+      "fields": {
+        "names": [
+          "SG"
+        ],
+        "sort": "Sign"
+      },
+      "text": "  var SG : Sign .\n"
+    },
+    {
+      "line": 19,
+      "kind": "var",
+      "fields": {
+        "names": [
+          "D"
+        ],
+        "sort": "Domain"
+      },
+      "text": "  var D : Domain .\n"
+    },
+    {
+      "line": 20,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-nan",
+        "lhs": "decision(S, R, qnan, SG, D)",
+        "rhs": "outNaN",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-nan] : decision(S, R, qnan, SG, D) = outNaN .\n"
+    },
+    {
+      "line": 21,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-inrange",
+        "lhs": "decision(S, R, inside, SG, D)",
+        "rhs": "unchanged",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-inrange] : decision(S, R, inside, SG, D) = unchanged .\n"
+    },
+    {
+      "line": 22,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-finite-posinf",
+        "lhs": "decision(finite, R, plusInfinity, SG, D)",
+        "rhs": "high",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-finite-posinf] : decision(finite, R, plusInfinity, SG, D) = high .\n"
+    },
+    {
+      "line": 23,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-finite-neginf",
+        "lhs": "decision(finite, R, minusInfinity, SG, D)",
+        "rhs": "low",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-finite-neginf] : decision(finite, R, minusInfinity, SG, D) = low .\n"
+    },
+    {
+      "line": 24,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-finite-high",
+        "lhs": "decision(finite, R, above, SG, D)",
+        "rhs": "high",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-finite-high] : decision(finite, R, above, SG, D) = high .\n"
+    },
+    {
+      "line": 25,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-finite-low",
+        "lhs": "decision(finite, R, below, SG, D)",
+        "rhs": "low",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-finite-low] : decision(finite, R, below, SG, D) = low .\n"
+    },
+    {
+      "line": 26,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-propagate-posinf-ext",
+        "lhs": "decision(propagate, R, plusInfinity, SG, extended)",
+        "rhs": "outPlusInfinity",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-propagate-posinf-ext] : decision(propagate, R, plusInfinity, SG, extended) = outPlusInfinity .\n"
+    },
+    {
+      "line": 27,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-propagate-posinf-fin",
+        "lhs": "decision(propagate, R, plusInfinity, SG, finiteDomain)",
+        "rhs": "high",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-propagate-posinf-fin] : decision(propagate, R, plusInfinity, SG, finiteDomain) = high .\n"
+    },
+    {
+      "line": 28,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-propagate-neginf-signed-ext",
+        "lhs": "decision(propagate, R, minusInfinity, signed, extended)",
+        "rhs": "outMinusInfinity",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-propagate-neginf-signed-ext] : decision(propagate, R, minusInfinity, signed, extended) = outMinusInfinity .\n"
+    },
+    {
+      "line": 29,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-propagate-neginf-unsigned-ext",
+        "lhs": "decision(propagate, R, minusInfinity, unsigned, extended)",
+        "rhs": "low",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-propagate-neginf-unsigned-ext] : decision(propagate, R, minusInfinity, unsigned, extended) = low .\n"
+    },
+    {
+      "line": 30,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-propagate-neginf-fin",
+        "lhs": "decision(propagate, R, minusInfinity, SG, finiteDomain)",
+        "rhs": "low",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-propagate-neginf-fin] : decision(propagate, R, minusInfinity, SG, finiteDomain) = low .\n"
+    },
+    {
+      "line": 31,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-propagate-low",
+        "lhs": "decision(propagate, R, below, SG, D)",
+        "rhs": "low",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-propagate-low] : decision(propagate, R, below, SG, D) = low .\n"
+    },
+    {
+      "line": 32,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-propagate-high",
+        "lhs": "decision(propagate, R, above, SG, D)",
+        "rhs": "high",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-propagate-high] : decision(propagate, R, above, SG, D) = high .\n"
+    },
+    {
+      "line": 33,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-none-posinf",
+        "lhs": "decision(none, R, plusInfinity, SG, D)",
+        "rhs": "highOverflow(D)",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-none-posinf] : decision(none, R, plusInfinity, SG, D) = highOverflow(D) .\n"
+    },
+    {
+      "line": 34,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-none-neginf",
+        "lhs": "decision(none, R, minusInfinity, SG, D)",
+        "rhs": "lowOverflow(SG, D)",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-none-neginf] : decision(none, R, minusInfinity, SG, D) = lowOverflow(SG, D) .\n"
+    },
+    {
+      "line": 35,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-none-high",
+        "lhs": "decision(none, R, above, SG, D)",
+        "rhs": "highNone(R, SG, D)",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-none-high] : decision(none, R, above, SG, D) = highNone(R, SG, D) .\n"
+    },
+    {
+      "line": 36,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-none-low",
+        "lhs": "decision(none, R, below, SG, D)",
+        "rhs": "lowNone(R, SG, D)",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-none-low] : decision(none, R, below, SG, D) = lowNone(R, SG, D) .\n"
+    },
+    {
+      "line": 37,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-high-zero",
+        "lhs": "highNone(zero, SG, D)",
+        "rhs": "high",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-high-zero] : highNone(zero, SG, D) = high .\n"
+    },
+    {
+      "line": 38,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-high-down",
+        "lhs": "highNone(down, SG, D)",
+        "rhs": "high",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-high-down] : highNone(down, SG, D) = high .\n"
+    },
+    {
+      "line": 39,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-high-up",
+        "lhs": "highNone(up, SG, D)",
+        "rhs": "highOverflow(D)",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-high-up] : highNone(up, SG, D) = highOverflow(D) .\n"
+    },
+    {
+      "line": 40,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-high-other",
+        "lhs": "highNone(other, SG, D)",
+        "rhs": "highOverflow(D)",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-high-other] : highNone(other, SG, D) = highOverflow(D) .\n"
+    },
+    {
+      "line": 41,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-low-zero",
+        "lhs": "lowNone(zero, SG, D)",
+        "rhs": "low",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-low-zero] : lowNone(zero, SG, D) = low .\n"
+    },
+    {
+      "line": 42,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-low-up",
+        "lhs": "lowNone(up, SG, D)",
+        "rhs": "low",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-low-up] : lowNone(up, SG, D) = low .\n"
+    },
+    {
+      "line": 43,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-low-down",
+        "lhs": "lowNone(down, SG, D)",
+        "rhs": "lowOverflow(SG, D)",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-low-down] : lowNone(down, SG, D) = lowOverflow(SG, D) .\n"
+    },
+    {
+      "line": 44,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-low-other",
+        "lhs": "lowNone(other, SG, D)",
+        "rhs": "lowOverflow(SG, D)",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-low-other] : lowNone(other, SG, D) = lowOverflow(SG, D) .\n"
+    },
+    {
+      "line": 45,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-high-ext",
+        "lhs": "highOverflow(extended)",
+        "rhs": "outPlusInfinity",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-high-ext] : highOverflow(extended) = outPlusInfinity .\n"
+    },
+    {
+      "line": 46,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-high-fin",
+        "lhs": "highOverflow(finiteDomain)",
+        "rhs": "outNaN",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-high-fin] : highOverflow(finiteDomain) = outNaN .\n"
+    },
+    {
+      "line": 47,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-low-signed-ext",
+        "lhs": "lowOverflow(signed, extended)",
+        "rhs": "outMinusInfinity",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-low-signed-ext] : lowOverflow(signed, extended) = outMinusInfinity .\n"
+    },
+    {
+      "line": 48,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-low-unsigned-ext",
+        "lhs": "lowOverflow(unsigned, extended)",
+        "rhs": "outNaN",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-low-unsigned-ext] : lowOverflow(unsigned, extended) = outNaN .\n"
+    },
+    {
+      "line": 49,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-slice-low-fin",
+        "lhs": "lowOverflow(SG, finiteDomain)",
+        "rhs": "outNaN",
+        "condition": null,
+        "attributes": ""
+      },
+      "text": "  eq [p3109-slice-low-fin] : lowOverflow(SG, finiteDomain) = outNaN .\n"
+    },
+    {
+      "line": 50,
+      "kind": "endfm",
+      "fields": {},
+      "text": "endfm\n"
+    },
+    {
+      "line": 51,
+      "kind": "set",
+      "fields": {
+        "option": "include BOOL",
+        "value": "on"
+      },
+      "text": "set include BOOL on .\n"
+    }
+  ]
+}

@@ -1,0 +1,1876 @@
+{
+  "version": 1,
+  "path": "inventory/operations.json",
+  "sha256": "ebb8032d469a051dcee21389ea8461ad8f03b32900a9e94f426b4db64a5adc77",
+  "type": "support",
+  "format": "json",
+  "text": "{\n  \"source\": \"IEEE_D1_2026_09_07.pdf; normative definitions\",\n  \"operations\": [\n    {\n      \"name\": \"Convert\",\n      \"arity\": 1,\n      \"clause\": \"4.9.1\",\n      \"pages\": [\n        32\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"core\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"Abs\",\n      \"arity\": 1,\n      \"clause\": \"4.10.1\",\n      \"pages\": [\n        33\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"core\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"Negate\",\n      \"arity\": 1,\n      \"clause\": \"4.10.1\",\n      \"pages\": [\n        33\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"core\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"CopySign\",\n      \"arity\": 2,\n      \"clause\": \"4.10.2\",\n      \"pages\": [\n        34\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fy\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\",\n        \"y\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"core\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"Add\",\n      \"arity\": 2,\n      \"clause\": \"4.10.3\",\n      \"pages\": [\n        35\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fy\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\",\n        \"y\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"core\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"Subtract\",\n      \"arity\": 2,\n      \"clause\": \"4.10.3\",\n      \"pages\": [\n        35\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fy\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\",\n        \"y\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"core\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"Multiply\",\n      \"arity\": 2,\n      \"clause\": \"4.10.4\",\n      \"pages\": [\n        36\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fy\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\",\n        \"y\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"core\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"Divide\",\n      \"arity\": 2,\n      \"clause\": \"4.10.5\",\n      \"pages\": [\n        37\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fy\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\",\n        \"y\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"core\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"FMA\",\n      \"arity\": 3,\n      \"clause\": \"4.10.6\",\n      \"pages\": [\n        38\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fy\",\n        \"fz\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\",\n        \"y\",\n        \"z\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"core\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"FAA\",\n      \"arity\": 3,\n      \"clause\": \"4.10.7\",\n      \"pages\": [\n        39\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fy\",\n        \"fz\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\",\n        \"y\",\n        \"z\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"core\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"Sqrt\",\n      \"arity\": 1,\n      \"clause\": \"4.10.8\",\n      \"pages\": [\n        40\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"Recip\",\n      \"arity\": 1,\n      \"clause\": \"4.10.8\",\n      \"pages\": [\n        40\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"core\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"RSqrt\",\n      \"arity\": 1,\n      \"clause\": \"4.10.8\",\n      \"pages\": [\n        40\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"Exp\",\n      \"arity\": 1,\n      \"clause\": \"4.10.9\",\n      \"pages\": [\n        41\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"Exp2\",\n      \"arity\": 1,\n      \"clause\": \"4.10.9\",\n      \"pages\": [\n        41\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"Log\",\n      \"arity\": 1,\n      \"clause\": \"4.10.9\",\n      \"pages\": [\n        41\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"Log2\",\n      \"arity\": 1,\n      \"clause\": \"4.10.9\",\n      \"pages\": [\n        41\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"LogOnePlus\",\n      \"arity\": 1,\n      \"clause\": \"4.10.9\",\n      \"pages\": [\n        41\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"ExpMinusOne\",\n      \"arity\": 1,\n      \"clause\": \"4.10.9\",\n      \"pages\": [\n        41\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"Sin\",\n      \"arity\": 1,\n      \"clause\": \"4.10.10\",\n      \"pages\": [\n        42\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"Cos\",\n      \"arity\": 1,\n      \"clause\": \"4.10.10\",\n      \"pages\": [\n        42\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"Tan\",\n      \"arity\": 1,\n      \"clause\": \"4.10.10\",\n      \"pages\": [\n        42\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"ArcSin\",\n      \"arity\": 1,\n      \"clause\": \"4.10.10\",\n      \"pages\": [\n        42\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"ArcCos\",\n      \"arity\": 1,\n      \"clause\": \"4.10.10\",\n      \"pages\": [\n        42\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"ArcTan\",\n      \"arity\": 1,\n      \"clause\": \"4.10.10\",\n      \"pages\": [\n        42\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"Sinh\",\n      \"arity\": 1,\n      \"clause\": \"4.10.11\",\n      \"pages\": [\n        43\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"Cosh\",\n      \"arity\": 1,\n      \"clause\": \"4.10.11\",\n      \"pages\": [\n        43\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"Tanh\",\n      \"arity\": 1,\n      \"clause\": \"4.10.11\",\n      \"pages\": [\n        43\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"ArcSinh\",\n      \"arity\": 1,\n      \"clause\": \"4.10.11\",\n      \"pages\": [\n        43\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"ArcCosh\",\n      \"arity\": 1,\n      \"clause\": \"4.10.11\",\n      \"pages\": [\n        43\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"ArcTanh\",\n      \"arity\": 1,\n      \"clause\": \"4.10.11\",\n      \"pages\": [\n        43\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"SinPi\",\n      \"arity\": 1,\n      \"clause\": \"4.10.12\",\n      \"pages\": [\n        44\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"CosPi\",\n      \"arity\": 1,\n      \"clause\": \"4.10.12\",\n      \"pages\": [\n        44\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"TanPi\",\n      \"arity\": 1,\n      \"clause\": \"4.10.12\",\n      \"pages\": [\n        44\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"ArcSinPi\",\n      \"arity\": 1,\n      \"clause\": \"4.10.12\",\n      \"pages\": [\n        44\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"ArcCosPi\",\n      \"arity\": 1,\n      \"clause\": \"4.10.12\",\n      \"pages\": [\n        44\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"ArcTanPi\",\n      \"arity\": 1,\n      \"clause\": \"4.10.12\",\n      \"pages\": [\n        44\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"Softplus\",\n      \"arity\": 1,\n      \"clause\": \"4.10.13\",\n      \"pages\": [\n        45\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"Hypot\",\n      \"arity\": 2,\n      \"clause\": \"4.10.14\",\n      \"pages\": [\n        46\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fy\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\",\n        \"y\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"ArcTan2\",\n      \"arity\": 2,\n      \"clause\": \"4.10.15\",\n      \"pages\": [\n        47\n      ],\n      \"parameters\": [\n        \"fy\",\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"y\",\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"ArcTan2Pi\",\n      \"arity\": 2,\n      \"clause\": \"4.10.16\",\n      \"pages\": [\n        48\n      ],\n      \"parameters\": [\n        \"fy\",\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"y\",\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"symbolic\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"Minimum\",\n      \"arity\": 2,\n      \"clause\": \"4.11.1\",\n      \"pages\": [\n        49\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fy\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\",\n        \"y\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"core\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"Maximum\",\n      \"arity\": 2,\n      \"clause\": \"4.11.1\",\n      \"pages\": [\n        49\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fy\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\",\n        \"y\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"core\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"MinimumNumber\",\n      \"arity\": 2,\n      \"clause\": \"4.11.1\",\n      \"pages\": [\n        49\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fy\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\",\n        \"y\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"core\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"MaximumNumber\",\n      \"arity\": 2,\n      \"clause\": \"4.11.1\",\n      \"pages\": [\n        49\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fy\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\",\n        \"y\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"core\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"MinimumMagnitude\",\n      \"arity\": 2,\n      \"clause\": \"4.11.2\",\n      \"pages\": [\n        50\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fy\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\",\n        \"y\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"core\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"MaximumMagnitude\",\n      \"arity\": 2,\n      \"clause\": \"4.11.2\",\n      \"pages\": [\n        50\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fy\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\",\n        \"y\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"core\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"MinimumMagnitudeNumber\",\n      \"arity\": 2,\n      \"clause\": \"4.11.2\",\n      \"pages\": [\n        50\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fy\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\",\n        \"y\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"core\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"MaximumMagnitudeNumber\",\n      \"arity\": 2,\n      \"clause\": \"4.11.2\",\n      \"pages\": [\n        50\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fy\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\",\n        \"y\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"core\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"MinimumFinite\",\n      \"arity\": 2,\n      \"clause\": \"4.11.3\",\n      \"pages\": [\n        51\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fy\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\",\n        \"y\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"core\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"MaximumFinite\",\n      \"arity\": 2,\n      \"clause\": \"4.11.3\",\n      \"pages\": [\n        51\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fy\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\",\n        \"y\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"core\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"Clamp\",\n      \"arity\": 3,\n      \"clause\": \"4.11.4\",\n      \"pages\": [\n        52\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"flo\",\n        \"fhi\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"x\",\n        \"lo\",\n        \"hi\"\n      ],\n      \"result\": \"code\",\n      \"block\": true,\n      \"scaled\": true,\n      \"profile\": \"core\",\n      \"wrapper\": true\n    },\n    {\n      \"name\": \"CompareLess\",\n      \"arity\": 2,\n      \"clause\": \"4.12\",\n      \"pages\": [\n        53\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fy\"\n      ],\n      \"operands\": [\n        \"x\",\n        \"y\"\n      ],\n      \"result\": \"bool\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"CompareLessEqual\",\n      \"arity\": 2,\n      \"clause\": \"4.12\",\n      \"pages\": [\n        53\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fy\"\n      ],\n      \"operands\": [\n        \"x\",\n        \"y\"\n      ],\n      \"result\": \"bool\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"CompareEqual\",\n      \"arity\": 2,\n      \"clause\": \"4.12\",\n      \"pages\": [\n        53\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fy\"\n      ],\n      \"operands\": [\n        \"x\",\n        \"y\"\n      ],\n      \"result\": \"bool\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"CompareGreater\",\n      \"arity\": 2,\n      \"clause\": \"4.12\",\n      \"pages\": [\n        53\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fy\"\n      ],\n      \"operands\": [\n        \"x\",\n        \"y\"\n      ],\n      \"result\": \"bool\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"CompareGreaterEqual\",\n      \"arity\": 2,\n      \"clause\": \"4.12\",\n      \"pages\": [\n        53\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fy\"\n      ],\n      \"operands\": [\n        \"x\",\n        \"y\"\n      ],\n      \"result\": \"bool\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"TotalOrder\",\n      \"arity\": 2,\n      \"clause\": \"4.12.1\",\n      \"pages\": [\n        54\n      ],\n      \"parameters\": [\n        \"fx\",\n        \"fy\"\n      ],\n      \"operands\": [\n        \"x\",\n        \"y\"\n      ],\n      \"result\": \"bool\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"IsZero\",\n      \"arity\": 1,\n      \"clause\": \"4.13\",\n      \"pages\": [\n        56\n      ],\n      \"parameters\": [\n        \"f\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"bool\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"IsOne\",\n      \"arity\": 1,\n      \"clause\": \"4.13\",\n      \"pages\": [\n        56\n      ],\n      \"parameters\": [\n        \"f\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"bool\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"IsNaN\",\n      \"arity\": 1,\n      \"clause\": \"4.13\",\n      \"pages\": [\n        56\n      ],\n      \"parameters\": [\n        \"f\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"bool\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"IsInfinite\",\n      \"arity\": 1,\n      \"clause\": \"4.13\",\n      \"pages\": [\n        56\n      ],\n      \"parameters\": [\n        \"f\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"bool\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"IsFinite\",\n      \"arity\": 1,\n      \"clause\": \"4.13\",\n      \"pages\": [\n        56\n      ],\n      \"parameters\": [\n        \"f\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"bool\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"IsSignMinus\",\n      \"arity\": 1,\n      \"clause\": \"4.13\",\n      \"pages\": [\n        56\n      ],\n      \"parameters\": [\n        \"f\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"bool\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"IsNormal\",\n      \"arity\": 1,\n      \"clause\": \"4.13\",\n      \"pages\": [\n        56\n      ],\n      \"parameters\": [\n        \"f\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"bool\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"IsSubnormal\",\n      \"arity\": 1,\n      \"clause\": \"4.13\",\n      \"pages\": [\n        56\n      ],\n      \"parameters\": [\n        \"f\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"bool\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"Class\",\n      \"arity\": 1,\n      \"clause\": \"4.13.1\",\n      \"pages\": [\n        57\n      ],\n      \"parameters\": [\n        \"f\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"enum\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"BitwidthOf\",\n      \"arity\": 0,\n      \"clause\": \"4.14\",\n      \"pages\": [\n        58\n      ],\n      \"parameters\": [\n        \"f\"\n      ],\n      \"operands\": [],\n      \"result\": \"integer\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"PrecisionOf\",\n      \"arity\": 0,\n      \"clause\": \"4.14\",\n      \"pages\": [\n        58\n      ],\n      \"parameters\": [\n        \"f\"\n      ],\n      \"operands\": [],\n      \"result\": \"integer\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"ExponentBitwidthOf\",\n      \"arity\": 0,\n      \"clause\": \"4.14\",\n      \"pages\": [\n        58\n      ],\n      \"parameters\": [\n        \"f\"\n      ],\n      \"operands\": [],\n      \"result\": \"integer\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"TrailingSignificandBitwidthOf\",\n      \"arity\": 0,\n      \"clause\": \"4.14\",\n      \"pages\": [\n        58\n      ],\n      \"parameters\": [\n        \"f\"\n      ],\n      \"operands\": [],\n      \"result\": \"integer\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"ExponentBiasOf\",\n      \"arity\": 0,\n      \"clause\": \"4.14\",\n      \"pages\": [\n        58\n      ],\n      \"parameters\": [\n        \"f\"\n      ],\n      \"operands\": [],\n      \"result\": \"integer\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"SignednessOf\",\n      \"arity\": 0,\n      \"clause\": \"4.14\",\n      \"pages\": [\n        58\n      ],\n      \"parameters\": [\n        \"f\"\n      ],\n      \"operands\": [],\n      \"result\": \"enum\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"DomainOf\",\n      \"arity\": 0,\n      \"clause\": \"4.14\",\n      \"pages\": [\n        58\n      ],\n      \"parameters\": [\n        \"f\"\n      ],\n      \"operands\": [],\n      \"result\": \"enum\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"MaxFiniteOf\",\n      \"arity\": 0,\n      \"clause\": \"4.14\",\n      \"pages\": [\n        58\n      ],\n      \"parameters\": [\n        \"f\"\n      ],\n      \"operands\": [],\n      \"result\": \"code\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"MinFiniteOf\",\n      \"arity\": 0,\n      \"clause\": \"4.14\",\n      \"pages\": [\n        58\n      ],\n      \"parameters\": [\n        \"f\"\n      ],\n      \"operands\": [],\n      \"result\": \"code\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"MinPositiveOf\",\n      \"arity\": 0,\n      \"clause\": \"4.14\",\n      \"pages\": [\n        58\n      ],\n      \"parameters\": [\n        \"f\"\n      ],\n      \"operands\": [],\n      \"result\": \"code\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"MaxSubnormalOf\",\n      \"arity\": 0,\n      \"clause\": \"4.14\",\n      \"pages\": [\n        58\n      ],\n      \"parameters\": [\n        \"f\"\n      ],\n      \"operands\": [],\n      \"result\": \"code\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"MinNormalOf\",\n      \"arity\": 0,\n      \"clause\": \"4.14\",\n      \"pages\": [\n        58\n      ],\n      \"parameters\": [\n        \"f\"\n      ],\n      \"operands\": [],\n      \"result\": \"code\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"RoundOf\",\n      \"arity\": 1,\n      \"clause\": \"4.15\",\n      \"pages\": [\n        58\n      ],\n      \"parameters\": [],\n      \"operands\": [\n        \"rho\"\n      ],\n      \"result\": \"enum\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"SatOf\",\n      \"arity\": 1,\n      \"clause\": \"4.15\",\n      \"pages\": [\n        58\n      ],\n      \"parameters\": [],\n      \"operands\": [\n        \"rho\"\n      ],\n      \"result\": \"enum\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"NextGreaterThan\",\n      \"arity\": 1,\n      \"clause\": \"4.16\",\n      \"pages\": [\n        59\n      ],\n      \"parameters\": [\n        \"f\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"NextLessThan\",\n      \"arity\": 1,\n      \"clause\": \"4.16\",\n      \"pages\": [\n        59\n      ],\n      \"parameters\": [\n        \"f\"\n      ],\n      \"operands\": [\n        \"x\"\n      ],\n      \"result\": \"code\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"ConvertFromBlock\",\n      \"arity\": 2,\n      \"clause\": \"5.5.1\",\n      \"pages\": [\n        64\n      ],\n      \"parameters\": [\n        \"B\",\n        \"fs\",\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"s\",\n        \"xs\"\n      ],\n      \"result\": \"codes\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"ConvertToBlock\",\n      \"arity\": 2,\n      \"clause\": \"5.5.2\",\n      \"pages\": [\n        65\n      ],\n      \"parameters\": [\n        \"B\",\n        \"fx\",\n        \"fs\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"xs\",\n        \"s\"\n      ],\n      \"result\": \"codes\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"ConvertToBlockMaxAbsFinite\",\n      \"arity\": 1,\n      \"clause\": \"5.5.3\",\n      \"pages\": [\n        66\n      ],\n      \"parameters\": [\n        \"B\",\n        \"fx\",\n        \"fs\",\n        \"fr\",\n        \"rho_s\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"xs\"\n      ],\n      \"result\": \"block\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"BlockReduceAdd\",\n      \"arity\": 2,\n      \"clause\": \"5.6.1\",\n      \"pages\": [\n        67\n      ],\n      \"parameters\": [\n        \"B\",\n        \"fs\",\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"s\",\n        \"xs\"\n      ],\n      \"result\": \"code\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"BlockReduceMultiply\",\n      \"arity\": 2,\n      \"clause\": \"5.6.1\",\n      \"pages\": [\n        67\n      ],\n      \"parameters\": [\n        \"B\",\n        \"fs\",\n        \"fx\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"s\",\n        \"xs\"\n      ],\n      \"result\": \"code\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    },\n    {\n      \"name\": \"BlockDotProduct\",\n      \"arity\": 4,\n      \"clause\": \"5.6.2\",\n      \"pages\": [\n        68\n      ],\n      \"parameters\": [\n        \"B\",\n        \"fsx\",\n        \"fx\",\n        \"fsy\",\n        \"fy\",\n        \"fr\",\n        \"rho\"\n      ],\n      \"operands\": [\n        \"sx\",\n        \"xs\",\n        \"sy\",\n        \"ys\"\n      ],\n      \"result\": \"code\",\n      \"block\": false,\n      \"scaled\": false,\n      \"profile\": \"core\",\n      \"wrapper\": false\n    }\n  ],\n  \"public_call_convention\": \"Parameters precede operands; block tuples are flattened into scale, ordered CodeSeq arguments. All indexing helpers are zero-based; source index i corresponds to i-1.\",\n  \"external_dependency\": \"External codecs and bound queries require an authorized backend view; metadata only is executable.\"\n}\n",
+  "data": {
+    "source": "IEEE_D1_2026_09_07.pdf; normative definitions",
+    "operations": [
+      {
+        "name": "Convert",
+        "arity": 1,
+        "clause": "4.9.1",
+        "pages": [
+          32
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "core",
+        "wrapper": true
+      },
+      {
+        "name": "Abs",
+        "arity": 1,
+        "clause": "4.10.1",
+        "pages": [
+          33
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "core",
+        "wrapper": true
+      },
+      {
+        "name": "Negate",
+        "arity": 1,
+        "clause": "4.10.1",
+        "pages": [
+          33
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "core",
+        "wrapper": true
+      },
+      {
+        "name": "CopySign",
+        "arity": 2,
+        "clause": "4.10.2",
+        "pages": [
+          34
+        ],
+        "parameters": [
+          "fx",
+          "fy",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x",
+          "y"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "core",
+        "wrapper": true
+      },
+      {
+        "name": "Add",
+        "arity": 2,
+        "clause": "4.10.3",
+        "pages": [
+          35
+        ],
+        "parameters": [
+          "fx",
+          "fy",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x",
+          "y"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "core",
+        "wrapper": true
+      },
+      {
+        "name": "Subtract",
+        "arity": 2,
+        "clause": "4.10.3",
+        "pages": [
+          35
+        ],
+        "parameters": [
+          "fx",
+          "fy",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x",
+          "y"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "core",
+        "wrapper": true
+      },
+      {
+        "name": "Multiply",
+        "arity": 2,
+        "clause": "4.10.4",
+        "pages": [
+          36
+        ],
+        "parameters": [
+          "fx",
+          "fy",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x",
+          "y"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "core",
+        "wrapper": true
+      },
+      {
+        "name": "Divide",
+        "arity": 2,
+        "clause": "4.10.5",
+        "pages": [
+          37
+        ],
+        "parameters": [
+          "fx",
+          "fy",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x",
+          "y"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "core",
+        "wrapper": true
+      },
+      {
+        "name": "FMA",
+        "arity": 3,
+        "clause": "4.10.6",
+        "pages": [
+          38
+        ],
+        "parameters": [
+          "fx",
+          "fy",
+          "fz",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x",
+          "y",
+          "z"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "core",
+        "wrapper": true
+      },
+      {
+        "name": "FAA",
+        "arity": 3,
+        "clause": "4.10.7",
+        "pages": [
+          39
+        ],
+        "parameters": [
+          "fx",
+          "fy",
+          "fz",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x",
+          "y",
+          "z"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "core",
+        "wrapper": true
+      },
+      {
+        "name": "Sqrt",
+        "arity": 1,
+        "clause": "4.10.8",
+        "pages": [
+          40
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "Recip",
+        "arity": 1,
+        "clause": "4.10.8",
+        "pages": [
+          40
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "core",
+        "wrapper": true
+      },
+      {
+        "name": "RSqrt",
+        "arity": 1,
+        "clause": "4.10.8",
+        "pages": [
+          40
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "Exp",
+        "arity": 1,
+        "clause": "4.10.9",
+        "pages": [
+          41
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "Exp2",
+        "arity": 1,
+        "clause": "4.10.9",
+        "pages": [
+          41
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "Log",
+        "arity": 1,
+        "clause": "4.10.9",
+        "pages": [
+          41
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "Log2",
+        "arity": 1,
+        "clause": "4.10.9",
+        "pages": [
+          41
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "LogOnePlus",
+        "arity": 1,
+        "clause": "4.10.9",
+        "pages": [
+          41
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "ExpMinusOne",
+        "arity": 1,
+        "clause": "4.10.9",
+        "pages": [
+          41
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "Sin",
+        "arity": 1,
+        "clause": "4.10.10",
+        "pages": [
+          42
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "Cos",
+        "arity": 1,
+        "clause": "4.10.10",
+        "pages": [
+          42
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "Tan",
+        "arity": 1,
+        "clause": "4.10.10",
+        "pages": [
+          42
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "ArcSin",
+        "arity": 1,
+        "clause": "4.10.10",
+        "pages": [
+          42
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "ArcCos",
+        "arity": 1,
+        "clause": "4.10.10",
+        "pages": [
+          42
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "ArcTan",
+        "arity": 1,
+        "clause": "4.10.10",
+        "pages": [
+          42
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "Sinh",
+        "arity": 1,
+        "clause": "4.10.11",
+        "pages": [
+          43
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "Cosh",
+        "arity": 1,
+        "clause": "4.10.11",
+        "pages": [
+          43
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "Tanh",
+        "arity": 1,
+        "clause": "4.10.11",
+        "pages": [
+          43
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "ArcSinh",
+        "arity": 1,
+        "clause": "4.10.11",
+        "pages": [
+          43
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "ArcCosh",
+        "arity": 1,
+        "clause": "4.10.11",
+        "pages": [
+          43
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "ArcTanh",
+        "arity": 1,
+        "clause": "4.10.11",
+        "pages": [
+          43
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "SinPi",
+        "arity": 1,
+        "clause": "4.10.12",
+        "pages": [
+          44
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "CosPi",
+        "arity": 1,
+        "clause": "4.10.12",
+        "pages": [
+          44
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "TanPi",
+        "arity": 1,
+        "clause": "4.10.12",
+        "pages": [
+          44
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "ArcSinPi",
+        "arity": 1,
+        "clause": "4.10.12",
+        "pages": [
+          44
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "ArcCosPi",
+        "arity": 1,
+        "clause": "4.10.12",
+        "pages": [
+          44
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "ArcTanPi",
+        "arity": 1,
+        "clause": "4.10.12",
+        "pages": [
+          44
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "Softplus",
+        "arity": 1,
+        "clause": "4.10.13",
+        "pages": [
+          45
+        ],
+        "parameters": [
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "Hypot",
+        "arity": 2,
+        "clause": "4.10.14",
+        "pages": [
+          46
+        ],
+        "parameters": [
+          "fx",
+          "fy",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x",
+          "y"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "ArcTan2",
+        "arity": 2,
+        "clause": "4.10.15",
+        "pages": [
+          47
+        ],
+        "parameters": [
+          "fy",
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "y",
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "ArcTan2Pi",
+        "arity": 2,
+        "clause": "4.10.16",
+        "pages": [
+          48
+        ],
+        "parameters": [
+          "fy",
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "y",
+          "x"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "symbolic",
+        "wrapper": true
+      },
+      {
+        "name": "Minimum",
+        "arity": 2,
+        "clause": "4.11.1",
+        "pages": [
+          49
+        ],
+        "parameters": [
+          "fx",
+          "fy",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x",
+          "y"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "core",
+        "wrapper": true
+      },
+      {
+        "name": "Maximum",
+        "arity": 2,
+        "clause": "4.11.1",
+        "pages": [
+          49
+        ],
+        "parameters": [
+          "fx",
+          "fy",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x",
+          "y"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "core",
+        "wrapper": true
+      },
+      {
+        "name": "MinimumNumber",
+        "arity": 2,
+        "clause": "4.11.1",
+        "pages": [
+          49
+        ],
+        "parameters": [
+          "fx",
+          "fy",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x",
+          "y"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "core",
+        "wrapper": true
+      },
+      {
+        "name": "MaximumNumber",
+        "arity": 2,
+        "clause": "4.11.1",
+        "pages": [
+          49
+        ],
+        "parameters": [
+          "fx",
+          "fy",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x",
+          "y"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "core",
+        "wrapper": true
+      },
+      {
+        "name": "MinimumMagnitude",
+        "arity": 2,
+        "clause": "4.11.2",
+        "pages": [
+          50
+        ],
+        "parameters": [
+          "fx",
+          "fy",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x",
+          "y"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "core",
+        "wrapper": true
+      },
+      {
+        "name": "MaximumMagnitude",
+        "arity": 2,
+        "clause": "4.11.2",
+        "pages": [
+          50
+        ],
+        "parameters": [
+          "fx",
+          "fy",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x",
+          "y"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "core",
+        "wrapper": true
+      },
+      {
+        "name": "MinimumMagnitudeNumber",
+        "arity": 2,
+        "clause": "4.11.2",
+        "pages": [
+          50
+        ],
+        "parameters": [
+          "fx",
+          "fy",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x",
+          "y"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "core",
+        "wrapper": true
+      },
+      {
+        "name": "MaximumMagnitudeNumber",
+        "arity": 2,
+        "clause": "4.11.2",
+        "pages": [
+          50
+        ],
+        "parameters": [
+          "fx",
+          "fy",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x",
+          "y"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "core",
+        "wrapper": true
+      },
+      {
+        "name": "MinimumFinite",
+        "arity": 2,
+        "clause": "4.11.3",
+        "pages": [
+          51
+        ],
+        "parameters": [
+          "fx",
+          "fy",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x",
+          "y"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "core",
+        "wrapper": true
+      },
+      {
+        "name": "MaximumFinite",
+        "arity": 2,
+        "clause": "4.11.3",
+        "pages": [
+          51
+        ],
+        "parameters": [
+          "fx",
+          "fy",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x",
+          "y"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "core",
+        "wrapper": true
+      },
+      {
+        "name": "Clamp",
+        "arity": 3,
+        "clause": "4.11.4",
+        "pages": [
+          52
+        ],
+        "parameters": [
+          "fx",
+          "flo",
+          "fhi",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "x",
+          "lo",
+          "hi"
+        ],
+        "result": "code",
+        "block": true,
+        "scaled": true,
+        "profile": "core",
+        "wrapper": true
+      },
+      {
+        "name": "CompareLess",
+        "arity": 2,
+        "clause": "4.12",
+        "pages": [
+          53
+        ],
+        "parameters": [
+          "fx",
+          "fy"
+        ],
+        "operands": [
+          "x",
+          "y"
+        ],
+        "result": "bool",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "CompareLessEqual",
+        "arity": 2,
+        "clause": "4.12",
+        "pages": [
+          53
+        ],
+        "parameters": [
+          "fx",
+          "fy"
+        ],
+        "operands": [
+          "x",
+          "y"
+        ],
+        "result": "bool",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "CompareEqual",
+        "arity": 2,
+        "clause": "4.12",
+        "pages": [
+          53
+        ],
+        "parameters": [
+          "fx",
+          "fy"
+        ],
+        "operands": [
+          "x",
+          "y"
+        ],
+        "result": "bool",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "CompareGreater",
+        "arity": 2,
+        "clause": "4.12",
+        "pages": [
+          53
+        ],
+        "parameters": [
+          "fx",
+          "fy"
+        ],
+        "operands": [
+          "x",
+          "y"
+        ],
+        "result": "bool",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "CompareGreaterEqual",
+        "arity": 2,
+        "clause": "4.12",
+        "pages": [
+          53
+        ],
+        "parameters": [
+          "fx",
+          "fy"
+        ],
+        "operands": [
+          "x",
+          "y"
+        ],
+        "result": "bool",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "TotalOrder",
+        "arity": 2,
+        "clause": "4.12.1",
+        "pages": [
+          54
+        ],
+        "parameters": [
+          "fx",
+          "fy"
+        ],
+        "operands": [
+          "x",
+          "y"
+        ],
+        "result": "bool",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "IsZero",
+        "arity": 1,
+        "clause": "4.13",
+        "pages": [
+          56
+        ],
+        "parameters": [
+          "f"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "bool",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "IsOne",
+        "arity": 1,
+        "clause": "4.13",
+        "pages": [
+          56
+        ],
+        "parameters": [
+          "f"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "bool",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "IsNaN",
+        "arity": 1,
+        "clause": "4.13",
+        "pages": [
+          56
+        ],
+        "parameters": [
+          "f"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "bool",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "IsInfinite",
+        "arity": 1,
+        "clause": "4.13",
+        "pages": [
+          56
+        ],
+        "parameters": [
+          "f"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "bool",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "IsFinite",
+        "arity": 1,
+        "clause": "4.13",
+        "pages": [
+          56
+        ],
+        "parameters": [
+          "f"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "bool",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "IsSignMinus",
+        "arity": 1,
+        "clause": "4.13",
+        "pages": [
+          56
+        ],
+        "parameters": [
+          "f"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "bool",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "IsNormal",
+        "arity": 1,
+        "clause": "4.13",
+        "pages": [
+          56
+        ],
+        "parameters": [
+          "f"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "bool",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "IsSubnormal",
+        "arity": 1,
+        "clause": "4.13",
+        "pages": [
+          56
+        ],
+        "parameters": [
+          "f"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "bool",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "Class",
+        "arity": 1,
+        "clause": "4.13.1",
+        "pages": [
+          57
+        ],
+        "parameters": [
+          "f"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "enum",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "BitwidthOf",
+        "arity": 0,
+        "clause": "4.14",
+        "pages": [
+          58
+        ],
+        "parameters": [
+          "f"
+        ],
+        "operands": [],
+        "result": "integer",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "PrecisionOf",
+        "arity": 0,
+        "clause": "4.14",
+        "pages": [
+          58
+        ],
+        "parameters": [
+          "f"
+        ],
+        "operands": [],
+        "result": "integer",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "ExponentBitwidthOf",
+        "arity": 0,
+        "clause": "4.14",
+        "pages": [
+          58
+        ],
+        "parameters": [
+          "f"
+        ],
+        "operands": [],
+        "result": "integer",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "TrailingSignificandBitwidthOf",
+        "arity": 0,
+        "clause": "4.14",
+        "pages": [
+          58
+        ],
+        "parameters": [
+          "f"
+        ],
+        "operands": [],
+        "result": "integer",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "ExponentBiasOf",
+        "arity": 0,
+        "clause": "4.14",
+        "pages": [
+          58
+        ],
+        "parameters": [
+          "f"
+        ],
+        "operands": [],
+        "result": "integer",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "SignednessOf",
+        "arity": 0,
+        "clause": "4.14",
+        "pages": [
+          58
+        ],
+        "parameters": [
+          "f"
+        ],
+        "operands": [],
+        "result": "enum",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "DomainOf",
+        "arity": 0,
+        "clause": "4.14",
+        "pages": [
+          58
+        ],
+        "parameters": [
+          "f"
+        ],
+        "operands": [],
+        "result": "enum",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "MaxFiniteOf",
+        "arity": 0,
+        "clause": "4.14",
+        "pages": [
+          58
+        ],
+        "parameters": [
+          "f"
+        ],
+        "operands": [],
+        "result": "code",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "MinFiniteOf",
+        "arity": 0,
+        "clause": "4.14",
+        "pages": [
+          58
+        ],
+        "parameters": [
+          "f"
+        ],
+        "operands": [],
+        "result": "code",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "MinPositiveOf",
+        "arity": 0,
+        "clause": "4.14",
+        "pages": [
+          58
+        ],
+        "parameters": [
+          "f"
+        ],
+        "operands": [],
+        "result": "code",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "MaxSubnormalOf",
+        "arity": 0,
+        "clause": "4.14",
+        "pages": [
+          58
+        ],
+        "parameters": [
+          "f"
+        ],
+        "operands": [],
+        "result": "code",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "MinNormalOf",
+        "arity": 0,
+        "clause": "4.14",
+        "pages": [
+          58
+        ],
+        "parameters": [
+          "f"
+        ],
+        "operands": [],
+        "result": "code",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "RoundOf",
+        "arity": 1,
+        "clause": "4.15",
+        "pages": [
+          58
+        ],
+        "parameters": [],
+        "operands": [
+          "rho"
+        ],
+        "result": "enum",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "SatOf",
+        "arity": 1,
+        "clause": "4.15",
+        "pages": [
+          58
+        ],
+        "parameters": [],
+        "operands": [
+          "rho"
+        ],
+        "result": "enum",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "NextGreaterThan",
+        "arity": 1,
+        "clause": "4.16",
+        "pages": [
+          59
+        ],
+        "parameters": [
+          "f"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "NextLessThan",
+        "arity": 1,
+        "clause": "4.16",
+        "pages": [
+          59
+        ],
+        "parameters": [
+          "f"
+        ],
+        "operands": [
+          "x"
+        ],
+        "result": "code",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "ConvertFromBlock",
+        "arity": 2,
+        "clause": "5.5.1",
+        "pages": [
+          64
+        ],
+        "parameters": [
+          "B",
+          "fs",
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "s",
+          "xs"
+        ],
+        "result": "codes",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "ConvertToBlock",
+        "arity": 2,
+        "clause": "5.5.2",
+        "pages": [
+          65
+        ],
+        "parameters": [
+          "B",
+          "fx",
+          "fs",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "xs",
+          "s"
+        ],
+        "result": "codes",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "ConvertToBlockMaxAbsFinite",
+        "arity": 1,
+        "clause": "5.5.3",
+        "pages": [
+          66
+        ],
+        "parameters": [
+          "B",
+          "fx",
+          "fs",
+          "fr",
+          "rho_s",
+          "rho"
+        ],
+        "operands": [
+          "xs"
+        ],
+        "result": "block",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "BlockReduceAdd",
+        "arity": 2,
+        "clause": "5.6.1",
+        "pages": [
+          67
+        ],
+        "parameters": [
+          "B",
+          "fs",
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "s",
+          "xs"
+        ],
+        "result": "code",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "BlockReduceMultiply",
+        "arity": 2,
+        "clause": "5.6.1",
+        "pages": [
+          67
+        ],
+        "parameters": [
+          "B",
+          "fs",
+          "fx",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "s",
+          "xs"
+        ],
+        "result": "code",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      },
+      {
+        "name": "BlockDotProduct",
+        "arity": 4,
+        "clause": "5.6.2",
+        "pages": [
+          68
+        ],
+        "parameters": [
+          "B",
+          "fsx",
+          "fx",
+          "fsy",
+          "fy",
+          "fr",
+          "rho"
+        ],
+        "operands": [
+          "sx",
+          "xs",
+          "sy",
+          "ys"
+        ],
+        "result": "code",
+        "block": false,
+        "scaled": false,
+        "profile": "core",
+        "wrapper": false
+      }
+    ],
+    "public_call_convention": "Parameters precede operands; block tuples are flattened into scale, ordered CodeSeq arguments. All indexing helpers are zero-based; source index i corresponds to i-1.",
+    "external_dependency": "External codecs and bound queries require an authorized backend view; metadata only is executable."
+  }
+}

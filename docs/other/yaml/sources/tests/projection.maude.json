@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "path": "tests/projection.maude",
+  "sha256": "afe4a678c6ef3d9f619b626d553ef39b9bcc44e2baa33b055caed71dc9d16e41",
+  "type": "maude",
+  "records": [
+    {
+      "line": 1,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- Load-only check; tools/run-tests.py runs the complete projection suite.\n"
+    },
+    {
+      "line": 2,
+      "kind": "load",
+      "fields": {
+        "path": "../load-core.maude"
+      },
+      "text": "load ../load-core.maude\n"
+    },
+    {
+      "line": 3,
+      "kind": "load",
+      "fields": {
+        "path": "support.maude"
+      },
+      "text": "load support.maude\n"
+    },
+    {
+      "line": 4,
+      "kind": "fmod",
+      "fields": {
+        "name": "P3109-TEST-PROJECTION",
+        "parameters": []
+      },
+      "text": "fmod P3109-TEST-PROJECTION is\n"
+    },
+    {
+      "line": 5,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-CORE"
+      },
+      "text": "  including P3109-CORE .\n"
+    },
+    {
+      "line": 6,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-TEST-SUPPORT"
+      },
+      "text": "  including P3109-TEST-SUPPORT .\n"
+    },
+    {
+      "line": 7,
+      "kind": "endfm",
+      "fields": {},
+      "text": "endfm\n"
+    },
+    {
+      "line": 8,
+      "kind": "red",
+      "fields": {
+        "module": "P3109-TEST-PROJECTION",
+        "term": "suiteComplete(0)"
+      },
+      "text": "red in P3109-TEST-PROJECTION : suiteComplete(0) .\n"
+    },
+    {
+      "line": 9,
+      "kind": "quit",
+      "fields": {},
+      "text": "quit\n"
+    }
+  ]
+}

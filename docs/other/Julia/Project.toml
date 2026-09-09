@@ -1,0 +1,9 @@
+name = "P3109Reference"
+uuid = "e6627552-e0c7-4bfa-a6c2-c52782045d73"
+version = "0.1.0"
+
+[compat]
+julia = "1.13"
+
+[workspace]
+projects = ["test", "tools", "benchmark"]

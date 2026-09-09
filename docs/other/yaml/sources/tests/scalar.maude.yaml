@@ -1,0 +1,65 @@
+version: 1
+path: tests/scalar.maude
+sha256: 4cbcb33f0dc95663ffcdeb23a0b576326ab09b3d98e20d82082d8c2eec90cdaa
+type: maude
+records:
+- line: 1
+  kind: comment
+  fields: {}
+  text: |
+    --- Small standalone check; tools/run-tests.py runs the complete scalar suite.
+- line: 2
+  kind: load
+  fields:
+    path: ../load-core.maude
+  text: |
+    load ../load-core.maude
+- line: 3
+  kind: load
+  fields:
+    path: support.maude
+  text: |
+    load support.maude
+- line: 4
+  kind: fmod
+  fields:
+    name: P3109-TEST-SCALAR
+    parameters: []
+  text: |
+    fmod P3109-TEST-SCALAR is
+- line: 5
+  kind: including
+  fields:
+    expression: P3109-CORE
+  text: |2
+      including P3109-CORE .
+- line: 6
+  kind: including
+  fields:
+    expression: P3109-TEST-SUPPORT
+  text: |2
+      including P3109-TEST-SUPPORT .
+- line: 7
+  kind: endfm
+  fields: {}
+  text: |
+    endfm
+- line: 8
+  kind: red
+  fields:
+    module: P3109-TEST-SCALAR
+    term: check("scalar-standalone", (omegaFMA(negInf, negInf, negInf) == nan))
+  text: |
+    red in P3109-TEST-SCALAR : check("scalar-standalone", (omegaFMA(negInf, negInf, negInf) == nan)) .
+- line: 9
+  kind: red
+  fields:
+    module: P3109-TEST-SCALAR
+    term: suiteComplete(1)
+  text: |
+    red in P3109-TEST-SCALAR : suiteComplete(1) .
+- line: 10
+  kind: quit
+  fields: {}
+  text: |
+    quit

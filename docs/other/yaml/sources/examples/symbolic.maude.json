@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "path": "examples/symbolic.maude",
+  "sha256": "8e6fa4aa59fe3064d7f192e4d0602ed9236238a29d27c48d2ade24995f41d267",
+  "type": "maude",
+  "records": [
+    {
+      "line": 1,
+      "kind": "load",
+      "fields": {
+        "path": "../load-symbolic.maude"
+      },
+      "text": "load ../load-symbolic.maude\n"
+    },
+    {
+      "line": 2,
+      "kind": "red",
+      "fields": {
+        "module": "P3109-SYMBOLIC",
+        "term": "omegaSqrt(fin(9/16))"
+      },
+      "text": "red in P3109-SYMBOLIC : omegaSqrt(fin(9/16)) .\n"
+    },
+    {
+      "line": 3,
+      "kind": "red",
+      "fields": {
+        "module": "P3109-SYMBOLIC",
+        "term": "omegaSqrt(fin(2))"
+      },
+      "text": "red in P3109-SYMBOLIC : omegaSqrt(fin(2)) .\n"
+    },
+    {
+      "line": 4,
+      "kind": "red",
+      "fields": {
+        "module": "P3109-SYMBOLIC",
+        "term": "omegaArcTan2Pi(fin(1), fin(-1))"
+      },
+      "text": "red in P3109-SYMBOLIC : omegaArcTan2Pi(fin(1), fin(-1)) .\n"
+    },
+    {
+      "line": 5,
+      "kind": "red",
+      "fields": {
+        "module": "P3109-SYMBOLIC",
+        "term": "omegaTanPi(fin(-1/2))"
+      },
+      "text": "red in P3109-SYMBOLIC : omegaTanPi(fin(-1/2)) .\n"
+    },
+    {
+      "line": 6,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- This is a residual comparison, not false.\n"
+    },
+    {
+      "line": 7,
+      "kind": "red",
+      "fields": {
+        "module": "P3109-SYMBOLIC",
+        "term": "xEq(exprExp(fin(1)), exprExp(fin(2)))"
+      },
+      "text": "red in P3109-SYMBOLIC : xEq(exprExp(fin(1)), exprExp(fin(2))) .\n"
+    },
+    {
+      "line": 8,
+      "kind": "quit",
+      "fields": {},
+      "text": "quit\n"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+runtime_dependencies = []
+oracle_ancestry = "Source Maude plus independent Python exact oracles; selected Julia tool packages do not supply arithmetic expectations"
+
+[[packages]]
+name = "JSON"
+version = "1.7.1"
+git_tree_sha1 = "c7345ab1a7ca4dc8a02c9f6510da0d9857bbe513"
+environment = "test, tools"
+compat = "1.7"
+documentation = "https://github.com/JuliaIO/JSON.jl"
+interfaces = "JSON.parse, parsefile, json"
+purpose = "replaces JSON parser/serializer"
+adapter = "small I/O or measurement boundary; no arithmetic semantics"
+validation = "roundtrip fixture capture and corruption tests"
+
+[[packages]]
+name = "CodecZlib"
+version = "0.7.9"
+git_tree_sha1 = "970758a3d591a2a5c2a907c53f2e2f8c1b1d3537"
+environment = "test, tools"
+compat = "0.7"
+documentation = "https://github.com/JuliaIO/CodecZlib.jl"
+interfaces = "GzipDecompressorStream, GzipCompressorStream"
+purpose = "replaces compression plumbing and reduces fixture size"
+adapter = "small I/O or measurement boundary; no arithmetic semantics"
+validation = "hashed fixture reads and corruption tests"
+
+[[packages]]
+name = "JuliaFormatter"
+version = "2.14.0"
+git_tree_sha1 = "4a25454bfd37ad800d20017fe59243e41163fed9"
+environment = "tools"
+compat = "2.14"
+documentation = "https://github.com/JuliaEditorSupport/JuliaFormatter.jl"
+interfaces = "format_text, format_file"
+purpose = "replaces manual generated layout normalization"
+adapter = "small I/O or measurement boundary; no arithmetic semantics"
+validation = "generator --check"
+
+[[packages]]
+name = "BenchmarkTools"
+version = "1.8.0"
+git_tree_sha1 = "9670d3febc2b6da60a0ae57846ba74670290653f"
+environment = "benchmark"
+compat = "1.8"
+documentation = "https://juliaci.github.io/BenchmarkTools.jl/stable/manual/"
+interfaces = "@benchmark with interpolation; median"
+purpose = "replaces hand-rolled repeated timing/allocation harness"
+adapter = "small I/O or measurement boundary; no arithmetic semantics"
+validation = "executed benchmarks"

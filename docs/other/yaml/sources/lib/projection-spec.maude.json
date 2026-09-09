@@ -1,0 +1,846 @@
+{
+  "version": 1,
+  "path": "lib/projection-spec.maude",
+  "sha256": "dbfe2195fa7dd310c039b9b2f8e405065727eb48bbcd41f2cf25a9353d6e6e58",
+  "type": "maude",
+  "records": [
+    {
+      "line": 1,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- Source: P3109/D1 4.2; 4.7.4; 4.15; 5.3; 5.8, printed page 18; 27-28; 58; 61; 70.\n"
+    },
+    {
+      "line": 2,
+      "kind": "fmod",
+      "fields": {
+        "name": "P3109-PROJSPEC",
+        "parameters": []
+      },
+      "text": "fmod P3109-PROJSPEC is\n"
+    },
+    {
+      "line": 3,
+      "kind": "protecting",
+      "fields": {
+        "expression": "INT"
+      },
+      "text": "  protecting INT .\n"
+    },
+    {
+      "line": 4,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-SEQUENCE{RandomElt} * (sort Seq{RandomElt} to RandomSeq, op nil to rnil, op cons to rcons)"
+      },
+      "text": "  including P3109-SEQUENCE{RandomElt} * (sort Seq{RandomElt} to RandomSeq, op nil to rnil, op cons to rcons) .\n"
+    },
+    {
+      "line": 5,
+      "kind": "sorts",
+      "fields": {
+        "names": [
+          "RoundMode",
+          "SatMode",
+          "ProjSpec",
+          "BlockRoundMode",
+          "BlockProjSpec"
+        ]
+      },
+      "text": "  sorts RoundMode SatMode ProjSpec BlockRoundMode BlockProjSpec .\n"
+    },
+    {
+      "line": 6,
+      "kind": "subsort",
+      "fields": {
+        "chain": [
+          [
+            "RoundMode"
+          ],
+          [
+            "BlockRoundMode"
+          ]
+        ]
+      },
+      "text": "  subsort RoundMode < BlockRoundMode .\n"
+    },
+    {
+      "line": 7,
+      "kind": "ops",
+      "fields": {
+        "names": [
+          "NearestTiesToEven",
+          "NearestTiesToAway",
+          "TowardPositive",
+          "TowardNegative",
+          "TowardZero",
+          "ToOdd"
+        ],
+        "domain": [],
+        "arrow": "->",
+        "range": "RoundMode",
+        "attributes": "ctor"
+      },
+      "text": "  ops NearestTiesToEven NearestTiesToAway TowardPositive TowardNegative TowardZero ToOdd : -> RoundMode [ctor] .\n"
+    },
+    {
+      "line": 8,
+      "kind": "ops",
+      "fields": {
+        "names": [
+          "StochasticA",
+          "StochasticB",
+          "StochasticC"
+        ],
+        "domain": [
+          "Int",
+          "Int"
+        ],
+        "arrow": "->",
+        "range": "RoundMode",
+        "attributes": "ctor"
+      },
+      "text": "  ops StochasticA StochasticB StochasticC : Int Int -> RoundMode [ctor] .\n"
+    },
+    {
+      "line": 9,
+      "kind": "ops",
+      "fields": {
+        "names": [
+          "BlockStochasticA",
+          "BlockStochasticB",
+          "BlockStochasticC"
+        ],
+        "domain": [
+          "Int",
+          "RandomSeq"
+        ],
+        "arrow": "->",
+        "range": "BlockRoundMode",
+        "attributes": "ctor"
+      },
+      "text": "  ops BlockStochasticA BlockStochasticB BlockStochasticC : Int RandomSeq -> BlockRoundMode [ctor] .\n"
+    },
+    {
+      "line": 10,
+      "kind": "ops",
+      "fields": {
+        "names": [
+          "SatNone",
+          "SatFinite",
+          "SatPropagate"
+        ],
+        "domain": [],
+        "arrow": "->",
+        "range": "SatMode",
+        "attributes": "ctor"
+      },
+      "text": "  ops SatNone SatFinite SatPropagate : -> SatMode [ctor] .\n"
+    },
+    {
+      "line": 11,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "proj"
+        ],
+        "domain": [
+          "RoundMode",
+          "SatMode"
+        ],
+        "arrow": "->",
+        "range": "ProjSpec",
+        "attributes": "ctor"
+      },
+      "text": "  op proj : RoundMode SatMode -> ProjSpec [ctor] .\n"
+    },
+    {
+      "line": 12,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "bproj"
+        ],
+        "domain": [
+          "BlockRoundMode",
+          "SatMode"
+        ],
+        "arrow": "->",
+        "range": "BlockProjSpec",
+        "attributes": "ctor"
+      },
+      "text": "  op bproj : BlockRoundMode SatMode -> BlockProjSpec [ctor] .\n"
+    },
+    {
+      "line": 13,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "randomInRange"
+        ],
+        "domain": [
+          "Int",
+          "Int"
+        ],
+        "arrow": "->",
+        "range": "Bool",
+        "attributes": ""
+      },
+      "text": "  op randomInRange : Int Int -> Bool .\n"
+    },
+    {
+      "line": 14,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "validRound"
+        ],
+        "domain": [
+          "RoundMode"
+        ],
+        "arrow": "->",
+        "range": "Bool",
+        "attributes": ""
+      },
+      "text": "  op validRound : RoundMode -> Bool .\n"
+    },
+    {
+      "line": 15,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "validProjection"
+        ],
+        "domain": [
+          "ProjSpec"
+        ],
+        "arrow": "->",
+        "range": "Bool",
+        "attributes": ""
+      },
+      "text": "  op validProjection : ProjSpec -> Bool .\n"
+    },
+    {
+      "line": 16,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "validBlockProjection"
+        ],
+        "domain": [
+          "BlockProjSpec",
+          "Nat"
+        ],
+        "arrow": "->",
+        "range": "Bool",
+        "attributes": ""
+      },
+      "text": "  op validBlockProjection : BlockProjSpec Nat -> Bool .\n"
+    },
+    {
+      "line": 17,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "validRandoms"
+        ],
+        "domain": [
+          "Int",
+          "RandomSeq"
+        ],
+        "arrow": "->",
+        "range": "Bool",
+        "attributes": ""
+      },
+      "text": "  op validRandoms : Int RandomSeq -> Bool .\n"
+    },
+    {
+      "line": 18,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "RoundOf"
+        ],
+        "domain": [
+          "ProjSpec"
+        ],
+        "arrow": "~>",
+        "range": "RoundMode",
+        "attributes": ""
+      },
+      "text": "  op RoundOf : ProjSpec ~> RoundMode .\n"
+    },
+    {
+      "line": 19,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "SatOf"
+        ],
+        "domain": [
+          "ProjSpec"
+        ],
+        "arrow": "~>",
+        "range": "SatMode",
+        "attributes": ""
+      },
+      "text": "  op SatOf : ProjSpec ~> SatMode .\n"
+    },
+    {
+      "line": 20,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "projectionAt"
+        ],
+        "domain": [
+          "BlockProjSpec",
+          "Nat"
+        ],
+        "arrow": "~>",
+        "range": "ProjSpec",
+        "attributes": ""
+      },
+      "text": "  op projectionAt : BlockProjSpec Nat ~> ProjSpec .\n"
+    },
+    {
+      "line": 21,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "singletonLift"
+        ],
+        "domain": [
+          "ProjSpec"
+        ],
+        "arrow": "~>",
+        "range": "BlockProjSpec",
+        "attributes": ""
+      },
+      "text": "  op singletonLift : ProjSpec ~> BlockProjSpec .\n"
+    },
+    {
+      "line": 22,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "deterministic"
+        ],
+        "domain": [
+          "RoundMode"
+        ],
+        "arrow": "->",
+        "range": "Bool",
+        "attributes": ""
+      },
+      "text": "  op deterministic : RoundMode -> Bool .\n"
+    },
+    {
+      "line": 23,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "N",
+          "R"
+        ],
+        "sort": "Int"
+      },
+      "text": "  vars N R : Int .\n"
+    },
+    {
+      "line": 24,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "J",
+          "B"
+        ],
+        "sort": "Nat"
+      },
+      "text": "  vars J B : Nat .\n"
+    },
+    {
+      "line": 25,
+      "kind": "var",
+      "fields": {
+        "names": [
+          "RS"
+        ],
+        "sort": "RandomSeq"
+      },
+      "text": "  var RS : RandomSeq .\n"
+    },
+    {
+      "line": 26,
+      "kind": "var",
+      "fields": {
+        "names": [
+          "M"
+        ],
+        "sort": "RoundMode"
+      },
+      "text": "  var M : RoundMode .\n"
+    },
+    {
+      "line": 27,
+      "kind": "var",
+      "fields": {
+        "names": [
+          "S"
+        ],
+        "sort": "SatMode"
+      },
+      "text": "  var S : SatMode .\n"
+    },
+    {
+      "line": 28,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-random-negative-bits",
+        "lhs": "randomInRange(N, R)",
+        "rhs": "false",
+        "condition": "N < 0",
+        "attributes": "metadata \"clause=4.7.4; page=28\""
+      },
+      "text": "  ceq [p3109-random-negative-bits] : randomInRange(N, R) = false if N < 0 [metadata \"clause=4.7.4; page=28\"] .\n"
+    },
+    {
+      "line": 29,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-random-range",
+        "lhs": "randomInRange(N, R)",
+        "rhs": "(R >= 0 and R < 2 ^ N)",
+        "condition": "N >= 0",
+        "attributes": "metadata \"clause=4.7.4; page=28\""
+      },
+      "text": "  ceq [p3109-random-range] : randomInRange(N, R) = (R >= 0 and R < 2 ^ N) if N >= 0 [metadata \"clause=4.7.4; page=28\"] .\n"
+    },
+    {
+      "line": 30,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-projection-spec-001",
+        "lhs": "validRound(NearestTiesToEven)",
+        "rhs": "true",
+        "condition": null,
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  eq [p3109-projection-spec-001] : validRound(NearestTiesToEven) = true [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 31,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-projection-spec-002",
+        "lhs": "deterministic(NearestTiesToEven)",
+        "rhs": "true",
+        "condition": null,
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  eq [p3109-projection-spec-002] : deterministic(NearestTiesToEven) = true [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 32,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-projection-spec-003",
+        "lhs": "validRound(NearestTiesToAway)",
+        "rhs": "true",
+        "condition": null,
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  eq [p3109-projection-spec-003] : validRound(NearestTiesToAway) = true [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 33,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-projection-spec-004",
+        "lhs": "deterministic(NearestTiesToAway)",
+        "rhs": "true",
+        "condition": null,
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  eq [p3109-projection-spec-004] : deterministic(NearestTiesToAway) = true [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 34,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-projection-spec-005",
+        "lhs": "validRound(TowardPositive)",
+        "rhs": "true",
+        "condition": null,
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  eq [p3109-projection-spec-005] : validRound(TowardPositive) = true [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 35,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-projection-spec-006",
+        "lhs": "deterministic(TowardPositive)",
+        "rhs": "true",
+        "condition": null,
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  eq [p3109-projection-spec-006] : deterministic(TowardPositive) = true [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 36,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-projection-spec-007",
+        "lhs": "validRound(TowardNegative)",
+        "rhs": "true",
+        "condition": null,
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  eq [p3109-projection-spec-007] : validRound(TowardNegative) = true [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 37,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-projection-spec-008",
+        "lhs": "deterministic(TowardNegative)",
+        "rhs": "true",
+        "condition": null,
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  eq [p3109-projection-spec-008] : deterministic(TowardNegative) = true [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 38,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-projection-spec-009",
+        "lhs": "validRound(TowardZero)",
+        "rhs": "true",
+        "condition": null,
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  eq [p3109-projection-spec-009] : validRound(TowardZero) = true [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 39,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-projection-spec-010",
+        "lhs": "deterministic(TowardZero)",
+        "rhs": "true",
+        "condition": null,
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  eq [p3109-projection-spec-010] : deterministic(TowardZero) = true [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 40,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-projection-spec-011",
+        "lhs": "validRound(ToOdd)",
+        "rhs": "true",
+        "condition": null,
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  eq [p3109-projection-spec-011] : validRound(ToOdd) = true [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 41,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-projection-spec-012",
+        "lhs": "deterministic(ToOdd)",
+        "rhs": "true",
+        "condition": null,
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  eq [p3109-projection-spec-012] : deterministic(ToOdd) = true [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 42,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-projection-spec-013",
+        "lhs": "validRound(StochasticA(N, R))",
+        "rhs": "randomInRange(N, R)",
+        "condition": null,
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  eq [p3109-projection-spec-013] : validRound(StochasticA(N, R)) = randomInRange(N, R) [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 43,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-projection-spec-014",
+        "lhs": "deterministic(StochasticA(N, R))",
+        "rhs": "false",
+        "condition": null,
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  eq [p3109-projection-spec-014] : deterministic(StochasticA(N, R)) = false [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 44,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-projection-spec-015",
+        "lhs": "validBlockProjection(bproj(BlockStochasticA(N, RS), S), B)",
+        "rhs": "(B >= 1 and length(RS) == B and validRandoms(N, RS))",
+        "condition": null,
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  eq [p3109-projection-spec-015] : validBlockProjection(bproj(BlockStochasticA(N, RS), S), B) = (B >= 1 and length(RS) == B and validRandoms(N, RS)) [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 45,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-projection-spec-016",
+        "lhs": "projectionAt(bproj(BlockStochasticA(N, RS), S), J)",
+        "rhs": "proj(StochasticA(N, at(RS, J)), S)",
+        "condition": "validRandoms(N, RS) /\\ J < length(RS)",
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  ceq [p3109-projection-spec-016] : projectionAt(bproj(BlockStochasticA(N, RS), S), J) = proj(StochasticA(N, at(RS, J)), S) if validRandoms(N, RS) /\\ J < length(RS) [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 46,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-projection-spec-017",
+        "lhs": "singletonLift(proj(StochasticA(N, R), S))",
+        "rhs": "bproj(BlockStochasticA(N, rcons(R, rnil)), S)",
+        "condition": "validRound(StochasticA(N, R))",
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  ceq [p3109-projection-spec-017] : singletonLift(proj(StochasticA(N, R), S)) = bproj(BlockStochasticA(N, rcons(R, rnil)), S) if validRound(StochasticA(N, R)) [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 47,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-projection-spec-018",
+        "lhs": "validRound(StochasticB(N, R))",
+        "rhs": "randomInRange(N, R)",
+        "condition": null,
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  eq [p3109-projection-spec-018] : validRound(StochasticB(N, R)) = randomInRange(N, R) [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 48,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-projection-spec-019",
+        "lhs": "deterministic(StochasticB(N, R))",
+        "rhs": "false",
+        "condition": null,
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  eq [p3109-projection-spec-019] : deterministic(StochasticB(N, R)) = false [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 49,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-projection-spec-020",
+        "lhs": "validBlockProjection(bproj(BlockStochasticB(N, RS), S), B)",
+        "rhs": "(B >= 1 and length(RS) == B and validRandoms(N, RS))",
+        "condition": null,
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  eq [p3109-projection-spec-020] : validBlockProjection(bproj(BlockStochasticB(N, RS), S), B) = (B >= 1 and length(RS) == B and validRandoms(N, RS)) [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 50,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-projection-spec-021",
+        "lhs": "projectionAt(bproj(BlockStochasticB(N, RS), S), J)",
+        "rhs": "proj(StochasticB(N, at(RS, J)), S)",
+        "condition": "validRandoms(N, RS) /\\ J < length(RS)",
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  ceq [p3109-projection-spec-021] : projectionAt(bproj(BlockStochasticB(N, RS), S), J) = proj(StochasticB(N, at(RS, J)), S) if validRandoms(N, RS) /\\ J < length(RS) [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 51,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-projection-spec-022",
+        "lhs": "singletonLift(proj(StochasticB(N, R), S))",
+        "rhs": "bproj(BlockStochasticB(N, rcons(R, rnil)), S)",
+        "condition": "validRound(StochasticB(N, R))",
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  ceq [p3109-projection-spec-022] : singletonLift(proj(StochasticB(N, R), S)) = bproj(BlockStochasticB(N, rcons(R, rnil)), S) if validRound(StochasticB(N, R)) [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 52,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-projection-spec-023",
+        "lhs": "validRound(StochasticC(N, R))",
+        "rhs": "randomInRange(N, R)",
+        "condition": null,
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  eq [p3109-projection-spec-023] : validRound(StochasticC(N, R)) = randomInRange(N, R) [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 53,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-projection-spec-024",
+        "lhs": "deterministic(StochasticC(N, R))",
+        "rhs": "false",
+        "condition": null,
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  eq [p3109-projection-spec-024] : deterministic(StochasticC(N, R)) = false [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 54,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-projection-spec-025",
+        "lhs": "validBlockProjection(bproj(BlockStochasticC(N, RS), S), B)",
+        "rhs": "(B >= 1 and length(RS) == B and validRandoms(N, RS))",
+        "condition": null,
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  eq [p3109-projection-spec-025] : validBlockProjection(bproj(BlockStochasticC(N, RS), S), B) = (B >= 1 and length(RS) == B and validRandoms(N, RS)) [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 55,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-projection-spec-026",
+        "lhs": "projectionAt(bproj(BlockStochasticC(N, RS), S), J)",
+        "rhs": "proj(StochasticC(N, at(RS, J)), S)",
+        "condition": "validRandoms(N, RS) /\\ J < length(RS)",
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  ceq [p3109-projection-spec-026] : projectionAt(bproj(BlockStochasticC(N, RS), S), J) = proj(StochasticC(N, at(RS, J)), S) if validRandoms(N, RS) /\\ J < length(RS) [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 56,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-projection-spec-027",
+        "lhs": "singletonLift(proj(StochasticC(N, R), S))",
+        "rhs": "bproj(BlockStochasticC(N, rcons(R, rnil)), S)",
+        "condition": "validRound(StochasticC(N, R))",
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  ceq [p3109-projection-spec-027] : singletonLift(proj(StochasticC(N, R), S)) = bproj(BlockStochasticC(N, rcons(R, rnil)), S) if validRound(StochasticC(N, R)) [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 57,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-projection-spec-028",
+        "lhs": "validProjection(proj(M, S))",
+        "rhs": "validRound(M)",
+        "condition": null,
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  eq [p3109-projection-spec-028] : validProjection(proj(M, S)) = validRound(M) [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 58,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-projection-spec-029",
+        "lhs": "RoundOf(proj(M, S))",
+        "rhs": "M",
+        "condition": "validProjection(proj(M, S))",
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  ceq [p3109-projection-spec-029] : RoundOf(proj(M, S)) = M if validProjection(proj(M, S)) [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 59,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-projection-spec-030",
+        "lhs": "SatOf(proj(M, S))",
+        "rhs": "S",
+        "condition": "validProjection(proj(M, S))",
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  ceq [p3109-projection-spec-030] : SatOf(proj(M, S)) = S if validProjection(proj(M, S)) [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 60,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-projection-spec-031",
+        "lhs": "validRandoms(N, rnil)",
+        "rhs": "(N >= 0)",
+        "condition": null,
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  eq [p3109-projection-spec-031] : validRandoms(N, rnil) = (N >= 0) [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 61,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-projection-spec-032",
+        "lhs": "validRandoms(N, rcons(R, RS))",
+        "rhs": "(randomInRange(N, R) and validRandoms(N, RS))",
+        "condition": null,
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  eq [p3109-projection-spec-032] : validRandoms(N, rcons(R, RS)) = (randomInRange(N, R) and validRandoms(N, RS)) [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 62,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-projection-spec-033",
+        "lhs": "validBlockProjection(bproj(M, S), B)",
+        "rhs": "(B >= 1 and validRound(M) and deterministic(M))",
+        "condition": null,
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  eq [p3109-projection-spec-033] : validBlockProjection(bproj(M, S), B) = (B >= 1 and validRound(M) and deterministic(M)) [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 63,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-projection-spec-034",
+        "lhs": "projectionAt(bproj(M, S), J)",
+        "rhs": "proj(M, S)",
+        "condition": "validRound(M) /\\ deterministic(M)",
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  ceq [p3109-projection-spec-034] : projectionAt(bproj(M, S), J) = proj(M, S) if validRound(M) /\\ deterministic(M) [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 64,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-projection-spec-035",
+        "lhs": "singletonLift(proj(M, S))",
+        "rhs": "bproj(M, S)",
+        "condition": "validRound(M) /\\ deterministic(M)",
+        "attributes": "metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\""
+      },
+      "text": "  ceq [p3109-projection-spec-035] : singletonLift(proj(M, S)) = bproj(M, S) if validRound(M) /\\ deterministic(M) [metadata \"clause=4.2; 4.7.4; 4.15; 5.3; 5.8; page=18; 27-28; 58; 61; 70\"] .\n"
+    },
+    {
+      "line": 65,
+      "kind": "endfm",
+      "fields": {},
+      "text": "endfm\n"
+    }
+  ]
+}

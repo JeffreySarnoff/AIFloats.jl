@@ -1,0 +1,118 @@
+version: 1
+path: tests/support.maude
+sha256: 0ae214bc8a84a00c8c7563252b62f0523220f3bf67c3f38edacab52289721490
+type: maude
+records:
+- line: 1
+  kind: comment
+  fields: {}
+  text: |
+    --- Source: P3109/D1 implementation test harness, printed page n/a.
+- line: 2
+  kind: fmod
+  fields:
+    name: P3109-TEST-SUPPORT
+    parameters: []
+  text: |
+    fmod P3109-TEST-SUPPORT is
+- line: 3
+  kind: protecting
+  fields:
+    expression: STRING
+  text: |2
+      protecting STRING .
+- line: 4
+  kind: protecting
+  fields:
+    expression: NAT
+  text: |2
+      protecting NAT .
+- line: 5
+  kind: sort
+  fields:
+    names:
+    - TestResult
+  text: |2
+      sort TestResult .
+- line: 6
+  kind: op
+  fields:
+    names:
+    - suiteComplete
+    domain:
+    - Nat
+    arrow: ->
+    range: TestResult
+    attributes: ctor
+  text: |2
+      op suiteComplete : Nat -> TestResult [ctor] .
+- line: 7
+  kind: op
+  fields:
+    names:
+    - passed
+    domain:
+    - String
+    arrow: ->
+    range: TestResult
+    attributes: ctor
+  text: |2
+      op passed : String -> TestResult [ctor] .
+- line: 8
+  kind: op
+  fields:
+    names:
+    - failed
+    domain:
+    - String
+    arrow: ->
+    range: TestResult
+    attributes: ctor
+  text: |2
+      op failed : String -> TestResult [ctor] .
+- line: 9
+  kind: op
+  fields:
+    names:
+    - check
+    domain:
+    - String
+    - Bool
+    arrow: ->
+    range: TestResult
+    attributes: ''
+  text: |2
+      op check : String Bool -> TestResult .
+- line: 10
+  kind: var
+  fields:
+    names:
+    - ID
+    sort: String
+  text: |2
+      var ID : String .
+- line: 11
+  kind: eq
+  fields:
+    label: p3109-support-001
+    lhs: check(ID, true)
+    rhs: passed(ID)
+    condition: null
+    attributes: metadata "clause=implementation test harness; page=n/a"
+  text: |2
+      eq [p3109-support-001] : check(ID, true) = passed(ID) [metadata "clause=implementation test harness; page=n/a"] .
+- line: 12
+  kind: eq
+  fields:
+    label: p3109-support-002
+    lhs: check(ID, false)
+    rhs: failed(ID)
+    condition: null
+    attributes: metadata "clause=implementation test harness; page=n/a"
+  text: |2
+      eq [p3109-support-002] : check(ID, false) = failed(ID) [metadata "clause=implementation test harness; page=n/a"] .
+- line: 13
+  kind: endfm
+  fields: {}
+  text: |
+    endfm

@@ -1,0 +1,269 @@
+version: 1
+path: lib/rounding.maude
+sha256: 08b812d854b6cdccabbf25eb8470e8a955f88aa5a0225398af189ecf997d1e22
+type: maude
+records:
+- line: 1
+  kind: comment
+  fields: {}
+  text: |
+    --- Source: P3109/D1 4.7.4, printed page 27-28.
+- line: 2
+  kind: fmod
+  fields:
+    name: P3109-ROUND
+    parameters: []
+  text: |
+    fmod P3109-ROUND is
+- line: 3
+  kind: including
+  fields:
+    expression: P3109-RATIONAL-MATH
+  text: |2
+      including P3109-RATIONAL-MATH .
+- line: 4
+  kind: including
+  fields:
+    expression: P3109-PROJSPEC
+  text: |2
+      including P3109-PROJSPEC .
+- line: 5
+  kind: op
+  fields:
+    names:
+    - roundToPrecision
+    domain:
+    - Int
+    - Int
+    - RoundMode
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op roundToPrecision : Int Int RoundMode XReal ~> XReal .
+- line: 6
+  kind: op
+  fields:
+    names:
+    - roundAway
+    domain:
+    - RoundMode
+    - Rat
+    - Rat
+    - Bool
+    arrow: ->
+    range: Bool
+    attributes: ''
+  text: |2
+      op roundAway : RoundMode Rat Rat Bool -> Bool .
+- line: 7
+  kind: op
+  fields:
+    names:
+    - roundScaled
+    domain:
+    - Int
+    - Int
+    - RoundMode
+    - Rat
+    - Int
+    - Rat
+    arrow: ->
+    range: Rat
+    attributes: ''
+  text: |2
+      op roundScaled : Int Int RoundMode Rat Int Rat -> Rat .
+- line: 8
+  kind: vars
+  fields:
+    names:
+    - P
+    - B
+    - Q
+    - N
+    - R
+    sort: Int
+  text: |2
+      vars P B Q N R : Int .
+- line: 9
+  kind: vars
+  fields:
+    names:
+    - X
+    - T
+    - V
+    sort: Rat
+  text: |2
+      vars X T V : Rat .
+- line: 10
+  kind: var
+  fields:
+    names:
+    - I
+    sort: Infinity
+  text: |2
+      var I : Infinity .
+- line: 11
+  kind: var
+  fields:
+    names:
+    - M
+    sort: RoundMode
+  text: |2
+      var M : RoundMode .
+- line: 12
+  kind: var
+  fields:
+    names:
+    - E
+    sort: Bool
+  text: |2
+      var E : Bool .
+- line: 13
+  kind: ceq
+  fields:
+    label: p3109-rounding-001
+    lhs: roundToPrecision(P, B, M, nan)
+    rhs: nan
+    condition: P >= 1 /\ B >= 1 /\ validRound(M)
+    attributes: metadata "clause=4.7.4; page=27-28"
+  text: |2
+      ceq [p3109-rounding-001] : roundToPrecision(P, B, M, nan) = nan if P >= 1 /\ B >= 1 /\ validRound(M) [metadata "clause=4.7.4; page=27-28"] .
+- line: 14
+  kind: ceq
+  fields:
+    label: p3109-rounding-002
+    lhs: roundToPrecision(P, B, M, I)
+    rhs: I
+    condition: P >= 1 /\ B >= 1 /\ validRound(M)
+    attributes: metadata "clause=4.7.4; page=27-28"
+  text: |2
+      ceq [p3109-rounding-002] : roundToPrecision(P, B, M, I) = I if P >= 1 /\ B >= 1 /\ validRound(M) [metadata "clause=4.7.4; page=27-28"] .
+- line: 15
+  kind: ceq
+  fields:
+    label: p3109-rounding-003
+    lhs: roundToPrecision(P, B, M, fin(0))
+    rhs: fin(0)
+    condition: P >= 1 /\ B >= 1 /\ validRound(M)
+    attributes: metadata "clause=4.7.4; page=27-28"
+  text: |2
+      ceq [p3109-rounding-003] : roundToPrecision(P, B, M, fin(0)) = fin(0) if P >= 1 /\ B >= 1 /\ validRound(M) [metadata "clause=4.7.4; page=27-28"] .
+- line: 16
+  kind: ceq
+  fields:
+    label: p3109-rounding-004
+    lhs: roundToPrecision(P, B, M, fin(X))
+    rhs: fin(roundScaled(P, B, M, X, Q, abs(X) * pow2(- Q)))
+    condition: P >= 1 /\ B >= 1 /\ validRound(M) /\ X =/= 0 /\ Q := (max(floorLog2(abs(X)), 1 - B) - P)
+      + 1
+    attributes: metadata "clause=4.7.4; page=27-28"
+  text: |2
+      ceq [p3109-rounding-004] : roundToPrecision(P, B, M, fin(X)) = fin(roundScaled(P, B, M, X, Q, abs(X) * pow2(- Q))) if P >= 1 /\ B >= 1 /\ validRound(M) /\ X =/= 0 /\ Q := (max(floorLog2(abs(X)), 1 - B) - P) + 1 [metadata "clause=4.7.4; page=27-28"] .
+- line: 17
+  kind: eq
+  fields:
+    label: p3109-rounding-005
+    lhs: roundScaled(P, B, M, X, Q, T)
+    rhs: xSign(fin(X)) * (floor(T) + (if roundAway(M, X, T - floor(T), if P > 1 then even(floor(T)) else
+      floor(T) == 0 or even(Q + B) fi) then 1 else 0 fi)) * pow2(Q)
+    condition: null
+    attributes: metadata "clause=4.7.4; page=27-28"
+  text: |2
+      eq [p3109-rounding-005] : roundScaled(P, B, M, X, Q, T) = xSign(fin(X)) * (floor(T) + (if roundAway(M, X, T - floor(T), if P > 1 then even(floor(T)) else floor(T) == 0 or even(Q + B) fi) then 1 else 0 fi)) * pow2(Q) [metadata "clause=4.7.4; page=27-28"] .
+- line: 18
+  kind: eq
+  fields:
+    label: p3109-rounding-006
+    lhs: roundAway(TowardZero, X, V, E)
+    rhs: 'false'
+    condition: null
+    attributes: metadata "clause=4.7.4; page=27-28"
+  text: |2
+      eq [p3109-rounding-006] : roundAway(TowardZero, X, V, E) = false [metadata "clause=4.7.4; page=27-28"] .
+- line: 19
+  kind: eq
+  fields:
+    label: p3109-rounding-007
+    lhs: roundAway(TowardPositive, X, V, E)
+    rhs: (V > 0 and X > 0)
+    condition: null
+    attributes: metadata "clause=4.7.4; page=27-28"
+  text: |2
+      eq [p3109-rounding-007] : roundAway(TowardPositive, X, V, E) = (V > 0 and X > 0) [metadata "clause=4.7.4; page=27-28"] .
+- line: 20
+  kind: eq
+  fields:
+    label: p3109-rounding-008
+    lhs: roundAway(TowardNegative, X, V, E)
+    rhs: (V > 0 and X < 0)
+    condition: null
+    attributes: metadata "clause=4.7.4; page=27-28"
+  text: |2
+      eq [p3109-rounding-008] : roundAway(TowardNegative, X, V, E) = (V > 0 and X < 0) [metadata "clause=4.7.4; page=27-28"] .
+- line: 21
+  kind: eq
+  fields:
+    label: p3109-rounding-009
+    lhs: roundAway(NearestTiesToAway, X, V, E)
+    rhs: (V >= 1/2)
+    condition: null
+    attributes: metadata "clause=4.7.4; page=27-28"
+  text: |2
+      eq [p3109-rounding-009] : roundAway(NearestTiesToAway, X, V, E) = (V >= 1/2) [metadata "clause=4.7.4; page=27-28"] .
+- line: 22
+  kind: eq
+  fields:
+    label: p3109-rounding-010
+    lhs: roundAway(NearestTiesToEven, X, V, E)
+    rhs: (V > 1/2 or (V == 1/2 and not E))
+    condition: null
+    attributes: metadata "clause=4.7.4; page=27-28"
+  text: |2
+      eq [p3109-rounding-010] : roundAway(NearestTiesToEven, X, V, E) = (V > 1/2 or (V == 1/2 and not E)) [metadata "clause=4.7.4; page=27-28"] .
+- line: 23
+  kind: eq
+  fields:
+    label: p3109-rounding-011
+    lhs: roundAway(ToOdd, X, V, E)
+    rhs: (V > 0 and E)
+    condition: null
+    attributes: metadata "clause=4.7.4; page=27-28"
+  text: |2
+      eq [p3109-rounding-011] : roundAway(ToOdd, X, V, E) = (V > 0 and E) [metadata "clause=4.7.4; page=27-28"] .
+- line: 24
+  kind: eq
+  fields:
+    label: p3109-rounding-012
+    lhs: roundAway(StochasticA(N, R), X, V, E)
+    rhs: (floor(V * pow2(N)) + R >= pow2(N))
+    condition: null
+    attributes: metadata "clause=4.7.4; page=27-28"
+  text: |2
+      eq [p3109-rounding-012] : roundAway(StochasticA(N, R), X, V, E) = (floor(V * pow2(N)) + R >= pow2(N)) [metadata "clause=4.7.4; page=27-28"] .
+- line: 25
+  kind: eq
+  fields:
+    label: p3109-rounding-013
+    lhs: roundAway(StochasticB(N, R), X, V, E)
+    rhs: (floor(V * pow2(N + 1)) + 2 * R + 1 >= pow2(N + 1))
+    condition: null
+    attributes: metadata "clause=4.7.4; page=27-28"
+  text: |2
+      eq [p3109-rounding-013] : roundAway(StochasticB(N, R), X, V, E) = (floor(V * pow2(N + 1)) + 2 * R + 1 >= pow2(N + 1)) [metadata "clause=4.7.4; page=27-28"] .
+- line: 26
+  kind: eq
+  fields:
+    label: p3109-rounding-014
+    lhs: roundAway(StochasticC(N, R), X, V, E)
+    rhs: (nearestEvenInteger(V * pow2(N)) + R >= pow2(N))
+    condition: null
+    attributes: metadata "clause=4.7.4; page=27-28"
+  text: |2
+      eq [p3109-rounding-014] : roundAway(StochasticC(N, R), X, V, E) = (nearestEvenInteger(V * pow2(N)) + R >= pow2(N)) [metadata "clause=4.7.4; page=27-28"] .
+- line: 27
+  kind: endfm
+  fields: {}
+  text: |
+    endfm

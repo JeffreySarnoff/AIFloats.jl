@@ -1,0 +1,19 @@
+action	state	prerequisites	purpose	inputs_changed_files_and_evidence	review	exception_or_blocker	next_step
+A00	verified	none	inputs and instructions	inventory/inputs.toml; evidence/runtime.toml	evidence/reviews.md	none	none; maintain on future changes
+A01	verified	A00	source accounting	inventory/files.tsv; inventory/operations.tsv; inventory/rules.tsv	evidence/reviews.md	SOURCE-CLEANUP	none; maintain on future changes
+A02	verified	A01	fresh Maude baseline	evidence/runs/maude-runs.json	evidence/reviews.md	BASELINE-PLAN-HASH; RELEASE-EVIDENCE	none; maintain on future changes
+A03	verified	A02	runtime and packages	evidence/runtime.toml; inventory/dependencies.toml; Manifest.toml	evidence/reviews.md	BASELINE-PLAN-HASH; RELEASE-EVIDENCE	none; maintain on future changes
+A04	verified	A03	exact values and boundaries	test/test_interfaces.jl; src/values.jl; src/formats.jl; src/policies.jl	evidence/reviews.md	none	none; maintain on future changes
+A05	verified	A04	fixture transport	test/support/source_cases.jl; test/vectors/manifest.json; inventory/cases.tsv	evidence/reviews.md	SOURCE-CLEANUP	none; maintain on future changes
+A06	verified	A05	codec and metadata	src/codec.jl; evidence/runs/julia-cases.json	evidence/reviews.md	none	none; maintain on future changes
+A07	verified	A06	projection	src/projection.jl; evidence/runs/julia-cases.json	evidence/reviews.md	none	none; maintain on future changes
+A08	verified	A07	predicates and ordering	src/operations.jl; evidence/runs/julia-cases.json	evidence/reviews.md	none	none; maintain on future changes
+A09	verified	A08	scalar arithmetic	src/arithmetic.jl; src/generated_operations.jl	evidence/reviews.md	none	none; maintain on future changes
+A10	verified	A09	blocks and scaled	src/operations.jl; evidence/runs/julia-cases.json	evidence/reviews.md	none	none; maintain on future changes
+A11	verified	A10	symbolic	src/symbolic.jl; evidence/runs/julia-cases.json	evidence/reviews.md	none	none; maintain on future changes
+A12	verified	A11	contracts	src/contracts.jl; evidence/obligations.tsv	evidence/reviews.md	none	none; maintain on future changes
+A13	verified	A12	conformance	src/conformance.jl; src/arity_tables.jl	evidence/reviews.md	none	none; maintain on future changes
+A14	verified	A13	proof accounting	evidence/obligations.tsv; evidence/source-obligations.tsv	evidence/reviews.md	none	none; maintain on future changes
+A15	verified	A14	tools and examples	tools/README.md; README.md; evidence/runs/audit.txt	evidence/reviews.md	SOURCE-CLEANUP	none; maintain on future changes
+A16	verified	A15	semantic and idiom review	evidence/reviews.md; evidence/runs/pkg-test.txt; evidence/runs/benchmarks.toml	evidence/reviews.md	none	none; maintain on future changes
+A17	verified	A16	final validation	checkpoint.md; evidence/runs/	evidence/reviews.md	BASELINE-PLAN-HASH; RELEASE-EVIDENCE	none for conversion; preserve documented stable-release/backend/proof obligations

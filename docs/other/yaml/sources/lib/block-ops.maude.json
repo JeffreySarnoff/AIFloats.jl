@@ -1,0 +1,535 @@
+{
+  "version": 1,
+  "path": "lib/block-ops.maude",
+  "sha256": "28a6eef0f2367095f159f248cdeec0e17d37cae9372bdbd698dd792923d4685d",
+  "type": "maude",
+  "records": [
+    {
+      "line": 1,
+      "kind": "comment",
+      "fields": {},
+      "text": "--- Source: P3109/D1 5.5-5.6, printed page 64-68.\n"
+    },
+    {
+      "line": 2,
+      "kind": "fmod",
+      "fields": {
+        "name": "P3109-BLOCK",
+        "parameters": []
+      },
+      "text": "fmod P3109-BLOCK is\n"
+    },
+    {
+      "line": 3,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-BLOCK-CORE"
+      },
+      "text": "  including P3109-BLOCK-CORE .\n"
+    },
+    {
+      "line": 4,
+      "kind": "including",
+      "fields": {
+        "expression": "P3109-OMEGA-EXTREMA"
+      },
+      "text": "  including P3109-OMEGA-EXTREMA .\n"
+    },
+    {
+      "line": 5,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "ConvertFromBlock"
+        ],
+        "domain": [
+          "Nat",
+          "Format",
+          "Format",
+          "Format",
+          "BlockProjSpec",
+          "Int",
+          "CodeSeq"
+        ],
+        "arrow": "~>",
+        "range": "CodeSeq",
+        "attributes": ""
+      },
+      "text": "  op ConvertFromBlock : Nat Format Format Format BlockProjSpec Int CodeSeq ~> CodeSeq .\n"
+    },
+    {
+      "line": 6,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "ConvertToBlock"
+        ],
+        "domain": [
+          "Nat",
+          "Format",
+          "Format",
+          "Format",
+          "BlockProjSpec",
+          "CodeSeq",
+          "Int"
+        ],
+        "arrow": "~>",
+        "range": "CodeSeq",
+        "attributes": ""
+      },
+      "text": "  op ConvertToBlock : Nat Format Format Format BlockProjSpec CodeSeq Int ~> CodeSeq .\n"
+    },
+    {
+      "line": 7,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "ConvertToBlockMaxAbsFinite"
+        ],
+        "domain": [
+          "Nat",
+          "Format",
+          "Format",
+          "Format",
+          "ProjSpec",
+          "BlockProjSpec",
+          "CodeSeq"
+        ],
+        "arrow": "~>",
+        "range": "Block",
+        "attributes": ""
+      },
+      "text": "  op ConvertToBlockMaxAbsFinite : Nat Format Format Format ProjSpec BlockProjSpec CodeSeq ~> Block .\n"
+    },
+    {
+      "line": 8,
+      "kind": "ops",
+      "fields": {
+        "names": [
+          "BlockReduceAdd",
+          "BlockReduceMultiply"
+        ],
+        "domain": [
+          "Nat",
+          "Format",
+          "Format",
+          "Format",
+          "ProjSpec",
+          "Int",
+          "CodeSeq"
+        ],
+        "arrow": "~>",
+        "range": "Nat",
+        "attributes": ""
+      },
+      "text": "  ops BlockReduceAdd BlockReduceMultiply : Nat Format Format Format ProjSpec Int CodeSeq ~> Nat .\n"
+    },
+    {
+      "line": 9,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "BlockDotProduct"
+        ],
+        "domain": [
+          "Nat",
+          "Format",
+          "Format",
+          "Format",
+          "Format",
+          "Format",
+          "ProjSpec",
+          "Int",
+          "CodeSeq",
+          "Int",
+          "CodeSeq"
+        ],
+        "arrow": "~>",
+        "range": "Nat",
+        "attributes": ""
+      },
+      "text": "  op BlockDotProduct : Nat Format Format Format Format Format ProjSpec Int CodeSeq Int CodeSeq ~> Nat .\n"
+    },
+    {
+      "line": 10,
+      "kind": "ops",
+      "fields": {
+        "names": [
+          "foldAdd",
+          "foldMultiply",
+          "foldMaximumFinite"
+        ],
+        "domain": [
+          "XReal",
+          "XSeq"
+        ],
+        "arrow": "~>",
+        "range": "XReal",
+        "attributes": ""
+      },
+      "text": "  ops foldAdd foldMultiply foldMaximumFinite : XReal XSeq ~> XReal .\n"
+    },
+    {
+      "line": 11,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "absElements"
+        ],
+        "domain": [
+          "XSeq"
+        ],
+        "arrow": "~>",
+        "range": "XSeq",
+        "attributes": ""
+      },
+      "text": "  op absElements : XSeq ~> XSeq .\n"
+    },
+    {
+      "line": 12,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "pairProducts"
+        ],
+        "domain": [
+          "XSeq",
+          "XSeq"
+        ],
+        "arrow": "~>",
+        "range": "XSeq",
+        "attributes": ""
+      },
+      "text": "  op pairProducts : XSeq XSeq ~> XSeq .\n"
+    },
+    {
+      "line": 13,
+      "kind": "op",
+      "fields": {
+        "names": [
+          "computedBlock"
+        ],
+        "domain": [
+          "Nat",
+          "Format",
+          "Format",
+          "BlockProjSpec",
+          "Int",
+          "XSeq"
+        ],
+        "arrow": "~>",
+        "range": "Block",
+        "attributes": ""
+      },
+      "text": "  op computedBlock : Nat Format Format BlockProjSpec Int XSeq ~> Block .\n"
+    },
+    {
+      "line": 14,
+      "kind": "var",
+      "fields": {
+        "names": [
+          "B"
+        ],
+        "sort": "Nat"
+      },
+      "text": "  var B : Nat .\n"
+    },
+    {
+      "line": 15,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "FS",
+          "FX",
+          "FY",
+          "FSY",
+          "FR"
+        ],
+        "sort": "Format"
+      },
+      "text": "  vars FS FX FY FSY FR : Format .\n"
+    },
+    {
+      "line": 16,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "S",
+          "T"
+        ],
+        "sort": "Int"
+      },
+      "text": "  vars S T : Int .\n"
+    },
+    {
+      "line": 17,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "CS",
+          "DS"
+        ],
+        "sort": "CodeSeq"
+      },
+      "text": "  vars CS DS : CodeSeq .\n"
+    },
+    {
+      "line": 18,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "XS",
+          "YS"
+        ],
+        "sort": "XSeq"
+      },
+      "text": "  vars XS YS : XSeq .\n"
+    },
+    {
+      "line": 19,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "X",
+          "Y",
+          "A"
+        ],
+        "sort": "XReal"
+      },
+      "text": "  vars X Y A : XReal .\n"
+    },
+    {
+      "line": 20,
+      "kind": "vars",
+      "fields": {
+        "names": [
+          "PS",
+          "QS"
+        ],
+        "sort": "ProjSpec"
+      },
+      "text": "  vars PS QS : ProjSpec .\n"
+    },
+    {
+      "line": 21,
+      "kind": "var",
+      "fields": {
+        "names": [
+          "BP"
+        ],
+        "sort": "BlockProjSpec"
+      },
+      "text": "  var BP : BlockProjSpec .\n"
+    },
+    {
+      "line": 22,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-block-ops-001",
+        "lhs": "foldAdd(A, xnil)",
+        "rhs": "A",
+        "condition": null,
+        "attributes": "metadata \"clause=5.5-5.6; page=64-68\""
+      },
+      "text": "  eq [p3109-block-ops-001] :\n    foldAdd(A, xnil)\n    = A\n    [metadata \"clause=5.5-5.6; page=64-68\"] .\n"
+    },
+    {
+      "line": 26,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-block-ops-002",
+        "lhs": "foldAdd(A, xcons(X, XS))",
+        "rhs": "foldAdd(omegaAdd(A, X), XS)",
+        "condition": null,
+        "attributes": "metadata \"clause=5.5-5.6; page=64-68\""
+      },
+      "text": "  eq [p3109-block-ops-002] :\n    foldAdd(A, xcons(X, XS))\n    = foldAdd(omegaAdd(A, X), XS)\n    [metadata \"clause=5.5-5.6; page=64-68\"] .\n"
+    },
+    {
+      "line": 30,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-block-ops-003",
+        "lhs": "foldMultiply(A, xnil)",
+        "rhs": "A",
+        "condition": null,
+        "attributes": "metadata \"clause=5.5-5.6; page=64-68\""
+      },
+      "text": "  eq [p3109-block-ops-003] :\n    foldMultiply(A, xnil)\n    = A\n    [metadata \"clause=5.5-5.6; page=64-68\"] .\n"
+    },
+    {
+      "line": 34,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-block-ops-004",
+        "lhs": "foldMultiply(A, xcons(X, XS))",
+        "rhs": "foldMultiply(omegaMultiply(A, X), XS)",
+        "condition": null,
+        "attributes": "metadata \"clause=5.5-5.6; page=64-68\""
+      },
+      "text": "  eq [p3109-block-ops-004] :\n    foldMultiply(A, xcons(X, XS))\n    = foldMultiply(omegaMultiply(A, X), XS)\n    [metadata \"clause=5.5-5.6; page=64-68\"] .\n"
+    },
+    {
+      "line": 38,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-block-ops-005",
+        "lhs": "foldMaximumFinite(A, xnil)",
+        "rhs": "A",
+        "condition": null,
+        "attributes": "metadata \"clause=5.5-5.6; page=64-68\""
+      },
+      "text": "  eq [p3109-block-ops-005] :\n    foldMaximumFinite(A, xnil)\n    = A\n    [metadata \"clause=5.5-5.6; page=64-68\"] .\n"
+    },
+    {
+      "line": 42,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-block-ops-006",
+        "lhs": "foldMaximumFinite(A, xcons(X, XS))",
+        "rhs": "foldMaximumFinite(omegaMaximumFinite(A, X), XS)",
+        "condition": null,
+        "attributes": "metadata \"clause=5.5-5.6; page=64-68\""
+      },
+      "text": "  eq [p3109-block-ops-006] :\n    foldMaximumFinite(A, xcons(X, XS))\n    = foldMaximumFinite(omegaMaximumFinite(A, X), XS)\n    [metadata \"clause=5.5-5.6; page=64-68\"] .\n"
+    },
+    {
+      "line": 46,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-block-ops-007",
+        "lhs": "absElements(xnil)",
+        "rhs": "xnil",
+        "condition": null,
+        "attributes": "metadata \"clause=5.5-5.6; page=64-68\""
+      },
+      "text": "  eq [p3109-block-ops-007] :\n    absElements(xnil)\n    = xnil\n    [metadata \"clause=5.5-5.6; page=64-68\"] .\n"
+    },
+    {
+      "line": 50,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-block-ops-008",
+        "lhs": "absElements(xcons(X, XS))",
+        "rhs": "xcons(omegaAbs(X), absElements(XS))",
+        "condition": null,
+        "attributes": "metadata \"clause=5.5-5.6; page=64-68\""
+      },
+      "text": "  eq [p3109-block-ops-008] :\n    absElements(xcons(X, XS))\n    = xcons(omegaAbs(X), absElements(XS))\n    [metadata \"clause=5.5-5.6; page=64-68\"] .\n"
+    },
+    {
+      "line": 54,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-block-ops-009",
+        "lhs": "pairProducts(xnil, xnil)",
+        "rhs": "xnil",
+        "condition": null,
+        "attributes": "metadata \"clause=5.5-5.6; page=64-68\""
+      },
+      "text": "  eq [p3109-block-ops-009] :\n    pairProducts(xnil, xnil)\n    = xnil\n    [metadata \"clause=5.5-5.6; page=64-68\"] .\n"
+    },
+    {
+      "line": 58,
+      "kind": "eq",
+      "fields": {
+        "label": "p3109-block-ops-010",
+        "lhs": "pairProducts(xcons(X, XS), xcons(Y, YS))",
+        "rhs": "xcons(omegaMultiply(X, Y), pairProducts(XS, YS))",
+        "condition": null,
+        "attributes": "metadata \"clause=5.5-5.6; page=64-68\""
+      },
+      "text": "  eq [p3109-block-ops-010] :\n    pairProducts(xcons(X, XS), xcons(Y, YS))\n    = xcons(omegaMultiply(X, Y), pairProducts(XS, YS))\n    [metadata \"clause=5.5-5.6; page=64-68\"] .\n"
+    },
+    {
+      "line": 62,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-block-ops-011",
+        "lhs": "ConvertFromBlock(B, FS, FX, FR, BP, S, CS)",
+        "rhs": "projectUnscaled(FR, BP, blockDecode(B, FS, FX, S, CS), 0)",
+        "condition": "validBlock(B, FS, FX, S, CS) /\\ validFormat(FR) /\\ validBlockProjection(BP, B)",
+        "attributes": "metadata \"clause=5.5-5.6; page=64-68\""
+      },
+      "text": "  ceq [p3109-block-ops-011] :\n    ConvertFromBlock(B, FS, FX, FR, BP, S, CS)\n    = projectUnscaled(FR, BP, blockDecode(B, FS, FX, S, CS), 0)\n    if validBlock(B, FS, FX, S, CS) /\\ validFormat(FR) /\\ validBlockProjection(BP, B)\n    [metadata \"clause=5.5-5.6; page=64-68\"] .\n"
+    },
+    {
+      "line": 67,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-block-ops-012",
+        "lhs": "ConvertToBlock(B, FX, FS, FR, BP, CS, S)",
+        "rhs": "blockProject(B, FS, FR, BP, S, decodeElements(FX, CS))",
+        "condition": "B >= 1 /\\ length(CS) == B /\\ validCodes(FX, CS) /\\ validCode(FS, S) /\\ validFormat(FR) /\\ validBlockProjection(BP, B)",
+        "attributes": "metadata \"clause=5.5-5.6; page=64-68\""
+      },
+      "text": "  ceq [p3109-block-ops-012] :\n    ConvertToBlock(B, FX, FS, FR, BP, CS, S)\n    = blockProject(B, FS, FR, BP, S, decodeElements(FX, CS))\n    if B >= 1 /\\ length(CS) == B /\\ validCodes(FX, CS) /\\ validCode(FS, S) /\\ validFormat(FR) /\\\n    validBlockProjection(BP, B)\n    [metadata \"clause=5.5-5.6; page=64-68\"] .\n"
+    },
+    {
+      "line": 73,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-block-ops-013",
+        "lhs": "ConvertToBlockMaxAbsFinite(B, FX, FS, FR, PS, BP, CS)",
+        "rhs": "computedBlock(B, FS, FR, BP, project(FS, PS, foldMaximumFinite(nan, absElements(decodeElements(FX, CS)))) , decodeElements(FX, CS))",
+        "condition": "B >= 1 /\\ length(CS) == B /\\ validCodes(FX, CS) /\\ validFormat(FS) /\\ validFormat(FR) /\\ validProjection(PS) /\\ validBlockProjection(BP, B)",
+        "attributes": "metadata \"clause=5.5-5.6; page=64-68\""
+      },
+      "text": "  ceq [p3109-block-ops-013] :\n    ConvertToBlockMaxAbsFinite(B, FX, FS, FR, PS, BP, CS)\n    = computedBlock(B, FS, FR, BP, project(FS, PS, foldMaximumFinite(nan,\n    absElements(decodeElements(FX, CS)))) , decodeElements(FX, CS))\n    if B >= 1 /\\ length(CS) == B /\\ validCodes(FX, CS) /\\ validFormat(FS) /\\ validFormat(FR) /\\\n    validProjection(PS) /\\ validBlockProjection(BP, B)\n    [metadata \"clause=5.5-5.6; page=64-68\"] .\n"
+    },
+    {
+      "line": 80,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-block-ops-014",
+        "lhs": "computedBlock(B, FS, FR, BP, S, XS)",
+        "rhs": "block(S, blockProject(B, FS, FR, BP, S, XS))",
+        "condition": "validCode(FS, S)",
+        "attributes": "metadata \"clause=5.5-5.6; page=64-68\""
+      },
+      "text": "  ceq [p3109-block-ops-014] :\n    computedBlock(B, FS, FR, BP, S, XS)\n    = block(S, blockProject(B, FS, FR, BP, S, XS))\n    if validCode(FS, S)\n    [metadata \"clause=5.5-5.6; page=64-68\"] .\n"
+    },
+    {
+      "line": 85,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-block-ops-015",
+        "lhs": "BlockReduceAdd(B, FS, FX, FR, PS, S, CS)",
+        "rhs": "project(FR, PS, foldAdd(fin(0), blockDecode(B, FS, FX, S, CS)))",
+        "condition": "validBlock(B, FS, FX, S, CS) /\\ validFormat(FR) /\\ validProjection(PS)",
+        "attributes": "metadata \"clause=5.5-5.6; page=64-68\""
+      },
+      "text": "  ceq [p3109-block-ops-015] :\n    BlockReduceAdd(B, FS, FX, FR, PS, S, CS)\n    = project(FR, PS, foldAdd(fin(0), blockDecode(B, FS, FX, S, CS)))\n    if validBlock(B, FS, FX, S, CS) /\\ validFormat(FR) /\\ validProjection(PS)\n    [metadata \"clause=5.5-5.6; page=64-68\"] .\n"
+    },
+    {
+      "line": 90,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-block-ops-016",
+        "lhs": "BlockReduceMultiply(B, FS, FX, FR, PS, S, CS)",
+        "rhs": "project(FR, PS, foldMultiply(fin(1), blockDecode(B, FS, FX, S, CS)))",
+        "condition": "validBlock(B, FS, FX, S, CS) /\\ validFormat(FR) /\\ validProjection(PS)",
+        "attributes": "metadata \"clause=5.5-5.6; page=64-68\""
+      },
+      "text": "  ceq [p3109-block-ops-016] :\n    BlockReduceMultiply(B, FS, FX, FR, PS, S, CS)\n    = project(FR, PS, foldMultiply(fin(1), blockDecode(B, FS, FX, S, CS)))\n    if validBlock(B, FS, FX, S, CS) /\\ validFormat(FR) /\\ validProjection(PS)\n    [metadata \"clause=5.5-5.6; page=64-68\"] .\n"
+    },
+    {
+      "line": 95,
+      "kind": "ceq",
+      "fields": {
+        "label": "p3109-block-ops-017",
+        "lhs": "BlockDotProduct(B, FS, FX, FSY, FY, FR, PS, S, CS, T, DS)",
+        "rhs": "project(FR, PS, foldAdd(fin(0), pairProducts(blockDecode(B, FS, FX, S, CS), blockDecode(B, FSY, FY, T, DS))))",
+        "condition": "validBlock(B, FS, FX, S, CS) /\\ validBlock(B, FSY, FY, T, DS) /\\ validFormat(FR) /\\ validProjection(PS)",
+        "attributes": "metadata \"clause=5.5-5.6; page=64-68\""
+      },
+      "text": "  ceq [p3109-block-ops-017] :\n    BlockDotProduct(B, FS, FX, FSY, FY, FR, PS, S, CS, T, DS)\n    = project(FR, PS, foldAdd(fin(0), pairProducts(blockDecode(B, FS, FX, S, CS), blockDecode(B,\n    FSY, FY, T, DS))))\n    if validBlock(B, FS, FX, S, CS) /\\ validBlock(B, FSY, FY, T, DS) /\\ validFormat(FR) /\\\n    validProjection(PS)\n    [metadata \"clause=5.5-5.6; page=64-68\"] .\n"
+    },
+    {
+      "line": 102,
+      "kind": "endfm",
+      "fields": {},
+      "text": "endfm\n"
+    }
+  ]
+}

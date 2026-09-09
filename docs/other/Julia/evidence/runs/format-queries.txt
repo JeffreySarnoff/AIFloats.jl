@@ -1,0 +1,65 @@
+load load-core.maude
+red in P3109-CORE : IsNormal(Binary(4, 2, Signed, Finite), 4) == true .
+red in P3109-CORE : BitwidthOf(Binary(4, 2, Signed, Finite)) == 4 .
+red in P3109-CORE : PrecisionOf(Binary(4, 2, Signed, Finite)) == 2 .
+red in P3109-CORE : ExponentBitwidthOf(Binary(4, 2, Signed, Finite)) == 2 .
+red in P3109-CORE : TrailingSignificandBitwidthOf(Binary(4, 2, Signed, Finite)) == 1 .
+red in P3109-CORE : ExponentBiasOf(Binary(4, 2, Signed, Finite)) == 2 .
+red in P3109-CORE : SignednessOf(Binary(4, 2, Signed, Finite)) == Signed .
+red in P3109-CORE : DomainOf(Binary(4, 2, Signed, Finite)) == Finite .
+red in P3109-CORE : MaxFiniteOf(Binary(4, 2, Signed, Finite)) == 7 .
+red in P3109-CORE : MinFiniteOf(Binary(4, 2, Signed, Finite)) == 15 .
+red in P3109-CORE : MinPositiveOf(Binary(4, 2, Signed, Finite)) == 1 .
+red in P3109-CORE : MinNormalOf(Binary(4, 2, Signed, Finite)) == 2 .
+quit
+
+==========================================
+reduce in P3109-CORE : IsNormal(Binary(4, 2, Signed, Finite), 4) == true .
+rewrites: 3392 in 0ms cpu (0ms real) (3395395 rewrites/second)
+result Bool: true
+==========================================
+reduce in P3109-CORE : BitwidthOf(Binary(4, 2, Signed, Finite)) == 4 .
+rewrites: 10 in 0ms cpu (0ms real) (~ rewrites/second)
+result Bool: true
+==========================================
+reduce in P3109-CORE : PrecisionOf(Binary(4, 2, Signed, Finite)) == 2 .
+rewrites: 10 in 0ms cpu (0ms real) (~ rewrites/second)
+result Bool: true
+==========================================
+reduce in P3109-CORE : ExponentBitwidthOf(Binary(4, 2, Signed, Finite)) == 2 .
+rewrites: 41 in 0ms cpu (0ms real) (~ rewrites/second)
+result Bool: true
+==========================================
+reduce in P3109-CORE : TrailingSignificandBitwidthOf(Binary(4, 2, Signed,
+    Finite)) == 1 .
+rewrites: 20 in 0ms cpu (0ms real) (~ rewrites/second)
+result Bool: true
+==========================================
+reduce in P3109-CORE : ExponentBiasOf(Binary(4, 2, Signed, Finite)) == 2 .
+rewrites: 15 in 0ms cpu (0ms real) (~ rewrites/second)
+result Bool: true
+==========================================
+reduce in P3109-CORE : SignednessOf(Binary(4, 2, Signed, Finite)) == Signed .
+rewrites: 10 in 0ms cpu (0ms real) (~ rewrites/second)
+result Bool: true
+==========================================
+reduce in P3109-CORE : DomainOf(Binary(4, 2, Signed, Finite)) == Finite .
+rewrites: 10 in 0ms cpu (0ms real) (~ rewrites/second)
+result Bool: true
+==========================================
+reduce in P3109-CORE : MaxFiniteOf(Binary(4, 2, Signed, Finite)) == 7 .
+rewrites: 56 in 0ms cpu (0ms real) (~ rewrites/second)
+result Bool: true
+==========================================
+reduce in P3109-CORE : MinFiniteOf(Binary(4, 2, Signed, Finite)) == 15 .
+rewrites: 89 in 0ms cpu (0ms real) (~ rewrites/second)
+result Bool: true
+==========================================
+reduce in P3109-CORE : MinPositiveOf(Binary(4, 2, Signed, Finite)) == 1 .
+rewrites: 11 in 0ms cpu (0ms real) (~ rewrites/second)
+result Bool: true
+==========================================
+reduce in P3109-CORE : MinNormalOf(Binary(4, 2, Signed, Finite)) == 2 .
+rewrites: 22 in 0ms cpu (0ms real) (~ rewrites/second)
+result Bool: true
+Bye.

@@ -1,0 +1,348 @@
+version: 1
+path: lib/scalar-templates.maude
+sha256: 472a456000183423762b989ede241007933966420332bd2442e9ce56f273de9a
+type: maude
+records:
+- line: 1
+  kind: comment
+  fields: {}
+  text: |
+    --- Shared arity schemas; operation names and kernel views are generated separately.
+- line: 2
+  kind: comment
+  fields: {}
+  text: |
+    --- Source: P3109/D1 4.3.1, printed page 19-20.
+- line: 3
+  kind: comment
+  fields: {}
+  text: |
+    --- Per-operation clauses are recorded in inventory/operations.json and traceability.tsv.
+- line: 4
+  kind: fth
+  fields:
+    name: P3109-KERNEL1
+    parameters: []
+  text: |
+    fth P3109-KERNEL1 is
+- line: 5
+  kind: including
+  fields:
+    expression: P3109-XREAL
+  text: |2
+      including P3109-XREAL .
+- line: 6
+  kind: op
+  fields:
+    names:
+    - kernel
+    domain:
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op kernel : XReal ~> XReal .
+- line: 7
+  kind: endfth
+  fields: {}
+  text: |
+    endfth
+- line: 8
+  kind: fmod
+  fields:
+    name: P3109-SCALAR-TEMPLATE1
+    parameters:
+    - name: O
+      theory: P3109-KERNEL1
+  text: |
+    fmod P3109-SCALAR-TEMPLATE1{O :: P3109-KERNEL1} is
+- line: 9
+  kind: including
+  fields:
+    expression: P3109-PROJECT
+  text: |2
+      including P3109-PROJECT .
+- line: 10
+  kind: vars
+  fields:
+    names:
+    - F1
+    - FR
+    sort: Format
+  text: |2
+      vars F1 FR : Format .
+- line: 11
+  kind: vars
+  fields:
+    names:
+    - C1
+    sort: Int
+  text: |2
+      vars C1 : Int .
+- line: 12
+  kind: var
+  fields:
+    names:
+    - PS
+    sort: ProjSpec
+  text: |2
+      var PS : ProjSpec .
+- line: 13
+  kind: op
+  fields:
+    names:
+    - scalar
+    domain:
+    - Format
+    - Format
+    - ProjSpec
+    - Int
+    arrow: ~>
+    range: Nat
+    attributes: ''
+  text: |2
+      op scalar : Format Format ProjSpec Int ~> Nat .
+- line: 14
+  kind: ceq
+  fields:
+    label: p3109-template-scalar-1
+    lhs: scalar(F1, FR, PS, C1)
+    rhs: project(FR, PS, kernel(decode(F1, C1)))
+    condition: validCode(F1, C1) /\ validFormat(FR) /\ validProjection(PS)
+    attributes: metadata "clause=4.3.1; page=19-20"
+  text: |2
+      ceq [p3109-template-scalar-1] :
+        scalar(F1, FR, PS, C1)
+        = project(FR, PS, kernel(decode(F1, C1)))
+        if validCode(F1, C1) /\ validFormat(FR) /\ validProjection(PS)
+        [metadata "clause=4.3.1; page=19-20"] .
+- line: 19
+  kind: endfm
+  fields: {}
+  text: |
+    endfm
+- line: 20
+  kind: fth
+  fields:
+    name: P3109-KERNEL2
+    parameters: []
+  text: |
+    fth P3109-KERNEL2 is
+- line: 21
+  kind: including
+  fields:
+    expression: P3109-XREAL
+  text: |2
+      including P3109-XREAL .
+- line: 22
+  kind: op
+  fields:
+    names:
+    - kernel
+    domain:
+    - XReal
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op kernel : XReal XReal ~> XReal .
+- line: 23
+  kind: endfth
+  fields: {}
+  text: |
+    endfth
+- line: 24
+  kind: fmod
+  fields:
+    name: P3109-SCALAR-TEMPLATE2
+    parameters:
+    - name: O
+      theory: P3109-KERNEL2
+  text: |
+    fmod P3109-SCALAR-TEMPLATE2{O :: P3109-KERNEL2} is
+- line: 25
+  kind: including
+  fields:
+    expression: P3109-PROJECT
+  text: |2
+      including P3109-PROJECT .
+- line: 26
+  kind: vars
+  fields:
+    names:
+    - F1
+    - F2
+    - FR
+    sort: Format
+  text: |2
+      vars F1 F2 FR : Format .
+- line: 27
+  kind: vars
+  fields:
+    names:
+    - C1
+    - C2
+    sort: Int
+  text: |2
+      vars C1 C2 : Int .
+- line: 28
+  kind: var
+  fields:
+    names:
+    - PS
+    sort: ProjSpec
+  text: |2
+      var PS : ProjSpec .
+- line: 29
+  kind: op
+  fields:
+    names:
+    - scalar
+    domain:
+    - Format
+    - Format
+    - Format
+    - ProjSpec
+    - Int
+    - Int
+    arrow: ~>
+    range: Nat
+    attributes: ''
+  text: |2
+      op scalar : Format Format Format ProjSpec Int Int ~> Nat .
+- line: 30
+  kind: ceq
+  fields:
+    label: p3109-template-scalar-2
+    lhs: scalar(F1, F2, FR, PS, C1, C2)
+    rhs: project(FR, PS, kernel(decode(F1, C1), decode(F2, C2)))
+    condition: validCode(F1, C1) /\ validCode(F2, C2) /\ validFormat(FR) /\ validProjection(PS)
+    attributes: metadata "clause=4.3.1; page=19-20"
+  text: |2
+      ceq [p3109-template-scalar-2] :
+        scalar(F1, F2, FR, PS, C1, C2)
+        = project(FR, PS, kernel(decode(F1, C1), decode(F2, C2)))
+        if validCode(F1, C1) /\ validCode(F2, C2) /\ validFormat(FR) /\ validProjection(PS)
+        [metadata "clause=4.3.1; page=19-20"] .
+- line: 35
+  kind: endfm
+  fields: {}
+  text: |
+    endfm
+- line: 36
+  kind: fth
+  fields:
+    name: P3109-KERNEL3
+    parameters: []
+  text: |
+    fth P3109-KERNEL3 is
+- line: 37
+  kind: including
+  fields:
+    expression: P3109-XREAL
+  text: |2
+      including P3109-XREAL .
+- line: 38
+  kind: op
+  fields:
+    names:
+    - kernel
+    domain:
+    - XReal
+    - XReal
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op kernel : XReal XReal XReal ~> XReal .
+- line: 39
+  kind: endfth
+  fields: {}
+  text: |
+    endfth
+- line: 40
+  kind: fmod
+  fields:
+    name: P3109-SCALAR-TEMPLATE3
+    parameters:
+    - name: O
+      theory: P3109-KERNEL3
+  text: |
+    fmod P3109-SCALAR-TEMPLATE3{O :: P3109-KERNEL3} is
+- line: 41
+  kind: including
+  fields:
+    expression: P3109-PROJECT
+  text: |2
+      including P3109-PROJECT .
+- line: 42
+  kind: vars
+  fields:
+    names:
+    - F1
+    - F2
+    - F3
+    - FR
+    sort: Format
+  text: |2
+      vars F1 F2 F3 FR : Format .
+- line: 43
+  kind: vars
+  fields:
+    names:
+    - C1
+    - C2
+    - C3
+    sort: Int
+  text: |2
+      vars C1 C2 C3 : Int .
+- line: 44
+  kind: var
+  fields:
+    names:
+    - PS
+    sort: ProjSpec
+  text: |2
+      var PS : ProjSpec .
+- line: 45
+  kind: op
+  fields:
+    names:
+    - scalar
+    domain:
+    - Format
+    - Format
+    - Format
+    - Format
+    - ProjSpec
+    - Int
+    - Int
+    - Int
+    arrow: ~>
+    range: Nat
+    attributes: ''
+  text: |2
+      op scalar : Format Format Format Format ProjSpec Int Int Int ~> Nat .
+- line: 46
+  kind: ceq
+  fields:
+    label: p3109-template-scalar-3
+    lhs: scalar(F1, F2, F3, FR, PS, C1, C2, C3)
+    rhs: project(FR, PS, kernel(decode(F1, C1), decode(F2, C2), decode(F3, C3)))
+    condition: validCode(F1, C1) /\ validCode(F2, C2) /\ validCode(F3, C3) /\ validFormat(FR) /\ validProjection(PS)
+    attributes: metadata "clause=4.3.1; page=19-20"
+  text: |2
+      ceq [p3109-template-scalar-3] :
+        scalar(F1, F2, F3, FR, PS, C1, C2, C3)
+        = project(FR, PS, kernel(decode(F1, C1), decode(F2, C2), decode(F3, C3)))
+        if validCode(F1, C1) /\ validCode(F2, C2) /\ validCode(F3, C3) /\ validFormat(FR) /\
+        validProjection(PS)
+        [metadata "clause=4.3.1; page=19-20"] .
+- line: 52
+  kind: endfm
+  fields: {}
+  text: |
+    endfm

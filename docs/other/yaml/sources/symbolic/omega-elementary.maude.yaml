@@ -1,0 +1,2346 @@
+version: 1
+path: symbolic/omega-elementary.maude
+sha256: 7d7ace9b51d3b9bb7b69bcf2a298946488944b309f47fe7dabac09f2cc3d1ee9
+type: maude
+records:
+- line: 1
+  kind: comment
+  fields: {}
+  text: |
+    --- Source: P3109/D1 4.10.8-4.10.16, printed page 40-48.
+- line: 2
+  kind: fmod
+  fields:
+    name: P3109-OMEGA-ELEMENTARY
+    parameters: []
+  text: |
+    fmod P3109-OMEGA-ELEMENTARY is
+- line: 3
+  kind: including
+  fields:
+    expression: P3109-REAL-EXPRESSIONS
+  text: |2
+      including P3109-REAL-EXPRESSIONS .
+- line: 4
+  kind: ops
+  fields:
+    names:
+    - omegaHypot
+    - omegaArcTan2
+    - omegaArcTan2Pi
+    domain:
+    - XReal
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      ops omegaHypot omegaArcTan2 omegaArcTan2Pi : XReal XReal ~> XReal .
+- line: 5
+  kind: vars
+  fields:
+    names:
+    - U
+    - V
+    sort: Real
+  text: |2
+      vars U V : Real .
+- line: 6
+  kind: vars
+  fields:
+    names:
+    - R
+    - S
+    sort: Rat
+  text: |2
+      vars R S : Rat .
+- line: 7
+  kind: vars
+  fields:
+    names:
+    - A
+    - B
+    sort: Number
+  text: |2
+      vars A B : Number .
+- line: 8
+  kind: vars
+  fields:
+    names:
+    - X
+    - Y
+    sort: XReal
+  text: |2
+      vars X Y : XReal .
+- line: 9
+  kind: vars
+  fields:
+    names:
+    - I
+    - J
+    sort: Infinity
+  text: |2
+      vars I J : Infinity .
+- line: 10
+  kind: vars
+  fields:
+    names:
+    - N
+    - D
+    - NS
+    - DS
+    sort: Nat
+  text: |2
+      vars N D NS DS : Nat .
+- line: 11
+  kind: var
+  fields:
+    names:
+    - K
+    sort: Int
+  text: |2
+      var K : Int .
+- line: 12
+  kind: op
+  fields:
+    names:
+    - omegaSqrt
+    domain:
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op omegaSqrt : XReal ~> XReal .
+- line: 13
+  kind: op
+  fields:
+    names:
+    - omegaRSqrt
+    domain:
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op omegaRSqrt : XReal ~> XReal .
+- line: 14
+  kind: op
+  fields:
+    names:
+    - omegaExp
+    domain:
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op omegaExp : XReal ~> XReal .
+- line: 15
+  kind: op
+  fields:
+    names:
+    - omegaExp2
+    domain:
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op omegaExp2 : XReal ~> XReal .
+- line: 16
+  kind: op
+  fields:
+    names:
+    - omegaLog
+    domain:
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op omegaLog : XReal ~> XReal .
+- line: 17
+  kind: op
+  fields:
+    names:
+    - omegaLog2
+    domain:
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op omegaLog2 : XReal ~> XReal .
+- line: 18
+  kind: op
+  fields:
+    names:
+    - omegaLogOnePlus
+    domain:
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op omegaLogOnePlus : XReal ~> XReal .
+- line: 19
+  kind: op
+  fields:
+    names:
+    - omegaExpMinusOne
+    domain:
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op omegaExpMinusOne : XReal ~> XReal .
+- line: 20
+  kind: op
+  fields:
+    names:
+    - omegaSin
+    domain:
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op omegaSin : XReal ~> XReal .
+- line: 21
+  kind: op
+  fields:
+    names:
+    - omegaCos
+    domain:
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op omegaCos : XReal ~> XReal .
+- line: 22
+  kind: op
+  fields:
+    names:
+    - omegaTan
+    domain:
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op omegaTan : XReal ~> XReal .
+- line: 23
+  kind: op
+  fields:
+    names:
+    - omegaArcSin
+    domain:
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op omegaArcSin : XReal ~> XReal .
+- line: 24
+  kind: op
+  fields:
+    names:
+    - omegaArcCos
+    domain:
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op omegaArcCos : XReal ~> XReal .
+- line: 25
+  kind: op
+  fields:
+    names:
+    - omegaArcTan
+    domain:
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op omegaArcTan : XReal ~> XReal .
+- line: 26
+  kind: op
+  fields:
+    names:
+    - omegaSinh
+    domain:
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op omegaSinh : XReal ~> XReal .
+- line: 27
+  kind: op
+  fields:
+    names:
+    - omegaCosh
+    domain:
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op omegaCosh : XReal ~> XReal .
+- line: 28
+  kind: op
+  fields:
+    names:
+    - omegaTanh
+    domain:
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op omegaTanh : XReal ~> XReal .
+- line: 29
+  kind: op
+  fields:
+    names:
+    - omegaArcSinh
+    domain:
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op omegaArcSinh : XReal ~> XReal .
+- line: 30
+  kind: op
+  fields:
+    names:
+    - omegaArcCosh
+    domain:
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op omegaArcCosh : XReal ~> XReal .
+- line: 31
+  kind: op
+  fields:
+    names:
+    - omegaArcTanh
+    domain:
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op omegaArcTanh : XReal ~> XReal .
+- line: 32
+  kind: op
+  fields:
+    names:
+    - omegaSinPi
+    domain:
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op omegaSinPi : XReal ~> XReal .
+- line: 33
+  kind: op
+  fields:
+    names:
+    - omegaCosPi
+    domain:
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op omegaCosPi : XReal ~> XReal .
+- line: 34
+  kind: op
+  fields:
+    names:
+    - omegaTanPi
+    domain:
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op omegaTanPi : XReal ~> XReal .
+- line: 35
+  kind: op
+  fields:
+    names:
+    - omegaArcSinPi
+    domain:
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op omegaArcSinPi : XReal ~> XReal .
+- line: 36
+  kind: op
+  fields:
+    names:
+    - omegaArcCosPi
+    domain:
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op omegaArcCosPi : XReal ~> XReal .
+- line: 37
+  kind: op
+  fields:
+    names:
+    - omegaArcTanPi
+    domain:
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op omegaArcTanPi : XReal ~> XReal .
+- line: 38
+  kind: op
+  fields:
+    names:
+    - omegaSoftplus
+    domain:
+    - XReal
+    arrow: ~>
+    range: XReal
+    attributes: ''
+  text: |2
+      op omegaSoftplus : XReal ~> XReal .
+- line: 39
+  kind: op
+  fields:
+    names:
+    - exprSqrt
+    domain:
+    - Real
+    arrow: ~>
+    range: Real
+    attributes: ctor
+  text: |2
+      op exprSqrt : Real ~> Real [ctor] .
+- line: 40
+  kind: cmb
+  fields:
+    label: p3109-expr-Sqrt-domain
+    lhs: exprSqrt(U)
+    sort: Real
+    condition: xLe(fin(0), U)
+    attributes: metadata "clause=4.10; page=40-44"
+  text: |2
+      cmb [p3109-expr-Sqrt-domain] : exprSqrt(U) : Real if xLe(fin(0), U) [metadata "clause=4.10; page=40-44"] .
+- line: 41
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-001
+    lhs: omegaSqrt(U)
+    rhs: exprSqrt(U)
+    condition: xLe(fin(0), U)
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-001] : omegaSqrt(U) = exprSqrt(U) if xLe(fin(0), U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 42
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-002
+    lhs: omegaSqrt(nan)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-002] : omegaSqrt(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 43
+  kind: op
+  fields:
+    names:
+    - exprExp
+    domain:
+    - Real
+    arrow: ->
+    range: Real
+    attributes: ctor
+  text: |2
+      op exprExp : Real -> Real [ctor] .
+- line: 44
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-003
+    lhs: omegaExp(U)
+    rhs: exprExp(U)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-003] : omegaExp(U) = exprExp(U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 45
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-004
+    lhs: omegaExp(nan)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-004] : omegaExp(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 46
+  kind: op
+  fields:
+    names:
+    - exprExp2
+    domain:
+    - Real
+    arrow: ->
+    range: Real
+    attributes: ctor
+  text: |2
+      op exprExp2 : Real -> Real [ctor] .
+- line: 47
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-005
+    lhs: omegaExp2(U)
+    rhs: exprExp2(U)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-005] : omegaExp2(U) = exprExp2(U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 48
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-006
+    lhs: omegaExp2(nan)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-006] : omegaExp2(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 49
+  kind: op
+  fields:
+    names:
+    - exprLog
+    domain:
+    - Real
+    arrow: ~>
+    range: Real
+    attributes: ctor
+  text: |2
+      op exprLog : Real ~> Real [ctor] .
+- line: 50
+  kind: cmb
+  fields:
+    label: p3109-expr-Log-domain
+    lhs: exprLog(U)
+    sort: Real
+    condition: xLt(fin(0), U)
+    attributes: metadata "clause=4.10; page=40-44"
+  text: |2
+      cmb [p3109-expr-Log-domain] : exprLog(U) : Real if xLt(fin(0), U) [metadata "clause=4.10; page=40-44"] .
+- line: 51
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-007
+    lhs: omegaLog(U)
+    rhs: exprLog(U)
+    condition: xLt(fin(0), U)
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-007] : omegaLog(U) = exprLog(U) if xLt(fin(0), U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 52
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-008
+    lhs: omegaLog(nan)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-008] : omegaLog(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 53
+  kind: op
+  fields:
+    names:
+    - exprLog2
+    domain:
+    - Real
+    arrow: ~>
+    range: Real
+    attributes: ctor
+  text: |2
+      op exprLog2 : Real ~> Real [ctor] .
+- line: 54
+  kind: cmb
+  fields:
+    label: p3109-expr-Log2-domain
+    lhs: exprLog2(U)
+    sort: Real
+    condition: xLt(fin(0), U)
+    attributes: metadata "clause=4.10; page=40-44"
+  text: |2
+      cmb [p3109-expr-Log2-domain] : exprLog2(U) : Real if xLt(fin(0), U) [metadata "clause=4.10; page=40-44"] .
+- line: 55
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-009
+    lhs: omegaLog2(U)
+    rhs: exprLog2(U)
+    condition: xLt(fin(0), U)
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-009] : omegaLog2(U) = exprLog2(U) if xLt(fin(0), U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 56
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-010
+    lhs: omegaLog2(nan)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-010] : omegaLog2(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 57
+  kind: op
+  fields:
+    names:
+    - exprSin
+    domain:
+    - Real
+    arrow: ->
+    range: Real
+    attributes: ctor
+  text: |2
+      op exprSin : Real -> Real [ctor] .
+- line: 58
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-011
+    lhs: omegaSin(U)
+    rhs: exprSin(U)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-011] : omegaSin(U) = exprSin(U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 59
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-012
+    lhs: omegaSin(nan)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-012] : omegaSin(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 60
+  kind: op
+  fields:
+    names:
+    - exprCos
+    domain:
+    - Real
+    arrow: ->
+    range: Real
+    attributes: ctor
+  text: |2
+      op exprCos : Real -> Real [ctor] .
+- line: 61
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-013
+    lhs: omegaCos(U)
+    rhs: exprCos(U)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-013] : omegaCos(U) = exprCos(U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 62
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-014
+    lhs: omegaCos(nan)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-014] : omegaCos(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 63
+  kind: op
+  fields:
+    names:
+    - exprTan
+    domain:
+    - Real
+    arrow: ~>
+    range: Real
+    attributes: ctor
+  text: |2
+      op exprTan : Real ~> Real [ctor] .
+- line: 64
+  kind: cmb
+  fields:
+    label: p3109-expr-Tan-domain
+    lhs: exprTan(U)
+    sort: Real
+    condition: xEq(omegaCos(U), fin(0)) == false
+    attributes: metadata "clause=4.10; page=40-44"
+  text: |2
+      cmb [p3109-expr-Tan-domain] : exprTan(U) : Real if xEq(omegaCos(U), fin(0)) == false [metadata "clause=4.10; page=40-44"] .
+- line: 65
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-015
+    lhs: omegaTan(U)
+    rhs: exprTan(U)
+    condition: xEq(omegaCos(U), fin(0)) == false
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-015] : omegaTan(U) = exprTan(U) if xEq(omegaCos(U), fin(0)) == false [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 66
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-016
+    lhs: omegaTan(nan)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-016] : omegaTan(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 67
+  kind: op
+  fields:
+    names:
+    - exprArcSin
+    domain:
+    - Real
+    arrow: ~>
+    range: Real
+    attributes: ctor
+  text: |2
+      op exprArcSin : Real ~> Real [ctor] .
+- line: 68
+  kind: cmb
+  fields:
+    label: p3109-expr-ArcSin-domain
+    lhs: exprArcSin(U)
+    sort: Real
+    condition: xLe(fin(-1), U) /\ xLe(U, fin(1))
+    attributes: metadata "clause=4.10; page=40-44"
+  text: |2
+      cmb [p3109-expr-ArcSin-domain] : exprArcSin(U) : Real if xLe(fin(-1), U) /\ xLe(U, fin(1)) [metadata "clause=4.10; page=40-44"] .
+- line: 69
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-017
+    lhs: omegaArcSin(U)
+    rhs: exprArcSin(U)
+    condition: xLe(fin(-1), U) /\ xLe(U, fin(1))
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-017] : omegaArcSin(U) = exprArcSin(U) if xLe(fin(-1), U) /\ xLe(U, fin(1)) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 70
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-018
+    lhs: omegaArcSin(nan)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-018] : omegaArcSin(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 71
+  kind: op
+  fields:
+    names:
+    - exprArcCos
+    domain:
+    - Real
+    arrow: ~>
+    range: Real
+    attributes: ctor
+  text: |2
+      op exprArcCos : Real ~> Real [ctor] .
+- line: 72
+  kind: cmb
+  fields:
+    label: p3109-expr-ArcCos-domain
+    lhs: exprArcCos(U)
+    sort: Real
+    condition: xLe(fin(-1), U) /\ xLe(U, fin(1))
+    attributes: metadata "clause=4.10; page=40-44"
+  text: |2
+      cmb [p3109-expr-ArcCos-domain] : exprArcCos(U) : Real if xLe(fin(-1), U) /\ xLe(U, fin(1)) [metadata "clause=4.10; page=40-44"] .
+- line: 73
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-019
+    lhs: omegaArcCos(U)
+    rhs: exprArcCos(U)
+    condition: xLe(fin(-1), U) /\ xLe(U, fin(1))
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-019] : omegaArcCos(U) = exprArcCos(U) if xLe(fin(-1), U) /\ xLe(U, fin(1)) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 74
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-020
+    lhs: omegaArcCos(nan)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-020] : omegaArcCos(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 75
+  kind: op
+  fields:
+    names:
+    - exprArcTan
+    domain:
+    - Real
+    arrow: ->
+    range: Real
+    attributes: ctor
+  text: |2
+      op exprArcTan : Real -> Real [ctor] .
+- line: 76
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-021
+    lhs: omegaArcTan(U)
+    rhs: exprArcTan(U)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-021] : omegaArcTan(U) = exprArcTan(U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 77
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-022
+    lhs: omegaArcTan(nan)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-022] : omegaArcTan(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 78
+  kind: op
+  fields:
+    names:
+    - exprSinh
+    domain:
+    - Real
+    arrow: ->
+    range: Real
+    attributes: ctor
+  text: |2
+      op exprSinh : Real -> Real [ctor] .
+- line: 79
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-023
+    lhs: omegaSinh(U)
+    rhs: exprSinh(U)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-023] : omegaSinh(U) = exprSinh(U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 80
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-024
+    lhs: omegaSinh(nan)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-024] : omegaSinh(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 81
+  kind: op
+  fields:
+    names:
+    - exprCosh
+    domain:
+    - Real
+    arrow: ->
+    range: Real
+    attributes: ctor
+  text: |2
+      op exprCosh : Real -> Real [ctor] .
+- line: 82
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-025
+    lhs: omegaCosh(U)
+    rhs: exprCosh(U)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-025] : omegaCosh(U) = exprCosh(U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 83
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-026
+    lhs: omegaCosh(nan)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-026] : omegaCosh(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 84
+  kind: op
+  fields:
+    names:
+    - exprTanh
+    domain:
+    - Real
+    arrow: ->
+    range: Real
+    attributes: ctor
+  text: |2
+      op exprTanh : Real -> Real [ctor] .
+- line: 85
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-027
+    lhs: omegaTanh(U)
+    rhs: exprTanh(U)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-027] : omegaTanh(U) = exprTanh(U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 86
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-028
+    lhs: omegaTanh(nan)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-028] : omegaTanh(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 87
+  kind: op
+  fields:
+    names:
+    - exprArcSinh
+    domain:
+    - Real
+    arrow: ->
+    range: Real
+    attributes: ctor
+  text: |2
+      op exprArcSinh : Real -> Real [ctor] .
+- line: 88
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-029
+    lhs: omegaArcSinh(U)
+    rhs: exprArcSinh(U)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-029] : omegaArcSinh(U) = exprArcSinh(U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 89
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-030
+    lhs: omegaArcSinh(nan)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-030] : omegaArcSinh(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 90
+  kind: op
+  fields:
+    names:
+    - exprArcCosh
+    domain:
+    - Real
+    arrow: ~>
+    range: Real
+    attributes: ctor
+  text: |2
+      op exprArcCosh : Real ~> Real [ctor] .
+- line: 91
+  kind: cmb
+  fields:
+    label: p3109-expr-ArcCosh-domain
+    lhs: exprArcCosh(U)
+    sort: Real
+    condition: xLe(fin(1), U)
+    attributes: metadata "clause=4.10; page=40-44"
+  text: |2
+      cmb [p3109-expr-ArcCosh-domain] : exprArcCosh(U) : Real if xLe(fin(1), U) [metadata "clause=4.10; page=40-44"] .
+- line: 92
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-031
+    lhs: omegaArcCosh(U)
+    rhs: exprArcCosh(U)
+    condition: xLe(fin(1), U)
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-031] : omegaArcCosh(U) = exprArcCosh(U) if xLe(fin(1), U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 93
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-032
+    lhs: omegaArcCosh(nan)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-032] : omegaArcCosh(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 94
+  kind: op
+  fields:
+    names:
+    - exprArcTanh
+    domain:
+    - Real
+    arrow: ~>
+    range: Real
+    attributes: ctor
+  text: |2
+      op exprArcTanh : Real ~> Real [ctor] .
+- line: 95
+  kind: cmb
+  fields:
+    label: p3109-expr-ArcTanh-domain
+    lhs: exprArcTanh(U)
+    sort: Real
+    condition: xLt(fin(-1), U) /\ xLt(U, fin(1))
+    attributes: metadata "clause=4.10; page=40-44"
+  text: |2
+      cmb [p3109-expr-ArcTanh-domain] : exprArcTanh(U) : Real if xLt(fin(-1), U) /\ xLt(U, fin(1)) [metadata "clause=4.10; page=40-44"] .
+- line: 96
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-033
+    lhs: omegaArcTanh(U)
+    rhs: exprArcTanh(U)
+    condition: xLt(fin(-1), U) /\ xLt(U, fin(1))
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-033] : omegaArcTanh(U) = exprArcTanh(U) if xLt(fin(-1), U) /\ xLt(U, fin(1)) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 97
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-034
+    lhs: omegaArcTanh(nan)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-034] : omegaArcTanh(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 98
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-035
+    lhs: omegaSqrt(posInf)
+    rhs: posInf
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-035] : omegaSqrt(posInf) = posInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 99
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-036
+    lhs: omegaSqrt(negInf)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-036] : omegaSqrt(negInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 100
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-037
+    lhs: omegaExp(posInf)
+    rhs: posInf
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-037] : omegaExp(posInf) = posInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 101
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-038
+    lhs: omegaExp(negInf)
+    rhs: fin(0)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-038] : omegaExp(negInf) = fin(0) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 102
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-039
+    lhs: omegaExp2(posInf)
+    rhs: posInf
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-039] : omegaExp2(posInf) = posInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 103
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-040
+    lhs: omegaExp2(negInf)
+    rhs: fin(0)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-040] : omegaExp2(negInf) = fin(0) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 104
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-041
+    lhs: omegaLog(posInf)
+    rhs: posInf
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-041] : omegaLog(posInf) = posInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 105
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-042
+    lhs: omegaLog(negInf)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-042] : omegaLog(negInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 106
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-043
+    lhs: omegaLog2(posInf)
+    rhs: posInf
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-043] : omegaLog2(posInf) = posInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 107
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-044
+    lhs: omegaLog2(negInf)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-044] : omegaLog2(negInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 108
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-045
+    lhs: omegaSin(posInf)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-045] : omegaSin(posInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 109
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-046
+    lhs: omegaSin(negInf)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-046] : omegaSin(negInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 110
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-047
+    lhs: omegaCos(posInf)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-047] : omegaCos(posInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 111
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-048
+    lhs: omegaCos(negInf)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-048] : omegaCos(negInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 112
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-049
+    lhs: omegaTan(posInf)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-049] : omegaTan(posInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 113
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-050
+    lhs: omegaTan(negInf)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-050] : omegaTan(negInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 114
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-051
+    lhs: omegaArcSin(posInf)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-051] : omegaArcSin(posInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 115
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-052
+    lhs: omegaArcSin(negInf)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-052] : omegaArcSin(negInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 116
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-053
+    lhs: omegaArcCos(posInf)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-053] : omegaArcCos(posInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 117
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-054
+    lhs: omegaArcCos(negInf)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-054] : omegaArcCos(negInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 118
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-055
+    lhs: omegaArcTan(posInf)
+    rhs: piMultiple(1/2)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-055] : omegaArcTan(posInf) = piMultiple(1/2) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 119
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-056
+    lhs: omegaArcTan(negInf)
+    rhs: piMultiple(-1/2)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-056] : omegaArcTan(negInf) = piMultiple(-1/2) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 120
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-057
+    lhs: omegaSinh(posInf)
+    rhs: posInf
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-057] : omegaSinh(posInf) = posInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 121
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-058
+    lhs: omegaSinh(negInf)
+    rhs: negInf
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-058] : omegaSinh(negInf) = negInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 122
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-059
+    lhs: omegaCosh(posInf)
+    rhs: posInf
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-059] : omegaCosh(posInf) = posInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 123
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-060
+    lhs: omegaCosh(negInf)
+    rhs: posInf
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-060] : omegaCosh(negInf) = posInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 124
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-061
+    lhs: omegaTanh(posInf)
+    rhs: fin(1)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-061] : omegaTanh(posInf) = fin(1) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 125
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-062
+    lhs: omegaTanh(negInf)
+    rhs: fin(-1)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-062] : omegaTanh(negInf) = fin(-1) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 126
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-063
+    lhs: omegaArcSinh(posInf)
+    rhs: posInf
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-063] : omegaArcSinh(posInf) = posInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 127
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-064
+    lhs: omegaArcSinh(negInf)
+    rhs: negInf
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-064] : omegaArcSinh(negInf) = negInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 128
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-065
+    lhs: omegaArcCosh(posInf)
+    rhs: posInf
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-065] : omegaArcCosh(posInf) = posInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 129
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-066
+    lhs: omegaArcCosh(negInf)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-066] : omegaArcCosh(negInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 130
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-067
+    lhs: omegaArcTanh(posInf)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-067] : omegaArcTanh(posInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 131
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-068
+    lhs: omegaArcTanh(negInf)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-068] : omegaArcTanh(negInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 132
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-069
+    lhs: omegaSqrt(U)
+    rhs: nan
+    condition: xLt(U, fin(0))
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-069] : omegaSqrt(U) = nan if xLt(U, fin(0)) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 133
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-070
+    lhs: omegaLog(U)
+    rhs: nan
+    condition: xLt(U, fin(0))
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-070] : omegaLog(U) = nan if xLt(U, fin(0)) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 134
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-071
+    lhs: omegaLog2(U)
+    rhs: nan
+    condition: xLt(U, fin(0))
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-071] : omegaLog2(U) = nan if xLt(U, fin(0)) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 135
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-072
+    lhs: omegaLog(fin(0))
+    rhs: negInf
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-072] : omegaLog(fin(0)) = negInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 136
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-073
+    lhs: omegaLog2(fin(0))
+    rhs: negInf
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-073] : omegaLog2(fin(0)) = negInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 137
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-074
+    lhs: omegaArcSin(U)
+    rhs: nan
+    condition: xLt(U, fin(-1)) or xLt(fin(1), U)
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-074] : omegaArcSin(U) = nan if xLt(U, fin(-1)) or xLt(fin(1), U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 138
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-075
+    lhs: omegaArcCos(U)
+    rhs: nan
+    condition: xLt(U, fin(-1)) or xLt(fin(1), U)
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-075] : omegaArcCos(U) = nan if xLt(U, fin(-1)) or xLt(fin(1), U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 139
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-076
+    lhs: omegaArcTanh(U)
+    rhs: nan
+    condition: xLt(U, fin(-1)) or xLt(fin(1), U)
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-076] : omegaArcTanh(U) = nan if xLt(U, fin(-1)) or xLt(fin(1), U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 140
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-077
+    lhs: omegaArcCosh(U)
+    rhs: nan
+    condition: xLt(U, fin(1))
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-077] : omegaArcCosh(U) = nan if xLt(U, fin(1)) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 141
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-078
+    lhs: omegaArcTanh(fin(1))
+    rhs: posInf
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-078] : omegaArcTanh(fin(1)) = posInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 142
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-079
+    lhs: omegaArcTanh(fin(-1))
+    rhs: negInf
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-079] : omegaArcTanh(fin(-1)) = negInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 143
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-080
+    lhs: omegaRSqrt(nan)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-080] : omegaRSqrt(nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 144
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-081
+    lhs: omegaRSqrt(negInf)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-081] : omegaRSqrt(negInf) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 145
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-082
+    lhs: omegaRSqrt(posInf)
+    rhs: fin(0)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-082] : omegaRSqrt(posInf) = fin(0) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 146
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-083
+    lhs: omegaRSqrt(U)
+    rhs: nan
+    condition: xLe(U, fin(0))
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-083] : omegaRSqrt(U) = nan if xLe(U, fin(0)) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 147
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-084
+    lhs: omegaRSqrt(U)
+    rhs: omegaRecip(omegaSqrt(U))
+    condition: xLt(fin(0), U)
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-084] : omegaRSqrt(U) = omegaRecip(omegaSqrt(U)) if xLt(fin(0), U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 148
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-085
+    lhs: omegaLogOnePlus(X)
+    rhs: omegaLog(omegaAdd(fin(1), X))
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-085] : omegaLogOnePlus(X) = omegaLog(omegaAdd(fin(1), X)) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 149
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-086
+    lhs: omegaExpMinusOne(X)
+    rhs: omegaSubtract(omegaExp(X), fin(1))
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-086] : omegaExpMinusOne(X) = omegaSubtract(omegaExp(X), fin(1)) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 150
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-087
+    lhs: omegaSoftplus(X)
+    rhs: omegaLog(omegaAdd(fin(1), omegaExp(X)))
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-087] : omegaSoftplus(X) = omegaLog(omegaAdd(fin(1), omegaExp(X))) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 151
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-088
+    lhs: omegaSinPi(X)
+    rhs: omegaSin(omegaMultiply(X, pi))
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-088] : omegaSinPi(X) = omegaSin(omegaMultiply(X, pi)) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 152
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-089
+    lhs: omegaCosPi(X)
+    rhs: omegaCos(omegaMultiply(X, pi))
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-089] : omegaCosPi(X) = omegaCos(omegaMultiply(X, pi)) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 153
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-090
+    lhs: omegaTanPi(X)
+    rhs: omegaTan(omegaMultiply(X, pi))
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-090] : omegaTanPi(X) = omegaTan(omegaMultiply(X, pi)) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 154
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-091
+    lhs: omegaArcSinPi(X)
+    rhs: omegaDivide(omegaArcSin(X), pi)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-091] : omegaArcSinPi(X) = omegaDivide(omegaArcSin(X), pi) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 155
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-092
+    lhs: omegaArcCosPi(X)
+    rhs: omegaDivide(omegaArcCos(X), pi)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-092] : omegaArcCosPi(X) = omegaDivide(omegaArcCos(X), pi) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 156
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-093
+    lhs: omegaArcTanPi(X)
+    rhs: omegaDivide(omegaArcTan(X), pi)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-093] : omegaArcTanPi(X) = omegaDivide(omegaArcTan(X), pi) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 157
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-094
+    lhs: omegaTan(U)
+    rhs: posInf
+    condition: xEq(omegaCos(U), fin(0)) /\ xLt(fin(0), omegaSin(U))
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-094] : omegaTan(U) = posInf if xEq(omegaCos(U), fin(0)) /\ xLt(fin(0), omegaSin(U)) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 158
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-095
+    lhs: omegaTan(U)
+    rhs: negInf
+    condition: xEq(omegaCos(U), fin(0)) /\ xLt(omegaSin(U), fin(0))
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-095] : omegaTan(U) = negInf if xEq(omegaCos(U), fin(0)) /\ xLt(omegaSin(U), fin(0)) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 159
+  kind: op
+  fields:
+    names:
+    - numeratorOf
+    domain:
+    - Rat
+    arrow: ->
+    range: Int
+    attributes: ''
+  text: |2
+      op numeratorOf : Rat -> Int .
+- line: 160
+  kind: op
+  fields:
+    names:
+    - denominatorOf
+    domain:
+    - Rat
+    arrow: ->
+    range: Nat
+    attributes: ''
+  text: |2
+      op denominatorOf : Rat -> Nat .
+- line: 161
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-096
+    lhs: numeratorOf(K)
+    rhs: K
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-096] : numeratorOf(K) = K [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 162
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-097
+    lhs: denominatorOf(K)
+    rhs: '1'
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-097] : denominatorOf(K) = 1 [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 163
+  kind: vars
+  fields:
+    names:
+    - NZ
+    sort: NzInt
+  text: |2
+      vars NZ : NzInt .
+- line: 164
+  kind: var
+  fields:
+    names:
+    - ND
+    sort: NzNat
+  text: |2
+      var ND : NzNat .
+- line: 165
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-098
+    lhs: numeratorOf(NZ / ND)
+    rhs: NZ
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-098] : numeratorOf(NZ / ND) = NZ [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 166
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-099
+    lhs: denominatorOf(NZ / ND)
+    rhs: ND
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-099] : denominatorOf(NZ / ND) = ND [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 167
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-100
+    lhs: exprSqrt(fin(R))
+    rhs: fin(NS / DS)
+    condition: R >= 0 /\ N := numeratorOf(R) /\ D := denominatorOf(R) /\ NS := integerSqrt(N) /\ DS :=
+      integerSqrt(D) /\ NS * NS == N /\ DS * DS == D
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-100] : exprSqrt(fin(R)) = fin(NS / DS) if R >= 0 /\ N := numeratorOf(R) /\ D := denominatorOf(R) /\ NS := integerSqrt(N) /\ DS := integerSqrt(D) /\ NS * NS == N /\ DS * DS == D [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 168
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-101
+    lhs: exprExp(fin(0))
+    rhs: fin(1)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-101] : exprExp(fin(0)) = fin(1) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 169
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-102
+    lhs: exprExp2(fin(K))
+    rhs: fin(pow2(K))
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-102] : exprExp2(fin(K)) = fin(pow2(K)) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 170
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-103
+    lhs: exprLog(fin(1))
+    rhs: fin(0)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-103] : exprLog(fin(1)) = fin(0) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 171
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-104
+    lhs: exprLog2(fin(R))
+    rhs: fin(K)
+    condition: R > 0 /\ K := floorLog2(R) /\ R == pow2(K)
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-104] : exprLog2(fin(R)) = fin(K) if R > 0 /\ K := floorLog2(R) /\ R == pow2(K) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 172
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-105
+    lhs: exprSin(fin(0))
+    rhs: fin(0)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-105] : exprSin(fin(0)) = fin(0) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 173
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-106
+    lhs: exprCos(fin(0))
+    rhs: fin(1)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-106] : exprCos(fin(0)) = fin(1) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 174
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-107
+    lhs: exprTan(fin(0))
+    rhs: fin(0)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-107] : exprTan(fin(0)) = fin(0) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 175
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-108
+    lhs: exprArcSin(fin(0))
+    rhs: fin(0)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-108] : exprArcSin(fin(0)) = fin(0) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 176
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-109
+    lhs: exprArcSin(fin(1))
+    rhs: piMultiple(1/2)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-109] : exprArcSin(fin(1)) = piMultiple(1/2) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 177
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-110
+    lhs: exprArcSin(fin(-1))
+    rhs: piMultiple(-1/2)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-110] : exprArcSin(fin(-1)) = piMultiple(-1/2) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 178
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-111
+    lhs: exprArcCos(fin(0))
+    rhs: piMultiple(1/2)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-111] : exprArcCos(fin(0)) = piMultiple(1/2) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 179
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-112
+    lhs: exprArcCos(fin(1))
+    rhs: fin(0)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-112] : exprArcCos(fin(1)) = fin(0) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 180
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-113
+    lhs: exprArcCos(fin(-1))
+    rhs: pi
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-113] : exprArcCos(fin(-1)) = pi [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 181
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-114
+    lhs: exprArcTan(fin(0))
+    rhs: fin(0)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-114] : exprArcTan(fin(0)) = fin(0) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 182
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-115
+    lhs: exprArcTan(fin(1))
+    rhs: piMultiple(1/4)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-115] : exprArcTan(fin(1)) = piMultiple(1/4) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 183
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-116
+    lhs: exprArcTan(fin(-1))
+    rhs: piMultiple(-1/4)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-116] : exprArcTan(fin(-1)) = piMultiple(-1/4) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 184
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-117
+    lhs: exprSinh(fin(0))
+    rhs: fin(0)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-117] : exprSinh(fin(0)) = fin(0) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 185
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-118
+    lhs: exprCosh(fin(0))
+    rhs: fin(1)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-118] : exprCosh(fin(0)) = fin(1) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 186
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-119
+    lhs: exprTanh(fin(0))
+    rhs: fin(0)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-119] : exprTanh(fin(0)) = fin(0) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 187
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-120
+    lhs: exprArcSinh(fin(0))
+    rhs: fin(0)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-120] : exprArcSinh(fin(0)) = fin(0) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 188
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-121
+    lhs: exprArcCosh(fin(1))
+    rhs: fin(0)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-121] : exprArcCosh(fin(1)) = fin(0) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 189
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-122
+    lhs: exprArcTanh(fin(0))
+    rhs: fin(0)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-122] : exprArcTanh(fin(0)) = fin(0) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 190
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-123
+    lhs: exprSin(piMultiple(R))
+    rhs: fin(0)
+    condition: R == floor(R)
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-123] : exprSin(piMultiple(R)) = fin(0) if R == floor(R) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 191
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-124
+    lhs: exprSin(piMultiple(R))
+    rhs: if even(floor(R)) then fin(1) else fin(-1) fi
+    condition: R - floor(R) == 1/2
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-124] : exprSin(piMultiple(R)) = if even(floor(R)) then fin(1) else fin(-1) fi if R - floor(R) == 1/2 [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 192
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-125
+    lhs: exprCos(piMultiple(R))
+    rhs: if even(floor(R)) then fin(1) else fin(-1) fi
+    condition: R == floor(R)
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-125] : exprCos(piMultiple(R)) = if even(floor(R)) then fin(1) else fin(-1) fi if R == floor(R) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 193
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-126
+    lhs: exprCos(piMultiple(R))
+    rhs: fin(0)
+    condition: R - floor(R) == 1/2
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-126] : exprCos(piMultiple(R)) = fin(0) if R - floor(R) == 1/2 [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 194
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-127
+    lhs: exprTan(piMultiple(R))
+    rhs: fin(0)
+    condition: R == floor(R)
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-127] : exprTan(piMultiple(R)) = fin(0) if R == floor(R) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 195
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-128
+    lhs: xEq(exprCos(fin(R)), fin(0))
+    rhs: 'false'
+    condition: R =/= 0
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-128] : xEq(exprCos(fin(R)), fin(0)) = false if R =/= 0 [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 196
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-129
+    lhs: xLt(fin(0), exprExp(U))
+    rhs: 'true'
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-129] : xLt(fin(0), exprExp(U)) = true [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 197
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-130
+    lhs: xEq(exprExp(U), fin(0))
+    rhs: 'false'
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-130] : xEq(exprExp(U), fin(0)) = false [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 198
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-131
+    lhs: xLt(exprExp(U), fin(0))
+    rhs: 'false'
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-131] : xLt(exprExp(U), fin(0)) = false [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 199
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-132
+    lhs: xLt(fin(0), exprExp2(U))
+    rhs: 'true'
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-132] : xLt(fin(0), exprExp2(U)) = true [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 200
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-133
+    lhs: xEq(exprExp2(U), fin(0))
+    rhs: 'false'
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-133] : xEq(exprExp2(U), fin(0)) = false [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 201
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-134
+    lhs: xLt(exprExp2(U), fin(0))
+    rhs: 'false'
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-134] : xLt(exprExp2(U), fin(0)) = false [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 202
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-135
+    lhs: xLt(fin(0), exprSqrt(U))
+    rhs: 'true'
+    condition: xLt(fin(0), U)
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-135] : xLt(fin(0), exprSqrt(U)) = true if xLt(fin(0), U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 203
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-136
+    lhs: xEq(exprSqrt(U), fin(0))
+    rhs: 'false'
+    condition: xLt(fin(0), U)
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-136] : xEq(exprSqrt(U), fin(0)) = false if xLt(fin(0), U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 204
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-137
+    lhs: xLt(exprSqrt(U), fin(0))
+    rhs: 'false'
+    condition: xLe(fin(0), U)
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-137] : xLt(exprSqrt(U), fin(0)) = false if xLe(fin(0), U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 205
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-138
+    lhs: omegaHypot(nan, X)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-138] : omegaHypot(nan, X) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 206
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-139
+    lhs: omegaHypot(A, nan)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-139] : omegaHypot(A, nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 207
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-140
+    lhs: omegaHypot(A, I)
+    rhs: posInf
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-140] : omegaHypot(A, I) = posInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 208
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-141
+    lhs: omegaHypot(I, U)
+    rhs: posInf
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-141] : omegaHypot(I, U) = posInf [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 209
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-142
+    lhs: omegaHypot(U, V)
+    rhs: omegaSqrt(realAdd(realMultiply(U, U), realMultiply(V, V)))
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-142] : omegaHypot(U, V) = omegaSqrt(realAdd(realMultiply(U, U), realMultiply(V, V))) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 210
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-143
+    lhs: omegaArcTan2(nan, X)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-143] : omegaArcTan2(nan, X) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 211
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-144
+    lhs: omegaArcTan2(A, nan)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-144] : omegaArcTan2(A, nan) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 212
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-145
+    lhs: omegaArcTan2(fin(0), fin(0))
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-145] : omegaArcTan2(fin(0), fin(0)) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 213
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-146
+    lhs: omegaArcTan2(I, J)
+    rhs: nan
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-146] : omegaArcTan2(I, J) = nan [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 214
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-147
+    lhs: omegaArcTan2(U, posInf)
+    rhs: fin(0)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-147] : omegaArcTan2(U, posInf) = fin(0) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 215
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-148
+    lhs: omegaArcTan2(fin(0), U)
+    rhs: fin(0)
+    condition: xLt(fin(0), U)
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-148] : omegaArcTan2(fin(0), U) = fin(0) if xLt(fin(0), U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 216
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-149
+    lhs: omegaArcTan2(posInf, U)
+    rhs: piMultiple(1/2)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-149] : omegaArcTan2(posInf, U) = piMultiple(1/2) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 217
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-150
+    lhs: omegaArcTan2(U, fin(0))
+    rhs: piMultiple(1/2)
+    condition: xLt(fin(0), U)
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-150] : omegaArcTan2(U, fin(0)) = piMultiple(1/2) if xLt(fin(0), U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 218
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-151
+    lhs: omegaArcTan2(U, negInf)
+    rhs: pi
+    condition: xLe(fin(0), U)
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-151] : omegaArcTan2(U, negInf) = pi if xLe(fin(0), U) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 219
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-152
+    lhs: omegaArcTan2(U, negInf)
+    rhs: piMultiple(-1)
+    condition: xLt(U, fin(0))
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-152] : omegaArcTan2(U, negInf) = piMultiple(-1) if xLt(U, fin(0)) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 220
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-153
+    lhs: omegaArcTan2(fin(0), U)
+    rhs: pi
+    condition: xLt(U, fin(0))
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-153] : omegaArcTan2(fin(0), U) = pi if xLt(U, fin(0)) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 221
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-154
+    lhs: omegaArcTan2(negInf, U)
+    rhs: piMultiple(-1/2)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-154] : omegaArcTan2(negInf, U) = piMultiple(-1/2) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 222
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-155
+    lhs: omegaArcTan2(U, fin(0))
+    rhs: piMultiple(-1/2)
+    condition: xLt(U, fin(0))
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-155] : omegaArcTan2(U, fin(0)) = piMultiple(-1/2) if xLt(U, fin(0)) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 223
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-156
+    lhs: omegaArcTan2(U, V)
+    rhs: omegaArcTan(omegaDivide(U, V))
+    condition: xLt(fin(0), V) /\ xEq(U, fin(0)) == false
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-156] : omegaArcTan2(U, V) = omegaArcTan(omegaDivide(U, V)) if xLt(fin(0), V) /\ xEq(U, fin(0)) == false [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 224
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-157
+    lhs: omegaArcTan2(U, V)
+    rhs: omegaAdd(omegaArcTan(omegaDivide(U, V)), pi)
+    condition: xLt(fin(0), U) /\ xLt(V, fin(0))
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-157] : omegaArcTan2(U, V) = omegaAdd(omegaArcTan(omegaDivide(U, V)), pi) if xLt(fin(0), U) /\ xLt(V, fin(0)) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 225
+  kind: ceq
+  fields:
+    label: p3109-omega-elementary-158
+    lhs: omegaArcTan2(U, V)
+    rhs: omegaSubtract(omegaArcTan(omegaDivide(U, V)), pi)
+    condition: xLt(U, fin(0)) /\ xLt(V, fin(0))
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      ceq [p3109-omega-elementary-158] : omegaArcTan2(U, V) = omegaSubtract(omegaArcTan(omegaDivide(U, V)), pi) if xLt(U, fin(0)) /\ xLt(V, fin(0)) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 226
+  kind: eq
+  fields:
+    label: p3109-omega-elementary-159
+    lhs: omegaArcTan2Pi(X, Y)
+    rhs: omegaDivide(omegaArcTan2(X, Y), pi)
+    condition: null
+    attributes: metadata "clause=4.10.8-4.10.16; page=40-48"
+  text: |2
+      eq [p3109-omega-elementary-159] : omegaArcTan2Pi(X, Y) = omegaDivide(omegaArcTan2(X, Y), pi) [metadata "clause=4.10.8-4.10.16; page=40-48"] .
+- line: 227
+  kind: endfm
+  fields: {}
+  text: |
+    endfm

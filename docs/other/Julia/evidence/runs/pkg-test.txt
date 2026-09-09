@@ -1,0 +1,67 @@
+      Status `/tmp/p3109-standalone-final/test/Project.toml`
+  [944b1d66] CodecZlib v0.7.9
+⌃ [682c06a0] JSON v1.7.1
+  [e6627552] P3109Reference v0.1.0 `.`
+  [ea8e919c] SHA v1.0.0
+  [8dfed614] Test v1.11.0
+      Status `/tmp/p3109-standalone-final/Manifest.toml`
+  [944b1d66] CodecZlib v0.7.9
+⌃ [682c06a0] JSON v1.7.1
+  [e6627552] P3109Reference v0.1.0 `.`
+⌅ [69de0a69] Parsers v2.8.8
+  [aea7be01] PrecompileTools v1.3.4
+  [21216c6a] Preferences v1.5.2
+  [ec057cc2] StructUtils v2.8.5
+  [3bb67fe8] TranscodingStreams v0.11.3
+  [2a0f44e3] Base64 v1.11.0
+  [ade2ca70] Dates v1.11.0
+  [b77e0a4c] InteractiveUtils v1.11.0
+  [ac6e5ff7] JuliaSyntaxHighlighting v1.12.0
+  [8f399da3] Libdl v1.11.0
+  [56ddb016] Logging v1.11.0
+  [d6f4376e] Markdown v1.11.0
+  [de0858da] Printf v1.11.0
+  [9a3f8284] Random v1.11.0
+  [ea8e919c] SHA v1.0.0
+  [9e88b42a] Serialization v1.11.0
+  [f489334b] StyledStrings v1.11.0
+  [fa267f1f] TOML v1.0.3
+  [8dfed614] Test v1.11.0
+  [cf7118a7] UUIDs v1.11.0
+  [4ec0a83e] Unicode v1.11.0
+  [83775a58] Zlib_jll v1.3.1+2
+        Info Packages marked with ⌃ and ⌅ have new versions available. Those with ⌃ may be upgradable, but those with ⌅ are restricted by compatibility constraints from upgrading.
+Precompiling for configuration --code-coverage=none --color=no --warn-overwrite=yes --depwarn=yes --inline=yes --startup-file=no --track-allocation=none
+   0.5 s  ✓ P3109Reference
+  1 dependency successfully precompiled in 0 seconds. 21 already precompiled.
+     Testing Running tests...
+smoke: 65 source cases checked
+domains: 40 source cases checked
+codec: 2660 source cases checked
+projection: 11016 source cases checked
+scalar: 33760 source cases checked
+order-next: 6112 source cases checked
+blocks: 140 source cases checked
+conformance: 13748 source cases checked
+symbolic: 194 source cases checked
+order-full: 279840 source cases checked
+standalone: 5 source cases checked
+Test Summary: | Pass  Total   Time
+Source parity |   22     22  29.2s
+Test Summary:               | Pass  Total  Time
+Source format query surface |   12     12  0.0s
+Test Summary:                | Pass  Total  Time
+Fixture corruption detection |    7      7  0.6s
+Test Summary:                 | Pass  Total  Time
+Exact values and wide formats |  821    821  0.1s
+Test Summary:                  | Pass  Total  Time
+Policies and positional blocks |   14     14  0.2s
+Test Summary:                | Pass  Total  Time
+Symbolic truth and residuals |   16     16  0.0s
+Test Summary:                    | Pass  Total  Time
+External boundaries and evidence |   12     12  0.1s
+Test Summary:                  | Pass  Total  Time
+Tooling and package boundaries |   11     11  0.5s
+Test Summary:           | Pass  Total  Time
+Explicit backend bridge |    9      9  0.0s
+     Testing P3109Reference tests passed 
